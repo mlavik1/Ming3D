@@ -1,0 +1,12 @@
+# file types
+*.sln
+*.suo
+*.vcxproj
+*.cbp
+*.layout
+*.sdf
+
+# folders
+build
+CMakeFiles
+.vs
