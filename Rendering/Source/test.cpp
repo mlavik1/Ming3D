@@ -8,7 +8,7 @@
 
 #include <SDL.h>
 //#include <SDL_opengl.h>
-
+#include "glm/glm.hpp"
 
 namespace Ming3D
 {
@@ -35,5 +35,7 @@ namespace Ming3D
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		SDL_GL_SwapWindow(mMainWindow);
+
+		glm::vec3 vecTest(1.0f, 0.0f, 0.0f);
 	}
 }
