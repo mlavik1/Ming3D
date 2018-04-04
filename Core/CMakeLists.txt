@@ -29,5 +29,6 @@ source_group("Object" FILES ${SRC_OBJECT})
 source_group("Serialisation" FILES ${SRC_SERIALISATION})
 
 include_directories (${SourceDir})
+include_directories ("Include")
 
 add_library(Core STATIC ${SRC_FILES})
