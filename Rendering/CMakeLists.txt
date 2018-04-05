@@ -37,12 +37,15 @@ include_directories ("../Core/Source")
 include_directories ("../Include/glm")
 include_directories(${SDL2_INCLUDE_DIR})
 include_directories(${GLEW_INCLUDE_DIRS})
+include_directories ("../3rdParty/assimp/include") #TODO: Rendering project should not read files
+include_directories ("${CMAKE_BINARY_DIR}/3rdParty/assimp/include") #TODO: Rendering project should not read files
 
 # Link libraries
 target_link_libraries(Rendering ${SDL2_LIBRARIES})
 target_link_libraries(Rendering ${SDL2IMAGE_LIBRARY})
 target_link_libraries(Rendering ${OPENGL_gl_LIBRARY})
 target_link_libraries(Rendering GLEW::GLEW)
+target_link_libraries(Rendering assimp) #TODO: Rendering project should not read files. Instead, read in engine and send data to renderer.
 
 # Copy DLLs	
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
