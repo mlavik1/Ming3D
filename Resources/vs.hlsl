@@ -17,8 +17,8 @@ VOut main(float4 position : POSITION, float4 normal : NORMAL)
     output.position = mul(position, MVP);
     //output.position = position;
 	//output.color = color;
-	//output.color = float4(normal.x, normal.y, normal.z, 1.0f);
-	output.color = test;
+	output.color = float4(normal.x, normal.y, normal.z, 1.0f);
+	//output.color = test;
 	
     return output;
 }

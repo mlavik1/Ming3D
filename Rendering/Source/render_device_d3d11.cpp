@@ -150,21 +150,22 @@ namespace Ming3D
 		mDeviceContext->VSSetShader(pVS, 0, 0);
 		mDeviceContext->PSSetShader(pPS, 0, 0);
 
-		// TEMP
-		// TODO: Create and cache input layout for each available vertex layout
-		D3D11_INPUT_ELEMENT_DESC ied[] =
+		UINT byteOffset = 0;
+		std::vector<D3D11_INPUT_ELEMENT_DESC> inputElements;
+		for (const EVertexComponent& vertexComp : inConstructionInfo.mVertexLayout.VertexComponents)
 		{
-			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "NORMAL", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		};
-		mDevice->CreateInputLayout(ied, 2, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &inputLayout);
-		mDeviceContext->IASetInputLayout(inputLayout);
+			const char* vertCompNames[] = { "POSITION", "NORMAL", "TEXCOORD", "COLOUR" }; // TEMP - TODO
+			const DXGI_FORMAT vertFormats[] = { DXGI_FORMAT_R32G32B32_FLOAT , DXGI_FORMAT_R32G32B32_FLOAT , DXGI_FORMAT_R32G32_FLOAT , DXGI_FORMAT_R32G32B32A32_FLOAT }; // TODO
+			D3D11_INPUT_ELEMENT_DESC desc = { vertCompNames[vertexComp], 0, vertFormats[vertexComp], 0, byteOffset, D3D11_INPUT_PER_VERTEX_DATA, 0 };
+			inputElements.push_back(desc);
+		}
 
+		mDevice->CreateInputLayout(inputElements.data(), 2, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &inputLayout);
 
 		std::unordered_map<std::string, ShaderConstantD3D11> shaderConstantMap;
 
 		size_t currentUniformOffset = 0;
-		for (const ShaderUniformInfo& uniformInfo : inConstructionInfo.Uniforms)
+		for (const ShaderUniformInfo& uniformInfo : inConstructionInfo.mUniforms)
 		{
 			const size_t currentUniformSize = GetShaderUniformSize(uniformInfo);
 			shaderConstantMap.emplace(uniformInfo.mName, ShaderConstantD3D11(currentUniformOffset, currentUniformSize));
@@ -251,6 +252,8 @@ namespace Ming3D
 		IndexBufferD3D11* indexBufferDX = (IndexBufferD3D11*)inIndexBuffer;
 
 		ID3D11Buffer* vb = vertexBufferDX->GetD3DBuffer();
+
+		mDeviceContext->IASetInputLayout(mActiveShaderProgram->mInputLayout);
 
 		UINT stride = inVertexBuffer->GetVertexSize();
 		UINT offset = 0;

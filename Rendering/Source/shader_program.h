@@ -29,7 +29,8 @@ namespace Ming3D
 
 	struct ShaderProgramConstructionInfo
 	{
-		std::vector<ShaderUniformInfo> Uniforms;
+		std::vector<ShaderUniformInfo> mUniforms;
+		VertexLayout mVertexLayout;
 	};
 
 	class ShaderProgram

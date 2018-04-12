@@ -1,6 +1,6 @@
 #pragma once
 
-#define MING3D_USE_OPENGL
+//#define MING3D_USE_OPENGL
 
 #include "renderingtest.h"
 
@@ -151,8 +151,9 @@ namespace Ming3D
 		std::string fragmentShaderStr((std::istreambuf_iterator<char>(fragmentShaderFile)), std::istreambuf_iterator<char>());
 
 		ShaderProgramConstructionInfo constructionInfo;
-		constructionInfo.Uniforms.push_back(ShaderUniformInfo(ShaderVariableType::Mat4x4, "MVP"));
-		constructionInfo.Uniforms.push_back(ShaderUniformInfo(ShaderVariableType::Vec4, "test"));
+		constructionInfo.mUniforms.push_back(ShaderUniformInfo(ShaderVariableType::Mat4x4, "MVP"));
+		constructionInfo.mUniforms.push_back(ShaderUniformInfo(ShaderVariableType::Vec4, "test"));
+		constructionInfo.mVertexLayout.VertexComponents = { EVertexComponent::Position, EVertexComponent::Normal };
 		ShaderProgram* shaderProgram = mRenderDevice->CreateShaderProgram(vertexShaderStr, fragmentShaderStr, constructionInfo);
 
 		float width = 800.0f;
