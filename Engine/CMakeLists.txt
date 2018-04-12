@@ -10,7 +10,7 @@ set(SourceDir ${PROJECT_SOURCE_DIR}/Source)
 
 include_directories ("../Core/Source")
 include_directories ("../Rendering/Source")
-
+include_directories ("../Include/glm")
 add_library(Engine STATIC ${SRC_FILES})
 
 target_link_libraries(Engine Rendering)

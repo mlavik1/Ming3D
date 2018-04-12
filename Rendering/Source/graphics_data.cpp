@@ -1,0 +1,68 @@
+#include "graphics_data.h"
+
+namespace Ming3D
+{
+	VertexData::VertexData(std::vector<EVertexComponent> inComponents, size_t inNumVertices)
+	{
+		mVertexLayout.VertexComponents = inComponents;
+		mVertexSize = 0;
+		for (const EVertexComponent& comp : mVertexLayout.VertexComponents)
+		{
+			mVertexSize += GetVertexComponentSize(comp);
+		}
+		mData.resize(inNumVertices * mVertexSize);
+	}
+
+	void VertexData::GetComponentOffsets(EVertexComponent inComponent, std::vector<size_t>& outOffsets)
+	{
+		size_t offset = 0;
+		for (const EVertexComponent& comp : mVertexLayout.VertexComponents)
+		{
+			if (comp == inComponent)
+			{
+				outOffsets.push_back(offset);
+			}
+			offset += GetVertexComponentSize(comp);
+		}
+	}
+
+	size_t VertexData::GetNumVertices()
+	{
+		return mVertexSize == 0 ? 0 : mData.size() / mVertexSize;
+	}
+
+	size_t VertexData::GetVertexSize()
+	{
+		return mVertexSize;
+	}
+
+	size_t VertexData::GetVertexComponentSize(EVertexComponent inComp)
+	{
+		switch (inComp)
+		{
+		case EVertexComponent::Position:
+			return sizeof(float) * 3;
+			break;
+		case EVertexComponent::Normal:
+			return sizeof(float) * 3;
+			break;
+		case EVertexComponent::TexCoord:
+			return sizeof(float) * 2;
+			break;
+		case EVertexComponent::Colour:
+			return sizeof(float) * 4;
+			break;
+		}
+	}
+
+
+	IndexData::IndexData(size_t inNumIndices)
+	{
+		mData.resize(inNumIndices);
+	}
+
+	size_t IndexData::GetNumIndices()
+	{
+		return mData.size();
+	}
+}

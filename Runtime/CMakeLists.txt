@@ -13,3 +13,6 @@ include_directories ("../Engine/Source")
 add_executable(Runtime ${SRC_FILES})
 
 target_link_libraries(Runtime Engine)
+
+#Set working directory to the directory where "Resources" folder is located
+set_target_properties(Runtime PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")

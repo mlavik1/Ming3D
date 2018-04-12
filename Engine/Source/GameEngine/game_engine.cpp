@@ -1,7 +1,7 @@
 #include "game_engine.h"
 
 #include "Source/ClassManager/class_manager.h"
-#include "test.h"
+#include "renderingtest.h"
 
 namespace Ming3D
 {
