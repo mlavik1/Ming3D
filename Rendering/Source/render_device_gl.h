@@ -24,7 +24,8 @@ namespace Ming3D
 		virtual VertexBuffer* CreateVertexBuffer(VertexData* inVertexData) override;
 		virtual IndexBuffer* CreateIndexBuffer(IndexData* inIndexData) override;
 		virtual ShaderProgram* CreateShaderProgram(const std::string& inShaderCode, const std::string& inFragmentShaderCode, const ShaderProgramConstructionInfo& inConstructionInfo) override;
-		virtual void SetRenderTarget(RenderTarget* inTarget);
+        virtual void SetTexture(Texture* inTexture) override;
+        virtual void SetRenderTarget(RenderTarget* inTarget);
 		virtual void SetActiveShaderProgram(ShaderProgram* inProgram) override;
 		virtual void BeginRendering() override;
 		virtual void EndRendering() override;

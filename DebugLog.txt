@@ -1,0 +1,1 @@
+ERROR: Assertion error on mBytesPerPixel % 2, "Bytes per pixel must be a power of 2", in D:\Prosjekt\Ming3D\Rendering\Source\texture_d3d11.cpp, line 12

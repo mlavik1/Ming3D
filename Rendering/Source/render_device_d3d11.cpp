@@ -150,17 +150,18 @@ namespace Ming3D
 		mDeviceContext->VSSetShader(pVS, 0, 0);
 		mDeviceContext->PSSetShader(pPS, 0, 0);
 
+        const char* vertCompNames[] = { "POSITION", "NORMAL", "TEXCOORD", "COLOUR" }; // TEMP - TODO
+        const DXGI_FORMAT vertFormats[] = { DXGI_FORMAT_R32G32B32_FLOAT , DXGI_FORMAT_R32G32B32_FLOAT , DXGI_FORMAT_R32G32_FLOAT , DXGI_FORMAT_R32G32B32A32_FLOAT }; // TODO
 		UINT byteOffset = 0;
 		std::vector<D3D11_INPUT_ELEMENT_DESC> inputElements;
 		for (const EVertexComponent& vertexComp : inConstructionInfo.mVertexLayout.VertexComponents)
 		{
-			const char* vertCompNames[] = { "POSITION", "NORMAL", "TEXCOORD", "COLOUR" }; // TEMP - TODO
-			const DXGI_FORMAT vertFormats[] = { DXGI_FORMAT_R32G32B32_FLOAT , DXGI_FORMAT_R32G32B32_FLOAT , DXGI_FORMAT_R32G32_FLOAT , DXGI_FORMAT_R32G32B32A32_FLOAT }; // TODO
 			D3D11_INPUT_ELEMENT_DESC desc = { vertCompNames[vertexComp], 0, vertFormats[vertexComp], 0, byteOffset, D3D11_INPUT_PER_VERTEX_DATA, 0 };
 			inputElements.push_back(desc);
+            byteOffset += VertexData::GetVertexComponentSize(vertexComp);
 		}
 
-		mDevice->CreateInputLayout(inputElements.data(), 2, vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &inputLayout);
+		mDevice->CreateInputLayout(inputElements.data(), inputElements.size(), vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &inputLayout);
 
 		std::unordered_map<std::string, ShaderConstantD3D11> shaderConstantMap;
 
@@ -218,6 +219,11 @@ namespace Ming3D
 		shaderProgram->mShaderConstantsSize = currentUniformOffset;
 		return shaderProgram;
 	}
+
+    void RenderDeviceD3D11::SetTexture(Texture* inTexture)
+    {
+
+    }
 
 	void RenderDeviceD3D11::SetRenderTarget(RenderTarget* inTarget)
 	{

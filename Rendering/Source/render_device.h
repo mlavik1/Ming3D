@@ -8,6 +8,7 @@
 #include "graphics_data.h"
 #include "shader_program.h"
 #include "graphics_data.h"
+#include "texture.h"
 
 #include <string>
 
@@ -16,11 +17,13 @@ namespace Ming3D
 	class RenderDevice
 	{
 	public:
+        virtual ~RenderDevice() {}
 		virtual RenderTarget* CreateRenderTarget(WindowBase* inWindow) = 0;
 		virtual VertexBuffer* CreateVertexBuffer(VertexData* inVertexData) = 0;
 		virtual IndexBuffer* CreateIndexBuffer(IndexData* inIndexData) = 0;
 		virtual ShaderProgram* CreateShaderProgram(const std::string& inVertexShaderCode, const std::string& inFragmentShaderCode, const ShaderProgramConstructionInfo& inConstructionInfo) = 0;
-		virtual void SetRenderTarget(RenderTarget* inTarget) = 0;
+        virtual void SetTexture(Texture* inTexture) = 0;
+        virtual void SetRenderTarget(RenderTarget* inTarget) = 0;
 		virtual void SetActiveShaderProgram(ShaderProgram* inProgram) = 0;
 		virtual void BeginRendering() = 0;
 		virtual void EndRendering() = 0;

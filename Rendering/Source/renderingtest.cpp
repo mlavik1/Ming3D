@@ -10,10 +10,12 @@
 #include <SDL.h>
 #include "sdl_window.h"
 #include "render_device_gl.h"
+#include "texture_gl.h"
 #else
 #include <Windows.h>
 #include "render_device_d3d11.h"
 #include "winapi_window.h"
+#include "texture_d3d11.h"
 #endif
 
 #include "glm/glm.hpp"
@@ -24,6 +26,10 @@
 #include "assimp/Importer.hpp"
 
 #include "graphics_data.h"
+
+#include <SDL_image.h>
+
+#include "texture_loader.h"
 
 namespace Ming3D
 {
@@ -62,7 +68,7 @@ namespace Ming3D
 					if (scene->mMeshes[m]->HasTextureCoords(0))
 					{
 						aiVector3D vt = scene->mMeshes[m]->mTextureCoords[0][i];
-						vertex.mNormal = glm::vec3(vt.x, vt.y, vt.z);
+						vertex.mTexCoord = glm::vec2(vt.x, vt.y);
 					}
 
 					meshData->mVertices.push_back(vertex);
@@ -87,7 +93,7 @@ namespace Ming3D
 			}
 			else
 			{
-				// TODO: set colour
+				// TODO: set default (white?) texture
 			}
 
 		}
@@ -127,6 +133,17 @@ namespace Ming3D
 
 		LoadModel();
 
+        Texture* texture;
+#ifdef MING3D_USE_OPENGL
+        texture = new TextureGL();
+#else
+        texture = new TextureD3D11();
+#endif
+        TextureLoader::LoadTextureData("Resources//texture.jpg", texture);
+
+        texture->BufferTexture();
+
+
 		for (MeshData* meshData : mModelData->mMeshes)
 		{
 			VertexData vertexData({ EVertexComponent::Position, EVertexComponent::Normal, EVertexComponent::TexCoord }, meshData->mVertices.size());
@@ -153,7 +170,7 @@ namespace Ming3D
 		ShaderProgramConstructionInfo constructionInfo;
 		constructionInfo.mUniforms.push_back(ShaderUniformInfo(ShaderVariableType::Mat4x4, "MVP"));
 		constructionInfo.mUniforms.push_back(ShaderUniformInfo(ShaderVariableType::Vec4, "test"));
-		constructionInfo.mVertexLayout.VertexComponents = { EVertexComponent::Position, EVertexComponent::Normal };
+		constructionInfo.mVertexLayout.VertexComponents = { EVertexComponent::Position, EVertexComponent::Normal, EVertexComponent::TexCoord };
 		ShaderProgram* shaderProgram = mRenderDevice->CreateShaderProgram(vertexShaderStr, fragmentShaderStr, constructionInfo);
 
 		float width = 800.0f;
@@ -202,6 +219,7 @@ namespace Ming3D
 
 			for (MeshData* meshData : mModelData->mMeshes)
 			{
+                mRenderDevice->SetTexture(texture); // temp
 				mRenderDevice->RenderPrimitive(meshData->mVertexBuffer, meshData->mIndexBuffer);
 			}
 

@@ -4,6 +4,7 @@
 #include "index_buffer_gl.h"
 #include "render_target_gl.h"
 #include "shader_program_gl.h"
+#include "texture_gl.h"
 
 #include "Debug/debug.h"
 #include "Debug/st_assert.h"
@@ -85,6 +86,14 @@ namespace Ming3D
 		return shaderProgram;
 	}
 
+    void RenderDeviceGL::SetTexture(Texture* inTexture)
+    {
+        glEnable(GL_TEXTURE_2D); // TODO
+        TextureGL* glTexture = (TextureGL*)inTexture;
+        glActiveTexture(GL_TEXTURE0); // TODO: support multiple textures
+        glBindTexture(GL_TEXTURE_2D, glTexture->GetGLTexture());
+    }
+
 	void RenderDeviceGL::SetRenderTarget(RenderTarget* inTarget)
 	{
 		mRenderTarget = (RenderTargetGL*)inTarget;
@@ -123,27 +132,18 @@ namespace Ming3D
 	{
 		VertexBufferGL* vertexBufferGL = (VertexBufferGL*)inVertexBuffer;
 		IndexBufferGL* indexBufferGL = (IndexBufferGL*)inIndexBuffer;
-
-		// Vertices
-		glEnableVertexAttribArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferGL->GetGLBuffer());
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, vertexBufferGL->GetVertexSize(), 0);
-
-		// Normals
-		glEnableVertexAttribArray(1);
-		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferGL->GetGLBuffer());
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, vertexBufferGL->GetVertexSize(), (void*)sizeof(glm::vec3));
-
-		/*
-		if (texture)
-		{
-		// Textures
-		glEnableVertexAttribArray(2);
-		glActiveTexture(GL_TEXTURE0);	// TODO: +i
-		glBindBuffer(GL_ARRAY_BUFFER, mesh->mTBO);
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
-		glBindTexture(GL_TEXTURE_2D, texture->GetTextureBuffer());
-		}*/
+        
+        size_t vertexComponentIndex = 0;
+        size_t vertexComponentOffset = 0;
+        for (EVertexComponent vertexComponent : inVertexBuffer->GetVertexLayout().VertexComponents)
+        {
+            const size_t vertexComponentSize = VertexData::GetVertexComponentSize(vertexComponent);
+            glEnableVertexAttribArray(vertexComponentIndex);
+            glBindBuffer(GL_ARRAY_BUFFER, vertexBufferGL->GetGLBuffer());
+            glVertexAttribPointer(vertexComponentIndex, 3, GL_FLOAT, GL_FALSE, vertexBufferGL->GetVertexSize(), (void*)vertexComponentOffset);
+            vertexComponentIndex++;
+            vertexComponentOffset += vertexComponentSize;
+        }
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferGL->GetGLBuffer());
 		glDrawElements(GL_TRIANGLES, indexBufferGL->GetNumIndices(), GL_UNSIGNED_INT, 0);
