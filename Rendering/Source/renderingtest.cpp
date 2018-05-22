@@ -31,10 +31,15 @@
 
 #include "texture_loader.h"
 
+#include <shader_parser.h>
+
 namespace Ming3D
 {
 	void RenderingTest::LoadModel()
 	{
+        //ShaderConverter::ShaderParser shaderParser;
+        //shaderParser.ParseShaderProgram("Resources//shader_PNT.shader");
+
 		ModelData* modelData = new ModelData();
 		mModelData = modelData;
 
@@ -156,22 +161,7 @@ namespace Ming3D
 			meshData->mIndexBuffer = mRenderDevice->CreateIndexBuffer(&indexData);
 		}
 
-#ifdef MING3D_USE_OPENGL
-		std::ifstream vertexShaderFile("Resources//shader.vs");
-		std::ifstream fragmentShaderFile("Resources//shader.fs");
-#else
-		std::ifstream vertexShaderFile("Resources//vs.hlsl");
-		std::ifstream fragmentShaderFile("Resources//ps.hlsl");
-#endif
-
-		std::string vertexShaderStr((std::istreambuf_iterator<char>(vertexShaderFile)), std::istreambuf_iterator<char>());
-		std::string fragmentShaderStr((std::istreambuf_iterator<char>(fragmentShaderFile)), std::istreambuf_iterator<char>());
-
-		ShaderProgramConstructionInfo constructionInfo;
-		constructionInfo.mUniforms.push_back(ShaderUniformInfo(ShaderVariableType::Mat4x4, "MVP"));
-		constructionInfo.mUniforms.push_back(ShaderUniformInfo(ShaderVariableType::Vec4, "test"));
-		constructionInfo.mVertexLayout.VertexComponents = { EVertexComponent::Position, EVertexComponent::Normal, EVertexComponent::TexCoord };
-		ShaderProgram* shaderProgram = mRenderDevice->CreateShaderProgram(vertexShaderStr, fragmentShaderStr, constructionInfo);
+        ShaderProgram* shaderProgram = mRenderDevice->CreateShaderProgram("Resources//shader_PNT.shader");
 
 		float width = 800.0f;
 		float height = 600.0f;

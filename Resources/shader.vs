@@ -7,9 +7,9 @@ layout (location=2) in vec2 VertexTexCoord;
 uniform mat4 MVP;
 uniform vec4 test;
 
-out vec3 Position;
-out vec3 Normal;
-out vec2 TexCoord;
+layout (location=0) out vec3 Position;
+layout (location=1) out vec3 Normal;
+layout (location=2) out vec2 TexCoord;
 
 void main()
 {

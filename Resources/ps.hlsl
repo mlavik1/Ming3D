@@ -1,9 +1,16 @@
 Texture2D shaderTexture;
 SamplerState SampleType;
 
-float4 main(float4 position : SV_POSITION, float2 texCoord : TEXCOORD) : SV_TARGET
+struct VIn
 {
-	float4 texColour = shaderTexture.Sample(SampleType, texCoord);
+    float4 position : SV_POSITION;
+	float3 texCoord2 : NORMAL;
+	float2 texCoord : TEXCOORD;
+};
+
+float4 main(VIn input) : SV_TARGET
+{
+	float4 texColour = shaderTexture.Sample(SampleType, input.texCoord);
 	
     return texColour;
 }

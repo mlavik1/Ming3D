@@ -1,27 +1,31 @@
-cbuffer VS_CONSTANT_BUFFER : register(b0)
+cbuffer SHADER_CONSTANT_BUFFER : register(b0)
 {
     matrix MVP;
 	float4 test;
 };
 
+struct VIn
+{
+    float4 VertexPosition : POSITION;
+	float3 VertexNormal : NORMAL;
+	float2 VertexTexCoord : TEXCOORD;
+};
+
 struct VOut
 {
     float4 position : SV_POSITION;
+	float3 texCoord2 : NORMAL;
 	float2 texCoord : TEXCOORD;
 };
 
-VOut main(float4 position : POSITION, float4 normal : NORMAL, float2 texCoord : TEXCOORD)
+VOut main(VIn input)
 {
     VOut output;
 
-    output.position = mul(position, MVP);
-    //output.position = position;
-	//output.color = color;
-	//output.color = float4(normal.x, normal.y, normal.z, 1.0f);
+    output.position = mul(input.VertexPosition, MVP);
+	//output.color = float4(VertexTexCoord.x, VertexTexCoord.y, 0.0f, 1.0f);
 
-	//output.color = float4(texCoord.x, texCoord.y, 0.0f, 1.0f);
-
-	output.texCoord = texCoord;
+	output.texCoord = input.VertexTexCoord;
 	
     return output;
 }

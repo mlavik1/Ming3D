@@ -32,7 +32,7 @@ namespace Ming3D
 		virtual RenderTarget* CreateRenderTarget(WindowBase* inWindow) override;
 		virtual VertexBuffer* CreateVertexBuffer(VertexData* inVertexData) override;
 		virtual IndexBuffer* CreateIndexBuffer(IndexData* inIndexData) override;
-		virtual ShaderProgram* CreateShaderProgram(const std::string& inVertexShaderCode, const std::string& inFragmentShaderCode, const ShaderProgramConstructionInfo& inConstructionInfo) override;
+		virtual ShaderProgram* CreateShaderProgram(const std::string& inShaderProgramPath) override;
         virtual void SetTexture(Texture* inTexture) override;
         virtual void SetRenderTarget(RenderTarget* inTarget) override;
 		virtual void SetActiveShaderProgram(ShaderProgram* inProgram) override;

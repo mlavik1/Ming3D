@@ -8,6 +8,7 @@
 
 #include "Debug/debug.h"
 #include "Debug/st_assert.h"
+#include "shader_writer_glsl.h"
 
 namespace Ming3D
 {
@@ -53,14 +54,20 @@ namespace Ming3D
 		return indexBuffer;
 	}
 
-	ShaderProgram* RenderDeviceGL::CreateShaderProgram(const std::string& inVertexShaderCode, const std::string& inFragmentShaderCode, const ShaderProgramConstructionInfo& inConstructionInfo)
+	ShaderProgram* RenderDeviceGL::CreateShaderProgram(const std::string& inShaderProgramPath)
 	{
-		GLuint program = glCreateProgram();
-		GLuint vs = glCreateShader(GL_VERTEX_SHADER);
-		GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
+        ShaderConverter::ShaderParser shaderParser;
+        ShaderConverter::ParsedShaderProgram* parsedProgram = shaderParser.ParseShaderProgram(inShaderProgramPath.c_str());
+        ShaderConverter::ShaderWriterGLSL shaderWriter;
+        ShaderConverter::ShaderProgramDataGLSL convertedShaderData;
+        shaderWriter.WriteShader(parsedProgram, convertedShaderData);
 
-		const char* str_v = inVertexShaderCode.c_str();
-		const char* str_f = inFragmentShaderCode.c_str();
+        GLuint program = glCreateProgram();
+        GLuint vs = glCreateShader(GL_VERTEX_SHADER);
+        GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
+
+		const char* str_v = convertedShaderData.mVertexShader.mSource.c_str();
+		const char* str_f = convertedShaderData.mFragmentShader.mSource.c_str();
 
 		glShaderSource(vs, 1, &str_v, 0);
 		glShaderSource(fs, 1, &str_f, 0);
@@ -78,6 +85,25 @@ namespace Ming3D
 		printf("Fragment shader compile status: %s\n", (fstatus == GL_TRUE) ? "true" : "false");
 		glGetProgramiv(program, GL_LINK_STATUS, &lstatus);
 		printf("Program link status: %s\n", (lstatus == GL_TRUE) ? "true" : "false");
+            
+        if (vstatus == GL_FALSE)
+        {
+            GLchar infoLog[1024];
+            glGetShaderInfoLog(vs, sizeof(infoLog), NULL, infoLog);
+            LOG_ERROR() << "Error compling vertex shader: " << std::string(infoLog);
+        }
+        else if (fstatus == GL_FALSE)
+        {
+            GLchar infoLog[1024];
+            glGetShaderInfoLog(fs, sizeof(infoLog), NULL, infoLog);
+            LOG_ERROR() << "Error compling fragment shader: " << std::string(infoLog);
+        }
+        else if (lstatus == GL_FALSE)
+        {
+            GLchar infoLog[1024];
+            glGetProgramInfoLog(program, sizeof(infoLog), NULL, infoLog);
+            LOG_ERROR() << "Error linking shader program: " << std::string(infoLog);
+        }
 
 		ShaderProgramGL* shaderProgram = new ShaderProgramGL();
 		shaderProgram->SetGLProgram(program);
