@@ -12,79 +12,80 @@
 
 namespace Ming3D
 {
-	RenderDeviceGL::RenderDeviceGL()
-	{
-		if (glewInit())
-		{
-			LOG_ERROR() << "Failed to initialise GLEW";
-		}
-	}
+    RenderDeviceGL::RenderDeviceGL()
+    {
+        if (glewInit())
+        {
+            LOG_ERROR() << "Failed to initialise GLEW";
+        }
+    }
 
-	RenderDeviceGL::~RenderDeviceGL()
-	{
+    RenderDeviceGL::~RenderDeviceGL()
+    {
 
-	}
+    }
 
-	RenderTarget* RenderDeviceGL::CreateRenderTarget(WindowBase* inWindow)
-	{
-		return new RenderTargetGL(inWindow);
-	}
+    RenderTarget* RenderDeviceGL::CreateRenderTarget(WindowBase* inWindow)
+    {
+        return new RenderTargetGL(inWindow);
+    }
 
-	VertexBuffer* RenderDeviceGL::CreateVertexBuffer(VertexData* inVertexData)
-	{
-		VertexBufferGL* vertexBuffer = new VertexBufferGL();
-		GLuint vbo;
-		glGenBuffers(1, &vbo);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glBufferData(GL_ARRAY_BUFFER, inVertexData->GetNumVertices() * inVertexData->GetVertexSize(), inVertexData->GetDataPtr(), GL_STATIC_DRAW);
-		vertexBuffer->SetGLBuffer(vbo);
-		vertexBuffer->SetVertexLayout(inVertexData->GetVertexLayout());
-		return vertexBuffer;
-	}
+    VertexBuffer* RenderDeviceGL::CreateVertexBuffer(VertexData* inVertexData)
+    {
+        VertexBufferGL* vertexBuffer = new VertexBufferGL();
+        GLuint vbo;
+        glGenBuffers(1, &vbo);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER, inVertexData->GetNumVertices() * inVertexData->GetVertexSize(), inVertexData->GetDataPtr(), GL_STATIC_DRAW);
+        vertexBuffer->SetGLBuffer(vbo);
+        vertexBuffer->SetVertexLayout(inVertexData->GetVertexLayout());
+        return vertexBuffer;
+    }
 
-	IndexBuffer* RenderDeviceGL::CreateIndexBuffer(IndexData* inIndexData)
-	{
-		IndexBufferGL* indexBuffer = new IndexBufferGL();
-		GLuint ibo;
-		glGenBuffers(1, &ibo);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, inIndexData->GetNumIndices() * sizeof(unsigned int), inIndexData->GetData(), GL_STATIC_DRAW);
-		indexBuffer->SetGLBuffer(ibo);
-		indexBuffer->SetNumIndices(inIndexData->GetNumIndices());
-		return indexBuffer;
-	}
+    IndexBuffer* RenderDeviceGL::CreateIndexBuffer(IndexData* inIndexData)
+    {
+        IndexBufferGL* indexBuffer = new IndexBufferGL();
+        GLuint ibo;
+        glGenBuffers(1, &ibo);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, inIndexData->GetNumIndices() * sizeof(unsigned int), inIndexData->GetData(), GL_STATIC_DRAW);
+        indexBuffer->SetGLBuffer(ibo);
+        indexBuffer->SetNumIndices(inIndexData->GetNumIndices());
+        return indexBuffer;
+    }
 
-	ShaderProgram* RenderDeviceGL::CreateShaderProgram(const std::string& inShaderProgramPath)
-	{
+    ShaderProgram* RenderDeviceGL::CreateShaderProgram(const std::string& inShaderProgramPath)
+    {
         ShaderConverter::ShaderParser shaderParser;
         ShaderConverter::ParsedShaderProgram* parsedProgram = shaderParser.ParseShaderProgram(inShaderProgramPath.c_str());
         ShaderConverter::ShaderWriterGLSL shaderWriter;
         ShaderConverter::ShaderProgramDataGLSL convertedShaderData;
         shaderWriter.WriteShader(parsedProgram, convertedShaderData);
+        delete parsedProgram;
 
         GLuint program = glCreateProgram();
         GLuint vs = glCreateShader(GL_VERTEX_SHADER);
         GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
 
-		const char* str_v = convertedShaderData.mVertexShader.mSource.c_str();
-		const char* str_f = convertedShaderData.mFragmentShader.mSource.c_str();
+        const char* str_v = convertedShaderData.mVertexShader.mSource.c_str();
+        const char* str_f = convertedShaderData.mFragmentShader.mSource.c_str();
 
-		glShaderSource(vs, 1, &str_v, 0);
-		glShaderSource(fs, 1, &str_f, 0);
+        glShaderSource(vs, 1, &str_v, 0);
+        glShaderSource(fs, 1, &str_f, 0);
 
-		glCompileShader(vs);
-		glCompileShader(fs);
-		glAttachShader(program, vs);
-		glAttachShader(program, fs);
-		glLinkProgram(program);
+        glCompileShader(vs);
+        glCompileShader(fs);
+        glAttachShader(program, vs);
+        glAttachShader(program, fs);
+        glLinkProgram(program);
 
-		int vstatus, fstatus, lstatus;
-		glGetShaderiv(vs, GL_COMPILE_STATUS, &vstatus);
-		printf("Vertex shader compile status: %s\n", (vstatus == GL_TRUE) ? "true" : "false");
-		glGetShaderiv(fs, GL_COMPILE_STATUS, &fstatus);
-		printf("Fragment shader compile status: %s\n", (fstatus == GL_TRUE) ? "true" : "false");
-		glGetProgramiv(program, GL_LINK_STATUS, &lstatus);
-		printf("Program link status: %s\n", (lstatus == GL_TRUE) ? "true" : "false");
+        int vstatus, fstatus, lstatus;
+        glGetShaderiv(vs, GL_COMPILE_STATUS, &vstatus);
+        printf("Vertex shader compile status: %s\n", (vstatus == GL_TRUE) ? "true" : "false");
+        glGetShaderiv(fs, GL_COMPILE_STATUS, &fstatus);
+        printf("Fragment shader compile status: %s\n", (fstatus == GL_TRUE) ? "true" : "false");
+        glGetProgramiv(program, GL_LINK_STATUS, &lstatus);
+        printf("Program link status: %s\n", (lstatus == GL_TRUE) ? "true" : "false");
             
         if (vstatus == GL_FALSE)
         {
@@ -105,12 +106,17 @@ namespace Ming3D
             LOG_ERROR() << "Error linking shader program: " << std::string(infoLog);
         }
 
-		ShaderProgramGL* shaderProgram = new ShaderProgramGL();
-		shaderProgram->SetGLProgram(program);
-		shaderProgram->SetGLVertexShader(vs);
-		shaderProgram->SetGLFragmentShader(fs);
-		return shaderProgram;
-	}
+        ShaderProgramGL* shaderProgram = new ShaderProgramGL();
+        shaderProgram->SetGLProgram(program);
+        shaderProgram->SetGLVertexShader(vs);
+        shaderProgram->SetGLFragmentShader(fs);
+        return shaderProgram;
+    }
+
+    Texture* RenderDeviceGL::CreateTexture()
+    {
+        return new TextureGL();
+    }
 
     void RenderDeviceGL::SetTexture(Texture* inTexture)
     {
@@ -120,44 +126,44 @@ namespace Ming3D
         glBindTexture(GL_TEXTURE_2D, glTexture->GetGLTexture());
     }
 
-	void RenderDeviceGL::SetRenderTarget(RenderTarget* inTarget)
-	{
-		mRenderTarget = (RenderTargetGL*)inTarget;
-	}
+    void RenderDeviceGL::SetRenderTarget(RenderTarget* inTarget)
+    {
+        mRenderTarget = (RenderTargetGL*)inTarget;
+    }
 
-	void RenderDeviceGL::SetActiveShaderProgram(ShaderProgram* inProgram)
-	{
-		mActiveShaderProgram = (ShaderProgramGL*)inProgram;
-		if (mActiveShaderProgram != nullptr)
-		{
-			glUseProgram(mActiveShaderProgram->GetGLProgram());
-		}
-	}
+    void RenderDeviceGL::SetActiveShaderProgram(ShaderProgram* inProgram)
+    {
+        mActiveShaderProgram = (ShaderProgramGL*)inProgram;
+        if (mActiveShaderProgram != nullptr)
+        {
+            glUseProgram(mActiveShaderProgram->GetGLProgram());
+        }
+    }
 
-	void RenderDeviceGL::BeginRendering()
-	{
-		// TODO: Do in render target
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+    void RenderDeviceGL::BeginRendering()
+    {
+        // TODO: Do in render target
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
 
-		//glEnable(GL_DEPTH_TEST);
-		//glDepthFunc(GL_LEQUAL);
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
-		glFrontFace(GL_CCW);
-	}
+        //glEnable(GL_DEPTH_TEST);
+        //glDepthFunc(GL_LEQUAL);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+        glFrontFace(GL_CCW);
+    }
 
-	void RenderDeviceGL::EndRendering()
-	{
-	
-	}
+    void RenderDeviceGL::EndRendering()
+    {
+    
+    }
 
-	void RenderDeviceGL::RenderPrimitive(VertexBuffer* inVertexBuffer, IndexBuffer* inIndexBuffer)
-	{
-		VertexBufferGL* vertexBufferGL = (VertexBufferGL*)inVertexBuffer;
-		IndexBufferGL* indexBufferGL = (IndexBufferGL*)inIndexBuffer;
+    void RenderDeviceGL::RenderPrimitive(VertexBuffer* inVertexBuffer, IndexBuffer* inIndexBuffer)
+    {
+        VertexBufferGL* vertexBufferGL = (VertexBufferGL*)inVertexBuffer;
+        IndexBufferGL* indexBufferGL = (IndexBufferGL*)inIndexBuffer;
         
         size_t vertexComponentIndex = 0;
         size_t vertexComponentOffset = 0;
@@ -171,19 +177,19 @@ namespace Ming3D
             vertexComponentOffset += vertexComponentSize;
         }
 
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferGL->GetGLBuffer());
-		glDrawElements(GL_TRIANGLES, indexBufferGL->GetNumIndices(), GL_UNSIGNED_INT, 0);
-	}
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferGL->GetGLBuffer());
+        glDrawElements(GL_TRIANGLES, indexBufferGL->GetNumIndices(), GL_UNSIGNED_INT, 0);
+    }
 
-	void RenderDeviceGL::SetShaderUniformMat4x4(const char* inName, const glm::mat4 inMat)
-	{
-		GLuint MatrixID = glGetUniformLocation(mActiveShaderProgram->GetGLProgram(), inName);
+    void RenderDeviceGL::SetShaderUniformMat4x4(const char* inName, const glm::mat4 inMat)
+    {
+        GLuint MatrixID = glGetUniformLocation(mActiveShaderProgram->GetGLProgram(), inName);
 
-		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &inMat[0][0]);
-	}
+        glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &inMat[0][0]);
+    }
 
-	void RenderDeviceGL::SetShaderUniformVec4(const char* inName, const glm::vec4 inVec)
-	{
+    void RenderDeviceGL::SetShaderUniformVec4(const char* inName, const glm::vec4 inVec)
+    {
 
-	}
+    }
 }

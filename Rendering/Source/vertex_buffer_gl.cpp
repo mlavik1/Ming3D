@@ -2,13 +2,13 @@
 
 namespace Ming3D
 {
-	void VertexBufferGL::SetGLBuffer(GLuint inBuffer)
-	{
-		mGLBuffer = inBuffer;
-	}
+    void VertexBufferGL::SetGLBuffer(GLuint inBuffer)
+    {
+        mGLBuffer = inBuffer;
+    }
 
-	GLuint VertexBufferGL::GetGLBuffer()
-	{
-		return mGLBuffer;
-	}
+    GLuint VertexBufferGL::GetGLBuffer()
+    {
+        return mGLBuffer;
+    }
 }

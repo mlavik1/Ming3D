@@ -5,14 +5,14 @@
 
 namespace Ming3D
 {
-	class RenderTargetGL : public RenderTarget
-	{
-	public:
-		RenderTargetGL(WindowBase* inWindow);
+    class RenderTargetGL : public RenderTarget
+    {
+    public:
+        RenderTargetGL(WindowBase* inWindow);
 
-		virtual void BeginRendering() override;
-		virtual void EndRendering() override;
-	};
+        virtual void BeginRendering() override;
+        virtual void EndRendering() override;
+    };
 }
 
 #endif

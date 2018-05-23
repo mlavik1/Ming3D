@@ -7,15 +7,15 @@
 
 namespace Ming3D
 {
-	class IndexBufferGL : public IndexBuffer
-	{
-	private:
-		GLuint mGLBuffer;
+    class IndexBufferGL : public IndexBuffer
+    {
+    private:
+        GLuint mGLBuffer;
 
-	public:
-		void SetGLBuffer(GLuint inBuffer);
-		GLuint GetGLBuffer();
-	};
+    public:
+        void SetGLBuffer(GLuint inBuffer);
+        GLuint GetGLBuffer();
+    };
 }
 
 #endif

@@ -7,16 +7,16 @@
 
 namespace Ming3D
 {
-	class VertexBufferD3D11 : public VertexBuffer
-	{
-	private:
-		ID3D11Buffer* mD3DBuffer;
+    class VertexBufferD3D11 : public VertexBuffer
+    {
+    private:
+        ID3D11Buffer* mD3DBuffer;
 
-	public:
-		void SetD3DBuffer(ID3D11Buffer* inBuffer);
+    public:
+        void SetD3DBuffer(ID3D11Buffer* inBuffer);
 
-		ID3D11Buffer* GetD3DBuffer();
-	};
+        ID3D11Buffer* GetD3DBuffer();
+    };
 }
 
 #endif

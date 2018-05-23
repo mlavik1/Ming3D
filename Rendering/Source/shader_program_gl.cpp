@@ -2,18 +2,18 @@
 
 namespace Ming3D
 {
-	void ShaderProgramGL::SetGLProgram(GLuint inProgram)
-	{
-		mGLProgram = inProgram;
-	}
+    void ShaderProgramGL::SetGLProgram(GLuint inProgram)
+    {
+        mGLProgram = inProgram;
+    }
 
-	void ShaderProgramGL::SetGLVertexShader(GLuint inVS)
-	{
-		mGLVertexShader = inVS;
-	}
+    void ShaderProgramGL::SetGLVertexShader(GLuint inVS)
+    {
+        mGLVertexShader = inVS;
+    }
 
-	void ShaderProgramGL::SetGLFragmentShader(GLuint inFS)
-	{
-		mGLFragmentShader = inFS;
-	}
+    void ShaderProgramGL::SetGLFragmentShader(GLuint inFS)
+    {
+        mGLFragmentShader = inFS;
+    }
 }

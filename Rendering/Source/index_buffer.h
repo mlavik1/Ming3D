@@ -3,15 +3,15 @@
 
 namespace Ming3D
 {
-	class IndexBuffer
-	{
-	private:
-		unsigned int mNumIndices;
+    class IndexBuffer
+    {
+    private:
+        unsigned int mNumIndices;
 
-	public:
-		void SetNumIndices(unsigned int inNumIndices);
-		unsigned int GetNumIndices();
-	};
+    public:
+        void SetNumIndices(unsigned int inNumIndices);
+        unsigned int GetNumIndices();
+    };
 }
 
 #endif

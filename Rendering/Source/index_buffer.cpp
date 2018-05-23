@@ -2,13 +2,13 @@
 
 namespace Ming3D
 {
-	void IndexBuffer::SetNumIndices(unsigned int inNumIndices)
-	{
-		mNumIndices = inNumIndices;
-	}
+    void IndexBuffer::SetNumIndices(unsigned int inNumIndices)
+    {
+        mNumIndices = inNumIndices;
+    }
 
-	unsigned int IndexBuffer::GetNumIndices()
-	{
-		return mNumIndices;
-	}
+    unsigned int IndexBuffer::GetNumIndices()
+    {
+        return mNumIndices;
+    }
 }

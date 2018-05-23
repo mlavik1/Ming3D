@@ -2,13 +2,13 @@
 
 namespace Ming3D
 {
-	void IndexBufferGL::SetGLBuffer(GLuint inBuffer)
-	{
-		mGLBuffer = inBuffer;
-	}
+    void IndexBufferGL::SetGLBuffer(GLuint inBuffer)
+    {
+        mGLBuffer = inBuffer;
+    }
 
-	GLuint IndexBufferGL::GetGLBuffer()
-	{
-		return mGLBuffer;
-	}
+    GLuint IndexBufferGL::GetGLBuffer()
+    {
+        return mGLBuffer;
+    }
 }

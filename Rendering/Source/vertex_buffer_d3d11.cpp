@@ -2,13 +2,13 @@
 
 namespace Ming3D
 {
-	void VertexBufferD3D11::SetD3DBuffer(ID3D11Buffer* inBuffer)
-	{
-		mD3DBuffer = inBuffer;
-	}
+    void VertexBufferD3D11::SetD3DBuffer(ID3D11Buffer* inBuffer)
+    {
+        mD3DBuffer = inBuffer;
+    }
 
-	ID3D11Buffer* VertexBufferD3D11::GetD3DBuffer()
-	{
-		return mD3DBuffer;
-	}
+    ID3D11Buffer* VertexBufferD3D11::GetD3DBuffer()
+    {
+        return mD3DBuffer;
+    }
 }

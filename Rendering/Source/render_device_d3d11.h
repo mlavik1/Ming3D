@@ -14,44 +14,47 @@
 
 namespace Ming3D
 {
-	class RenderDeviceD3D11 : public RenderDevice
-	{
-	private:
-		ID3D11Device* mDevice;
-		ID3D11DeviceContext* mDeviceContext;
-		IDXGIFactory* mDXGIFactory;
-		RenderTargetD3D11* mRenderTarget = nullptr;
-		ShaderProgramD3D11* mActiveShaderProgram = nullptr;
+    class RenderDeviceD3D11 : public RenderDevice
+    {
+    private:
+        ID3D11Device* mDevice;
+        ID3D11DeviceContext* mDeviceContext;
+        IDXGIFactory* mDXGIFactory;
+        RenderTargetD3D11* mRenderTarget = nullptr;
+        ShaderProgramD3D11* mActiveShaderProgram = nullptr;
 
-		size_t GetShaderUniformSize(const ShaderUniformInfo& inShaderUniform);
+        ID3D11SamplerState* mDefaultSamplerState;
 
-	public:
-		RenderDeviceD3D11();
-		~RenderDeviceD3D11();
+        size_t GetShaderUniformSize(const ShaderUniformInfo& inShaderUniform);
 
-		virtual RenderTarget* CreateRenderTarget(WindowBase* inWindow) override;
-		virtual VertexBuffer* CreateVertexBuffer(VertexData* inVertexData) override;
-		virtual IndexBuffer* CreateIndexBuffer(IndexData* inIndexData) override;
-		virtual ShaderProgram* CreateShaderProgram(const std::string& inShaderProgramPath) override;
+    public:
+        RenderDeviceD3D11();
+        ~RenderDeviceD3D11();
+
+        virtual RenderTarget* CreateRenderTarget(WindowBase* inWindow) override;
+        virtual VertexBuffer* CreateVertexBuffer(VertexData* inVertexData) override;
+        virtual IndexBuffer* CreateIndexBuffer(IndexData* inIndexData) override;
+        virtual ShaderProgram* CreateShaderProgram(const std::string& inShaderProgramPath) override;
+        virtual Texture* CreateTexture() override;
         virtual void SetTexture(Texture* inTexture) override;
         virtual void SetRenderTarget(RenderTarget* inTarget) override;
-		virtual void SetActiveShaderProgram(ShaderProgram* inProgram) override;
-		virtual void BeginRendering() override;
-		virtual void EndRendering() override;
-		virtual void RenderPrimitive(VertexBuffer* inVertexBuffer, IndexBuffer* inIndexBuffer) override;
+        virtual void SetActiveShaderProgram(ShaderProgram* inProgram) override;
+        virtual void BeginRendering() override;
+        virtual void EndRendering() override;
+        virtual void RenderPrimitive(VertexBuffer* inVertexBuffer, IndexBuffer* inIndexBuffer) override;
 
-		virtual void SetShaderUniformMat4x4(const char* inName, const glm::mat4 inMat) override;
-		virtual void SetShaderUniformVec4(const char* inName, const glm::vec4 inVec) override;
+        virtual void SetShaderUniformMat4x4(const char* inName, const glm::mat4 inMat) override;
+        virtual void SetShaderUniformVec4(const char* inName, const glm::vec4 inVec) override;
 
-		ID3D11Device* GetDevice() { return mDevice; }
-		ID3D11DeviceContext* GetDeviceContext() { return mDeviceContext; }
-		IDXGIFactory* GetDXGIFactory() { return mDXGIFactory; }
-	};
+        ID3D11Device* GetDevice() { return mDevice; }
+        ID3D11DeviceContext* GetDeviceContext() { return mDeviceContext; }
+        IDXGIFactory* GetDXGIFactory() { return mDXGIFactory; }
+    };
 }
 
 namespace Ming3D
 {
-	extern RenderDeviceD3D11* GRenderDeviceD3D11;
+    extern RenderDeviceD3D11* GRenderDeviceD3D11;
 }
 
 #endif

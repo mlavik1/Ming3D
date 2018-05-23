@@ -6,40 +6,40 @@
 
 namespace Ming3D
 {
-	enum ShaderVariableType
-	{
-		Float,
-		Int,
-		Mat4x4,
-		Vec4
-	};
+    enum ShaderVariableType
+    {
+        Float,
+        Int,
+        Mat4x4,
+        Vec4
+    };
 
-	class ShaderUniformInfo
-	{
-	public:
-		ShaderVariableType mType;
-		std::string mName;
-	
-		ShaderUniformInfo(const ShaderVariableType& inType, const std::string& inName)
-		{
-			mType = inType;
-			mName = inName;
-		}
-	};
+    class ShaderUniformInfo
+    {
+    public:
+        ShaderVariableType mType;
+        std::string mName;
+    
+        ShaderUniformInfo(const ShaderVariableType& inType, const std::string& inName)
+        {
+            mType = inType;
+            mName = inName;
+        }
+    };
 
-	struct ShaderProgramConstructionInfo
-	{
-		std::vector<ShaderUniformInfo> mUniforms;
-		VertexLayout mVertexLayout;
-	};
+    struct ShaderProgramConstructionInfo
+    {
+        std::vector<ShaderUniformInfo> mUniforms;
+        VertexLayout mVertexLayout;
+    };
 
-	class ShaderProgram
-	{
-	private:
-		
-	public:
-		virtual ~ShaderProgram() {}
-	};
+    class ShaderProgram
+    {
+    private:
+        
+    public:
+        virtual ~ShaderProgram() {}
+    };
 }
 
 #endif

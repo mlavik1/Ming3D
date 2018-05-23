@@ -7,15 +7,15 @@
 
 namespace Ming3D
 {
-	class IndexBufferD3D11 : public IndexBuffer
-	{
-	private:
-		ID3D11Buffer *mD3DBuffer;
+    class IndexBufferD3D11 : public IndexBuffer
+    {
+    private:
+        ID3D11Buffer *mD3DBuffer;
 
-	public:
-		void SetD3DBuffer(ID3D11Buffer* inBuffer);
-		ID3D11Buffer* GetD3DBuffer();
-	};
+    public:
+        void SetD3DBuffer(ID3D11Buffer* inBuffer);
+        ID3D11Buffer* GetD3DBuffer();
+    };
 }
 
 #endif

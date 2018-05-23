@@ -5,17 +5,17 @@
 
 namespace Ming3D
 {
-	class VertexBuffer
-	{
-	private:
-		VertexLayout mVertexLayout;
-		size_t mVertexSize;
+    class VertexBuffer
+    {
+    private:
+        VertexLayout mVertexLayout;
+        size_t mVertexSize;
 
-	public:
-		void SetVertexLayout(const VertexLayout& inLayout);
-		const VertexLayout& GetVertexLayout() { return mVertexLayout; }
-		size_t GetVertexSize() { return mVertexSize; }
-	};
+    public:
+        void SetVertexLayout(const VertexLayout& inLayout);
+        const VertexLayout& GetVertexLayout() { return mVertexLayout; }
+        size_t GetVertexSize() { return mVertexSize; }
+    };
 }
 
 #endif

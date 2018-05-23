@@ -10,10 +10,10 @@ namespace Ming3D
         }
     }
 
-	ShaderProgramD3D11::~ShaderProgramD3D11()
-	{
-		mVS->Release();
-		mPS->Release();
+    ShaderProgramD3D11::~ShaderProgramD3D11()
+    {
+        mVS->Release();
+        mPS->Release();
 
         for (ShaderD3D11* shader : mShaders)
         {
@@ -21,5 +21,5 @@ namespace Ming3D
         }
 
         mShaders.clear();
-	}
+    }
 }

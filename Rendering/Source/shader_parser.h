@@ -249,9 +249,6 @@ namespace Ming3D { namespace ShaderConverter
         * Parses an atom (either literals or parenthesised expressions).
         **/
         EParseResult ParseAtom(TokenParser& inTokenParser, ShaderExpression** outExpression);
-        /**
-        * Parses an expression.
-        **/
         
         EParseResult ParseExpression(TokenParser& inTokenParser, const OperatorInfo& inOperator, ShaderExpression** outExpression);
         

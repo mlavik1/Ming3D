@@ -8,17 +8,17 @@
 
 namespace Ming3D
 {
-	struct ShaderConstantD3D11
-	{
-	public:
-		size_t mOffset;
-		size_t mSize;
-		ShaderConstantD3D11(const size_t inOffset, const size_t inSize)
-		{
-			mOffset = inOffset;
-			mSize = inSize;
-		}
-	};
+    struct ShaderConstantD3D11
+    {
+    public:
+        size_t mOffset;
+        size_t mSize;
+        ShaderConstantD3D11(const size_t inOffset, const size_t inSize)
+        {
+            mOffset = inOffset;
+            mSize = inSize;
+        }
+    };
 
     class ShaderD3D11
     {
@@ -31,17 +31,17 @@ namespace Ming3D
         ~ShaderD3D11();
     };
 
-	class ShaderProgramD3D11 : public ShaderProgram
-	{
-	public: // TODO: should be private
-		ID3D11VertexShader* mVS;
-		ID3D11PixelShader* mPS;
-		ID3D11InputLayout* mInputLayout; // TODO: THIS SHOULD NOT BE STORED HERE
+    class ShaderProgramD3D11 : public ShaderProgram
+    {
+    public: // TODO: should be private
+        ID3D11VertexShader* mVS;
+        ID3D11PixelShader* mPS;
+        ID3D11InputLayout* mInputLayout; // TODO: THIS SHOULD NOT BE STORED HERE
         std::vector<ShaderD3D11*> mShaders;
 
-	public:
-		~ShaderProgramD3D11();
-	};
+    public:
+        ~ShaderProgramD3D11();
+    };
 }
 
 #endif

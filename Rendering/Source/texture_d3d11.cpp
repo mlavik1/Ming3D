@@ -1,7 +1,5 @@
 #include "texture_d3d11.h"
 
-#include <D3DX11.h>
-
 #include "render_device_d3d11.h"
 #include "Debug/st_assert.h"
 
@@ -10,9 +8,6 @@ namespace Ming3D
     void TextureD3D11::BufferTexture()
     {
         __AssertComment(mBytesPerPixel % 2 == 0, "Bytes per pixel must be a power of 2");
-
-        ID3D11ShaderResourceView* CubesTexture;
-        ID3D11SamplerState* CubesTexSamplerState;
 
         const unsigned int w = mWidth;
         const unsigned int h = mHeight;
@@ -88,22 +83,6 @@ namespace Ming3D
         desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 
         GRenderDeviceD3D11->GetDevice()->CreateTexture2D(&desc, &initData, &boxTex);
-        GRenderDeviceD3D11->GetDevice()->CreateShaderResourceView(boxTex, NULL, &CubesTexture);
-
-
-        D3D11_SAMPLER_DESC sampDesc;
-        ZeroMemory(&sampDesc, sizeof(sampDesc));
-        sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-        sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-        sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-        sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-        sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-        sampDesc.MinLOD = 0;
-        sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
-        HRESULT hr = GRenderDeviceD3D11->GetDevice()->CreateSamplerState(&sampDesc, &CubesTexSamplerState);
-
-
-        GRenderDeviceD3D11->GetDeviceContext()->PSSetShaderResources(0, 1, &CubesTexture);
-        GRenderDeviceD3D11->GetDeviceContext()->PSSetSamplers(0, 1, &CubesTexSamplerState);
+        GRenderDeviceD3D11->GetDevice()->CreateShaderResourceView(boxTex, NULL, &mTextureResourceView);
     }
 }

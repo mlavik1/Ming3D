@@ -14,42 +14,42 @@
 
 namespace Ming3D
 {
-	class RenderingTest
-	{
-		class Vertex
-		{
-		public:
-			glm::vec3 mVertex;
-			glm::vec3 mNormal;
-			glm::vec2 mTexCoord;
-		};
+    class RenderingTest
+    {
+        class Vertex
+        {
+        public:
+            glm::vec3 mVertex;
+            glm::vec3 mNormal;
+            glm::vec2 mTexCoord;
+        };
 
-		class MeshData
-		{
-		public:
-			std::vector<Vertex> mVertices;
-			std::vector<unsigned int> mIndices;
-			bool mHasNormals = false;
-			bool mHasTexCoords = false;
+        class MeshData
+        {
+        public:
+            std::vector<Vertex> mVertices;
+            std::vector<unsigned int> mIndices;
+            bool mHasNormals = false;
+            bool mHasTexCoords = false;
 
-			VertexBuffer* mVertexBuffer;
-			IndexBuffer* mIndexBuffer;
+            VertexBuffer* mVertexBuffer;
+            IndexBuffer* mIndexBuffer;
             Texture* mTexture;
-		};
+        };
 
-		class ModelData
-		{
-		public:
-			std::vector<MeshData*> mMeshes;
-		};
+        class ModelData
+        {
+        public:
+            std::vector<MeshData*> mMeshes;
+        };
 
-	private:
-		ModelData* mModelData;
-		RenderDevice* mRenderDevice;
+    private:
+        ModelData* mModelData;
+        RenderDevice* mRenderDevice;
 
-	public:
-		void Test();
+    public:
+        void Test();
 
-		void LoadModel();
-	};
+        void LoadModel();
+    };
 }

@@ -5,17 +5,17 @@
 
 namespace Ming3D
 {
-	class RenderTarget
-	{
-	protected:
-		WindowBase* mWindow;
+    class RenderTarget
+    {
+    protected:
+        WindowBase* mWindow;
 
-	public:
-		RenderTarget(WindowBase* inWindow);
-		WindowBase* GetWindow() { return mWindow; }
+    public:
+        RenderTarget(WindowBase* inWindow);
+        WindowBase* GetWindow() { return mWindow; }
 
-		virtual void BeginRendering() = 0;
-		virtual void EndRendering() = 0;
-	};
+        virtual void BeginRendering() = 0;
+        virtual void EndRendering() = 0;
+    };
 }
 #endif

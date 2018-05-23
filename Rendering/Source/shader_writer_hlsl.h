@@ -12,6 +12,7 @@ namespace Ming3D { namespace ShaderConverter
     {
         std::string mSource;
         std::vector<ShaderUniformInfo> mUniforms;
+        std::vector<ShaderTextureInfo> mTextures;
     };
 
     struct ShaderProgramDataHLSL

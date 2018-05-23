@@ -2,19 +2,19 @@
 
 namespace Ming3D
 {
-	RenderTargetGL::RenderTargetGL(WindowBase* inWindow)
-		: RenderTarget(inWindow)
-	{
+    RenderTargetGL::RenderTargetGL(WindowBase* inWindow)
+        : RenderTarget(inWindow)
+    {
 
-	}
+    }
 
-	void RenderTargetGL::BeginRendering()
-	{
-		mWindow->BeginRender();
-	}
+    void RenderTargetGL::BeginRendering()
+    {
+        mWindow->BeginRender();
+    }
 
-	void RenderTargetGL::EndRendering()
-	{
-		mWindow->EndRender();
-	}
+    void RenderTargetGL::EndRendering()
+    {
+        mWindow->EndRender();
+    }
 }

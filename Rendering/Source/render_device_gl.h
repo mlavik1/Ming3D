@@ -9,31 +9,32 @@
 
 namespace Ming3D
 {
-	class RenderDeviceGL : public RenderDevice
-	{
-	private:
-		RenderTargetGL* mRenderTarget = nullptr;
+    class RenderDeviceGL : public RenderDevice
+    {
+    private:
+        RenderTargetGL* mRenderTarget = nullptr;
 
-		ShaderProgramGL* mActiveShaderProgram = nullptr;
+        ShaderProgramGL* mActiveShaderProgram = nullptr;
 
-	public:
-		RenderDeviceGL();
-		~RenderDeviceGL();
+    public:
+        RenderDeviceGL();
+        ~RenderDeviceGL();
 
-		virtual RenderTarget* CreateRenderTarget(WindowBase* inWindow) override;
-		virtual VertexBuffer* CreateVertexBuffer(VertexData* inVertexData) override;
-		virtual IndexBuffer* CreateIndexBuffer(IndexData* inIndexData) override;
-		virtual ShaderProgram* CreateShaderProgram(const std::string& inShaderProgramPath) override;
+        virtual RenderTarget* CreateRenderTarget(WindowBase* inWindow) override;
+        virtual VertexBuffer* CreateVertexBuffer(VertexData* inVertexData) override;
+        virtual IndexBuffer* CreateIndexBuffer(IndexData* inIndexData) override;
+        virtual ShaderProgram* CreateShaderProgram(const std::string& inShaderProgramPath) override;
+        virtual Texture* CreateTexture() override;
         virtual void SetTexture(Texture* inTexture) override;
         virtual void SetRenderTarget(RenderTarget* inTarget);
-		virtual void SetActiveShaderProgram(ShaderProgram* inProgram) override;
-		virtual void BeginRendering() override;
-		virtual void EndRendering() override;
-		virtual void RenderPrimitive(VertexBuffer* inVertexBuffer, IndexBuffer* inIndexBuffer) override;
+        virtual void SetActiveShaderProgram(ShaderProgram* inProgram) override;
+        virtual void BeginRendering() override;
+        virtual void EndRendering() override;
+        virtual void RenderPrimitive(VertexBuffer* inVertexBuffer, IndexBuffer* inIndexBuffer) override;
 
-		virtual void SetShaderUniformMat4x4(const char* inName, const glm::mat4 inMat) override;
-		virtual void SetShaderUniformVec4(const char* inName, const glm::vec4 inVec) override;
-	};
+        virtual void SetShaderUniformMat4x4(const char* inName, const glm::mat4 inMat) override;
+        virtual void SetShaderUniformVec4(const char* inName, const glm::vec4 inVec) override;
+    };
 }
 
 #endif

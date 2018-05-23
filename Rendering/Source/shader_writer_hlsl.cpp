@@ -164,8 +164,7 @@ namespace Ming3D { namespace ShaderConverter
             {
                 WriteExpression(inStream, funcCallExpr->mParameterExpressions[0]);
                 inStream << ".Sample(";
-                WriteExpression(inStream, funcCallExpr->mParameterExpressions[0]);
-                inStream << "_sampler, ";
+                inStream << "defaultSampler, "; // : allow user to create samplers
                 WriteExpression(inStream, funcCallExpr->mParameterExpressions[1]);
                 inStream << ")";
             }
@@ -285,6 +284,8 @@ namespace Ming3D { namespace ShaderConverter
             mCurrentShader = currShader;
             mReferencedUniforms.clear();
 
+            ShaderDataHLSL& currShaderData = currShader == inParsedShaderProgram->mVertexShader ? outData.mVertexShader : outData.mFragmentShader;
+
             std::vector<ShaderUniformInfo> currShaderUniforms;
 
             ShaderStream shaderBodyStream;
@@ -342,29 +343,27 @@ namespace Ming3D { namespace ShaderConverter
             shaderHeaderStream << "}";
             shaderHeaderStream << "\n";
 
+            // Sampler states
+            if (inParsedShaderProgram->mShaderTextures.size() > 0)
+            {
+                shaderHeaderStream << "SamplerState defaultSampler;\n";
+            }
+
             // Write textures
             for (const ShaderTextureInfo textureInfo : inParsedShaderProgram->mShaderTextures)
             {
                 if (mReferencedUniforms.find(textureInfo.mTextureName) != mReferencedUniforms.end())
                 {
                     shaderHeaderStream << GetConvertedType(textureInfo.mTextureType) << " " << textureInfo.mTextureName << ";\n";
-                    shaderHeaderStream << "SamplerState " << textureInfo.mTextureName << "_sampler" << ";\n";
+                    currShaderData.mTextures.push_back(textureInfo);
                 }
             }
 
             std::stringstream outStream;
             outStream << shaderHeaderStream.GetStream().str() << "\n" << shaderBodyStream.GetStream().str();
 
-            if (currShader == inParsedShaderProgram->mVertexShader)
-            {
-                outData.mVertexShader.mSource = outStream.str();
-                outData.mVertexShader.mUniforms = currShaderUniforms;
-            }
-            else
-            {
-                outData.mFragmentShader.mSource = outStream.str();
-                outData.mFragmentShader.mUniforms = currShaderUniforms;
-            }
+            currShaderData.mSource = outStream.str();
+            currShaderData.mUniforms = currShaderUniforms;
 
             std::ofstream oFile;
             oFile.open(std::string("converted_shader_." + (currShader == inParsedShaderProgram->mVertexShader ? std::string("vs") : std::string("fs"))));
