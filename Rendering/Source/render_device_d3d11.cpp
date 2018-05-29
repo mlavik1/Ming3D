@@ -219,12 +219,10 @@ namespace Ming3D
 
         mDevice->CreateInputLayout(inputElements.data(), inputElements.size(), vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &inputLayout);
         
-
         ShaderProgramD3D11* shaderProgram = new ShaderProgramD3D11();
         shaderProgram->mInputLayout = inputLayout;
         shaderProgram->mVS = pVS;
         shaderProgram->mPS = pPS;
-
 
         std::vector<ShaderConverter::ShaderDataHLSL> shaderDataList;
         shaderDataList.push_back(convertedShaderData.mVertexShader);
@@ -253,6 +251,11 @@ namespace Ming3D
             ShaderD3D11* shaderStage = new ShaderD3D11();
             shaderProgram->mShaders.push_back(shaderStage);
 
+            if (iShader == 0) // TODO
+                shaderStage->mType = EShaderTypeD3D11::VertexShader;
+            else
+                shaderStage->mType = EShaderTypeD3D11::PixelShader;
+
             if (!shaderConstantMap.empty())
             {
                 ID3D11Buffer*   constantBuffer = NULL;
@@ -279,11 +282,6 @@ namespace Ming3D
                     LOG_ERROR() << "Failed to create constant buffer";
                     return nullptr;
                 }
-
-                if (iShader == 0) // TODO
-                    mDeviceContext->VSSetConstantBuffers(0, 1, &constantBuffer);
-                else
-                    mDeviceContext->PSSetConstantBuffers(0, 1, &constantBuffer);
 
                 shaderStage->mConstantBuffer = constantBuffer;
                 shaderStage->mConstantData = constData;
@@ -320,6 +318,17 @@ namespace Ming3D
         mActiveShaderProgram = dxShaderProgram;
         mDeviceContext->VSSetShader(dxShaderProgram->mVS, 0, 0);
         mDeviceContext->PSSetShader(dxShaderProgram->mPS, 0, 0);
+
+        for (ShaderD3D11* shader : dxShaderProgram->mShaders)
+        {
+            if (shader->mConstantBuffer != nullptr)
+            {
+                if (shader->mType == EShaderTypeD3D11::VertexShader) // TODO
+                    mDeviceContext->VSSetConstantBuffers(0, 1, &shader->mConstantBuffer);
+                else
+                    mDeviceContext->PSSetConstantBuffers(0, 1, &shader->mConstantBuffer);
+            }
+        }
     }
 
     void RenderDeviceD3D11::BeginRendering()

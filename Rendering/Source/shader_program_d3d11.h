@@ -20,6 +20,11 @@ namespace Ming3D
         }
     };
 
+    enum class EShaderTypeD3D11
+    {
+        VertexShader, PixelShader
+    };
+
     class ShaderD3D11
     {
     public:
@@ -27,6 +32,7 @@ namespace Ming3D
         void* mConstantData = nullptr;
         std::unordered_map<std::string, ShaderConstantD3D11> mShaderConstantMap;
         size_t mShaderConstantsSize;
+        EShaderTypeD3D11 mType;
 
         ~ShaderD3D11();
     };

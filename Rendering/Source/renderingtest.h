@@ -41,15 +41,17 @@ namespace Ming3D
         {
         public:
             std::vector<MeshData*> mMeshes;
+            ShaderProgram* mShaderProgram = nullptr;
+            glm::vec3 mPosition;
         };
 
     private:
-        ModelData* mModelData;
+        std::vector<ModelData*> mModels;
         RenderDevice* mRenderDevice;
 
     public:
         void Test();
 
-        void LoadModel();
+        ModelData* LoadModel(const char* inModel);
     };
 }

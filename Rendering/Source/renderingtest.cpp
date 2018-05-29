@@ -35,16 +35,12 @@
 
 namespace Ming3D
 {
-    void RenderingTest::LoadModel()
+    RenderingTest::ModelData* RenderingTest::LoadModel(const char* inModel)
     {
-        //ShaderConverter::ShaderParser shaderParser;
-        //shaderParser.ParseShaderProgram("Resources//shader_PNT.shader");
-
         ModelData* modelData = new ModelData();
-        mModelData = modelData;
 
         Assimp::Importer importer;
-        const aiScene * scene = importer.ReadFile("Resources//test.dae", aiProcess_Triangulate | aiProcess_OptimizeMeshes | aiProcess_JoinIdenticalVertices | aiProcess_RemoveRedundantMaterials | aiProcess_GenSmoothNormals);
+        const aiScene * scene = importer.ReadFile(inModel, aiProcess_Triangulate | aiProcess_OptimizeMeshes | aiProcess_JoinIdenticalVertices | aiProcess_RemoveRedundantMaterials | aiProcess_GenSmoothNormals);
 
         for (unsigned int m = 0; m < scene->mNumMeshes; m++)
         {
@@ -94,15 +90,20 @@ namespace Ming3D
             aiString path;  // filename
             if (scene->mMaterials[matIndex]->GetTexture(aiTextureType::aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
             {
-                // TODO: load texture
+                std::string texturePath = std::string("Resources//") + std::string(path.C_Str());
+                meshData->mTexture = mRenderDevice->CreateTexture();
+                TextureLoader::LoadTextureData(texturePath.c_str(), meshData->mTexture);
             }
             else
             {
                 // TODO: set default (white?) texture
+                LOG_WARNING() << "Material has no valid texture";
+                meshData->mTexture = mRenderDevice->CreateTexture();
+                TextureLoader::LoadTextureData("Resources//texture.jpg", meshData->mTexture);
             }
 
         }
-
+        return modelData;
     }
 
     void RenderingTest::Test()
@@ -136,27 +137,30 @@ namespace Ming3D
 #endif
         RenderTarget* renderTarget = mRenderDevice->CreateRenderTarget(mainWindow);
 
-        LoadModel();
+        mModels.push_back(LoadModel("Resources//Mvr_PetCow_walk.dae"));
+        mModels.push_back(LoadModel("Resources//test.dae"));
+        mModels[0]->mPosition = glm::vec3(2.0f, 0.0f, 0.0f);
+        mModels[1]->mPosition = glm::vec3(-2.0f, 0.0f, 0.0f);
 
-        Texture* texture = mRenderDevice->CreateTexture();
-        TextureLoader::LoadTextureData("Resources//texture.jpg", texture);
-
-        texture->BufferTexture();
-
-
-        for (MeshData* meshData : mModelData->mMeshes)
+        for (ModelData* modelData : mModels)
         {
-            VertexData vertexData({ EVertexComponent::Position, EVertexComponent::Normal, EVertexComponent::TexCoord }, meshData->mVertices.size());
-            IndexData indexData(meshData->mIndices.size());
+            for (MeshData* meshData : modelData->mMeshes)
+            {
+                VertexData vertexData({ EVertexComponent::Position, EVertexComponent::Normal, EVertexComponent::TexCoord }, meshData->mVertices.size());
+                IndexData indexData(meshData->mIndices.size());
+                
+                memcpy(vertexData.GetDataPtr(), meshData->mVertices.data(), meshData->mVertices.size() * sizeof(Vertex));
+                memcpy(indexData.GetData(), meshData->mIndices.data(), meshData->mIndices.size() * sizeof(unsigned int));
 
-            memcpy(vertexData.GetDataPtr(), meshData->mVertices.data(), meshData->mVertices.size() * sizeof(Vertex));
-            memcpy(indexData.GetData(), meshData->mIndices.data(), meshData->mIndices.size() * sizeof(unsigned int));
+                meshData->mVertexBuffer = mRenderDevice->CreateVertexBuffer(&vertexData);
+                meshData->mIndexBuffer = mRenderDevice->CreateIndexBuffer(&indexData);
 
-            meshData->mVertexBuffer = mRenderDevice->CreateVertexBuffer(&vertexData);
-            meshData->mIndexBuffer = mRenderDevice->CreateIndexBuffer(&indexData);
+                meshData->mTexture->BufferTexture();
+            }
+
+            // TODO: Use different shaders, based on vertex layout?
+            modelData->mShaderProgram = mRenderDevice->CreateShaderProgram("Resources//shader_PNT.shader");
         }
-
-        ShaderProgram* shaderProgram = mRenderDevice->CreateShaderProgram("Resources//shader_PNT.shader");
 
         float width = 800.0f;
         float height = 600.0f;
@@ -178,33 +182,37 @@ namespace Ming3D
 
             t += 0.005f;
 
-            glm::mat4 Projection = glm::perspective<float>(glm::radians(45.0f), width / height, 0.1f, 100.0f);
-
-            // Camera matrix
-            glm::mat4 View = glm::lookAt(
-                glm::vec3(0, 2, 6), // pos
-                glm::vec3(0, 0, 0), // lookat
-                glm::vec3(0, 1, 0)  // up
-            );
-
-            glm::mat4 Model = glm::mat4(1.0f);
-            Model = glm::rotate(Model, t, glm::vec3(1.0f, 0.5f, 0.5f));
-
-            glm::mat4 mvp = Projection * View * Model;
-
-            mRenderDevice->SetActiveShaderProgram(shaderProgram);
-
-            mRenderDevice->SetShaderUniformMat4x4("MVP", mvp);
-            mRenderDevice->SetShaderUniformVec4("test", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-
             mRenderDevice->SetRenderTarget(renderTarget);
             mRenderDevice->BeginRendering();
             renderTarget->BeginRendering();
 
-            for (MeshData* meshData : mModelData->mMeshes)
+            for (ModelData* modelData : mModels)
             {
-                mRenderDevice->SetTexture(texture); // temp
-                mRenderDevice->RenderPrimitive(meshData->mVertexBuffer, meshData->mIndexBuffer);
+                glm::mat4 Projection = glm::perspective<float>(glm::radians(45.0f), width / height, 0.1f, 100.0f);
+
+                // Camera matrix
+                glm::mat4 View = glm::lookAt(
+                    glm::vec3(0, 2, 6), // pos
+                    glm::vec3(0, 0, 0), // lookat
+                    glm::vec3(0, 1, 0)  // up
+                );
+
+                glm::mat4 Model = glm::mat4(1.0f);
+                Model = glm::rotate(Model, t, glm::vec3(1.0f, 0.5f, 0.5f));
+                Model = glm::translate(Model, modelData->mPosition);
+
+                glm::mat4 mvp = Projection * View * Model;
+
+                mRenderDevice->SetActiveShaderProgram(modelData->mShaderProgram);
+
+                mRenderDevice->SetShaderUniformMat4x4("MVP", mvp);
+                mRenderDevice->SetShaderUniformVec4("test", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+
+                for (MeshData* meshData : modelData->mMeshes)
+                {
+                    mRenderDevice->SetTexture(meshData->mTexture); // temp
+                    mRenderDevice->RenderPrimitive(meshData->mVertexBuffer, meshData->mIndexBuffer);
+                }
             }
 
             renderTarget->EndRendering();
