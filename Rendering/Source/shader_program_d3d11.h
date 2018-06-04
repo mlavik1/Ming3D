@@ -42,7 +42,7 @@ namespace Ming3D
     public: // TODO: should be private
         ID3D11VertexShader* mVS;
         ID3D11PixelShader* mPS;
-        ID3D11InputLayout* mInputLayout; // TODO: THIS SHOULD NOT BE STORED HERE
+        ID3D11InputLayout* mInputLayout; // TODO: Do not create one per shader program
         std::vector<ShaderD3D11*> mShaders;
 
     public:

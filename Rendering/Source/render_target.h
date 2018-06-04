@@ -5,10 +5,14 @@
 
 namespace Ming3D
 {
+    /**
+    * RenderTarget base class.
+    * The RenderDevice will render to this.
+    */
     class RenderTarget
     {
     protected:
-        WindowBase* mWindow;
+        WindowBase* mWindow; // TODO: Need to support other types of render targets
 
     public:
         RenderTarget(WindowBase* inWindow);

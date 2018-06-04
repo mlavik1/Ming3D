@@ -15,6 +15,10 @@ namespace Ming3D
         Colour
     };
 
+    /**
+    * Vertex Layout.
+    * Contains information about vertices (type, size).
+    */
     struct VertexLayout
     {
         std::vector<EVertexComponent> VertexComponents;
@@ -39,6 +43,10 @@ namespace Ming3D
         };
     }
 
+    /**
+    * Vertex Data.
+    * Contains a set of vertices, and their vertex layout.
+    */
     class VertexData
     {
     private:
@@ -65,6 +73,10 @@ namespace Ming3D
         static size_t GetVertexComponentSize(EVertexComponent inComp);
     };
 
+    /**
+    * Index Data.
+    * Contains a set of indices.
+    */
     class IndexData
     {
     private:

@@ -12,8 +12,22 @@ namespace Ming3D
 
     ShaderProgramD3D11::~ShaderProgramD3D11()
     {
-        mVS->Release();
-        mPS->Release();
+        if (mVS != nullptr)
+        {
+            mVS->Release();
+            delete mVS;
+        }
+        if (mPS != nullptr)
+        {
+            mPS->Release();
+            delete mPS;
+        }
+
+        if (mInputLayout != nullptr)
+        {
+            mInputLayout->Release();
+            delete mInputLayout;
+        }
 
         for (ShaderD3D11* shader : mShaders)
         {

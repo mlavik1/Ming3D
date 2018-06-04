@@ -3,6 +3,11 @@
 
 namespace Ming3D
 {
+    /**
+    * Index buffer base class.
+    * There will be one sub-class for each rendering API.
+    * Created by the RenderDevice.
+    */
     class IndexBuffer
     {
     private:

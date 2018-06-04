@@ -28,6 +28,11 @@ namespace Ming3D { namespace ShaderConverter
         int mLineNumber;
     };
 
+    /**
+    * Shader tokeniser.
+    * Divides shader code into a set of tokens.
+    * Used by the TokenParser.
+    */
     class Tokeniser
     {
     private:
@@ -46,6 +51,10 @@ namespace Ming3D { namespace ShaderConverter
         Token ParseToken();
     };
     
+    /**
+    * Shader token parser.
+    * Used by ShaderParser to parse tokens.
+    */
     class TokenParser
     {
     private:

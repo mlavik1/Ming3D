@@ -10,7 +10,12 @@ namespace Ming3D
         RGBA, BGRA, RGB
     };
 
-    class Texture
+    /**
+    * Base class for  Textures.
+    * There will exist a subclass for each rendering API.
+    * Created by the RenderDevice.
+    */
+    class Texture // TODO: Separate buffered texture into separate class, and support rendering to texture
     {
     public:
         std::vector<char> mTextureData; // TODO: Use a smart pointer to a stream
