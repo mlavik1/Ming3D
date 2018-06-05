@@ -24,6 +24,8 @@ namespace Ming3D
         ShaderProgramD3D11* mActiveShaderProgram = nullptr;
 
         ID3D11SamplerState* mDefaultSamplerState;
+        ID3D11RasterizerState* mDefaultRasterState;
+        ID3D11DepthStencilState* mDefaultDepthStencilState;
 
         size_t GetShaderUniformSize(const ShaderUniformInfo& inShaderUniform);
 

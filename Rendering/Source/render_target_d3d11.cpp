@@ -37,62 +37,6 @@ namespace Ming3D
         GRenderDeviceD3D11->GetDeviceContext()->OMSetRenderTargets(1, &mBackBuffer, NULL);
 
 
-
-
-        // ****** TEMP ******
-        // TODO: The below code should not be here
-
-        ID3D11RasterizerState* rasterState;
-        D3D11_RASTERIZER_DESC rastDesc;
-        rastDesc.AntialiasedLineEnable = false;
-        rastDesc.CullMode = D3D11_CULL_FRONT;
-        rastDesc.DepthBias = 0;
-        rastDesc.DepthBiasClamp = 0.0f;
-        rastDesc.DepthClipEnable = true;
-        rastDesc.FillMode = D3D11_FILL_SOLID;
-        rastDesc.FrontCounterClockwise = false;
-        rastDesc.MultisampleEnable = false;
-        rastDesc.ScissorEnable = false;
-        rastDesc.SlopeScaledDepthBias = 0.0f;
-        GRenderDeviceD3D11->GetDevice()->CreateRasterizerState(&rastDesc, &rasterState);
-        GRenderDeviceD3D11->GetDeviceContext()->RSSetState(rasterState);
-
-        ID3D11DepthStencilState* depthStencilState;
-        D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
-        // Initialize the description of the stencil state.
-        ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
-
-        // Set up the description of the stencil state.
-        depthStencilDesc.DepthEnable = true;
-        depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-        depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
-
-        depthStencilDesc.StencilEnable = true;
-        depthStencilDesc.StencilReadMask = 0xFF;
-        depthStencilDesc.StencilWriteMask = 0xFF;
-
-        // Stencil operations if pixel is front-facing.
-        depthStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-        depthStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
-        depthStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-        depthStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-
-        // Stencil operations if pixel is back-facing.
-        depthStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-        depthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
-        depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-        depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-
-        // Create the depth stencil state.
-        HRESULT result = GRenderDeviceD3D11->GetDevice()->CreateDepthStencilState(&depthStencilDesc, &depthStencilState);
-        if (FAILED(result))
-        {
-            return;
-        }
-        // Set the depth stencil state.
-        GRenderDeviceD3D11->GetDeviceContext()->OMSetDepthStencilState(depthStencilState, 1);
-
-
         // Set the viewport
         D3D11_VIEWPORT viewport;
         ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));

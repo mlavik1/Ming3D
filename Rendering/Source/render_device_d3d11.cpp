@@ -60,6 +60,46 @@ namespace Ming3D
             LOG_ERROR() << "Failed to create default sampler";
             return;
         }
+
+        D3D11_RASTERIZER_DESC rastDesc;
+        rastDesc.AntialiasedLineEnable = false;
+        rastDesc.CullMode = D3D11_CULL_FRONT;
+        rastDesc.DepthBias = 0;
+        rastDesc.DepthBiasClamp = 0.0f;
+        rastDesc.DepthClipEnable = true;
+        rastDesc.FillMode = D3D11_FILL_SOLID;
+        rastDesc.FrontCounterClockwise = false;
+        rastDesc.MultisampleEnable = false;
+        rastDesc.ScissorEnable = false;
+        rastDesc.SlopeScaledDepthBias = 0.0f;
+        GRenderDeviceD3D11->GetDevice()->CreateRasterizerState(&rastDesc, &mDefaultRasterState);
+        GRenderDeviceD3D11->GetDeviceContext()->RSSetState(mDefaultRasterState);
+
+        // Initialize the description of the default stencil state.
+        D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
+        ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
+        depthStencilDesc.DepthEnable = true;
+        depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+        depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+        depthStencilDesc.StencilEnable = true;
+        depthStencilDesc.StencilReadMask = 0xFF;
+        depthStencilDesc.StencilWriteMask = 0xFF;
+        depthStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+        depthStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+        depthStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+        depthStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+        depthStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+        depthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+        depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+        depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+        HRESULT result = GRenderDeviceD3D11->GetDevice()->CreateDepthStencilState(&depthStencilDesc, &mDefaultDepthStencilState);
+        if (FAILED(result))
+        {
+            return;
+        }
+        // Set the depth stencil state.
+        GRenderDeviceD3D11->GetDeviceContext()->OMSetDepthStencilState(mDefaultDepthStencilState, 1);
     }
 
     RenderDeviceD3D11::~RenderDeviceD3D11()
