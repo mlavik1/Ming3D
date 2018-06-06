@@ -10,9 +10,11 @@ namespace Ming3D
     class VertexBufferGL : public VertexBuffer
     {
     private:
-        GLuint mGLBuffer;
+        GLuint mGLBuffer = -1;
 
     public:
+        virtual ~VertexBufferGL();
+
         void SetGLBuffer(GLuint inBuffer);
         GLuint GetGLBuffer();
     };

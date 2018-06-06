@@ -2,19 +2,29 @@
 
 namespace Ming3D
 {
-    RenderTargetGL::RenderTargetGL(WindowBase* inWindow)
-        : RenderTarget(inWindow)
+    RenderTargetGL::RenderTargetGL()
     {
 
+    }
+
+    RenderTargetGL::~RenderTargetGL()
+    {
+        for (auto colBuffer : mColourBuffers)
+        {
+            delete colBuffer;
+        }
     }
 
     void RenderTargetGL::BeginRendering()
     {
-        mWindow->BeginRender();
     }
 
     void RenderTargetGL::EndRendering()
     {
-        mWindow->EndRender();
+    }
+
+    TextureBuffer* RenderTargetGL::GetColourTextureBuffer(int inSlot)
+    {
+        return mColourBuffers[inSlot];
     }
 }

@@ -46,7 +46,7 @@ namespace Ming3D
         std::vector<ShaderD3D11*> mShaders;
 
     public:
-        ~ShaderProgramD3D11();
+        virtual ~ShaderProgramD3D11();
     };
 }
 

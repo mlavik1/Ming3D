@@ -9,6 +9,8 @@
 #include "shader_program.h"
 #include "graphics_data.h"
 #include "texture.h"
+#include "texture_buffer.h"
+#include "render_window.h"
 
 #include <string>
 
@@ -24,17 +26,19 @@ namespace Ming3D
     public:
         virtual ~RenderDevice() {}
 
-        virtual RenderTarget* CreateRenderTarget(WindowBase* inWindow) = 0;
+        virtual RenderTarget* CreateRenderTarget(RenderWindow* inWindow) = 0;
         virtual VertexBuffer* CreateVertexBuffer(VertexData* inVertexData) = 0;
         virtual IndexBuffer* CreateIndexBuffer(IndexData* inIndexData) = 0;
         virtual ShaderProgram* CreateShaderProgram(const std::string& inShaderProgramPath) = 0;
-        virtual Texture* CreateTexture() = 0;
+        virtual TextureBuffer* CreateTextureBuffer(TextureInfo inTextureInfo, void* inTextureData) = 0;
+        virtual RenderWindow* CreateRenderWindow(WindowBase* inWindow) = 0;
         
-        virtual void SetTexture(Texture* inTexture) = 0;
-        virtual void SetRenderTarget(RenderTarget* inTarget) = 0;
+        virtual void SetTexture(TextureBuffer* inTexture, int inSlot) = 0;
         virtual void SetActiveShaderProgram(ShaderProgram* inProgram) = 0;
-        virtual void BeginRendering() = 0;
-        virtual void EndRendering() = 0;
+        virtual void BeginRenderWindow(RenderWindow* inWindow) = 0;
+        virtual void EndRenderWindow(RenderWindow* inWindow) = 0;
+        virtual void BeginRenderTarget(RenderTarget* inTarget) = 0;
+        virtual void EndRenderTarget(RenderTarget* inTarget) = 0;
         virtual void RenderPrimitive(VertexBuffer* inVertexBuffer, IndexBuffer* inIndexBuffer) = 0;
 
         virtual void SetShaderUniformMat4x4(const char* inName, const glm::mat4 inMat) = 0;

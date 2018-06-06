@@ -4,6 +4,7 @@
 #include "render_device.h"
 #include "render_target_d3d11.h"
 #include "shader_program_d3d11.h"
+#include "render_window_d3d11.h"
 
 #include <Windows.h>
 #include <windowsx.h>
@@ -21,6 +22,7 @@ namespace Ming3D
         ID3D11DeviceContext* mDeviceContext;
         IDXGIFactory* mDXGIFactory;
         RenderTargetD3D11* mRenderTarget = nullptr;
+        RenderWindowD3D11* mRenderWindow = nullptr;
         ShaderProgramD3D11* mActiveShaderProgram = nullptr;
 
         ID3D11SamplerState* mDefaultSamplerState;
@@ -33,16 +35,19 @@ namespace Ming3D
         RenderDeviceD3D11();
         ~RenderDeviceD3D11();
 
-        virtual RenderTarget* CreateRenderTarget(WindowBase* inWindow) override;
+        virtual RenderTarget* CreateRenderTarget(RenderWindow* inWindow) override;
         virtual VertexBuffer* CreateVertexBuffer(VertexData* inVertexData) override;
         virtual IndexBuffer* CreateIndexBuffer(IndexData* inIndexData) override;
         virtual ShaderProgram* CreateShaderProgram(const std::string& inShaderProgramPath) override;
-        virtual Texture* CreateTexture() override;
-        virtual void SetTexture(Texture* inTexture) override;
-        virtual void SetRenderTarget(RenderTarget* inTarget) override;
+        virtual TextureBuffer* CreateTextureBuffer(TextureInfo inTextureInfo, void* inTextureData) override;
+        virtual RenderWindow* CreateRenderWindow(WindowBase* inWindow) override;
+
+        virtual void SetTexture(TextureBuffer* inTexture, int inSlot) override;
         virtual void SetActiveShaderProgram(ShaderProgram* inProgram) override;
-        virtual void BeginRendering() override;
-        virtual void EndRendering() override;
+        virtual void BeginRenderWindow(RenderWindow* inWindow) override;
+        virtual void EndRenderWindow(RenderWindow* inWindow) override;
+        virtual void BeginRenderTarget(RenderTarget* inTarget) override;
+        virtual void EndRenderTarget(RenderTarget* inTarget) override;
         virtual void RenderPrimitive(VertexBuffer* inVertexBuffer, IndexBuffer* inIndexBuffer) override;
 
         virtual void SetShaderUniformMat4x4(const char* inName, const glm::mat4 inMat) override;

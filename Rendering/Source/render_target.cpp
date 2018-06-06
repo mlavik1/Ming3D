@@ -2,8 +2,7 @@
 
 namespace Ming3D
 {
-    RenderTarget::RenderTarget(WindowBase* inWindow)
+    RenderTarget::RenderTarget()
     {
-        mWindow = inWindow;
     }
 }

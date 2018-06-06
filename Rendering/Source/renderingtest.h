@@ -35,6 +35,7 @@ namespace Ming3D
             VertexBuffer* mVertexBuffer;
             IndexBuffer* mIndexBuffer;
             Texture* mTexture;
+            TextureBuffer* mTextureBuffer;
         };
 
         class ModelData

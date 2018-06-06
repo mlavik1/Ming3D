@@ -15,19 +15,21 @@ namespace Ming3D
 {
     class RenderTargetD3D11 : public RenderTarget
     {
+        friend class RenderDeviceD3D11; // TODO
+
     private:
-        IDXGISwapChain* mSwapChain;
         ID3D11RenderTargetView* mBackBuffer;
 
     public:
-        RenderTargetD3D11(WindowBase* inWindow);
+        RenderTargetD3D11();
         ~RenderTargetD3D11();
         
         ID3D11RenderTargetView* GetBackBuffer() { return mBackBuffer; }
-        IDXGISwapChain* GetSwapChain() { return mSwapChain; }
 
         virtual void BeginRendering() override;
         virtual void EndRendering() override;
+
+        virtual TextureBuffer* GetColourTextureBuffer(int inSlot) override;
     };
 }
 

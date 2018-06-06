@@ -2,6 +2,22 @@
 
 namespace Ming3D
 {
+    ShaderProgramGL::~ShaderProgramGL()
+    {
+        if (mGLProgram != -1)
+        {
+            glDeleteProgram(mGLProgram);
+        }
+        if (mGLVertexShader != -1)
+        {
+            glDeleteShader(mGLVertexShader);
+        }
+        if (mGLFragmentShader != -1)
+        {
+            glDeleteShader(mGLFragmentShader);
+        }
+    }
+
     void ShaderProgramGL::SetGLProgram(GLuint inProgram)
     {
         mGLProgram = inProgram;

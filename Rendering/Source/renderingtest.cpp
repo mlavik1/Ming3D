@@ -10,12 +10,10 @@
 #include <SDL.h>
 #include "sdl_window.h"
 #include "render_device_gl.h"
-#include "texture_gl.h"
 #else
 #include <Windows.h>
 #include "render_device_d3d11.h"
 #include "winapi_window.h"
-#include "texture_d3d11.h"
 #endif
 
 #include "glm/glm.hpp"
@@ -91,14 +89,14 @@ namespace Ming3D
             if (scene->mMaterials[matIndex]->GetTexture(aiTextureType::aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
             {
                 std::string texturePath = std::string("Resources//") + std::string(path.C_Str());
-                meshData->mTexture = mRenderDevice->CreateTexture();
+                meshData->mTexture = new Texture();
                 TextureLoader::LoadTextureData(texturePath.c_str(), meshData->mTexture);
             }
             else
             {
                 // TODO: set default (white?) texture
                 LOG_WARNING() << "Material has no valid texture";
-                meshData->mTexture = mRenderDevice->CreateTexture();
+                meshData->mTexture = new Texture;
                 TextureLoader::LoadTextureData("Resources//texture.jpg", meshData->mTexture);
             }
 
@@ -135,7 +133,10 @@ namespace Ming3D
 #else
         mRenderDevice = new RenderDeviceD3D11();
 #endif
-        RenderTarget* renderTarget = mRenderDevice->CreateRenderTarget(mainWindow);
+        
+        RenderWindow* renderWindow = mRenderDevice->CreateRenderWindow(mainWindow);
+        
+        RenderTarget* renderTarget = mRenderDevice->CreateRenderTarget(renderWindow);
 
         mModels.push_back(LoadModel("Resources//Mvr_PetCow_walk.dae"));
         mModels.push_back(LoadModel("Resources//test.dae"));
@@ -155,7 +156,7 @@ namespace Ming3D
                 meshData->mVertexBuffer = mRenderDevice->CreateVertexBuffer(&vertexData);
                 meshData->mIndexBuffer = mRenderDevice->CreateIndexBuffer(&indexData);
 
-                meshData->mTexture->BufferTexture();
+                meshData->mTextureBuffer = mRenderDevice->CreateTextureBuffer(meshData->mTexture->GetTextureInfo(), meshData->mTexture->GetTextureData());
             }
 
             // TODO: Use different shaders, based on vertex layout?
@@ -181,10 +182,9 @@ namespace Ming3D
 #endif
 
             t += 0.005f;
-
-            mRenderDevice->SetRenderTarget(renderTarget);
-            mRenderDevice->BeginRendering();
-            renderTarget->BeginRendering();
+            
+            mRenderDevice->BeginRenderWindow(renderWindow);
+            mRenderDevice->BeginRenderTarget(renderTarget);
 
             for (ModelData* modelData : mModels)
             {
@@ -210,13 +210,13 @@ namespace Ming3D
 
                 for (MeshData* meshData : modelData->mMeshes)
                 {
-                    mRenderDevice->SetTexture(meshData->mTexture); // temp
+                    mRenderDevice->SetTexture(meshData->mTextureBuffer, 0); // temp
                     mRenderDevice->RenderPrimitive(meshData->mVertexBuffer, meshData->mIndexBuffer);
                 }
             }
 
-            renderTarget->EndRendering();
-            mRenderDevice->EndRendering();
+            mRenderDevice->EndRenderTarget(renderTarget);
+            mRenderDevice->EndRenderWindow(renderWindow);
         }
         
     }

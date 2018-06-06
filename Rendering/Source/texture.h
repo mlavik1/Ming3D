@@ -10,24 +10,31 @@ namespace Ming3D
         RGBA, BGRA, RGB
     };
 
+    struct TextureInfo
+    {
+        unsigned int mWidth = 0;
+        unsigned int mHeight = 0;
+        unsigned int mBytesPerPixel;
+        PixelFormat mPixelFormat;
+    };
+
     /**
     * Base class for  Textures.
     * There will exist a subclass for each rendering API.
     * Created by the RenderDevice.
     */
-    class Texture // TODO: Separate buffered texture into separate class, and support rendering to texture
+    class Texture
     {
     public:
         std::vector<char> mTextureData; // TODO: Use a smart pointer to a stream
-        unsigned int mWidth = 0;
-        unsigned int mHeight = 0;
-        unsigned int mBytesPerPixel;
-        PixelFormat mPixelFormat;
+        TextureInfo mTextureInfo;
 
     public:
         virtual ~Texture() {}
-        virtual void SetTextureData(const void* inData, const size_t inBytesPerPixel, PixelFormat inPixelFormat, unsigned int inWidth, unsigned int inHeight); // TODO: Use a smart pointer to a stream
-        virtual void BufferTexture() = 0;
+        void SetTextureData(const void* inData, const size_t inBytesPerPixel, PixelFormat inPixelFormat, unsigned int inWidth, unsigned int inHeight); // TODO: Use a smart pointer to a stream
+        
+        void* GetTextureData() { return mTextureData.data(); }
+        TextureInfo GetTextureInfo() const { return mTextureInfo; }
     };
 }
 

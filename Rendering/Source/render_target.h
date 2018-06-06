@@ -3,6 +3,8 @@
 
 #include "window_base.h"
 
+#include "texture_buffer.h"
+
 namespace Ming3D
 {
     /**
@@ -11,15 +13,18 @@ namespace Ming3D
     */
     class RenderTarget
     {
-    protected:
-        WindowBase* mWindow; // TODO: Need to support other types of render targets
-
     public:
-        RenderTarget(WindowBase* inWindow);
-        WindowBase* GetWindow() { return mWindow; }
+        RenderTarget();
 
         virtual void BeginRendering() = 0;
         virtual void EndRendering() = 0;
+
+        /*
+        * Returns the TextureBuffer for the coloiur attachment at the specified location.
+        * This can be used as a texture when rendering.
+        * @params inSlot  Colour texture buffer index (0, if single-target rendering)
+        */
+        virtual TextureBuffer* GetColourTextureBuffer(int inSlot) = 0;
     };
 }
 #endif

@@ -2,6 +2,15 @@
 
 namespace Ming3D
 {
+    VertexBufferD3D11::~VertexBufferD3D11()
+    {
+        if (mD3DBuffer != nullptr)
+        {
+            mD3DBuffer->Release();
+            delete mD3DBuffer;
+        }
+    }
+
     void VertexBufferD3D11::SetD3DBuffer(ID3D11Buffer* inBuffer)
     {
         mD3DBuffer = inBuffer;

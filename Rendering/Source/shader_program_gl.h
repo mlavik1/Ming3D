@@ -9,11 +9,13 @@ namespace Ming3D
     class ShaderProgramGL : public ShaderProgram
     {
     private:
-        GLuint mGLProgram;
-        GLuint mGLVertexShader;;
-        GLuint mGLFragmentShader;
+        GLuint mGLProgram = -1;
+        GLuint mGLVertexShader = -1;
+        GLuint mGLFragmentShader = -1;
 
     public:
+        virtual ~ShaderProgramGL();
+
         void SetGLProgram(GLuint inProgram);
         void SetGLVertexShader(GLuint inVS);
         void SetGLFragmentShader(GLuint inFS);

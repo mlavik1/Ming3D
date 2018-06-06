@@ -10,9 +10,10 @@ namespace Ming3D
     class VertexBufferD3D11 : public VertexBuffer
     {
     private:
-        ID3D11Buffer* mD3DBuffer;
+        ID3D11Buffer* mD3DBuffer = nullptr;
 
     public:
+        virtual ~VertexBufferD3D11();
         void SetD3DBuffer(ID3D11Buffer* inBuffer);
 
         ID3D11Buffer* GetD3DBuffer();

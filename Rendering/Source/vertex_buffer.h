@@ -17,6 +17,7 @@ namespace Ming3D
         size_t mVertexSize;
 
     public:
+        virtual ~VertexBuffer() {}
         void SetVertexLayout(const VertexLayout& inLayout);
         const VertexLayout& GetVertexLayout() { return mVertexLayout; }
         size_t GetVertexSize() { return mVertexSize; }

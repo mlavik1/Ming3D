@@ -6,7 +6,7 @@
 #include "index_buffer_d3d11.h"
 #include <D3Dcompiler.h>
 #include <DirectXMath.h>
-#include "texture_d3d11.h"
+#include "texture_buffer_d3d11.h"
 
 #include "shader_writer_hlsl.h"
 
@@ -130,9 +130,33 @@ namespace Ming3D
         }
     }
 
-    RenderTarget* RenderDeviceD3D11::CreateRenderTarget(WindowBase* inWindow)
+    RenderTarget* RenderDeviceD3D11::CreateRenderTarget(RenderWindow* inWindow)
     {
-        return new RenderTargetD3D11(inWindow);
+        //__Assert(inWindow->GetOSWindowHandle());
+        //__Assert(GRenderDeviceD3D11->GetDXGIFactory());
+        RenderTargetD3D11* renderTarget = new RenderTargetD3D11();
+        
+        RenderWindowD3D11* renderWindow = (RenderWindowD3D11*)inWindow;
+
+        // create render target from back buffer address
+        GRenderDeviceD3D11->GetDevice()->CreateRenderTargetView(renderWindow->GetBackBuffer(), NULL, &renderTarget->mBackBuffer);
+
+        // set the render target as the back buffer
+        GRenderDeviceD3D11->GetDeviceContext()->OMSetRenderTargets(1, &renderTarget->mBackBuffer, NULL);
+
+
+        // Set the viewport
+        D3D11_VIEWPORT viewport;
+        ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
+
+        viewport.TopLeftX = 0;
+        viewport.TopLeftY = 0;
+        viewport.Width = inWindow->GetWindow()->GetWidth();
+        viewport.Height = inWindow->GetWindow()->GetHeight();
+
+        GRenderDeviceD3D11->GetDeviceContext()->RSSetViewports(1, &viewport);
+
+        return renderTarget;
     }
 
     VertexBuffer* RenderDeviceD3D11::CreateVertexBuffer(VertexData* inVertexData)
@@ -334,22 +358,125 @@ namespace Ming3D
         return shaderProgram;
     }
 
-    Texture* RenderDeviceD3D11::CreateTexture()
+    TextureBuffer* RenderDeviceD3D11::CreateTextureBuffer(TextureInfo inTextureInfo, void* inTextureData)
     {
-        return new TextureD3D11();
+        TextureBufferD3D11* textureBuffer = new TextureBufferD3D11();
+
+        __AssertComment(inTextureInfo.mBytesPerPixel % 2 == 0, "Bytes per pixel must be a power of 2");
+
+        const unsigned int w = inTextureInfo.mWidth;
+        const unsigned int h = inTextureInfo.mHeight;
+
+        ID3D11Texture2D *boxTex = 0;
+
+        void* dataPtr = inTextureData;
+
+        DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
+        switch (inTextureInfo.mPixelFormat)
+        {
+        case PixelFormat::RGB:
+        {
+            if (inTextureInfo.mBytesPerPixel == 12)
+            {
+                dxgiFormat = DXGI_FORMAT_R32G32B32_FLOAT;
+            }
+            else
+            {
+                __AssertComment(0, "Unhandled pixel format");
+            }
+            break;
+        }
+        case PixelFormat::RGBA:
+        {
+            if (inTextureInfo.mBytesPerPixel == 4)
+            {
+                dxgiFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
+            }
+            else if (inTextureInfo.mBytesPerPixel == 8)
+            {
+                dxgiFormat = DXGI_FORMAT_R16G16B16A16_UNORM;
+
+            }
+            else if (inTextureInfo.mBytesPerPixel == 16)
+            {
+                dxgiFormat = DXGI_FORMAT_R32G32B32A32_FLOAT;
+
+            }
+            else
+            {
+                __AssertComment(0, "Unhandled pixel format");
+            }
+            break;
+        }
+        case PixelFormat::BGRA:
+        {
+            if (inTextureInfo.mBytesPerPixel == 4)
+            {
+                dxgiFormat = DXGI_FORMAT_B8G8R8A8_UNORM;
+            }
+            else
+            {
+                __AssertComment(0, "Unhandled pixel format");
+            }
+            break;
+        }
+        }
+
+        D3D11_SUBRESOURCE_DATA initData;
+        initData.pSysMem = dataPtr;
+        initData.SysMemPitch = w * 4 * sizeof(uint8_t);
+        initData.SysMemSlicePitch = w * h * 4 * sizeof(uint8_t);
+
+        D3D11_TEXTURE2D_DESC desc = {};
+        desc.Width = w;
+        desc.Height = h;
+        desc.MipLevels = 1;
+        desc.ArraySize = 1;
+        desc.Format = dxgiFormat;
+        desc.SampleDesc.Count = 1;
+        desc.Usage = D3D11_USAGE_IMMUTABLE;
+        desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+
+        GRenderDeviceD3D11->GetDevice()->CreateTexture2D(&desc, &initData, &boxTex);
+        GRenderDeviceD3D11->GetDevice()->CreateShaderResourceView(boxTex, NULL, &textureBuffer->mTextureResourceView);
+
+        return textureBuffer;
     }
 
-
-    void RenderDeviceD3D11::SetTexture(Texture* inTexture)
+    RenderWindow* RenderDeviceD3D11::CreateRenderWindow(WindowBase* inWindow)
     {
-        TextureD3D11* d3dTexture = (TextureD3D11*)inTexture;
-        GetDeviceContext()->PSSetSamplers(0, 1, &mDefaultSamplerState); // TODO: allow user to crate samplers
+        RenderWindowD3D11* renderWindow = new RenderWindowD3D11(inWindow);
+
+        DXGI_SWAP_CHAIN_DESC scd;
+        ZeroMemory(&scd, sizeof(DXGI_SWAP_CHAIN_DESC));
+        
+        IDXGISwapChain* swapChain = nullptr;
+        scd.BufferCount = 1;
+        scd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+        scd.BufferDesc.Width = inWindow->GetWidth();
+        scd.BufferDesc.Height = inWindow->GetHeight();
+        scd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+        scd.OutputWindow = (HWND)inWindow->GetOSWindowHandle();
+        scd.SampleDesc.Count = 4;
+        scd.Windowed = TRUE;
+        scd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+
+        GRenderDeviceD3D11->GetDXGIFactory()->CreateSwapChain(GRenderDeviceD3D11->GetDevice(), &scd, &swapChain);
+
+        ID3D11Texture2D* backBuffer;
+        swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBuffer);
+
+        renderWindow->SetSwapChain(swapChain);
+        renderWindow->SetBackBuffer(backBuffer);
+        
+        return renderWindow;
+    }
+
+    void RenderDeviceD3D11::SetTexture(TextureBuffer* inTexture, int inSlot)
+    {
+        TextureBufferD3D11* d3dTexture = (TextureBufferD3D11*)inTexture;
+        GetDeviceContext()->PSSetSamplers(inSlot, 1, &mDefaultSamplerState);
         GetDeviceContext()->PSSetShaderResources(0, 1, &d3dTexture->mTextureResourceView);
-    }
-
-    void RenderDeviceD3D11::SetRenderTarget(RenderTarget* inTarget)
-    {
-        mRenderTarget = (RenderTargetD3D11*)inTarget;
     }
 
     void RenderDeviceD3D11::SetActiveShaderProgram(ShaderProgram* inProgram)
@@ -371,18 +498,38 @@ namespace Ming3D
         }
     }
 
-    void RenderDeviceD3D11::BeginRendering()
+    void RenderDeviceD3D11::BeginRenderWindow(RenderWindow* inWindow)
     {
-        __Assert(mRenderTarget != nullptr);
+        mRenderWindow = (RenderWindowD3D11*)inWindow;
+        mRenderWindow->GetWindow()->BeginRender();
+    }
+
+    void RenderDeviceD3D11::EndRenderWindow(RenderWindow* inWindow)
+    {
+        __Assert(mRenderWindow == inWindow);
+
+        mRenderWindow->GetWindow()->EndRender();
+
+        mRenderWindow->GetSwapChain()->Present(0, 0);
+        mRenderWindow = nullptr;
+    }
+
+    void RenderDeviceD3D11::BeginRenderTarget(RenderTarget* inTarget)
+    {
+        mRenderTarget = (RenderTargetD3D11*)inTarget;
+
+        mRenderTarget->BeginRendering();
 
         mDeviceContext->ClearRenderTargetView(mRenderTarget->GetBackBuffer(), D3DXCOLOR(0.0f, 0.2f, 0.4f, 1.0f));
     }
 
-    void RenderDeviceD3D11::EndRendering()
+    void RenderDeviceD3D11::EndRenderTarget(RenderTarget* inTarget)
     {
-        __Assert(mRenderTarget != nullptr);
+        __Assert(mRenderTarget == inTarget);
 
-        mRenderTarget->GetSwapChain()->Present(0, 0);
+        mRenderTarget->EndRendering();
+
+        mRenderTarget = nullptr;
     }
 
     void RenderDeviceD3D11::RenderPrimitive(VertexBuffer* inVertexBuffer, IndexBuffer* inIndexBuffer)
