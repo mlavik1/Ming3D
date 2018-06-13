@@ -159,6 +159,11 @@ namespace Ming3D
         return renderTarget;
     }
 
+    RenderTarget* RenderDeviceD3D11::CreateRenderTarget(TextureInfo inTextureInfo, int numTextures)
+    {
+        return nullptr; // TODO
+    }
+
     VertexBuffer* RenderDeviceD3D11::CreateVertexBuffer(VertexData* inVertexData)
     {
         VertexBufferD3D11* vertexBuffer = new VertexBufferD3D11();

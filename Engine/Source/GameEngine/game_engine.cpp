@@ -1,7 +1,8 @@
 #include "game_engine.h"
 
 #include "Source/ClassManager/class_manager.h"
-#include "renderingtest.h"
+#include "basic_sample.h"
+#include "rendertotexture_sample.h"
 
 namespace Ming3D
 {
@@ -19,7 +20,7 @@ namespace Ming3D
 	{
 		mClassManager->InitialiseClasses();
 	
-		RenderingTest rt;
-		rt.Test();
+        RenderToTextureSample sample;
+		sample.RunSample();
 	}
 }

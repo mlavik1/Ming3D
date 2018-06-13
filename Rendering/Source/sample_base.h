@@ -1,11 +1,5 @@
-#pragma once
-
-#include <Windows.h>
-#include <gl/glew.h>
-
-#include "glm/glm.hpp"
-#include <vector>
-
+#ifndef SAMPLE_BASE_H
+#define SAMPLE_BASE_H
 
 #include "render_device.h"
 #include "vertex_buffer.h"
@@ -14,8 +8,10 @@
 
 namespace Ming3D
 {
-    class RenderingTest
+    class SampleBase
     {
+    public:
+
         class Vertex
         {
         public:
@@ -46,13 +42,20 @@ namespace Ming3D
             glm::vec3 mPosition;
         };
 
-    private:
-        std::vector<ModelData*> mModels;
-        RenderDevice* mRenderDevice;
-
     public:
-        void Test();
+        void RunSample();
+
+    protected:
+        WindowBase* mMainWindow;
+        RenderDevice* mRenderDevice;
+        RenderWindow* mRenderWindow;
+
+        virtual void init();
+        virtual void tick();
 
         ModelData* LoadModel(const char* inModel);
+        MeshData* CreateRectangleMesh(float inWidth, float inHeight);
     };
 }
+
+#endif

@@ -25,6 +25,7 @@ namespace Ming3D
         ~RenderDeviceGL();
 
         virtual RenderTarget* CreateRenderTarget(RenderWindow* inWindow) override;
+        virtual RenderTarget* CreateRenderTarget(TextureInfo inTextureInfo, int numTextures) override;
         virtual VertexBuffer* CreateVertexBuffer(VertexData* inVertexData) override;
         virtual IndexBuffer* CreateIndexBuffer(IndexData* inIndexData) override;
         virtual ShaderProgram* CreateShaderProgram(const std::string& inShaderProgramPath) override;

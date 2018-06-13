@@ -27,6 +27,7 @@ namespace Ming3D
         virtual ~RenderDevice() {}
 
         virtual RenderTarget* CreateRenderTarget(RenderWindow* inWindow) = 0;
+        virtual RenderTarget* CreateRenderTarget(TextureInfo inTextureInfo, int numTextures) = 0;
         virtual VertexBuffer* CreateVertexBuffer(VertexData* inVertexData) = 0;
         virtual IndexBuffer* CreateIndexBuffer(IndexData* inIndexData) = 0;
         virtual ShaderProgram* CreateShaderProgram(const std::string& inShaderProgramPath) = 0;

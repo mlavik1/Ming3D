@@ -27,40 +27,54 @@ namespace Ming3D
 
     RenderTarget* RenderDeviceGL::CreateRenderTarget(RenderWindow* inWindow)
     {
-        RenderTargetGL* renderTarget = new RenderTargetGL();
+        TextureInfo textureInfo;
+        textureInfo.mWidth = inWindow->GetWindow()->GetWidth();
+        textureInfo.mHeight = inWindow->GetWindow()->GetHeight();
 
+        RenderTargetGL* renderTarget = (RenderTargetGL*)CreateRenderTarget(textureInfo, 1);
         renderTarget->mWindowTarget = true;
+        return renderTarget;
+    }
+
+    RenderTarget* RenderDeviceGL::CreateRenderTarget(TextureInfo inTextureInfo, int numTextures)
+    {
+        RenderTargetGL* renderTarget = new RenderTargetGL();
 
         GLuint FramebufferName = 0;
         glGenFramebuffers(1, &FramebufferName);
         glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
 
-        GLuint renderedTexture;
-        glGenTextures(1, &renderedTexture);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, renderedTexture);
+        TextureBufferGL* colourBuffer = new TextureBufferGL();
 
-        glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, 1024, 768);
+        for (int i = 0; i < numTextures; i++)
+        {
+            GLuint renderTexture;
+            glGenTextures(1, &renderTexture);
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, renderTexture);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, inTextureInfo.mWidth, inTextureInfo.mHeight);
 
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderedTexture, 0);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, renderTexture, 0);
+
+            colourBuffer->SetGLTexture(renderTexture);
+            renderTarget->mColourBuffers.push_back(colourBuffer);
+        }
 
         GLuint depthrenderbuffer;
         glGenRenderbuffers(1, &depthrenderbuffer);
         glBindRenderbuffer(GL_RENDERBUFFER, depthrenderbuffer);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, 1024, 768);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, inTextureInfo.mWidth, inTextureInfo.mHeight);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthrenderbuffer);
 
-        glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, renderedTexture, 0);
+        //glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, renderTexture, 0);
 
         renderTarget->mFrameBufferID = FramebufferName;
-        TextureBufferGL* colourBuffer = new TextureBufferGL();
-        colourBuffer->SetGLTexture(renderedTexture);
         TextureBufferGL* depthBuffer = new TextureBufferGL();
         depthBuffer->SetGLTexture(depthrenderbuffer);
-        renderTarget->mColourBuffers.push_back(colourBuffer);
         renderTarget->mAttachments.push_back(GL_COLOR_ATTACHMENT0);
         renderTarget->mDepthRenderBuffer = depthBuffer;
 
@@ -227,7 +241,7 @@ namespace Ming3D
         glBindFramebuffer(GL_FRAMEBUFFER, mRenderTarget->mFrameBufferID);
         glDrawBuffers(1, mRenderTarget->mAttachments.data());
 
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         //glEnable(GL_DEPTH_TEST);
@@ -256,12 +270,14 @@ namespace Ming3D
 
     void RenderDeviceGL::BlitRenderTarget(RenderTargetGL* inSourceTarget, RenderWindow* inTargetWindow)
     {
+        const int w = inTargetWindow->GetWindow()->GetWidth();
+        const int h = inTargetWindow->GetWindow()->GetHeight();
         glBindFramebuffer(GL_READ_FRAMEBUFFER, inSourceTarget->mFrameBufferID);
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
         glReadBuffer(GL_COLOR_ATTACHMENT0);
         glDrawBuffer(GL_COLOR_ATTACHMENT0);
-        glViewport(0, 0, 800, 600);
-        glBlitFramebuffer(0, 0, 800, 600, 0, 0, 800, 600, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+        glViewport(0, 0, w, h);
+        glBlitFramebuffer(0, 0, w, h, 0, 0, w, h, GL_COLOR_BUFFER_BIT, GL_NEAREST);
     }
 
     void RenderDeviceGL::RenderPrimitive(VertexBuffer* inVertexBuffer, IndexBuffer* inIndexBuffer)
