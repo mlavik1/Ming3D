@@ -23,6 +23,7 @@ namespace Ming3D
 
         RenderTarget* mRenderTarget;
         RenderTarget* mTextureRenderTarget;
+        RasteriserState* mOrthoRasterState;
 
     protected:
         virtual void init() override;

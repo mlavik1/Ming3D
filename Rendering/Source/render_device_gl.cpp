@@ -18,6 +18,12 @@ namespace Ming3D
         {
             LOG_ERROR() << "Failed to initialise GLEW";
         }
+
+        mDefaultRasteriserState = (RasteriserStateGL*)CreateRasteriserState(RasteriserStateCullMode::Front, true);
+        mDefaultDepthStencilState = (DepthStencilStateGL*)CreateDepthStencilState(DepthStencilDepthFunc::Less, true);
+
+        SetRasteriserState(mDefaultRasteriserState);
+        SetDepthStencilState(mDefaultDepthStencilState);
     }
 
     RenderDeviceGL::~RenderDeviceGL()
@@ -202,6 +208,20 @@ namespace Ming3D
         return renderWindow;
     }
 
+    RasteriserState* RenderDeviceGL::CreateRasteriserState(RasteriserStateCullMode inCullMode, bool inDepthClipEnabled)
+    {
+        RasteriserStateGL* rasteriserState = new RasteriserStateGL();
+        rasteriserState->mCullMode = inCullMode;
+        rasteriserState->mDepthClipEnabled = inDepthClipEnabled;
+        return rasteriserState;
+    }
+
+    DepthStencilState* RenderDeviceGL::CreateDepthStencilState(DepthStencilDepthFunc inDepthFunc, bool inDepthEnabled)
+    {
+        DepthStencilStateGL* depthStencilState = new DepthStencilStateGL();
+        return depthStencilState;
+    }
+
     void RenderDeviceGL::SetTexture(TextureBuffer* inTexture, int inSlot)
     {
         glEnable(GL_TEXTURE_2D); // TODO
@@ -299,6 +319,31 @@ namespace Ming3D
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferGL->GetGLBuffer());
         glDrawElements(GL_TRIANGLES, indexBufferGL->GetNumIndices(), GL_UNSIGNED_INT, 0);
+    }
+
+    void RenderDeviceGL::SetRasteriserState(RasteriserState* inState)
+    {
+        if (inState == nullptr)
+            inState = mDefaultRasteriserState;
+
+        RasteriserStateGL* glRasterState = (RasteriserStateGL*)inState;
+        
+        if (!glRasterState->mDepthClipEnabled || glRasterState->mCullMode == RasteriserStateCullMode::None)
+        {
+            glDisable(GL_CULL_FACE);
+        }
+        else
+        {
+            glEnable(GL_CULL_FACE);
+            glCullFace(glRasterState->mCullMode == RasteriserStateCullMode::Front ? GL_FRONT : GL_BACK);
+            glFrontFace(GL_CW);
+        }
+    }
+
+    void RenderDeviceGL::SetDepthStencilState(DepthStencilState* inState)
+    {
+        DepthStencilStateGL* glStencilState = (DepthStencilStateGL*)inState;
+        mDefaultDepthStencilState = glStencilState;
     }
 
     void RenderDeviceGL::SetShaderUniformMat4x4(const char* inName, const glm::mat4 inMat)

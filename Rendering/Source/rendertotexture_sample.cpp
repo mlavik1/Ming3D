@@ -11,6 +11,8 @@ namespace Ming3D
 
         mRenderTarget = mRenderDevice->CreateRenderTarget(mRenderWindow);
 
+        mOrthoRasterState = mRenderDevice->CreateRasteriserState(RasteriserStateCullMode::Front, false);
+
         TextureInfo texInfo;
         texInfo.mWidth = mMainWindow->GetWidth();
         texInfo.mHeight = mMainWindow->GetHeight();
@@ -20,7 +22,7 @@ namespace Ming3D
         mModels.push_back(LoadModel("Resources//test.dae"));
 
         MeshData* screenRectMesh = CreateRectangleMesh(2.0f, 2.0f);
-        //meshData->mTexture = mModels[1]->mMeshes[0]->mTexture;
+        screenRectMesh->mTexture = mModels[1]->mMeshes[0]->mTexture;
         screenRectMesh->mTextureBuffer = mTextureRenderTarget->GetColourTextureBuffer(0); // use render target texture
         ModelData* rectModel = new ModelData();
         rectModel->mMeshes.push_back(screenRectMesh);
@@ -63,6 +65,9 @@ namespace Ming3D
 
         mRenderDevice->BeginRenderWindow(mRenderWindow);
         mRenderDevice->BeginRenderTarget(mTextureRenderTarget);
+        //mRenderDevice->BeginRenderTarget(mRenderTarget);
+
+        mRenderDevice->SetRasteriserState(nullptr); // TODO: default
 
         for (ModelData* modelData : mModels)
         {
@@ -70,6 +75,7 @@ namespace Ming3D
             {
                 mRenderDevice->EndRenderTarget(mTextureRenderTarget);
                 mRenderDevice->BeginRenderTarget(mRenderTarget);
+                mRenderDevice->SetRasteriserState(mOrthoRasterState);
             }
 
             glm::mat4 Projection = glm::perspective<float>(glm::radians(45.0f), width / height, 0.1f, 100.0f);
@@ -88,18 +94,27 @@ namespace Ming3D
 
             if (modelData == mModels[2])
             {
-                Projection = glm::ortho<float>(-1.0f, 1.0f, -1.0f, 1.0f, 0.0f, 100.0f);
-                mvp = Projection * glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0, 0, -1), glm::vec3(0, 1, 0)) * Model;
+                Projection = glm::ortho<float>(-1.0f, 1.0f, -1.0f, 1.0f, 0.0f, 10.0f);
+                //mvp = Projection * glm::lookAt(glm::vec3(0, 0, 1), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)) * Model;
+                mvp = Projection;
+                //mvp = glm::transpose(mvp);
             }
 
             mRenderDevice->SetActiveShaderProgram(modelData->mShaderProgram);
 
             mRenderDevice->SetShaderUniformMat4x4("MVP", mvp);
-            mRenderDevice->SetShaderUniformVec4("test", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+            mRenderDevice->SetShaderUniformVec4("test", glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
 
             for (MeshData* meshData : modelData->mMeshes)
             {
-                mRenderDevice->SetTexture(meshData->mTextureBuffer, 0); // temp
+                if (modelData == mModels[2])
+                {
+                    mRenderDevice->SetTexture(mTextureRenderTarget->GetColourTextureBuffer(0), 0); // temp
+                }
+                else
+                {
+                    mRenderDevice->SetTexture(meshData->mTextureBuffer, 0); // temp
+                }
                 mRenderDevice->RenderPrimitive(meshData->mVertexBuffer, meshData->mIndexBuffer);
             }
         }

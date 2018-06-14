@@ -5,6 +5,8 @@
 #include "render_target_d3d11.h"
 #include "shader_program_d3d11.h"
 #include "render_window_d3d11.h"
+#include "rasteriser_state_d3d11.h"
+#include "depth_stencil_state_d3d11.h"
 
 #include <Windows.h>
 #include <windowsx.h>
@@ -26,8 +28,8 @@ namespace Ming3D
         ShaderProgramD3D11* mActiveShaderProgram = nullptr;
 
         ID3D11SamplerState* mDefaultSamplerState;
-        ID3D11RasterizerState* mDefaultRasterState;
-        ID3D11DepthStencilState* mDefaultDepthStencilState;
+        RasteriserStateD3D11* mDefaultRasteriserState;
+        DepthStencilStateD3D11* mDefaultDepthStencilState;
 
         size_t GetShaderUniformSize(const ShaderUniformInfo& inShaderUniform);
 
@@ -42,6 +44,8 @@ namespace Ming3D
         virtual ShaderProgram* CreateShaderProgram(const std::string& inShaderProgramPath) override;
         virtual TextureBuffer* CreateTextureBuffer(TextureInfo inTextureInfo, void* inTextureData) override;
         virtual RenderWindow* CreateRenderWindow(WindowBase* inWindow) override;
+        virtual RasteriserState* CreateRasteriserState(RasteriserStateCullMode inCullMode, bool inDepthClipEnabled) override;
+        virtual DepthStencilState* CreateDepthStencilState(DepthStencilDepthFunc inDepthFunc, bool inDepthEnabled) override;
 
         virtual void SetTexture(TextureBuffer* inTexture, int inSlot) override;
         virtual void SetActiveShaderProgram(ShaderProgram* inProgram) override;
@@ -50,6 +54,8 @@ namespace Ming3D
         virtual void BeginRenderTarget(RenderTarget* inTarget) override;
         virtual void EndRenderTarget(RenderTarget* inTarget) override;
         virtual void RenderPrimitive(VertexBuffer* inVertexBuffer, IndexBuffer* inIndexBuffer) override;
+        virtual void SetRasteriserState(RasteriserState* inState) override;
+        virtual void SetDepthStencilState(DepthStencilState* inState) override;
 
         virtual void SetShaderUniformMat4x4(const char* inName, const glm::mat4 inMat) override;
         virtual void SetShaderUniformVec4(const char* inName, const glm::vec4 inVec) override;

@@ -30,8 +30,7 @@ namespace Ming3D
 
     TextureBuffer* RenderTargetD3D11::GetColourTextureBuffer(int inSlot)
     {
-        // TODO
-        return nullptr;
+        return mColourBuffers[inSlot];
     }
 
 }

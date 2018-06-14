@@ -10,6 +10,7 @@
 #include <d3dx11.h>
 #include <d3dx10.h>
 #include <DXGI.h>
+#include <vector>
 
 namespace Ming3D
 {
@@ -19,6 +20,7 @@ namespace Ming3D
 
     private:
         ID3D11RenderTargetView* mBackBuffer;
+        std::vector<TextureBuffer*> mColourBuffers;
 
     public:
         RenderTargetD3D11();

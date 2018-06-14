@@ -7,6 +7,8 @@
 #include "render_target_gl.h"
 #include "shader_program_gl.h"
 #include "render_window_gl.h"
+#include "rasteriser_state_gl.h"
+#include "depth_stencil_state_gl.h"
 
 namespace Ming3D
 {
@@ -20,6 +22,9 @@ namespace Ming3D
 
         void BlitRenderTarget(RenderTargetGL* inSourceTarget, RenderWindow* inTargetWindow);
 
+        RasteriserStateGL* mDefaultRasteriserState;
+        DepthStencilStateGL* mDefaultDepthStencilState;
+
     public:
         RenderDeviceGL();
         ~RenderDeviceGL();
@@ -31,6 +36,8 @@ namespace Ming3D
         virtual ShaderProgram* CreateShaderProgram(const std::string& inShaderProgramPath) override;
         virtual TextureBuffer* CreateTextureBuffer(TextureInfo inTextureInfo, void* inTextureData) override;
         virtual RenderWindow* CreateRenderWindow(WindowBase* inWindow) override;
+        virtual RasteriserState* CreateRasteriserState(RasteriserStateCullMode inCullMode, bool inDepthClipEnabled) override;
+        virtual DepthStencilState* CreateDepthStencilState(DepthStencilDepthFunc inDepthFunc, bool inDepthEnabled) override;
 
         virtual void SetTexture(TextureBuffer* inTexture, int inSlot) override;
         virtual void SetActiveShaderProgram(ShaderProgram* inProgram) override;
@@ -39,6 +46,8 @@ namespace Ming3D
         virtual void BeginRenderTarget(RenderTarget* inTarget) override;
         virtual void EndRenderTarget(RenderTarget* inTarget) override;
         virtual void RenderPrimitive(VertexBuffer* inVertexBuffer, IndexBuffer* inIndexBuffer) override;
+        virtual void SetRasteriserState(RasteriserState* inState) override;
+        virtual void SetDepthStencilState(DepthStencilState* inState) override;
 
         virtual void SetShaderUniformMat4x4(const char* inName, const glm::mat4 inMat) override;
         virtual void SetShaderUniformVec4(const char* inName, const glm::vec4 inVec) override;

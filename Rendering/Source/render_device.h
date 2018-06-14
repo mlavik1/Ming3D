@@ -11,6 +11,8 @@
 #include "texture.h"
 #include "texture_buffer.h"
 #include "render_window.h"
+#include "rasteriser_state.h"
+#include "depth_stencil_state.h"
 
 #include <string>
 
@@ -33,7 +35,9 @@ namespace Ming3D
         virtual ShaderProgram* CreateShaderProgram(const std::string& inShaderProgramPath) = 0;
         virtual TextureBuffer* CreateTextureBuffer(TextureInfo inTextureInfo, void* inTextureData) = 0;
         virtual RenderWindow* CreateRenderWindow(WindowBase* inWindow) = 0;
-        
+        virtual RasteriserState* CreateRasteriserState(RasteriserStateCullMode inCullMode, bool inDepthClipEnabled) = 0;
+        virtual DepthStencilState* CreateDepthStencilState(DepthStencilDepthFunc inDepthFunc, bool inDepthEnabled) = 0;
+
         virtual void SetTexture(TextureBuffer* inTexture, int inSlot) = 0;
         virtual void SetActiveShaderProgram(ShaderProgram* inProgram) = 0;
         virtual void BeginRenderWindow(RenderWindow* inWindow) = 0;
@@ -41,6 +45,8 @@ namespace Ming3D
         virtual void BeginRenderTarget(RenderTarget* inTarget) = 0;
         virtual void EndRenderTarget(RenderTarget* inTarget) = 0;
         virtual void RenderPrimitive(VertexBuffer* inVertexBuffer, IndexBuffer* inIndexBuffer) = 0;
+        virtual void SetRasteriserState(RasteriserState* inState) = 0;
+        virtual void SetDepthStencilState(DepthStencilState* inState) = 0;
 
         virtual void SetShaderUniformMat4x4(const char* inName, const glm::mat4 inMat) = 0;
         virtual void SetShaderUniformVec4(const char* inName, const glm::vec4 inVec) = 0;
