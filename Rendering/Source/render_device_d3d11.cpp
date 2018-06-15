@@ -385,7 +385,9 @@ namespace Ming3D
 
         ID3D11Texture2D *boxTex = 0;
 
-        void* dataPtr = inTextureData;
+        char* buffer = new char[inTextureInfo.mWidth * inTextureInfo.mHeight * inTextureInfo.mBytesPerPixel];
+        memcpy(buffer, inTextureData, inTextureInfo.mWidth * inTextureInfo.mHeight * inTextureInfo.mBytesPerPixel);
+        textureBuffer->mData = buffer;
 
         DXGI_FORMAT dxgiFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
         switch (inTextureInfo.mPixelFormat)
@@ -439,7 +441,7 @@ namespace Ming3D
         }
 
         D3D11_SUBRESOURCE_DATA initData;
-        initData.pSysMem = dataPtr;
+        initData.pSysMem = buffer;
         initData.SysMemPitch = w * 4 * sizeof(uint8_t);
         initData.SysMemSlicePitch = w * h * 4 * sizeof(uint8_t);
 

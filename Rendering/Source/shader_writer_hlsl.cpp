@@ -164,13 +164,17 @@ namespace Ming3D { namespace ShaderConverter
             {
                 WriteExpression(inStream, funcCallExpr->mParameterExpressions[0]);
                 inStream << ".Sample(";
-                inStream << "defaultSampler, "; // : allow user to create samplers
+                inStream << "defaultSampler, "; // : allow user to create 
+                inStream << "float2(";
                 WriteExpression(inStream, funcCallExpr->mParameterExpressions[1]);
+                inStream << ".x, 1.0f - ";
+                WriteExpression(inStream, funcCallExpr->mParameterExpressions[1]);
+                inStream << ".y)";
                 inStream << ")";
             }
             else
             {
-                std::string functionName = funcCallExpr->mIdentifier.mTokenString;
+                std::string functionName = GetConvertedType(funcCallExpr->mIdentifier.mTokenString);
                 inStream << functionName;
                 inStream << "(";
                 WriteFunctionCallParameters(inStream, funcCallExpr->mParameterExpressions);

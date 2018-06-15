@@ -23,7 +23,6 @@ namespace Ming3D
 
         MeshData* screenRectMesh = CreateRectangleMesh(2.0f, 2.0f);
         screenRectMesh->mTexture = mModels[1]->mMeshes[0]->mTexture;
-        screenRectMesh->mTextureBuffer = mTextureRenderTarget->GetColourTextureBuffer(0); // use render target texture
         ModelData* rectModel = new ModelData();
         rectModel->mMeshes.push_back(screenRectMesh);
         mModels.push_back(rectModel);
@@ -71,7 +70,7 @@ namespace Ming3D
 
         for (ModelData* modelData : mModels)
         {
-            if (modelData == mModels[2])
+            if (modelData == mModels[2]) // TODO
             {
                 mRenderDevice->EndRenderTarget(mTextureRenderTarget);
                 mRenderDevice->BeginRenderTarget(mRenderTarget);
@@ -95,9 +94,7 @@ namespace Ming3D
             if (modelData == mModels[2])
             {
                 Projection = glm::ortho<float>(-1.0f, 1.0f, -1.0f, 1.0f, 0.0f, 10.0f);
-                //mvp = Projection * glm::lookAt(glm::vec3(0, 0, 1), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)) * Model;
                 mvp = Projection;
-                //mvp = glm::transpose(mvp);
             }
 
             mRenderDevice->SetActiveShaderProgram(modelData->mShaderProgram);
@@ -107,8 +104,9 @@ namespace Ming3D
 
             for (MeshData* meshData : modelData->mMeshes)
             {
-                if (modelData == mModels[2])
+                if (modelData == mModels[2]) // TODO
                 {
+                    //mRenderDevice->SetTexture(meshData->mTextureBuffer, 0); // temp
                     mRenderDevice->SetTexture(mTextureRenderTarget->GetColourTextureBuffer(0), 0); // temp
                 }
                 else

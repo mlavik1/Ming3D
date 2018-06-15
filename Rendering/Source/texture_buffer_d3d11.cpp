@@ -12,5 +12,9 @@ namespace Ming3D
             mTextureResourceView->Release();
             delete mTextureResourceView;
         }
+        if (mData != nullptr)
+        {
+            delete[] mData;
+        }
     }
 }

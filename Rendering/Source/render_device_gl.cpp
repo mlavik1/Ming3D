@@ -176,6 +176,15 @@ namespace Ming3D
 
         __Assert(inTextureData); // TODO: Clear if null
 
+        
+        char* buffer = new char[inTextureInfo.mWidth * inTextureInfo.mHeight * inTextureInfo.mBytesPerPixel];
+        // Flip the texture
+        for (size_t i = 0; i < inTextureInfo.mHeight; i++)
+        {
+            const size_t rowSize = inTextureInfo.mWidth * inTextureInfo.mBytesPerPixel;
+            memcpy(buffer + (rowSize * (inTextureInfo.mHeight - 1)) - (rowSize * i), (char*)inTextureData + rowSize * i, rowSize);
+        }
+
         GLuint glTexture;
         glGenTextures(1, &glTexture);
         glBindTexture(GL_TEXTURE_2D, glTexture);
@@ -189,7 +198,7 @@ namespace Ming3D
             pixelFormat = GL_RGBA;
         GLint internalFormat = (inTextureInfo.mPixelFormat == PixelFormat::RGB) ? GL_RGB : GL_RGBA;
 
-        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, inTextureInfo.mWidth, inTextureInfo.mHeight, 0, pixelFormat, GL_UNSIGNED_BYTE, inTextureData);
+        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, inTextureInfo.mWidth, inTextureInfo.mHeight, 0, pixelFormat, GL_UNSIGNED_BYTE, buffer);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -197,6 +206,8 @@ namespace Ming3D
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
         textureBuffer->SetGLTexture(glTexture);
+
+        delete[] buffer;
 
         return textureBuffer;
     }

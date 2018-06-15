@@ -9,6 +9,10 @@ namespace Ming3D
 {
     class TextureBufferD3D11 : public TextureBuffer
     {
+        friend class RenderDeviceD3D11;
+    private:
+        char* mData = nullptr;
+
     public:
         virtual ~TextureBufferD3D11();
 
