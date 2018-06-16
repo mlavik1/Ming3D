@@ -235,6 +235,12 @@ namespace Ming3D
     {
         ShaderConverter::ShaderParser shaderParser;
         ShaderConverter::ParsedShaderProgram* parsedProgram = shaderParser.ParseShaderProgram(inShaderProgramPath.c_str());
+        if (parsedProgram == nullptr)
+        {
+            LOG_ERROR() << "Failed to create shader program, for " << inShaderProgramPath;
+            return nullptr;
+        }
+
         ShaderConverter::ShaderWriterHLSL shaderWriter;
         ShaderConverter::ShaderProgramDataHLSL convertedShaderData;
         shaderWriter.WriteShader(parsedProgram, convertedShaderData);
@@ -557,6 +563,8 @@ namespace Ming3D
 
     void RenderDeviceD3D11::SetActiveShaderProgram(ShaderProgram* inProgram)
     {
+        __AssertComment(inProgram, "SetActiveShaderProgram called with null program");
+
         ShaderProgramD3D11* dxShaderProgram = (ShaderProgramD3D11*)inProgram;
         mActiveShaderProgram = dxShaderProgram;
         mDeviceContext->VSSetShader(dxShaderProgram->mVS, 0, 0);

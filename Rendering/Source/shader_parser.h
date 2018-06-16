@@ -14,6 +14,11 @@
 
 namespace Ming3D { namespace ShaderConverter
 {
+    enum class TerminatorType
+    {
+        LineBreak, Parenthesis, CurlyBrackets
+    };
+
     class ShaderStructMember
     {
     public:
@@ -134,7 +139,7 @@ namespace Ming3D { namespace ShaderConverter
 
     enum class EStatementType
     {
-        VariableDefinition, Expression, ReturnStatement
+        VariableDefinition, Expression, ReturnStatement, ControlStatement
     };
 
     class ShaderStatement
@@ -170,6 +175,15 @@ namespace Ming3D { namespace ShaderConverter
     {
     public:
         std::vector<ShaderStatement*> mStatements;
+    };
+
+    class ControlStatement : public ShaderStatement
+    {
+    public:
+        std::string mIdentifier;
+        ShaderStatementBlock* mExpressionStatements = nullptr;
+        ShaderStatementBlock* mStatementBlock = nullptr;
+        virtual EStatementType GetStatementType() const override { return EStatementType::ControlStatement; };
     };
 
     class ShaderFunctionDefinition
@@ -224,6 +238,7 @@ namespace Ming3D { namespace ShaderConverter
     {
     private:
         std::set<std::string> mBuiltinDataTypes = { "float", "int", "bool", "void", "Texture2D" };
+        std::set<std::string> mControlStatementIdentifiers = { "for", "while", "if", "else" };
         std::unordered_map<std::string, ShaderStructInfo> mBuiltinStructs;
 
         std::unordered_map<std::string, OperatorInfo> mUnaryOperatorsMap;
@@ -248,6 +263,7 @@ namespace Ming3D { namespace ShaderConverter
         bool GetStructInfo(const char* inStructName, ShaderStructInfo& outStructInfo, ParsedShaderProgram* inShaderProgram, ParsedShader* inShader);
 
         bool IsTypeIdentifier(const char* inTokenString);
+        bool IsControlStatementIdentifier(const char* inTokenString);
 
         bool TryGetUnaryOperator(const char* inOperator, OperatorInfo& outOperatorInfo);
         bool TryGetBinaryOperator(const char* inOperator, OperatorInfo& outOperatorInfo);
@@ -297,7 +313,7 @@ namespace Ming3D { namespace ShaderConverter
         * @param inTerminator  Statement block terminator (will stop parsing when it finds one).
         * @param outExpression  Expression returned by this function (or nullptr if it fails).
         */
-        EParseResult ParseStatementBlock(TokenParser& inTokenParser, char inTerminator, ShaderStatementBlock** outStatementBlock);
+        EParseResult ParseStatementBlock(TokenParser& inTokenParser, TerminatorType inTerminator, ShaderStatementBlock** outStatementBlock);
 
     public:
         ShaderParser();

@@ -222,19 +222,40 @@ namespace Ming3D { namespace ShaderConverter
         }
     }
 
-    void ShaderWriterHLSL::WriteStatement(ShaderStream& inStream, const ShaderStatement* inStatement)
+    void ShaderWriterHLSL::WriteStatement(ShaderStream& inStream, const ShaderStatement* inStatement, const char* inTerminator)
     {
         switch (inStatement->GetStatementType())
         {
+        case EStatementType::ControlStatement:
+        {
+            ControlStatement* controlStatement = (ControlStatement*)inStatement;
+            inStream << controlStatement->mIdentifier << "(";
+            for (size_t i = 0; i < controlStatement->mExpressionStatements->mStatements.size(); i++)
+            {
+                bool isLast = i == controlStatement->mExpressionStatements->mStatements.size() - 1;
+                WriteStatement(inStream, controlStatement->mExpressionStatements->mStatements[i], isLast ? "" : ";");
+            }
+            inStream << ")\n" << "{\n";
+            inStream.AddIndent();
+            WriteStatementBlock(inStream, controlStatement->mStatementBlock);
+            inStream.RemoveIndent();
+            inStream << "}";
+            inTerminator = "";
+            break;
+        }
         case EStatementType::VariableDefinition:
         {
+            VariableDefinitionStatement* varDefStatement = (VariableDefinitionStatement*)inStatement;
+            inStream << GetConvertedType(varDefStatement->mVariableType);
+            inStream << " " << varDefStatement->mVariableName;
+            inStream << " = ";
+            WriteExpression(inStream, varDefStatement->mAssignmentExpression);
             break;
         }
         case EStatementType::Expression:
         {
             ExpressionStatement* expressionStatement = (ExpressionStatement*)inStatement;
             WriteExpression(inStream, expressionStatement->mExpression);
-            inStream << ";";
             break;
         }
         case EStatementType::ReturnStatement:
@@ -246,13 +267,13 @@ namespace Ming3D { namespace ShaderConverter
                 inStream << " ";
                 WriteExpression(inStream, returnStatement->mReturnValueExpression);
             }
-            inStream << ";";
             break;
         }
         default:
             LOG_ERROR() << "Unhandled statement type";
             break;
         }
+        inStream << inTerminator;
     }
 
     void ShaderWriterHLSL::WriteStatementBlock(ShaderStream& inStream, const ShaderStatementBlock* inStatementBlock)

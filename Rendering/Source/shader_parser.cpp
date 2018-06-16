@@ -7,6 +7,8 @@
 #include "Debug/st_assert.h"
 #include "shader_tokeniser.h"
 
+#define MING3D_BreakOnShaderParserError
+
 namespace Ming3D {
     namespace ShaderConverter
     {
@@ -37,12 +39,17 @@ namespace Ming3D {
             mBinaryOperatorsMap.emplace("^^", OperatorInfo{ "^^", 13, EOperatorAssociativity::LeftToRight });
             mBinaryOperatorsMap.emplace("||", OperatorInfo{ "||", 14, EOperatorAssociativity::LeftToRight });
             mBinaryOperatorsMap.emplace("=", OperatorInfo{ "=", 16, EOperatorAssociativity::LeftToRight });
+            mBinaryOperatorsMap.emplace("+=", OperatorInfo{ "+=", 16, EOperatorAssociativity::LeftToRight });
+            mBinaryOperatorsMap.emplace("-=", OperatorInfo{ "-=", 16, EOperatorAssociativity::LeftToRight });
         }
 
         void ShaderParser::OnParseError(TokenParser inTokenParser, const char* inErrorString)
         {
             // TODO: PRINT THE LINE THAT HAS THE ERROR
             LOG_ERROR() << "Parsing error, in line " << inTokenParser.GetCurrentToken().mLineNumber << ":" << inErrorString;
+#ifdef MING3D_BreakOnShaderParserError
+            __debugbreak();
+#endif
         }
 
         void ShaderParser::PushScopeStack()
@@ -110,6 +117,13 @@ namespace Ming3D {
             if (mStructsInScope.find(inTokenString) != mStructsInScope.end())
                 return true;
             if (mFunctionsInScope.find(inTokenString) != mFunctionsInScope.end())
+                return true;
+            return false;
+        }
+
+        bool ShaderParser::IsControlStatementIdentifier(const char* inTokenString)
+        {
+            if (mControlStatementIdentifiers.find(inTokenString) != mControlStatementIdentifiers.end())
                 return true;
             return false;
         }
@@ -435,7 +449,7 @@ namespace Ming3D {
             inTokenParser.Advance();
             ShaderFunctionDefinition* funcDefinition = new ShaderFunctionDefinition();
             funcDefinition->mFunctionInfo = funcInfo;
-            EParseResult statementParseRes = ParseStatementBlock(inTokenParser, '}', &funcDefinition->mStatementBlock);
+            EParseResult statementParseRes = ParseStatementBlock(inTokenParser, TerminatorType::CurlyBrackets, &funcDefinition->mStatementBlock);
 
             *outDefinition = funcDefinition;
 
@@ -447,7 +461,56 @@ namespace Ming3D {
         EParseResult ShaderParser::ParseStatement(TokenParser& inTokenParser, ShaderStatement** outStatement)
         {
             const std::string& tokenString = inTokenParser.GetCurrentToken().mTokenString;
-            if (IsTypeIdentifier(tokenString.c_str()))
+            if (IsControlStatementIdentifier(tokenString.c_str())) // TODO: put in separate function
+            {
+                std::string controlStatementIdentifier = tokenString;
+                inTokenParser.Advance();
+                if (controlStatementIdentifier == "else" && inTokenParser.GetCurrentToken().mTokenString == "if")
+                {
+                    controlStatementIdentifier = "else if";
+                    inTokenParser.Advance();
+                }
+                if (inTokenParser.GetCurrentToken().mTokenString != "(")
+                {
+                    OnParseError(inTokenParser, "Expected ( after control statement identifier");
+                    return EParseResult::Error;
+                }
+                inTokenParser.Advance();
+                ShaderStatementBlock* exprStatements = nullptr;
+                EParseResult exprParseResult = ParseStatementBlock(inTokenParser, TerminatorType::Parenthesis, &exprStatements);
+                if (exprParseResult != EParseResult::Parsed)
+                    return exprParseResult;
+                if (inTokenParser.GetCurrentToken().mTokenString != ")")
+                {
+                    delete exprStatements;
+                    OnParseError(inTokenParser, "Expected ( after control statement identifier");
+                    return EParseResult::Error;
+                }
+                inTokenParser.Advance();
+                ShaderStatementBlock* statementBlock = nullptr;
+                EParseResult statementParseResult;
+                if (inTokenParser.GetCurrentToken().mTokenString == "{")
+                {
+                    inTokenParser.Advance();
+                    statementParseResult = ParseStatementBlock(inTokenParser, TerminatorType::CurlyBrackets, &statementBlock);
+                }
+                else
+                {
+                    statementParseResult = ParseStatementBlock(inTokenParser, TerminatorType::LineBreak, &statementBlock);
+                }
+                if (statementParseResult == EParseResult::Error)
+                {
+                    delete exprStatements;
+                    return statementParseResult;
+                }
+                ControlStatement* controlStatement = new ControlStatement();
+                controlStatement->mIdentifier = controlStatementIdentifier;
+                controlStatement->mExpressionStatements = exprStatements;
+                controlStatement->mStatementBlock = statementBlock;
+                *outStatement = controlStatement;
+                return EParseResult::Parsed;
+            }
+            else if (IsTypeIdentifier(tokenString.c_str()))
             {
                 VariableDefinitionStatement* varDefStatement = new VariableDefinitionStatement();
 
@@ -461,6 +524,7 @@ namespace Ming3D {
 
                 if (inTokenParser.GetCurrentToken().mTokenString == "=")
                 {
+                    inTokenParser.Advance();
                     ShaderExpression* assignmentExpression = nullptr;
                     EParseResult exprParseResult = ParseExpression(inTokenParser, mDefaultOuterOperatorInfo, &varDefStatement->mAssignmentExpression);
                     if (exprParseResult != EParseResult::Parsed)
@@ -498,7 +562,6 @@ namespace Ming3D {
                     delete retStatement;
                     return EParseResult::Error;
                 }
-                inTokenParser.Advance();
                 *outStatement = retStatement;
             }
             else
@@ -512,21 +575,25 @@ namespace Ming3D {
                     return EParseResult::Error;
                 }
                 *outStatement = exprStatement;
-                inTokenParser.Advance();
             }
             return EParseResult::Parsed;
         }
 
-        EParseResult ShaderParser::ParseStatementBlock(TokenParser& inTokenParser, char inTerminator, ShaderStatementBlock** outStatementBlock)
+        EParseResult ShaderParser::ParseStatementBlock(TokenParser& inTokenParser, TerminatorType inTerminator, ShaderStatementBlock** outStatementBlock)
         {
             *outStatementBlock = new ShaderStatementBlock();
-            while (inTokenParser.GetCurrentToken().mTokenString[0] != inTerminator)
+
+            char terminatorChar = inTerminator == TerminatorType::LineBreak ? '\n' : (inTerminator == TerminatorType::CurlyBrackets ? '}' : ')');
+
+            while (inTokenParser.GetCurrentToken().mTokenString[0] != terminatorChar)
             {
                 ShaderStatement* statement = nullptr;
                 EParseResult statementParseResult = ParseStatement(inTokenParser, &statement);
                 if (statementParseResult == EParseResult::Parsed)
                 {
                     (*outStatementBlock)->mStatements.push_back(statement);
+                    if (!((inTokenParser.GetCurrentToken().mTokenString == ")") && (terminatorChar == ')')))
+                        inTokenParser.Advance();
                 }
                 else
                 {

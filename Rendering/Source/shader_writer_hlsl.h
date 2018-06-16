@@ -39,7 +39,7 @@ namespace Ming3D { namespace ShaderConverter
 
         void WriteFunctionCallParameters(ShaderStream& inStream, const std::vector<ShaderExpression*>& inParams);
         void WriteExpression(ShaderStream& inStream, const ShaderExpression* inExpression);
-        void WriteStatement(ShaderStream& inStream, const ShaderStatement* inStatement);
+        void WriteStatement(ShaderStream& inStream, const ShaderStatement* inStatement, const char* inTerminator = ";");
         void WriteStatementBlock(ShaderStream& inStream, const ShaderStatementBlock* inStatementBlock);
 
     public:
