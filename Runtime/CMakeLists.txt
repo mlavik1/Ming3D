@@ -9,6 +9,7 @@ file(GLOB_RECURSE SRC_FILES
 
 include_directories ("../Core/Source")
 include_directories ("../Engine/Source")
+include_directories ("../Include/glm")
 
 add_executable(Runtime ${SRC_FILES})
 

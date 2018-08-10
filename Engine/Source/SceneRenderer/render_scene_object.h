@@ -14,7 +14,7 @@ namespace Ming3D
     public:
         std::vector<MeshBuffer*> mMeshes;
         ShaderProgram* mShaderProgram = nullptr;
-        glm::vec3 mPosition;
+        glm::mat4 mModelMatrix;
     };
 }
 

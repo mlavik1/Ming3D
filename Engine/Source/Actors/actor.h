@@ -1,7 +1,9 @@
 #ifndef MING3D_ACTOR_H
 #define MING3D_ACTOR_H
+
 #include "Object/object.h"
 #include <vector>
+#include "transform.h"
 
 namespace Ming3D
 {
@@ -13,7 +15,10 @@ namespace Ming3D
 
     private:
         static void InitialiseClass();
+        
+        Transform* mTransform;
         std::vector<Component*> mComponents;
+        std::vector<Actor*> mChildren;
         bool mIsInitialised = false;
 
     public:
@@ -37,6 +42,9 @@ namespace Ming3D
         virtual void InitialiseActor();
         virtual void Tick(float inDeltaTime);
 
+        void AddChild(Actor* inActor);
+
+        inline Transform* GetTransform() { return mTransform; }
         std::vector<Component*> GetComponents() { return mComponents; }
     };
 }

@@ -12,10 +12,13 @@ namespace Ming3D
 
     Actor::Actor()
     {
+        mTransform = new Transform();
+        mTransform->mActor = this;
     }
 
     Actor::~Actor()
     {
+        delete mTransform;
     }
 
     void Actor::InitialiseActor()
@@ -26,5 +29,11 @@ namespace Ming3D
     void Actor::Tick(float inDeltaTime)
     {
 
+    }
+
+    void Actor::AddChild(Actor* inActor)
+    {
+        mChildren.push_back(inActor);
+        inActor->mTransform->mParentTransform = mTransform;
     }
 }

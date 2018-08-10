@@ -38,9 +38,9 @@ namespace Ming3D
                 glm::vec3(0, 1, 0)  // up
             );
 
-            glm::mat4 model = glm::mat4(1.0f);
-            glm::vec3 pos = glm::vec3(2.0f, 0.0f, 0.0f);
-            model = glm::translate(model, pos);
+            glm::mat4 model = obj->mModelMatrix;//glm::mat4(1.0f);
+            //glm::vec3 pos = obj->mPosition;// glm::vec3(2.0f, 0.0f, 0.0f);
+            //model = glm::translate(model, pos);
 
             glm::mat4 mvp = Projection * view * model;
 

@@ -5,6 +5,7 @@
 #include "GameEngine/game_engine.h"
 #include "render_device.h"
 #include "SceneRenderer/scene_renderer.h"
+#include "Actors/actor.h"
 
 IMPLEMENT_CLASS(Ming3D::MeshComponent)
 
@@ -42,8 +43,9 @@ namespace Ming3D
             if (meshData->mTexture != nullptr)
                 meshBuffer->mTextureBuffer = renderDevice->CreateTextureBuffer(meshData->mTexture->GetTextureInfo(), meshData->mTexture->GetTextureData());
 
+            renderSceneObject->mModelMatrix = mParent->GetTransform()->GetWorldTransformMatrix();
             renderSceneObject->mMeshes.push_back(meshBuffer);
-            renderSceneObject->mShaderProgram = renderDevice->CreateShaderProgram("Resources//shader_PNT.shader");;
+            renderSceneObject->mShaderProgram = renderDevice->CreateShaderProgram("Resources//shader_PNT.shader");
         }
 
         GGameEngine->GetSceneRenderer()->AddSceneObject(renderSceneObject);
