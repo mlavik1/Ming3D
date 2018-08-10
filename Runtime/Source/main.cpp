@@ -6,6 +6,10 @@
 #include "Object/function.h"
 #include "GameEngine/game_engine.h"
 
+#include "World/world.h"
+#include "Actors/actor.h"
+#include "Components/mesh_component.h"
+
 using namespace Ming3D;
 
 
@@ -14,7 +18,12 @@ int main()
 	GameEngine* gameEngine = new GameEngine();
 	gameEngine->Initialise();
 
+    Actor* actor1 = new Actor();
+    MeshComponent* meshComp1 = actor1->AddComponent<MeshComponent>();
+    meshComp1->SetMesh("Resources//Mvr_PetCow_walk.dae");
+    gameEngine->GetWorld()->AddActor(actor1);;
 
+    gameEngine->Start();
 
 	// TESTS:
 

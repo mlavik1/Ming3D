@@ -1,92 +1,14 @@
-#include "sample_base.h"
-
-#include "glm/glm.hpp"
-#include <vector>
+#include "model_helper.h"
 
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
 #include "assimp/Importer.hpp"
 #include "texture_loader.h"
-
 #include "Debug/debug.h"
-
-#define MING3D_USE_OPENGL
-
-#ifdef MING3D_USE_OPENGL
-#include <SDL.h>
-#include "sdl_window.h"
-#include "render_device_gl.h"
-#else
-#include <Windows.h>
-#include "render_device_d3d11.h"
-#include "winapi_window.h"
-#endif
-
-#ifdef _WIN32
-#include <Windows.h>
-#endif
 
 namespace Ming3D
 {
-    void SampleBase::RunSample()
-    {
-        init();
-
-        while (true)
-        {
-#ifdef _WIN32
-            MSG msg;
-            if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
-            {
-                TranslateMessage(&msg);
-                DispatchMessage(&msg);
-
-                if (msg.message == WM_QUIT)
-                    break;
-            }
-#endif
-            tick();
-        }
-    }
-
-    void SampleBase::init()
-    {
-#ifdef MING3D_USE_OPENGL
-        if (SDL_Init(SDL_INIT_VIDEO) != 0)
-            LOG_ERROR() << "Failed to initialise SDL";
-        else
-        {
-            SDL_version linkedver; SDL_version compiledver;
-            SDL_GetVersion(&linkedver);
-            SDL_VERSION(&compiledver);
-            LOG_INFO() << "SDL compiled version: " << (int)compiledver.major << "." << (int)compiledver.minor << ", pathch: " << (int)compiledver.patch;
-            LOG_INFO() << "SDL linked version: " << (int)linkedver.major << "." << (int)linkedver.minor << ", pathch: " << (int)linkedver.patch;
-        }
-#endif
-
-#ifdef MING3D_USE_OPENGL
-        mMainWindow = new SDLWindow();
-#else
-        mMainWindow = new WinAPIWindow();
-#endif
-        mMainWindow->Initialise();
-
-#ifdef MING3D_USE_OPENGL
-        LOG_INFO() << "Using OpenGL, version " << glGetString(GL_VERSION);
-        mRenderDevice = new RenderDeviceGL();
-#else
-        mRenderDevice = new RenderDeviceD3D11();
-#endif
-
-        mRenderWindow = mRenderDevice->CreateRenderWindow(mMainWindow);
-    }
-
-    void SampleBase::tick()
-    {
-
-    }
-    
-    SampleBase::ModelData* SampleBase::SampleBase::LoadModel(const char* inModel)
+    ModelData* ModelLoader::LoadModel(const char* inModel)
     {
         ModelData* modelData = new ModelData();
 
@@ -156,21 +78,4 @@ namespace Ming3D
         }
         return modelData;
     }
-
-    SampleBase::MeshData* SampleBase::CreateRectangleMesh(float inWidth, float inHeight)
-    {
-        const float halfWidth = inWidth / 2.0f;
-        const float halfHeight = inHeight / 2.0f;
-        MeshData* meshData = new MeshData();
-        meshData->mHasNormals = true;
-        meshData->mHasTexCoords = true;
-        meshData->mVertices =
-        { Vertex{ glm::vec3(-halfWidth, -halfHeight, 0.0f), glm::vec3(), glm::vec2(0.0f, 0.0f) },
-            Vertex{ glm::vec3(-halfWidth, halfHeight, 0.0f), glm::vec3(), glm::vec2(0.0f, 1.0f) },
-            Vertex{ glm::vec3(halfWidth, halfHeight, 0.0f), glm::vec3(), glm::vec2(1.0f, 1.0f) },
-            Vertex{ glm::vec3(halfWidth, -halfHeight, 0.0f), glm::vec3(), glm::vec2(1.0f, 0.0f) } };
-        meshData->mIndices = { 0, 2, 1, 0, 3, 2 };
-        return meshData; 
-    }
-
 }

@@ -59,6 +59,7 @@ public: \
 * IMPORTANT: You will need to add the IMPLEMENT_CLASS(classname)-macro to your source file.
 */
 #define DEFINE_CLASS(classname, baseclassname) \
+    typedef baseclassname Super; \
 	DEFINE_CLASS_INTERNAL(classname, : ##baseclassname##(params), ##baseclassname##::GetStaticClass())
 
 /**
