@@ -6,6 +6,8 @@ project(Ming3D)
 
 set(CMAKE_BUILD_TYPE Debug)
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMake/")
+
 set(BUILD_ROOT "${CMAKE_SOURCE_DIR}/build")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build")
 
@@ -23,6 +25,7 @@ endif()
 add_subdirectory(3rdParty)
 add_subdirectory(Core)
 add_subdirectory(Runtime)
+add_subdirectory(Tests)
 add_subdirectory(Networking)
 add_subdirectory(Rendering)
 add_subdirectory(Engine)

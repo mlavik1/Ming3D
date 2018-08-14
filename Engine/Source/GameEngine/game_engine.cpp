@@ -83,10 +83,6 @@ namespace Ming3D
 
     void GameEngine::Start()
     {
-        //RenderToTextureSample sample;
-        //sample.RunSample();
-
-
         while (true)
         {
             TickEngine();
