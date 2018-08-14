@@ -21,6 +21,7 @@ namespace Ming3D
 		void Reset(const size_t& arg_preallocateBytes);
 
 		void Write(const void* arg_data, const size_t& arg_bytes);
+        void SetData(void* arg_data, const size_t& arg_bytes);
 
 		void Read(void* arg_location, const size_t& arg_bytes);
 

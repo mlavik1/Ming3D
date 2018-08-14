@@ -14,8 +14,20 @@
 
 #include "Debug/debug.h"
 
+#include <winsock2.h>
+#include <windows.h>
+#include <ws2tcpip.h>
+#pragma comment (lib, "Ws2_32.lib") // REMOVE ME
+
+#include "net_socket_winsock.h"
+
 namespace Ming3D
 {
+    PlatformWin32::~PlatformWin32()
+    {
+        WSACleanup();
+    }
+
     void PlatformWin32::Initialise()
     {
 #ifdef MING3D_USE_OPENGL
@@ -30,6 +42,14 @@ namespace Ming3D
             LOG_INFO() << "SDL linked version: " << (int)linkedver.major << "." << (int)linkedver.minor << ", pathch: " << (int)linkedver.patch;
         }
 #endif
+
+        WSADATA wsaData;
+        int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+        if (iResult != 0)
+        {
+            LOG_ERROR() << "WSAStartup failed";
+            return;
+        }
     }
 
     RenderDevice* PlatformWin32::CreateRenderDevice()
@@ -57,5 +77,10 @@ namespace Ming3D
     RenderWindow* PlatformWin32::CreateRenderWindow(WindowBase* inWindow, RenderDevice* inDevice)
     {
         return inDevice->CreateRenderWindow(inWindow);
+    }
+
+    NetSocket* PlatformWin32::CreateSocket()
+    {
+        return new NetSocketWinsock();
     }
 }

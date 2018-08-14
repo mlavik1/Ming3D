@@ -8,4 +8,6 @@ file(GLOB_RECURSE SRC_FILES
 
 set(SourceDir ${PROJECT_SOURCE_DIR}/Source)
 
+include_directories ("../Core/Source")
+
 add_library(Networking STATIC ${SRC_FILES})

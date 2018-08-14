@@ -10,8 +10,6 @@ set(SourceDir Source)
 
 add_library(Rendering STATIC ${SRC_FILES})
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMake/")
-
 #list(APPEND CMAKE_PREFIX_PATH "E:/Libraries/SDL2-devel-all")
 
 # Find packages

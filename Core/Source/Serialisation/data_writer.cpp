@@ -54,6 +54,17 @@ namespace Ming3D
 		mBytesWritten = newSize;
 	}
 
+    void DataWriter::SetData(void* arg_data, const size_t& arg_bytes)
+    {
+        if (mData != nullptr)
+        {
+            delete[] mData;
+        }
+        mData = (char*)arg_data;
+        mBytesWritten = arg_bytes;
+        mBytesAllocated = arg_bytes;
+    }
+
 	void DataWriter::Read(void* arg_location, const size_t& arg_bytes)
 	{
 		memcpy(arg_location, mDataReadPos, arg_bytes);
