@@ -28,9 +28,10 @@ namespace Ming3D
         virtual NetSocket* Accept() override;
         virtual bool Connect() override;
         virtual int Recv(char* buffer, int bufferLength) override;
-        virtual int Send(char* buffer, int bufferLength) override;
+        virtual int Send(const char* buffer, int bufferLength) override;
         virtual bool Shutdown() override;
         virtual void PrintSocketInfo() override;
+        virtual int GetLocalPort() override;
     };
 }
 

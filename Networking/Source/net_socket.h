@@ -15,9 +15,10 @@ namespace Ming3D
         virtual NetSocket* Accept() = 0;
         virtual bool Connect() = 0;
         virtual int Recv(char* buffer, int bufferLength) = 0;
-        virtual int Send(char* buffer, int bufferLength) = 0;
+        virtual int Send(const char* buffer, int bufferLength) = 0;
         virtual bool Shutdown() = 0;
         virtual void PrintSocketInfo() = 0;
+        virtual int GetLocalPort() = 0;
     };
 }
 

@@ -26,7 +26,10 @@ int main()
     meshComp1->SetMesh("Resources//Mvr_PetCow_walk.dae");
     gameEngine->GetWorld()->AddActor(actor1);;
 
-    gameEngine->Start();
+    while (true)
+    {
+        gameEngine->Update();
+    }
 
 
 	// TESTS:

@@ -12,6 +12,7 @@
 #include "window_base.h"
 #include "render_window.h"
 #include "SceneRenderer/scene_renderer.h"
+#include "Networking/network_manager.h"
 
 #ifdef _WIN32
 #include "Source/Platform/platform_win32.h"
@@ -36,6 +37,7 @@ namespace Ming3D
         mTimeManager = new TimeManager();
         mWorld = new World();
         mSceneRenderer = new SceneRenderer();
+        mNetworkManager = new NetworkManager();
     }
 
 	GameEngine::~GameEngine()
@@ -46,6 +48,7 @@ namespace Ming3D
         delete mRenderWindow;
         delete mWindow;
         delete mSceneRenderer;
+        delete mNetworkManager;
         delete mPlatform;
     }
 
@@ -60,7 +63,7 @@ namespace Ming3D
         mTimeManager->Initialise();
 	}
 
-    void GameEngine::TickEngine()
+    void GameEngine::Update()
     {
         mTimeManager->UpdateTime();
         float deltaTime = mTimeManager->GetDeltaTimeSeconds();
@@ -74,6 +77,8 @@ namespace Ming3D
             }
         }
 
+        mNetworkManager->UpdateNetworks();
+
         mRenderDevice->BeginRenderWindow(mRenderWindow);
         mRenderDevice->BeginRenderTarget(mRenderTarget);
         mSceneRenderer->RenderObjects();
@@ -83,9 +88,6 @@ namespace Ming3D
 
     void GameEngine::Start()
     {
-        while (true)
-        {
-            TickEngine();
-        }
+        
     }
 }

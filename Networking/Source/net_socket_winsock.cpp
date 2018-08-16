@@ -67,7 +67,7 @@ namespace Ming3D
         return nullptr;
     }
 
-    bool NetSocketWinsock::Connect()
+    bool NetSocketWinsock::Connect() // TODO: return ESocketConnectResult
     {
         int result = connect(mSocket, (sockaddr*)&mSocketAddress, sizeof(mSocketAddress));
         return !(result == SOCKET_ERROR && WSAGetLastError() == WSAEWOULDBLOCK); // TEMP HACK - FIX ME
@@ -84,7 +84,7 @@ namespace Ming3D
         return result;
     }
     
-    int NetSocketWinsock::Send(char* buffer, int bufferLength)
+    int NetSocketWinsock::Send(const char* buffer, int bufferLength)
     {
         return send(mSocket, buffer, bufferLength, 0);
     }
@@ -106,6 +106,17 @@ namespace Ming3D
             int local_port = ntohs(sin.sin_port);
             printf("Listen socket port: %d\n", local_port);
         }
+    }
+
+    int NetSocketWinsock::GetLocalPort()
+    {
+        struct sockaddr_in sin;
+        int addrlen = sizeof(sin);
+        if (getsockname(mSocket, (struct sockaddr *)&sin, &addrlen) == 0 && sin.sin_family == AF_INET && addrlen == sizeof(sin))
+        {
+            return ntohs(sin.sin_port);
+        }
+        return -1;
     }
 }
 

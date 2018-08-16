@@ -12,6 +12,7 @@ namespace Ming3D
     class RenderWindow;
     class SceneRenderer;
     class RenderTarget;
+    class NetworkManager;
 
 	class GameEngine
 	{
@@ -25,8 +26,7 @@ namespace Ming3D
         RenderWindow* mRenderWindow = nullptr;
         SceneRenderer* mSceneRenderer = nullptr;
         RenderTarget* mRenderTarget = nullptr;
-
-        void TickEngine();
+        NetworkManager* mNetworkManager = nullptr;
 
 	public:
 		GameEngine();
@@ -34,12 +34,15 @@ namespace Ming3D
 
 		void Initialise();
         void Start();
+        void Update();
 
         inline RenderDevice* GetRenderDevice() { return mRenderDevice; }
         inline SceneRenderer* GetSceneRenderer() { return mSceneRenderer; }
         inline WindowBase* GetMainWindow() { return mWindow; }
         inline RenderWindow* GetMainRenderWindow() { return mRenderWindow; }
         inline World* GetWorld() { return mWorld; }
+        inline Platform* GetPlatform() { return mPlatform; }
+        inline NetworkManager* GetNetworkManager() { return mNetworkManager; }
     };
 }
 

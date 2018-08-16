@@ -8,7 +8,8 @@ namespace Ming3D
 		Ignored,
 		RPC,
 		ObjectReplication,
-		ConnectionRequest
+		ConnectionRequest,
+        Log
 	};
 }
 
