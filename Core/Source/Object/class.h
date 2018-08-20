@@ -114,7 +114,7 @@ namespace Ming3D
 		template<typename ReturnType, typename Class, typename ... Param>
 		void RegisterFunction(const char* inName, ReturnType(Class::*inFunc)(Param...))
 		{
-			CoreTestClass::GetStaticClass()->AddMemberFunction(new Function(inName, new FunctionCaller<ReturnType, Class, Param...>(inFunc)));
+            Class::GetStaticClass()->AddMemberFunction(new Function(inName, new FunctionCaller<ReturnType, Class, Param...>(inFunc)));
 		}
 	};
 }

@@ -32,6 +32,8 @@ namespace Ming3D
 
 		const char* GetMessageData() const;
 
+        void SetMessageData(DataWriter* inWriter);
+
         DataWriter* Serialise();
         void Deserialise(DataWriter* inDataWriter);
 

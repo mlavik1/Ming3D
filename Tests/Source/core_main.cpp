@@ -1,0 +1,49 @@
+#if MING3D_TESTTYPE == 1
+#include "test_actor.h"
+
+#include "GameEngine/game_engine.h"
+
+using namespace Ming3D;
+
+int main()
+{
+    GameEngine engine;
+    engine.Initialise(); // in order to register classes
+
+    std::vector<int> intVec({ 1, 3, 7 });
+    int* intPtr = new int(3);
+
+    Function* funcTestFunction = TestActor::GetStaticClass()->GetFunctionByName("IntBoolTestFunction");
+    Function* funcStringTestFunction = TestActor::GetStaticClass()->GetFunctionByName("StringTestFunction");
+    Function* funcIntVectorTestFunction = TestActor::GetStaticClass()->GetFunctionByName("IntVectorTestFunction");
+    Function* funcIntPointerTestFunction = TestActor::GetStaticClass()->GetFunctionByName("IntPointerTestFunction");
+    Function* funcObjectTestFunction = TestActor::GetStaticClass()->GetFunctionByName("ObjectTestFunction");
+
+    TestActor* testMingObject = new TestActor();
+
+    testMingObject->CallFunction(funcTestFunction, FunctionArgs({ FunctionParam<int>(3), FunctionParam<bool>(true) }));
+    testMingObject->CallFunction(funcStringTestFunction, FunctionArgs({ FunctionParam<std::string>("test") }));
+    testMingObject->CallFunction(funcIntVectorTestFunction, FunctionArgs({ FunctionParam<std::vector<int>>(intVec) }));
+    testMingObject->CallFunction(funcIntPointerTestFunction, FunctionArgs({ FunctionParam<int*>(intPtr) }));
+
+    FunctionArgs intVecArgs1({ FunctionParam<std::vector<int>>(intVec) });
+    DataWriter dataWriter(1);
+    funcIntVectorTestFunction->SerialiseFunctionArgs(intVecArgs1, dataWriter);
+    FunctionArgs intVecArgs2 = funcIntVectorTestFunction->DeserialiseFunctionArgs(dataWriter);
+
+    testMingObject->CallFunction(funcIntVectorTestFunction, intVecArgs2);
+
+    TestClass testClass;
+    testClass.mTestValue = 3;
+    testMingObject->CallFunction(funcObjectTestFunction, FunctionArgs({ FunctionParam<TestClass>(testClass) }));
+
+
+    while (true)
+    {
+
+    }
+
+    return 0;
+}
+
+#endif

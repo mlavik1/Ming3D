@@ -15,20 +15,21 @@ namespace Ming3D
         int listenPort = inPort;
         if (!mIsHost)
         {
-            mHostSocket = GGameEngine->GetPlatform()->CreateSocket();
-            mHostSocket->Initialise(inHost, inPort, 0);
-            mConnectedToHost = mHostSocket->Connect();
-            listenPort = mHostSocket->GetLocalPort();
+            NetSocket* hostSocket = GGameEngine->GetPlatform()->CreateSocket();
+            mHostConnection = new NetConnection(hostSocket);
+            hostSocket->Initialise(inHost, inPort, 0);
+            mConnectedToHost = hostSocket->Connect();
+            listenPort = hostSocket->GetLocalPort();
             if (inPort == -1)
             {
                 LOG_ERROR() << "Failed to initialise sockets. Local port of host socket is invalid";
                 return; // TODO: cleanup
             }
-            SetSocket(0, mHostSocket);
+            SetConnection(0, mHostConnection);
         }
         else
         {
-            SetSocket(0, mListenSocket);
+            SetConnection(0, nullptr);
         }
 
         mListenSocket->Initialise(nullptr, listenPort, 0);
@@ -44,14 +45,15 @@ namespace Ming3D
             return;
 
         NetSocket* inConnSock = mListenSocket->Accept();
+        NetConnection* inConnection = new NetConnection(inConnSock);
         if (inConnSock != nullptr)
         {
             LOG_INFO() << "Incoming connection from client";
-            SetSocket(mSockets.size(), inConnSock);
+            SetConnection(mConnections.size(), inConnection);
         }
         
         if (!mIsHost && !mConnectedToHost)
-            mConnectedToHost = mHostSocket->Connect(); // TODO: Change return value to ESocketConnectResult
+            mConnectedToHost = mHostConnection->GetSocket()->Connect(); // TODO: Change return value to ESocketConnectResult
 
         HandleIncomingMessages();
 
@@ -60,32 +62,41 @@ namespace Ming3D
 
     void GameNetwork::HandleIncomingMessages()
     {
-        for (size_t i = 0; i < mSockets.size(); i++)
+        for (ClientMessage& msg : mIncomingMessages)
         {
-            int bytesReceived = mSockets[i]->Recv(mDataBuffer, MING3D_DEFAULT_BUFLEN);
-            if (bytesReceived > 0)
+            delete msg.mMessage;
+        }
+        mIncomingMessages.clear(); // clear messages from last frame
+
+        for (size_t i = 1; i < mConnections.size(); i++)
+        {
+            bool receivedData = mConnections[i]->Recv();
+            if (receivedData)
             {
-                ClientMessage msg;
-                msg.mClientID = i;
-                // Read data
-                DataWriter dataWriter(bytesReceived);
-                dataWriter.Write(mDataBuffer, bytesReceived);
-                // Create NetMessage and deserialise message data
-                NetMessage* netMsg = new NetMessage();
-                netMsg->Deserialise(&dataWriter);
-                msg.mMessage = netMsg;
-                mIncomingMessages.push_back(msg);
+                for (NetMessage* netMsg : mConnections[i]->GetNewMessages())
+                {
+                    ClientMessage clientMessage;
+                    clientMessage.mClientID = i;
+
+                    clientMessage.mMessage = netMsg;
+                    mIncomingMessages.push_back(clientMessage);
+                }
+                mConnections[i]->ClearNewMessages();
             }
         }
 
         for (ClientMessage& msg : mIncomingMessages)
         {
-            LOG_INFO() << msg.mMessage->GetMessageData(); // TEMP TEST - REMOVE ME!!
-            // TODO: Call RPCs, etc.. !!!
-            delete msg.mMessage;
+            switch (msg.mMessage->GetMessageType())
+            {
+            case NetMessageType::Log:
+                LOG_INFO() << msg.mMessage->GetMessageData();
+                break;
+            case NetMessageType::RPC:
+                // TODO: Call RPC
+                break;
+            }
         }
-
-        mIncomingMessages.clear();
     }
 
     void GameNetwork::SendMessage(NetMessage* inMessage, int inClient)
@@ -100,23 +111,23 @@ namespace Ming3D
     {
         for (ClientMessage& currMessage : mOutgoingMessages)
         {
-            SendMessageInternal(currMessage.mMessage, mSockets[currMessage.mClientID]);
+            SendMessageInternal(currMessage.mMessage, mConnections[currMessage.mClientID]);
         }
         mOutgoingMessages.clear();
     }
 
-    void GameNetwork::SendMessageInternal(NetMessage* inNetMessage, NetSocket* inSocket)
+    void GameNetwork::SendMessageInternal(NetMessage* inNetMessage, NetConnection* inConnection)
     {
         DataWriter* dataWriter = inNetMessage->Serialise();
-        inSocket->Send(dataWriter->GetData(), dataWriter->GetSize());
+        inConnection->GetSocket()->Send(dataWriter->GetData(), dataWriter->GetSize());
         delete dataWriter;
         delete inNetMessage;
     }
 
-    void GameNetwork::SetSocket(int inSocketID, NetSocket* inSocket)
+    void GameNetwork::SetConnection(int inSocketID, NetConnection* inConnection)
     {
-        if (mSockets.size() <= inSocketID)
-            mSockets.resize(inSocketID + 1);
-        mSockets[inSocketID] = inSocket;
+        if (mConnections.size() <= inSocketID)
+            mConnections.resize(inSocketID + 1);
+        mConnections[inSocketID] = inConnection;
     }
 }

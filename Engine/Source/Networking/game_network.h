@@ -2,6 +2,7 @@
 #define MING3D_GAMENETWORK_H
 
 #include "net_socket.h"
+#include "net_connection.h"
 #include <unordered_map>
 
 namespace Ming3D
@@ -22,9 +23,9 @@ namespace Ming3D
         std::vector<ClientMessage> mOutgoingMessages;
 
         NetSocket* mListenSocket = nullptr;
-        NetSocket* mHostSocket = nullptr;
+        NetConnection* mHostConnection = nullptr;
 
-        std::vector<NetSocket*> mSockets;
+        std::vector<NetConnection*> mConnections;
         //std::unordered_map<int, NetSocketTCP*> mClientSockets; // TODO: use a "ClientInfo" struct as value (has socket + IP info + more)
 
         bool mIsActive = false;
@@ -35,8 +36,8 @@ namespace Ming3D
         void HandleIncomingMessages();
         void SendQueuedMessages();
 
-        void SendMessageInternal(NetMessage* inNetMessage, NetSocket* inSocket);
-        void SetSocket(int inSocketID, NetSocket* inSocket);
+        void SendMessageInternal(NetMessage* inNetMessage, NetConnection* inConnection);
+        void SetConnection(int inSocketID, NetConnection* inConnection);
 
     public:
         void Connect(const char* inHost, int inPort);
@@ -44,8 +45,10 @@ namespace Ming3D
 
         void SendMessage(NetMessage* inMessage, int inClient);
 
-        inline bool IsHost() { return mIsHost; }
-        inline bool IsConnectedToHost() { return mConnectedToHost; }
+        bool IsHost() { return mIsHost; }
+        bool IsConnectedToHost() { return mConnectedToHost; }
+        NetConnection* GetConnection(int id) { return mConnections[id]; }
+        std::vector<ClientMessage> GetIncomingMessages() { return mIncomingMessages; }
     };
 }
 

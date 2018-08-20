@@ -5,6 +5,10 @@
 
 namespace Ming3D
 {
+    /**
+    * Datawriter.
+    * Used for reading/writing raw data.
+    */
 	class DataWriter
 	{
 	public:

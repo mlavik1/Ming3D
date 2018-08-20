@@ -6,6 +6,9 @@
 
 namespace Ming3D
 {
+    /**
+    * Base class for sockets.
+    */
     class NetSocket
     {
     public:

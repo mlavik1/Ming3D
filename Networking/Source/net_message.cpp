@@ -68,7 +68,7 @@ namespace Ming3D
         DataWriter* serialisedDataWriter = new DataWriter(dataLength);
         serialisedDataWriter->Write(&mMessageType, sizeof(msgtype_t));
         serialisedDataWriter->Write(&messageLength, sizeof(msglen_t));
-        serialisedDataWriter->Write(mDataWriter->GetData(), dataLength);
+        serialisedDataWriter->Write(mDataWriter->GetData(), messageLength);
         return serialisedDataWriter;
     }
 
@@ -86,6 +86,11 @@ namespace Ming3D
         if (mDataWriter == nullptr)
             mDataWriter = new DataWriter(msgLength);
         mDataWriter->SetData(msgData, msgLength);
+    }
+
+    void NetMessage::SetMessageData(DataWriter* inWriter)
+    {
+        mDataWriter = inWriter;
     }
 
 }
