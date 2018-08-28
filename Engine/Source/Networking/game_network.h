@@ -5,8 +5,17 @@
 #include "net_connection.h"
 #include <unordered_map>
 
+#include "Object/game_object.h"
+
 namespace Ming3D
 {
+    enum NetTarget
+    {
+        Host,
+        Clients,
+        Everyone
+    };
+
     struct ClientMessage
     {
         int mClientID = 0;
@@ -26,12 +35,12 @@ namespace Ming3D
         NetConnection* mHostConnection = nullptr;
 
         std::vector<NetConnection*> mConnections;
-        //std::unordered_map<int, NetSocketTCP*> mClientSockets; // TODO: use a "ClientInfo" struct as value (has socket + IP info + more)
 
         bool mIsActive = false;
         bool mIsHost = false;
-
         bool mConnectedToHost = false;
+
+        std::unordered_map<netguid_t, GameObject*> mNetworkedObjects;
 
         void HandleIncomingMessages();
         void SendQueuedMessages();
@@ -39,16 +48,23 @@ namespace Ming3D
         void SendMessageInternal(NetMessage* inNetMessage, NetConnection* inConnection);
         void SetConnection(int inSocketID, NetConnection* inConnection);
 
+        NetMessage* CreateRPCMessage(GameObject* inObject, const char* inFunctionName, FunctionArgs inArgs);
+
     public:
         void Connect(const char* inHost, int inPort);
         void Update();
 
         void SendMessage(NetMessage* inMessage, int inClient);
-
         bool IsHost() { return mIsHost; }
         bool IsConnectedToHost() { return mConnectedToHost; }
         NetConnection* GetConnection(int id) { return mConnections[id]; }
         std::vector<ClientMessage> GetIncomingMessages() { return mIncomingMessages; }
+
+        void RegisterNetworkedObject(GameObject* inObject, netguid_t inGUID); // TEMP TEST
+
+        void CallRPC(GameObject* inObject, const char* inFunctionName, FunctionArgs inArgs, int inClient);
+        void CallRPC(GameObject* inObject, const char* inFunctionName, FunctionArgs inArgs, NetTarget inTarget);
+
     };
 }
 

@@ -93,7 +93,36 @@ namespace Ming3D
                 LOG_INFO() << msg.mMessage->GetMessageData();
                 break;
             case NetMessageType::RPC:
-                // TODO: Call RPC
+                DataWriter* reader = msg.mMessage->GetDataWriter();
+                reader->SetReadPos(0);
+                msglen_t msgLength = reader->GetSize();
+
+                netguid_t netGUID = 0;
+                size_t funcNameLength = 0;
+                
+                reader->Read(&netGUID, sizeof(netguid_t));
+                reader->Read(&funcNameLength, sizeof(size_t));
+                char* funcName = new char[funcNameLength];
+                reader->Read(funcName, funcNameLength);
+                
+                // Find the object
+                auto objIter = mNetworkedObjects.find(netGUID);
+                if (objIter != mNetworkedObjects.end())
+                {
+                    GameObject* targetObject = objIter->second;
+                    // Find the function
+                    Function* func = targetObject->GetClass()->GetFunctionByName(funcName);
+                    FunctionArgs funcArgs = func->DeserialiseFunctionArgs(*reader);
+                    // Call RPC function on object
+                    func->CallFunction(targetObject, funcArgs);
+                }
+                else
+                {
+                    LOG_ERROR() << "No registered networked object with GUID: " << netGUID;
+                }
+
+                
+                delete funcName;
                 break;
             }
         }
@@ -129,5 +158,71 @@ namespace Ming3D
         if (mConnections.size() <= inSocketID)
             mConnections.resize(inSocketID + 1);
         mConnections[inSocketID] = inConnection;
+    }
+
+    void GameNetwork::RegisterNetworkedObject(GameObject* inObject, netguid_t inGUID)
+    {
+        inObject->mNetGUID = inGUID;
+        mNetworkedObjects[inGUID] = inObject;
+    }
+
+    NetMessage* GameNetwork::CreateRPCMessage(GameObject* inObject, const char* inFunctionName, FunctionArgs inArgs)
+    {
+        Function* func = inObject->GetClass()->GetFunctionByName(inFunctionName);
+        if (func == nullptr)
+        {
+            LOG_ERROR() << "Found no function by name: " << inFunctionName;
+            return nullptr;
+        }
+        DataWriter* writer = new DataWriter(sizeof(inArgs));
+
+        const size_t funcNameLen = std::strlen(inFunctionName) + 1;
+        writer->Write(&inObject->mNetGUID, sizeof(netguid_t)); // GUID
+        writer->Write(&funcNameLen, sizeof(size_t)); // function name length
+        writer->Write(inFunctionName, funcNameLen); // function name (TODO: Use index or something else)
+        func->SerialiseFunctionArgs(inArgs, *writer); // function arguments
+
+        NetMessage* msg = new NetMessage(NetMessageType::RPC, writer);
+        msg->SetMessageData(writer);
+        return msg;
+    }
+
+    void GameNetwork::CallRPC(GameObject* inObject, const char* inFunctionName, FunctionArgs inArgs, int inClient)
+    {
+        NetMessage* msg = CreateRPCMessage(inObject, inFunctionName, inArgs);
+        
+        if (msg == nullptr)
+            return;
+
+        SendMessage(msg, inClient);
+    }
+
+    void GameNetwork::CallRPC(GameObject* inObject, const char* inFunctionName, FunctionArgs inArgs, NetTarget inTarget)
+    {
+        NetMessage* msg = CreateRPCMessage(inObject, inFunctionName, inArgs);
+
+        if (msg == nullptr)
+            return;
+
+        switch (inTarget)
+        {
+        case NetTarget::Host:
+            SendMessage(msg, 0);
+            break;
+        case NetTarget::Clients:
+            for (int i = 1; i < mConnections.size(); i++)
+            {
+                SendMessage(msg, i);
+            }
+            break;
+        case NetTarget::Everyone:
+            for (int i = 1; i < mConnections.size(); i++)
+            {
+                SendMessage(msg, i);
+            }
+            inObject->GetStaticClass()->GetFunctionByName(inFunctionName)->CallFunction(inObject, inArgs);
+            break;
+        }
+
     }
 }

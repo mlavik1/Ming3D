@@ -30,6 +30,7 @@ namespace Ming3D
 		void Read(void* arg_location, const size_t& arg_bytes);
 
 		void SkipBytes(const size_t& arg_bytes);
+        void SetReadPos(size_t arg_pos);
 
 		inline const char* PeekData() const { return mDataReadPos; }
 		inline const char* GetData() const { return mData; }

@@ -98,7 +98,7 @@ namespace Ming3D
 		* @param inData   DataWriter where the serialised arguments are stored.
 		* @param outArgs  Function argument container to store deserialised arguments in.
 		*/
-		virtual void DeserialiseFunctionArgs(DataWriter inData, std::vector<FunctionParamBase>& outArgs) = 0;
+		virtual void DeserialiseFunctionArgs(DataWriter& inData, std::vector<FunctionParamBase>& outArgs) = 0;
 	};
 
 	/**
@@ -124,7 +124,7 @@ namespace Ming3D
 			auto list = { (FunctionSerialisationHelper::SerialiseArgument<Param>(inArgs[i++], outData))... };
 		}
 
-		virtual void DeserialiseFunctionArgs(DataWriter inData, std::vector<FunctionParamBase>& outArgs) override
+		virtual void DeserialiseFunctionArgs(DataWriter& inData, std::vector<FunctionParamBase>& outArgs) override
 		{
 			size_t i = 0;
 			outArgs = { (FunctionSerialisationHelper::DeserialiseArgument<Param>(inData))... };

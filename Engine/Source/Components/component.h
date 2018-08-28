@@ -1,14 +1,15 @@
 #ifndef MING3D_COMPONENT_H
 #define MING3D_COMPONENT_H
-#include "Object/object.h"
+
+#include "Object/game_object.h"
 
 namespace Ming3D
 {
     class World;
 
-    class Component : public Object
+    class Component : public GameObject
     {
-        DEFINE_CLASS(Ming3D::Component, Ming3D::Object)
+        DEFINE_CLASS(Ming3D::Component, Ming3D::GameObject)
             friend class Actor;
 
     private:

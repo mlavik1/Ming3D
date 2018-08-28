@@ -2,7 +2,6 @@
 #define MING3D_NETSOCKET_H
 
 #include "net_message.h"
-#include "net_ipaddress.h"
 
 namespace Ming3D
 {

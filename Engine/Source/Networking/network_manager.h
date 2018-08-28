@@ -15,6 +15,8 @@ namespace Ming3D
         void AddNetwork(GameNetwork* inNetwork);
         void RemoveNetwork(GameNetwork* inNetwork);
         void UpdateNetworks();
+
+        std::vector<GameNetwork*> GetNetworks() { return mNetworks; }
     };
 }
 

@@ -76,4 +76,9 @@ namespace Ming3D
 		mDataReadPos += arg_bytes;
 	}
 
+    void DataWriter::SetReadPos(size_t arg_pos)
+    {
+        mDataReadPos = mData + arg_pos;
+    }
+
 } // namespace Ming3D

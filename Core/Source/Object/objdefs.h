@@ -7,6 +7,8 @@
 
 typedef uint32_t ObjectFlagRegister;
 
+typedef uint64_t netguid_t;
+
 enum class ObjectFlag
 {
 	Destroyed = 1,

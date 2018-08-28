@@ -19,8 +19,9 @@ namespace Ming3D
 
 	public:
         NetMessage();
-        NetMessage(const DataWriter& inWriter);
-		NetMessage(NetMessageType in_type, msglen_t in_length, const void* in_message);
+        NetMessage(NetMessageType inMessageType, const DataWriter& inWriter);
+        NetMessage(NetMessageType inMessageType, DataWriter* inWriter);
+        NetMessage(NetMessageType in_type, msglen_t in_length, const void* in_message);
 		NetMessage(NetMessageType in_type, std::string in_message);
 		NetMessage(const NetMessage& in_other);
         ~NetMessage();
@@ -31,6 +32,7 @@ namespace Ming3D
 		inline size_t GetTotalLength() const { return GetMessageLength() + sizeof(msgtype_t) + sizeof(msglen_t); }
 
 		const char* GetMessageData() const;
+        DataWriter* GetDataWriter() { return mDataWriter; }
 
         void SetMessageData(DataWriter* inWriter);
 

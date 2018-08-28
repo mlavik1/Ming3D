@@ -11,9 +11,16 @@ namespace Ming3D
         mMessageType = NetMessageType::Ignored;
     }
 
-    NetMessage::NetMessage(const DataWriter& inWriter)
+    NetMessage::NetMessage(NetMessageType inMessageType, const DataWriter& inWriter)
     {
+        mMessageType = inMessageType;
         mDataWriter = new DataWriter(inWriter);
+    }
+
+    NetMessage::NetMessage(NetMessageType inMessageType, DataWriter* inWriter)
+    {
+        mMessageType = inMessageType;
+        mDataWriter = inWriter;
     }
 
     NetMessage::NetMessage(NetMessageType in_type, msglen_t in_length, const void* in_message)

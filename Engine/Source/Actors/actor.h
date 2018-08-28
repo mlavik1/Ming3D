@@ -1,7 +1,7 @@
 #ifndef MING3D_ACTOR_H
 #define MING3D_ACTOR_H
 
-#include "Object/object.h"
+#include "Object/game_object.h"
 #include <vector>
 #include "transform.h"
 
@@ -9,9 +9,9 @@ namespace Ming3D
 {
     class Component;
 
-    class Actor : public Object
+    class Actor : public GameObject
     {
-        DEFINE_CLASS(Ming3D::Actor, Ming3D::Object)
+        DEFINE_CLASS(Ming3D::Actor, Ming3D::GameObject)
 
     private:
         static void InitialiseClass();

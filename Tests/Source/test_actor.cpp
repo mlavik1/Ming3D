@@ -7,6 +7,7 @@ namespace Ming3D
 {
     void TestActor::IntBoolTestFunction(int a, bool b)
     {
+        LOG_INFO() << "IntBoolTestFunction";
         LOG_INFO() << a;
         LOG_INFO() << b;
     }
