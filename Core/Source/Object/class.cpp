@@ -19,6 +19,11 @@ namespace Ming3D
 		mMemberFunctions[arg_function->GetFunctionName()] = arg_function;
 	}
 
+    void Class::AddProperty(Property* arg_property)
+    {
+        mProperties[arg_property->GetPropertyName()] = arg_property;
+    }
+
 	const std::string &Class::GetFullName() const
 	{
 		return mClassName;
@@ -100,9 +105,21 @@ namespace Ming3D
 			return iter->second;
 		}
 		if (mBaseClass != nullptr)
-			return mBaseClass->GetFunctionByName(arg_name); // TODO: ADD BASE CLASS FUNCTIONS TO MAP
+			return mBaseClass->GetFunctionByName(arg_name); // TODO: ADD BASE CLASS FUNCTIONS TO MAP?
 		return nullptr;
 	}
+
+    Property* Class::GetPropertyByName(const char* arg_name)
+    {
+        auto iter = mProperties.find(arg_name);
+        if (iter != mProperties.end())
+        {
+            return iter->second;
+        }
+        if (mBaseClass != nullptr)
+            return mBaseClass->GetPropertyByName(arg_name); // TODO: ADD BASE CLASS PROEPRTIES TO MAP?
+        return nullptr;
+    }
 
 
 	void Class::InitialiseClass()

@@ -39,7 +39,8 @@ namespace Ming3D
 		const size_t newSize = mBytesWritten + arg_bytes;
 		if (newSize > mBytesAllocated)
 		{
-			char* newData = new char[newSize];
+            mBytesAllocated = arg_bytes > mBytesAllocated ? newSize : mBytesAllocated * 2;
+			char* newData = new char[mBytesAllocated];
 			if (mData != nullptr)
 			{
 				memcpy(newData, mData, mBytesWritten);
@@ -47,7 +48,6 @@ namespace Ming3D
 			}
 			mData = newData;
 			mDataReadPos = mData;
-			mBytesAllocated = newSize;
 		}
 		memcpy(mData + mBytesWritten, arg_data, arg_bytes);
 

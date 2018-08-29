@@ -5,6 +5,7 @@
 #include <vector>
 #include <unordered_map>
 #include "function.h"
+#include "property.h"
 
 namespace Ming3D
 {
@@ -41,6 +42,9 @@ namespace Ming3D
 		/** Registered member functions. */
 		std::unordered_map<std::string, Function*> mMemberFunctions;
 
+        /** Registered class properties. */
+        std::unordered_map<std::string, Property*> mProperties;
+
 		/** Class initialiser function pointer. This will get called once for each class. */
 		staticclassinitialiser_t mClassInitialiser;
 
@@ -48,6 +52,8 @@ namespace Ming3D
 		Class(const char* arg_name, staticclassinitialiser_t arg_initialiser, staticconstructor_t constructor = 0, Class* superclass = 0);
 
 		void AddMemberFunction(Function* arg_function);
+
+        void AddProperty(Property* arg_property);
 
 		/**
 		* Gets the full name of the class, with namespace.
@@ -97,6 +103,8 @@ namespace Ming3D
 
 		Function* GetFunctionByName(const char* arg_name);
 
+        Property* GetPropertyByName(const char* arg_name);
+
 		/**
 		* Initialises the class, which will call the static InitialiseClass-function where we register member functions.
 		*/
@@ -116,6 +124,15 @@ namespace Ming3D
 		{
             Class::GetStaticClass()->AddMemberFunction(new Function(inName, new FunctionCaller<ReturnType, Class, Param...>(inFunc)));
 		}
+
+        template<typename VarType, typename Class>
+        Property* RegisterProperty(const char* inName, VarType Class::*inVarPtr)
+        {
+            PropertyHandleBase* propHandle = new PropertyHandle<VarType, Class>(inVarPtr);
+            Property* prop = new Property(inName, propHandle);
+            AddProperty(prop);
+            return prop;
+        }
 	};
 }
 

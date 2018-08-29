@@ -2,6 +2,7 @@
 #include "test_actor.h"
 
 #include "GameEngine/game_engine.h"
+#include "Debug/debug.h"
 
 using namespace Ming3D;
 
@@ -9,6 +10,20 @@ int main()
 {
     GameEngine engine;
     engine.Initialise(); // in order to register classes
+
+
+    PropertyHandleBase* propHandle = TestActor::GetStaticClass()->GetPropertyByName("TestPropertyInt")->GetPropertyHandle();
+
+    TestActor* actor1 = new TestActor();
+    actor1->TestPropertyInt = 99;
+
+    DataWriter dw1(10);
+    propHandle->Serialise(actor1, dw1);
+
+    TestActor* actor2 = new TestActor();
+    propHandle->Deserialise(actor2, dw1);
+
+    LOG_INFO() << actor2->TestPropertyInt;
 
     std::vector<int> intVec({ 1, 3, 7 });
     int* intPtr = new int(3);
