@@ -16,6 +16,9 @@ namespace Ming3D
     public:
         netguid_t mNetGUID = 0;
 
+        virtual void ReplicateConstruct(DataWriter* outWriter) {}
+        virtual void ReceiveReplicateConstruct(DataWriter* inReader) {}
+
     };
 }
 
