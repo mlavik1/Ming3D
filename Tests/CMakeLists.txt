@@ -7,7 +7,7 @@ file(GLOB_RECURSE SRC_FILES
 )
 
 set(TestType "sockets" CACHE STRING "Type of test")
-set_property(CACHE TestType PROPERTY STRINGS sockets core rendering gamenetwork rpc)
+set_property(CACHE TestType PROPERTY STRINGS sockets core rendering gamenetwork rpc replication)
 
 if(TestType STREQUAL "core")
 	add_definitions(-DMING3D_TESTTYPE=1)
@@ -19,6 +19,8 @@ elseif(TestType STREQUAL "gamenetwork")
 	add_definitions(-DMING3D_TESTTYPE=4)
 elseif(TestType STREQUAL "rpc")
 	add_definitions(-DMING3D_TESTTYPE=5)
+elseif(TestType STREQUAL "replication")
+	add_definitions(-DMING3D_TESTTYPE=6)
 endif()
 
 include_directories ("../Core/Source")

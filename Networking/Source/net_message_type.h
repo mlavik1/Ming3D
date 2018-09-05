@@ -7,6 +7,7 @@ namespace Ming3D
 	{
 		Ignored,
 		RPC,
+        ObjectCreation,
 		ObjectReplication,
 		ConnectionRequest,
         Log

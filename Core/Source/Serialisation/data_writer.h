@@ -36,6 +36,12 @@ namespace Ming3D
 		inline const char* GetData() const { return mData; }
 		inline size_t GetSize() { return mBytesWritten; }
 
+        template <typename T>
+        void Write(T inVal)
+        {
+            Write(&inVal, sizeof(T));
+        }
+
 	};
 } // namespace Ming3D
 

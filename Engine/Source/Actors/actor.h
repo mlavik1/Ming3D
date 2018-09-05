@@ -25,17 +25,14 @@ namespace Ming3D
         Actor();
         virtual ~Actor();
 
+        void AddComponent(Component* inComp);
+
         template <typename T>
         T* AddComponent()
         {
             static_assert(std::is_base_of<Component, T>::value, "Must be a subclass of component");
             T* newComp = new T();
-            newComp->mParent = this;
-            mComponents.push_back(newComp);
-            if (mIsInitialised)
-            {
-                newComp->InitialiseComponent();
-            }
+            AddComponent(newComp);
             return newComp;
         }
 
@@ -43,6 +40,9 @@ namespace Ming3D
         virtual void Tick(float inDeltaTime);
 
         void AddChild(Actor* inActor);
+
+        virtual void ReplicateConstruct(DataWriter* outWriter) override;
+        virtual void ReceiveReplicateConstruct(DataWriter* inReader) override;
 
         inline Transform* GetTransform() { return mTransform; }
         std::vector<Component*> GetComponents() { return mComponents; }

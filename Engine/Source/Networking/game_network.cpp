@@ -68,7 +68,7 @@ namespace Ming3D
         }
         mIncomingMessages.clear(); // clear messages from last frame
 
-        for (size_t i = 1; i < mConnections.size(); i++)
+        for (size_t i = mIsHost ? 1 : 0/*TODO*/; i < mConnections.size(); i++)
         {
             bool receivedData = mConnections[i]->Recv();
             if (receivedData)
@@ -89,44 +89,73 @@ namespace Ming3D
         {
             switch (msg.mMessage->GetMessageType())
             {
-            case NetMessageType::Log:
-                LOG_INFO() << msg.mMessage->GetMessageData();
-                break;
-            case NetMessageType::RPC:
-                DataWriter* reader = msg.mMessage->GetDataWriter();
-                reader->SetReadPos(0);
-                msglen_t msgLength = reader->GetSize();
-
-                netguid_t netGUID = 0;
-                size_t funcNameLength = 0;
-                
-                reader->Read(&netGUID, sizeof(netguid_t));
-                reader->Read(&funcNameLength, sizeof(size_t));
-                char* funcName = new char[funcNameLength];
-                reader->Read(funcName, funcNameLength);
-                
-                // Find the object
-                auto objIter = mNetworkedObjects.find(netGUID);
-                if (objIter != mNetworkedObjects.end())
+                case NetMessageType::Log:
                 {
-                    GameObject* targetObject = objIter->second;
-                    // Find the function
-                    Function* func = targetObject->GetClass()->GetFunctionByName(funcName);
-                    FunctionArgs funcArgs = func->DeserialiseFunctionArgs(*reader);
-                    // Call RPC function on object
-                    func->CallFunction(targetObject, funcArgs);
+                    LOG_INFO() << msg.mMessage->GetMessageData();
+                    break;
                 }
-                else
+                case NetMessageType::RPC:
                 {
-                    LOG_ERROR() << "No registered networked object with GUID: " << netGUID;
-                }
+                    DataWriter* reader = msg.mMessage->GetDataWriter();
+                    reader->SetReadPos(0);
+                    msglen_t msgLength = reader->GetSize();
 
-                
-                delete funcName;
-                break;
+                    netguid_t netGUID = 0;
+                    size_t funcNameLength = 0;
+
+                    reader->Read(&netGUID, sizeof(netguid_t));
+                    reader->Read(&funcNameLength, sizeof(size_t));
+                    char* funcName = new char[funcNameLength];
+                    reader->Read(funcName, funcNameLength);
+
+                    // Find the object
+                    auto objIter = mNetworkedObjects.find(netGUID);
+                    if (objIter != mNetworkedObjects.end())
+                    {
+                        GameObject* targetObject = objIter->second;
+                        // Find the function
+                        Function* func = targetObject->GetClass()->GetFunctionByName(funcName);
+                        FunctionArgs funcArgs = func->DeserialiseFunctionArgs(*reader);
+                        // Call RPC function on object
+                        func->CallFunction(targetObject, funcArgs);
+                    }
+                    else
+                    {
+                        LOG_ERROR() << "No registered networked object with GUID: " << netGUID;
+                    }
+
+                    delete funcName;
+                    break;
+                }
+                case NetMessageType::ObjectCreation:
+                {
+                    DataWriter* reader = msg.mMessage->GetDataWriter();
+                    reader->SetReadPos(0);
+                    netguid_t netGUID = 0;
+                    reader->Read(&netGUID, sizeof(netguid_t));
+                    size_t classNameLen = 0;
+                    reader->Read(&classNameLen, sizeof(size_t));
+                    char* className = new char[classNameLen];
+                    reader->Read(className, classNameLen);
+
+                    Class* objClass = Class::GetClassByName(className, false);
+                    if (objClass == nullptr)
+                    {
+                        delete[] className;
+                        return;
+                    }
+                    // Create object
+                    GameObject* obj = (GameObject*)objClass->CreateInstance();
+                    // Register object in network
+                    RegisterNetworkedObject(obj, netGUID);
+                    // Deserialise properties/components/children
+                    obj->ReceiveReplicateConstruct(reader);
+                    break;
+                }
             }
         }
     }
+
 
     void GameNetwork::SendMessage(NetMessage* inMessage, int inClient)
     {
@@ -140,7 +169,14 @@ namespace Ming3D
     {
         for (ClientMessage& currMessage : mOutgoingMessages)
         {
-            SendMessageInternal(currMessage.mMessage, mConnections[currMessage.mClientID]);
+            if (currMessage.mClientID == -1)
+            {
+                // TEMP: Implement NetMessage targets
+                for(int iClient = mIsHost ? 1 : 0/*TODO*/; iClient < mConnections.size(); iClient++)
+                    SendMessageInternal(currMessage.mMessage, mConnections[iClient]);
+            }
+            else
+                SendMessageInternal(currMessage.mMessage, mConnections[currMessage.mClientID]);
         }
         mOutgoingMessages.clear();
     }
@@ -158,6 +194,28 @@ namespace Ming3D
         if (mConnections.size() <= inSocketID)
             mConnections.resize(inSocketID + 1);
         mConnections[inSocketID] = inConnection;
+    }
+
+    std::vector<GameObject*> GameNetwork::GetNetworkedObjects()
+    {
+        std::vector<GameObject*> objects;
+        for (auto pair : mNetworkedObjects)
+            objects.push_back(pair.second);
+        return objects;
+    }
+
+    void GameNetwork::ReplicateNetworkedObject(GameObject* inActor)
+    {
+        inActor->mNetGUID = mNetGUIDSequence++;
+        mNetworkedObjects[inActor->mNetGUID] = inActor;
+        DataWriter* writer = new DataWriter(64);
+        writer->Write(inActor->mNetGUID);
+        size_t classNameLen = inActor->GetClass()->GetName().size() + 1;
+        writer->Write(classNameLen);
+        writer->Write(inActor->GetClass()->GetName().c_str(), classNameLen);
+        inActor->ReplicateConstruct(writer);
+        NetMessage* msg = new NetMessage(NetMessageType::ObjectCreation, writer);
+        SendMessage(msg, -1);
     }
 
     void GameNetwork::RegisterNetworkedObject(GameObject* inObject, netguid_t inGUID)

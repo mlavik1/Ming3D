@@ -4,6 +4,7 @@
 #include "net_socket.h"
 #include "net_connection.h"
 #include <unordered_map>
+#include "Actors/actor.h"
 
 #include "Object/game_object.h"
 
@@ -42,6 +43,8 @@ namespace Ming3D
 
         std::unordered_map<netguid_t, GameObject*> mNetworkedObjects;
 
+        netguid_t mNetGUIDSequence = 0;
+
         void HandleIncomingMessages();
         void SendQueuedMessages();
 
@@ -58,8 +61,11 @@ namespace Ming3D
         bool IsHost() { return mIsHost; }
         bool IsConnectedToHost() { return mConnectedToHost; }
         NetConnection* GetConnection(int id) { return mConnections[id]; }
+        size_t GetNumConnections() { return mConnections.size(); }
         std::vector<ClientMessage> GetIncomingMessages() { return mIncomingMessages; }
+        std::vector<GameObject*> GetNetworkedObjects();
 
+        void ReplicateNetworkedObject(GameObject* inActor);
         void RegisterNetworkedObject(GameObject* inObject, netguid_t inGUID); // TEMP TEST
 
         void CallRPC(GameObject* inObject, const char* inFunctionName, FunctionArgs inArgs, int inClient);

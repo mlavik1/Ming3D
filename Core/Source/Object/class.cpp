@@ -121,6 +121,24 @@ namespace Ming3D
         return nullptr;
     }
 
+    std::vector<Property*> Class::GetAllProperties(bool arg_recursive)
+    {
+        std::vector<Property*> props;
+        for (auto prop : mProperties)
+            props.push_back(prop.second);
+        if (arg_recursive)
+        {
+            Class* currClass = mBaseClass;
+            while (currClass != nullptr)
+            {
+                for (auto prop : currClass->mProperties)
+                    props.push_back(prop.second);
+                currClass = currClass->mBaseClass;
+            }
+        }
+        return props;
+    }
+
 
 	void Class::InitialiseClass()
 	{

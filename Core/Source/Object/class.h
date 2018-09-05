@@ -105,6 +105,12 @@ namespace Ming3D
 
         Property* GetPropertyByName(const char* arg_name);
 
+        /**
+        * Returns all class properties.
+        * @param arg_recursive          Include properties in base classes
+        */
+        std::vector<Property*> GetAllProperties(bool arg_recursive);
+
 		/**
 		* Initialises the class, which will call the static InitialiseClass-function where we register member functions.
 		*/
