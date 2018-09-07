@@ -62,7 +62,7 @@ namespace Ming3D
 
     void GameNetwork::HandleIncomingMessages()
     {
-        for (ClientMessage& msg : mIncomingMessages)
+        for (IncomingMessage& msg : mIncomingMessages)
         {
             delete msg.mMessage;
         }
@@ -75,7 +75,7 @@ namespace Ming3D
             {
                 for (NetMessage* netMsg : mConnections[i]->GetNewMessages())
                 {
-                    ClientMessage clientMessage;
+                    IncomingMessage clientMessage;
                     clientMessage.mClientID = i;
 
                     clientMessage.mMessage = netMsg;
@@ -85,7 +85,7 @@ namespace Ming3D
             }
         }
 
-        for (ClientMessage& msg : mIncomingMessages)
+        for (IncomingMessage& msg : mIncomingMessages)
         {
             switch (msg.mMessage->GetMessageType())
             {
@@ -157,36 +157,86 @@ namespace Ming3D
     }
 
 
-    void GameNetwork::SendMessage(NetMessage* inMessage, int inClient)
+    void GameNetwork::SendMessage(NetMessage* inMessage, NetTarget inTarget)
     {
-        ClientMessage msg;
-        msg.mClientID = inClient;
+        OutgoingMessage msg;
+        msg.mTarget = inTarget;
+        msg.mMessage = inMessage;
+        mOutgoingMessages.push_back(msg);
+    }
+
+    void GameNetwork::SendMessage(NetMessage* inMessage, int inTarget)
+    {
+        OutgoingMessage msg;
+        msg.mClientID = inTarget;
         msg.mMessage = inMessage;
         mOutgoingMessages.push_back(msg);
     }
 
     void GameNetwork::SendQueuedMessages()
     {
-        for (ClientMessage& currMessage : mOutgoingMessages)
+        for (OutgoingMessage& currMessage : mOutgoingMessages)
         {
-            if (currMessage.mClientID == -1)
-            {
-                // TEMP: Implement NetMessage targets
-                for(int iClient = mIsHost ? 1 : 0/*TODO*/; iClient < mConnections.size(); iClient++)
-                    SendMessageInternal(currMessage.mMessage, mConnections[iClient]);
-            }
+            std::vector<int> targets;
+            if (currMessage.mClientID > -1)
+                targets.push_back(currMessage.mClientID);
             else
-                SendMessageInternal(currMessage.mMessage, mConnections[currMessage.mClientID]);
+            {
+                switch (currMessage.mTarget)
+                {
+                case NetTarget::Everyone:
+                    SendMessageToSelf(currMessage.mMessage);
+
+                    for (size_t i = mIsHost ? 1 : 0; i < mConnections.size(); i++)
+                        targets.push_back(i);
+                    break;
+                case NetTarget::Others:
+                    for (size_t i = mIsHost ? 1 : 0; i < mConnections.size(); i++)
+                        targets.push_back(i);
+                    break;
+                case NetTarget::Clients:
+                    if (!mIsHost)
+                    {
+                        SendMessageToSelf(currMessage.mMessage);
+                    }
+                    for (size_t i = 1; i < mConnections.size(); i++)
+                        targets.push_back(i);
+                    break;
+                case NetTarget::Host:
+                    if (mIsHost)
+                    {
+                        SendMessageToSelf(currMessage.mMessage);
+                    }
+                    else
+                    {
+                        targets.push_back(0);
+                    }
+                    break;
+                }
+            }
+            
+            for (int iClient : targets)
+            {
+                DataWriter* dataWriter = currMessage.mMessage->Serialise();
+                SendDataToConnecton(dataWriter, mConnections[iClient]);
+                delete dataWriter;
+                delete currMessage.mMessage;
+            }
         }
         mOutgoingMessages.clear();
     }
 
-    void GameNetwork::SendMessageInternal(NetMessage* inNetMessage, NetConnection* inConnection)
+    void GameNetwork::SendMessageToSelf(NetMessage* inMessage)
     {
-        DataWriter* dataWriter = inNetMessage->Serialise();
-        inConnection->GetSocket()->Send(dataWriter->GetData(), dataWriter->GetSize());
-        delete dataWriter;
-        delete inNetMessage;
+        IncomingMessage clientMessage;
+        clientMessage.mClientID = -1;
+        clientMessage.mMessage = inMessage;
+        mIncomingMessages.push_back(clientMessage);
+    }
+
+    void GameNetwork::SendDataToConnecton(DataWriter* inWriter, NetConnection* inConnection)
+    {
+        inConnection->GetSocket()->Send(inWriter->GetData(), inWriter->GetSize());
     }
 
     void GameNetwork::SetConnection(int inSocketID, NetConnection* inConnection)
@@ -215,7 +265,7 @@ namespace Ming3D
         writer->Write(inActor->GetClass()->GetName().c_str(), classNameLen);
         inActor->ReplicateConstruct(writer);
         NetMessage* msg = new NetMessage(NetMessageType::ObjectCreation, writer);
-        SendMessage(msg, -1);
+        SendMessage(msg, NetTarget::Others);
     }
 
     void GameNetwork::RegisterNetworkedObject(GameObject* inObject, netguid_t inGUID)
@@ -265,20 +315,13 @@ namespace Ming3D
         switch (inTarget)
         {
         case NetTarget::Host:
-            SendMessage(msg, 0);
+            SendMessage(msg, NetTarget::Host);
             break;
         case NetTarget::Clients:
-            for (int i = 1; i < mConnections.size(); i++)
-            {
-                SendMessage(msg, i);
-            }
+            SendMessage(msg, NetTarget::Clients);
             break;
         case NetTarget::Everyone:
-            for (int i = 1; i < mConnections.size(); i++)
-            {
-                SendMessage(msg, i);
-            }
-            inObject->GetStaticClass()->GetFunctionByName(inFunctionName)->CallFunction(inObject, inArgs);
+            SendMessage(msg, NetTarget::Everyone);
             break;
         }
 

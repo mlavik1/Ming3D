@@ -5,32 +5,37 @@
 #include "net_connection.h"
 #include <unordered_map>
 #include "Actors/actor.h"
+#include "net_target.h"
 
 #include "Object/game_object.h"
 
 namespace Ming3D
 {
-    enum NetTarget
+    struct IncomingMessage
     {
-        Host,
-        Clients,
-        Everyone
+        int mClientID;
+        NetMessage* mMessage;
     };
 
-    struct ClientMessage
+    struct OutgoingMessage
     {
-        int mClientID = 0;
-        NetMessage* mMessage = nullptr;
+        NetTarget mTarget;
+        int mClientID = -1;
+        NetMessage* mMessage;
     };
 
+    /**
+    * Game Network class.
+    * Handles communication between clients and a host.
+    */
     class GameNetwork
     {
     private:
 #define MING3D_DEFAULT_BUFLEN 512
         char mDataBuffer[MING3D_DEFAULT_BUFLEN];
 
-        std::vector<ClientMessage> mIncomingMessages;
-        std::vector<ClientMessage> mOutgoingMessages;
+        std::vector<IncomingMessage> mIncomingMessages;
+        std::vector<OutgoingMessage> mOutgoingMessages;
 
         NetSocket* mListenSocket = nullptr;
         NetConnection* mHostConnection = nullptr;
@@ -47,8 +52,9 @@ namespace Ming3D
 
         void HandleIncomingMessages();
         void SendQueuedMessages();
+        void SendMessageToSelf(NetMessage* inMessage);
 
-        void SendMessageInternal(NetMessage* inNetMessage, NetConnection* inConnection);
+        void SendDataToConnecton(DataWriter* inWriter, NetConnection* inConnection);
         void SetConnection(int inSocketID, NetConnection* inConnection);
 
         NetMessage* CreateRPCMessage(GameObject* inObject, const char* inFunctionName, FunctionArgs inArgs);
@@ -57,15 +63,22 @@ namespace Ming3D
         void Connect(const char* inHost, int inPort);
         void Update();
 
+        /** Send a message to the specified NetTarget. */
+        void SendMessage(NetMessage* inMessage, NetTarget inTarget);
+        /** Send a message to a single client. */
         void SendMessage(NetMessage* inMessage, int inClient);
+        /** Returns true if running as host of the game network. */
         bool IsHost() { return mIsHost; }
+        /** Returns true if a connection with the host has been established */
         bool IsConnectedToHost() { return mConnectedToHost; }
         NetConnection* GetConnection(int id) { return mConnections[id]; }
         size_t GetNumConnections() { return mConnections.size(); }
-        std::vector<ClientMessage> GetIncomingMessages() { return mIncomingMessages; }
+        std::vector<IncomingMessage> GetIncomingMessages() { return mIncomingMessages; }
         std::vector<GameObject*> GetNetworkedObjects();
 
+        /** Replicates an object to all connected clients. The object will be created on all clients, and have its properties replicated. */
         void ReplicateNetworkedObject(GameObject* inActor);
+        /** Registers a networked object, with the specified net GUID. */
         void RegisterNetworkedObject(GameObject* inObject, netguid_t inGUID); // TEMP TEST
 
         void CallRPC(GameObject* inObject, const char* inFunctionName, FunctionArgs inArgs, int inClient);
