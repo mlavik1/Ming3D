@@ -48,8 +48,10 @@ namespace Ming3D
         NetConnection* inConnection = new NetConnection(inConnSock);
         if (inConnSock != nullptr)
         {
+            const int clientID = mConnections.size();
             LOG_INFO() << "Incoming connection from client";
-            SetConnection(mConnections.size(), inConnection);
+            SetConnection(clientID, inConnection);
+            HandleClientConnected(clientID);
         }
         
         if (!mIsHost && !mConnectedToHost)
@@ -246,6 +248,17 @@ namespace Ming3D
         mConnections[inSocketID] = inConnection;
     }
 
+    void GameNetwork::HandleClientConnected(int clientID)
+    {
+        // Replicate networked objects
+        for (auto netObjPair : mNetworkedObjects)
+        {
+            GameObject* obj = netObjPair.second;
+            NetMessage* msg = CreateRepConstructMessage(obj);
+            SendMessage(msg, clientID);
+        }
+    }
+
     std::vector<GameObject*> GameNetwork::GetNetworkedObjects()
     {
         std::vector<GameObject*> objects;
@@ -258,13 +271,8 @@ namespace Ming3D
     {
         inActor->mNetGUID = mNetGUIDSequence++;
         mNetworkedObjects[inActor->mNetGUID] = inActor;
-        DataWriter* writer = new DataWriter(64);
-        writer->Write(inActor->mNetGUID);
-        size_t classNameLen = inActor->GetClass()->GetName().size() + 1;
-        writer->Write(classNameLen);
-        writer->Write(inActor->GetClass()->GetName().c_str(), classNameLen);
-        inActor->ReplicateConstruct(writer);
-        NetMessage* msg = new NetMessage(NetMessageType::ObjectCreation, writer);
+
+        NetMessage* msg = CreateRepConstructMessage(inActor);
         SendMessage(msg, NetTarget::Others);
     }
 
@@ -292,6 +300,18 @@ namespace Ming3D
 
         NetMessage* msg = new NetMessage(NetMessageType::RPC, writer);
         msg->SetMessageData(writer);
+        return msg;
+    }
+
+    NetMessage* GameNetwork::CreateRepConstructMessage(GameObject* inObject)
+    {
+        DataWriter* writer = new DataWriter(64);
+        writer->Write(inObject->mNetGUID);
+        size_t classNameLen = inObject->GetClass()->GetName().size() + 1;
+        writer->Write(classNameLen);
+        writer->Write(inObject->GetClass()->GetName().c_str(), classNameLen);
+        inObject->ReplicateConstruct(writer);
+        NetMessage* msg = new NetMessage(NetMessageType::ObjectCreation, writer);
         return msg;
     }
 

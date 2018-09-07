@@ -56,8 +56,12 @@ namespace Ming3D
 
         void SendDataToConnecton(DataWriter* inWriter, NetConnection* inConnection);
         void SetConnection(int inSocketID, NetConnection* inConnection);
+        void HandleClientConnected(int clientID);
 
+        /** Crates a NetMessage for calling the specified function (with the specified arguments) remotely. */
         NetMessage* CreateRPCMessage(GameObject* inObject, const char* inFunctionName, FunctionArgs inArgs);
+        /** Serialises the object and creates a Netmessage for creating the networked object remotely. */
+        NetMessage* CreateRepConstructMessage(GameObject* inObject);
 
     public:
         void Connect(const char* inHost, int inPort);

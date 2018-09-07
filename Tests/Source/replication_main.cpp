@@ -37,43 +37,51 @@ int main()
         _sleep(300);
     }
 
-    TestActor* testActor = nullptr;
+
+    // Host
     if (network->IsHost())
     {
-        testActor = new TestActor();
-        testActor->TestPropertyInt = 123;
-        testActor->TestPropertyFloat = 321.0f;
-    }
-    bool hasReplicatedActor = false;
+        TestActor* testActor1 = nullptr; // registered before client connect
+        testActor1 = new TestActor();
+        testActor1->TestPropertyInt = 123;
+        testActor1->TestPropertyFloat = 321.0f;
+        network->ReplicateNetworkedObject(testActor1);
 
-    while (true)
-    {
-        // Host
-        if (network->IsHost())
+        TestActor* testActor2 = nullptr; // registered after client connect
+        testActor2 = new TestActor();
+        testActor2->TestPropertyInt = 456;
+        testActor2->TestPropertyFloat = 654.3f;
+
+        bool hasReplicatedActor = false;
+
+        while (true)
         {
             if (!hasReplicatedActor && network->GetNumConnections() > 1)
             {
-                network->ReplicateNetworkedObject(testActor);
+                network->ReplicateNetworkedObject(testActor2);
                 hasReplicatedActor = true;
             }
+            gameEngine.Update();
         }
-        // Client
-        else if (network->IsConnectedToHost())
+    }
+    else
+    {
+        size_t nextNetObjIndex = 0;
+        while (true)
         {
-            if (testActor == nullptr)
+            while (nextNetObjIndex < network->GetNetworkedObjects().size())
             {
-                for (GameObject* obj : network->GetNetworkedObjects())
+                GameObject* obj = network->GetNetworkedObjects().at(nextNetObjIndex);
+                if (obj->GetClass() == TestActor::GetStaticClass())
                 {
-                    if (obj->GetClass() == TestActor::GetStaticClass())
-                    {
-                        testActor = (TestActor*)obj;
-                        LOG_INFO() << "Received replicated actor: " << testActor->GetStaticClass()->GetName();
-                        LOG_INFO() << "Replicated properties: " << testActor->TestPropertyInt << ", " << testActor->TestPropertyFloat;
-                    }
+                    TestActor* testActor = (TestActor*)obj;
+                    LOG_INFO() << "Received replicated actor: " << testActor->GetStaticClass()->GetName();
+                    LOG_INFO() << "Replicated properties: " << testActor->TestPropertyInt << ", " << testActor->TestPropertyFloat;
                 }
+                nextNetObjIndex++;
             }
+            gameEngine.Update();
         }
-        gameEngine.Update(); // Update the engine (to send and receive messages through game network)
     }
 
     return 0;
