@@ -21,8 +21,8 @@ namespace Ming3D
 	{
 		DEFINE_CLASS(Ming3D::TestActor, Ming3D::Actor)
 	public:
-        int TestPropertyInt = 42;
-        float TestPropertyFloat = 42.42f;
+        int TestPropertyInt = 3;
+        float TestPropertyFloat = 3.42f;
 
 		void IntBoolTestFunction(int a, bool b);
 

@@ -132,10 +132,10 @@ namespace Ming3D
 		}
 
         template<typename VarType, typename Class>
-        Property* RegisterProperty(const char* inName, VarType Class::*inVarPtr)
+        Property* RegisterProperty(const char* inName, VarType Class::*inVarPtr, propflag_t inFlags = 0)
         {
             PropertyHandleBase* propHandle = new PropertyHandle<VarType, Class>(inVarPtr);
-            Property* prop = new Property(inName, propHandle);
+            Property* prop = new Property(inName, propHandle, inFlags);
             AddProperty(prop);
             return prop;
         }

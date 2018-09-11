@@ -48,7 +48,7 @@ namespace Ming3D
         TestActor::GetStaticClass()->RegisterFunction("IntPointerTestFunction", &TestActor::IntPointerTestFunction);
         TestActor::GetStaticClass()->RegisterFunction("ObjectTestFunction", &TestActor::ObjectTestFunction);
     
-        TestActor::GetStaticClass()->RegisterProperty("TestPropertyInt", &TestActor::TestPropertyInt);
-        TestActor::GetStaticClass()->RegisterProperty("TestPropertyFloat", &TestActor::TestPropertyFloat);
+        TestActor::GetStaticClass()->RegisterProperty("TestPropertyInt", &TestActor::TestPropertyInt, (propflag_t)PropertyFlag::Replicated);
+        TestActor::GetStaticClass()->RegisterProperty("TestPropertyFloat", &TestActor::TestPropertyFloat, (propflag_t)PropertyFlag::Replicated);
     }
 }

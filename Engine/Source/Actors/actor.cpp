@@ -52,7 +52,8 @@ namespace Ming3D
         // Replicate properties
         for (Property* prop : GetClass()->GetAllProperties(true))
         {
-            prop->GetPropertyHandle()->Serialise(this, *outWriter);
+            if(prop->HasPropertyFlag(PropertyFlag::Replicated))
+                prop->GetPropertyHandle()->Serialise(this, *outWriter);
         }
 
         // Replicate components
@@ -79,7 +80,8 @@ namespace Ming3D
         // Deserialise properties
         for (Property* prop : GetClass()->GetAllProperties(true))
         {
-            prop->GetPropertyHandle()->Deserialise(this, *inReader);
+            if (prop->HasPropertyFlag(PropertyFlag::Replicated))
+                prop->GetPropertyHandle()->Deserialise(this, *inReader);
         }
 
         // Construct components and deserialise component properties
