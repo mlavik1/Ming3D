@@ -5,15 +5,24 @@
 #include "class.h"
 #include "function.h"
 
-typedef uint32_t ObjectFlagRegister;
-
 typedef uint64_t netguid_t;
 
 enum class ObjectFlag
 {
 	Destroyed = 1,
-	PendingDestroy = 2
+	InitReplicate = 2,
+    Serialise = 4
 };
+
+inline ObjectFlag operator|(ObjectFlag a, ObjectFlag b)
+{
+    return static_cast<ObjectFlag>(static_cast<int>(a) | static_cast<int>(b));
+}
+
+inline ObjectFlag operator&(ObjectFlag a, ObjectFlag b)
+{
+    return static_cast<ObjectFlag>(static_cast<int>(a) & static_cast<int>(b));
+}
 
 // Used in the constructor defined in DEFINE_CLASS_INTERNAL.
 // This allows us to create an instance of a class without knowing the calss ( see Class::CreateInstance() ).

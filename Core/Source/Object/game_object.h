@@ -6,6 +6,9 @@
 
 namespace Ming3D
 {
+    /**
+    * Base calss of Actors and Components (Objects in a scene).
+    */
     class GameObject : public Object
     {
         DEFINE_CLASS(Ming3D::GameObject, Ming3D::Object)
@@ -16,6 +19,8 @@ namespace Ming3D
     public:
         netguid_t mNetGUID = 0;
 
+        virtual void Serialise(DataWriter* outWriter, PropertyFlag inPropFlags = PropertyFlag::Serialise, ObjectFlag inObjFlag = ObjectFlag::Serialise) override {}
+        virtual void Deserialise(DataWriter* inReader, PropertyFlag inPropFlags = PropertyFlag::Serialise, ObjectFlag inObjFlag = ObjectFlag::Serialise) override {}
         virtual void ReplicateConstruct(DataWriter* outWriter) {}
         virtual void ReceiveReplicateConstruct(DataWriter* inReader) {}
 

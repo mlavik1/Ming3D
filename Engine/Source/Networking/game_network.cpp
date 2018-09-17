@@ -151,7 +151,7 @@ namespace Ming3D
                     // Register object in network
                     RegisterNetworkedObject(obj, netGUID);
                     // Deserialise properties/components/children
-                    obj->ReceiveReplicateConstruct(reader);
+                    obj->Deserialise(reader, PropertyFlag::InitReplicate, ObjectFlag::InitReplicate);
                     break;
                 }
             }
@@ -269,6 +269,7 @@ namespace Ming3D
 
     void GameNetwork::ReplicateNetworkedObject(GameObject* inActor)
     {
+        inActor->SetObjectFlag(ObjectFlag::InitReplicate);
         inActor->mNetGUID = mNetGUIDSequence++;
         mNetworkedObjects[inActor->mNetGUID] = inActor;
 
@@ -310,7 +311,7 @@ namespace Ming3D
         size_t classNameLen = inObject->GetClass()->GetName().size() + 1;
         writer->Write(classNameLen);
         writer->Write(inObject->GetClass()->GetName().c_str(), classNameLen);
-        inObject->ReplicateConstruct(writer);
+        inObject->Serialise(writer, PropertyFlag::InitReplicate, ObjectFlag::InitReplicate);
         NetMessage* msg = new NetMessage(NetMessageType::ObjectCreation, writer);
         return msg;
     }

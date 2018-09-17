@@ -12,6 +12,7 @@ namespace Ming3D
 
     Component::Component()
     {
+        SetObjectFlag(ObjectFlag::Serialise); // serialised by default
     }
 
     Component::~Component()

@@ -7,11 +7,21 @@
 
 namespace Ming3D
 {
-    typedef uint64_t propflag_t;
     enum class PropertyFlag
     {
-        Replicated = 1
+        InitReplicate = 1,
+        Serialise = 2
     };
+
+    inline PropertyFlag operator|(PropertyFlag a, PropertyFlag b)
+    {
+        return static_cast<PropertyFlag>(static_cast<int>(a) | static_cast<int>(b));
+    }
+
+    inline PropertyFlag operator&(PropertyFlag a, PropertyFlag b)
+    {
+        return static_cast<PropertyFlag>(static_cast<int>(a) & static_cast<int>(b));
+    }
     
     /**
     * Base class for class properties.
@@ -22,16 +32,17 @@ namespace Ming3D
     private:
         std::string mName;
         PropertyHandleBase* mPropertyHandle;
-        propflag_t mFlags = 0;
+        PropertyFlag mFlags = (PropertyFlag)0;
 
     public:
-        Property(const char* inName, PropertyHandleBase* inPropHandle, propflag_t inFlags = 0);
+        Property(const char* inName, PropertyHandleBase* inPropHandle, PropertyFlag inFlags = (PropertyFlag)0);
 
         std::string GetPropertyName() { return mName; }
         PropertyHandleBase* GetPropertyHandle() { return mPropertyHandle; }
 
-        propflag_t GetPropertyFlags();
+        PropertyFlag GetPropertyFlags();
         bool HasPropertyFlag(PropertyFlag inFlag);
+
     };
 }
 

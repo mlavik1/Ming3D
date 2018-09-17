@@ -15,7 +15,7 @@ namespace Ming3D
 		DEFINE_CLASS_INTERNAL(Ming3D::Object, , 0)
 
 	private:
-		ObjectFlagRegister mObjectFlags;
+        ObjectFlag mObjectFlags;
 
 	public:
 		Object();
@@ -24,11 +24,20 @@ namespace Ming3D
 		/** Calls the specified Function with the given arguments. */
 		void CallFunction(Function* inFunc, const FunctionArgs& inArgs);
 
+        virtual void Serialise(DataWriter* outWriter, PropertyFlag inPropFlags = PropertyFlag::Serialise, ObjectFlag inObjFlag = ObjectFlag::Serialise) {}
+        virtual void Deserialise(DataWriter* inReader, PropertyFlag inPropFlags = PropertyFlag::Serialise, ObjectFlag inObjFlag = ObjectFlag::Serialise) {}
+
+        virtual void SerialiseProperties(DataWriter* outWriter, PropertyFlag inFlags = (PropertyFlag)0);
+        virtual void DeserialiseProperties(DataWriter* inReader, PropertyFlag inFlags = (PropertyFlag)0);
+
 		/**
 		* This is where you will register member functions.
 		* Derived classes can implement their version of this function to register their member functions.
 		*/
 		static void InitialiseClass();
+
+        void SetObjectFlag(ObjectFlag inFlag);
+        bool HasObjectFlags(ObjectFlag inFlags);
 	};
 }
 

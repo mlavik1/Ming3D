@@ -41,8 +41,26 @@ namespace Ming3D
 
         void AddChild(Actor* inActor);
 
-        virtual void ReplicateConstruct(DataWriter* outWriter) override;
-        virtual void ReceiveReplicateConstruct(DataWriter* inReader) override;
+        /**
+        * Serialises the actor and all its properties, children and components.
+        * @param outWriter  The DataWriter used for storing the serialised data.
+        * @param inPropFlags  The required property flags of properties to serialise.
+        @ param inObjFlags  The object flags of child components and actors to serialise.
+        */
+        virtual void Serialise(DataWriter* outWriter, PropertyFlag inPropFlags = PropertyFlag::Serialise, ObjectFlag inObjFlags = ObjectFlag::Serialise) override;
+        
+        /**
+        * Deserialises the actor and all its properties, children and components.
+        * @param inReader  The DataWriter to read the serialised data from.
+        * @param inPropFlags  The required property flags of properties to deserialise.
+        @ param inObjFlags  The object flags of child components and actors to deserialise.
+        */
+        virtual void Deserialise(DataWriter* inReader, PropertyFlag inPropFlags = PropertyFlag::Serialise, ObjectFlag inObjFlags = ObjectFlag::Serialise) override;
+        
+        void SerialiseComponents(DataWriter* outWriter, PropertyFlag inPropFlags, ObjectFlag inObjFlag);
+        void DeserialiseComponents(DataWriter* inReader, PropertyFlag inPropFlags, ObjectFlag inObjFlags);
+        void SerialiseChildActors(DataWriter* outWriter, PropertyFlag inPropFlags, ObjectFlag inObjFlags);
+        void DeserialiseChildActors(DataWriter* inReader, PropertyFlag inPropFlags, ObjectFlag inObjFlag);
 
         inline Transform* GetTransform() { return mTransform; }
         std::vector<Component*> GetComponents() { return mComponents; }

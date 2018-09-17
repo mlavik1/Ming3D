@@ -14,6 +14,7 @@ namespace Ming3D
     {
         mTransform = new Transform();
         mTransform->mActor = this;
+        SetObjectFlag(ObjectFlag::Serialise); // serialised by default
     }
 
     Actor::~Actor()
@@ -47,44 +48,51 @@ namespace Ming3D
         inActor->mTransform->mParentTransform = mTransform;
     }
 
-    void Actor::ReplicateConstruct(DataWriter* outWriter)
+    void Actor::Serialise(DataWriter* outWriter, PropertyFlag inPropFlags, ObjectFlag inObjFlag)
     {
         // Replicate properties
-        for (Property* prop : GetClass()->GetAllProperties(true))
-        {
-            if(prop->HasPropertyFlag(PropertyFlag::Replicated))
-                prop->GetPropertyHandle()->Serialise(this, *outWriter);
-        }
+        SerialiseProperties(outWriter, inPropFlags);
 
-        // Replicate components
-        outWriter->Write(mComponents.size());
+        // Serialise components
+        SerialiseComponents(outWriter, inPropFlags, inObjFlag);
+
+        // Serialise child actors
+        SerialiseChildActors(outWriter, inPropFlags, inObjFlag);
+    }
+
+    void Actor::Deserialise(DataWriter* inReader, PropertyFlag inPropFlags, ObjectFlag inObjFlags)
+    {
+        // Deserialise properties
+        DeserialiseProperties(inReader, inPropFlags);
+
+        // Construct components and deserialise component properties
+        DeserialiseComponents(inReader, inPropFlags, inObjFlags);
+
+        // Construct children and deserialise child actor properties
+        DeserialiseChildActors(inReader, inPropFlags, inObjFlags);
+    }
+
+    void Actor::SerialiseComponents(DataWriter* outWriter, PropertyFlag inPropFlags, ObjectFlag inObjFlags)
+    {
+        // Find all components to serialise
+        std::vector<Component*> serialisedComponents;
         for (Component* childComp : mComponents)
         {
-            outWriter->Write(childComp->GetClass()->GetName().size());
-            outWriter->Write(childComp->GetClass()->GetName().c_str(), childComp->GetClass()->GetName().size()); // TODO: template function
-            childComp->ReplicateConstruct(outWriter);
+            if (childComp->HasObjectFlags(inObjFlags))
+                serialisedComponents.push_back(childComp);
         }
-
-        // Replicate child actors
-        outWriter->Write(mChildren.size());
-        for (Actor* childActor : mChildren)
+        // Serialise components
+        outWriter->Write(serialisedComponents.size());
+        for (Component* childComp : serialisedComponents)
         {
-            outWriter->Write(childActor->GetClass()->GetName().size());
-            outWriter->Write(childActor->GetClass()->GetName().c_str(), childActor->GetClass()->GetName().size() + 1); // TODO: template function
-            childActor->ReplicateConstruct(outWriter);
+            outWriter->Write(childComp->GetClass()->GetName().size());
+            outWriter->Write(childComp->GetClass()->GetName().c_str(), childComp->GetClass()->GetName().size());
+            childComp->Serialise(outWriter, inPropFlags, inObjFlags);
         }
     }
 
-    void Actor::ReceiveReplicateConstruct(DataWriter* inReader)
+    void Actor::DeserialiseComponents(DataWriter* inReader, PropertyFlag inPropFlags, ObjectFlag inObjFlags)
     {
-        // Deserialise properties
-        for (Property* prop : GetClass()->GetAllProperties(true))
-        {
-            if (prop->HasPropertyFlag(PropertyFlag::Replicated))
-                prop->GetPropertyHandle()->Deserialise(this, *inReader);
-        }
-
-        // Construct components and deserialise component properties
         size_t numComponents = 0;
         inReader->Read(&numComponents, sizeof(size_t));
         for (size_t i = 0; i < numComponents; i++)
@@ -101,12 +109,33 @@ namespace Ming3D
             }
             Component* comp = (Component*)compClass->CreateInstance();
             AddComponent(comp);
-            comp->ReceiveReplicateConstruct(inReader);
+            comp->Deserialise(inReader, inPropFlags, inObjFlags);
 
             delete[] compClassName;
         }
+    }
 
-        // Construct children and deserialise child actor properties
+    void Actor::SerialiseChildActors(DataWriter* outWriter, PropertyFlag inPropFlags, ObjectFlag inObjFlags)
+    {
+        // Find child actors to serialise
+        std::vector<Actor*> serialisedChildren;
+        for (Actor* childActor : mChildren)
+        {
+            if (childActor->HasObjectFlags(inObjFlags))
+                serialisedChildren.push_back(childActor);
+        }
+        // Serialise actors
+        outWriter->Write(serialisedChildren.size());
+        for (Actor* childActor : serialisedChildren)
+        {
+            outWriter->Write(childActor->GetClass()->GetName().size());
+            outWriter->Write(childActor->GetClass()->GetName().c_str(), childActor->GetClass()->GetName().size() + 1);
+            childActor->Serialise(outWriter, inPropFlags, inObjFlags);
+        }
+    }
+
+    void Actor::DeserialiseChildActors(DataWriter* inReader, PropertyFlag inPropFlags, ObjectFlag inObjFlags)
+    {
         size_t numClidren = 0;
         inReader->Read(&numClidren, sizeof(size_t));
         for (size_t i = 0; i < numClidren; i++)
@@ -123,7 +152,7 @@ namespace Ming3D
             }
             Actor* child = (Actor*)actorClass->CreateInstance();
             AddChild(child);
-            child->ReceiveReplicateConstruct(inReader);
+            child->Deserialise(inReader, inPropFlags, inObjFlags);
 
             delete[] actorClassName;
         }
