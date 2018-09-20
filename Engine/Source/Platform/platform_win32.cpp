@@ -1,22 +1,22 @@
 #include "platform_win32.h"
 
-#define MING3D_USE_OPENGL
+#include <winsock2.h>
+#include <windows.h>
+#include <ws2tcpip.h>
+
+//#define MING3D_USE_OPENGL
 
 #ifdef MING3D_USE_OPENGL
 #include <SDL.h>
 #include "sdl_window.h"
 #include "render_device_gl.h"
 #else
-#include <Windows.h>
 #include "render_device_d3d11.h"
 #include "winapi_window.h"
 #endif
 
 #include "Debug/debug.h"
 
-#include <winsock2.h>
-#include <windows.h>
-#include <ws2tcpip.h>
 #pragma comment (lib, "Ws2_32.lib") // REMOVE ME
 
 #include "net_socket_winsock.h"

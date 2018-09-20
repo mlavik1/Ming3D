@@ -1,12 +1,29 @@
 #include "sdl_window.h"
 
+#include <SDL.h>
+#include <SDL_video.h>
+
 #include <SDL_syswm.h>
+
+#include "Debug/st_assert.h"
 
 namespace Ming3D
 {
+    SDLWindow::SDLWindow()
+    {
+        
+    }
+
+    SDLWindow::SDLWindow(const void* inNativewindow)
+    {
+        mSDLWindow = SDL_CreateWindowFrom(inNativewindow);
+        __Assert(mSDLWindow != nullptr);
+    }
+
     void SDLWindow::Initialise()
     {
-        mSDLWindow = SDL_CreateWindow("Ming3D", 0, 0, mWindowWidth, mWindowHeight, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
+        if(mSDLWindow == nullptr)
+            mSDLWindow = SDL_CreateWindow("Ming3D", 0, 0, mWindowWidth, mWindowHeight, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
         mGLContext = SDL_GL_CreateContext(mSDLWindow);
     }
 

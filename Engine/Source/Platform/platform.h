@@ -5,10 +5,10 @@
 #include "window_base.h"
 #include "render_window.h"
 
-#include "net_socket.h"
-
 namespace Ming3D
 {
+    class NetSocket;
+
     class Platform
     {
     public:

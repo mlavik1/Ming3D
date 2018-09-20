@@ -10,7 +10,7 @@
 
 #include "Debug/debug.h"
 
-#define MING3D_USE_OPENGL
+//#define MING3D_USE_OPENGL
 
 #ifdef MING3D_USE_OPENGL
 #include <SDL.h>

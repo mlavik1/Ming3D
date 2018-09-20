@@ -5,6 +5,7 @@
 #include "assimp/Importer.hpp"
 #include "texture_loader.h"
 #include "Debug/debug.h"
+#include "Debug/st_assert.h"
 
 namespace Ming3D
 {
@@ -14,6 +15,8 @@ namespace Ming3D
 
         Assimp::Importer importer;
         const aiScene * scene = importer.ReadFile(inModel, aiProcess_Triangulate | aiProcess_OptimizeMeshes | aiProcess_JoinIdenticalVertices | aiProcess_RemoveRedundantMaterials | aiProcess_GenSmoothNormals);
+
+        __Assert(scene != nullptr);
 
         for (unsigned int m = 0; m < scene->mNumMeshes; m++)
         {

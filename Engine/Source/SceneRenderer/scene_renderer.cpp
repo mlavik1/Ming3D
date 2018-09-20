@@ -17,9 +17,26 @@ namespace Ming3D
         delete mRenderScene;
     }
 
+    void SceneRenderer::AddCamera(Camera* inCamera)
+    {
+        mCameras.push_back(inCamera);
+    }
+
     void SceneRenderer::AddSceneObject(RenderSceneObject* inObject)
     {
         mRenderScene->mSceneObjects.push_back(inObject);
+    }
+
+    void SceneRenderer::RenderCameras()
+    {
+        for (Camera* camera : mCameras)
+        {
+            if (camera->mRenderTarget == nullptr)
+                continue;
+            GGameEngine->GetRenderDevice()->BeginRenderTarget(camera->mRenderTarget);
+            RenderObjects();
+            GGameEngine->GetRenderDevice()->EndRenderTarget(camera->mRenderTarget);
+        }
     }
 
     void SceneRenderer::RenderObjects()

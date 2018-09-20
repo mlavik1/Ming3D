@@ -2,20 +2,24 @@
 #define MING3D_SDL_WINDOW_H
 
 #include "window_base.h"
-#include <SDL.h>
-#include <SDL_video.h>
+
+struct SDL_Window;
+typedef void *SDL_GLContext;
 
 namespace Ming3D
 {
     class SDLWindow : public WindowBase
     {
     private:
-        SDL_Window* mSDLWindow;
-        SDL_GLContext mGLContext;
+        SDL_Window* mSDLWindow = nullptr;
+        SDL_GLContext mGLContext = nullptr;
         unsigned int mWindowWidth = 800;
         unsigned int mWindowHeight = 600;
 
     public:
+        SDLWindow();
+        SDLWindow(const void* inNativewindow);
+
         virtual void Initialise() override;
         virtual void SetSize(unsigned int inWidth, unsigned int inHeight) override;
         virtual unsigned int GetWidth() override { return mWindowWidth; };

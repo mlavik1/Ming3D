@@ -61,6 +61,10 @@ namespace Ming3D
         mRenderWindow = mPlatform->CreateRenderWindow(mWindow, mRenderDevice);
         mRenderTarget = mRenderDevice->CreateRenderTarget(mRenderWindow);
         mTimeManager->Initialise();
+
+        Camera* camera = new Camera();
+        camera->mRenderTarget = mRenderTarget;
+        mSceneRenderer->AddCamera(camera);
 	}
 
     void GameEngine::Update()
@@ -80,11 +84,9 @@ namespace Ming3D
         mNetworkManager->UpdateNetworks();
 
         mRenderDevice->BeginRenderWindow(mRenderWindow);
-        mRenderDevice->BeginRenderTarget(mRenderTarget);
-        mSceneRenderer->RenderObjects();
-        mRenderDevice->EndRenderTarget(mRenderTarget);
+        mSceneRenderer->RenderCameras();
         mRenderDevice->EndRenderWindow(mRenderWindow);
-    }
+}
 
     void GameEngine::Start()
     {

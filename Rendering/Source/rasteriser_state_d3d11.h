@@ -2,7 +2,7 @@
 #define MING3D_RASTERISERSTATED3D11_H
 
 #include "rasteriser_state.h"
-#include <d3dx11.h>
+#include <d3d11.h>
 
 namespace Ming3D
 {

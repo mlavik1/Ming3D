@@ -9,11 +9,13 @@ namespace Ming3D
     class WinAPIWindow : public WindowBase
     {
     private:
-        HWND mHWND;
+        HWND mHWND = nullptr;
         unsigned int mWindowWidth = 800;
         unsigned int mWindowHeight = 600;
 
     public:
+        WinAPIWindow();
+        WinAPIWindow(HWND inHWND);
         virtual void Initialise() override;
         virtual void SetSize(unsigned int inWidth, unsigned int inHeight) override;
         virtual unsigned int GetWidth() override { return mWindowWidth; };

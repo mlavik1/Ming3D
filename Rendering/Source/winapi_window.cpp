@@ -2,6 +2,16 @@
 
 namespace Ming3D
 {
+    WinAPIWindow::WinAPIWindow()
+    {
+
+    }
+
+    WinAPIWindow::WinAPIWindow(HWND inHWND)
+    {
+        mHWND = inHWND;
+    }
+
     LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
         switch (message)
@@ -18,6 +28,9 @@ namespace Ming3D
 
     void WinAPIWindow::Initialise()
     {
+        if (mHWND != nullptr)
+            return;
+
         HINSTANCE hInstance = GetModuleHandle(NULL);
 
         WNDCLASSEX wc;

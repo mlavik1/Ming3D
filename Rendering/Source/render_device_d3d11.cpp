@@ -8,6 +8,8 @@
 #include <DirectXMath.h>
 #include "texture_buffer_d3d11.h"
 #include "shader_writer_hlsl.h"
+#include <d3dx11.h>
+#include <d3dx10.h>
 
 namespace Ming3D
 {
