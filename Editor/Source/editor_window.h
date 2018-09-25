@@ -3,6 +3,8 @@
 
 #include "window.h"
 #include "scene_view.h"
+#include "scene_hierarchy_view.h"
+#include "property_inspector.h"
 
 namespace Ming3D
 {
@@ -10,6 +12,8 @@ namespace Ming3D
 	{
 	private:
 		SceneView* mSceneView;
+        SceneHierarchyView* mSceneHierarchyView;
+        PropertyInspector* mPropertyInspector;
 
 	public:
 		EditorWindow();

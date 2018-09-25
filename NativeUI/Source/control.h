@@ -31,6 +31,7 @@ namespace NativeUI
 
 	public:
 		Control(Control* arg_parent);
+        virtual ~Control() {}
 
 		void SetPosition(const Point& arg_pos);
 		void SetSize(const Point& arg_size);

@@ -5,9 +5,11 @@ IMPLEMENT_CLASS(Ming3D::Actor)
 
 namespace Ming3D
 {
+    uint64_t Actor::instanceCounter = 0;
+
     void Actor::InitialiseClass()
     {
-
+        Actor::GetStaticClass()->RegisterProperty("mActorName", &Actor::mActorName, PropertyFlag::Serialise);
     }
 
     Actor::Actor()
@@ -15,6 +17,7 @@ namespace Ming3D
         mTransform = new Transform();
         mTransform->mActor = this;
         SetObjectFlag(ObjectFlag::Serialise); // serialised by default
+        mActorName = std::string("Actor_") + std::to_string(instanceCounter++);
     }
 
     Actor::~Actor()

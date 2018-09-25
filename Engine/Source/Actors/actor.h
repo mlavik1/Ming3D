@@ -20,6 +20,9 @@ namespace Ming3D
         std::vector<Component*> mComponents;
         std::vector<Actor*> mChildren;
         bool mIsInitialised = false;
+        std::string mActorName;
+
+        static uint64_t instanceCounter;
 
     public:
         Actor();
@@ -64,6 +67,7 @@ namespace Ming3D
 
         inline Transform* GetTransform() { return mTransform; }
         std::vector<Component*> GetComponents() { return mComponents; }
+        std::string GetActorName() { return mActorName; }
     };
 }
 #endif

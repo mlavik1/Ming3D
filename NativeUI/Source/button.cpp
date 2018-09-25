@@ -3,14 +3,81 @@
 
 namespace NativeUI
 {
+    std::unordered_map<HWND, Button*> Button::ButtonInstances;
+
+    WNDCLASSEX* Button::WindowClass;
+
 	Button::Button(Control* arg_parent)
 		: Control(arg_parent)
 	{
-		mHwnd = CreateWindow(L"BUTTON", L"", WS_CHILD | WS_VISIBLE /*| BS_BITMAP*/, 0, 0, 50, 50, arg_parent->GetHwnd(), NULL, GetModuleHandle(NULL), NULL);
-		SetSize(Point(80.0f, 40.0f));
+        if(WindowClass == nullptr)
+            CreateWindowClass();
+
+        mHwnd = CreateWindow(L"BUTTON", L"", WS_CHILD | WS_VISIBLE /*| BS_BITMAP*/, 0, 0, 50, 50, arg_parent->GetHwnd(), NULL, GetModuleHandle(NULL), NULL);
+		//mHwnd = CreateWindow(L"NativeUIButton", L"", WS_CHILD | WS_VISIBLE, 0, 0, 50, 50, arg_parent->GetHwnd(), NULL, GetModuleHandle(NULL), NULL);
+        mOrigWndProc = (WNDPROC)SetWindowLong(mHwnd, GWL_WNDPROC, (LONG)WndProc);
+        //mWinButtonHWND = CreateWindow(L"BUTTON", L"", WS_CHILD | WS_VISIBLE /*| BS_BITMAP*/, 0, 0, 50, 50, mHwnd, (HMENU)mWinButtonUID, GetModuleHandle(NULL), NULL);
+        SetSize(Point(80.0f, 40.0f));
 		ShowWindow(mHwnd, TRUE);
 		UpdateWindow(mHwnd);
+
+        ButtonInstances[mHwnd] = this;
+        //mButtonInstances[mWinButtonHWND] = this; // TODO!!
 	}
+
+    Button::~Button()
+    {
+        ButtonInstances.erase(mHwnd);
+    }
+
+    LRESULT CALLBACK Button::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+    {
+        auto buttonIter = ButtonInstances.find(hwnd);
+        if (buttonIter == ButtonInstances.end())
+        {
+            return DefWindowProc(hwnd, msg, wParam, lParam);
+        }
+        Button* button = buttonIter->second;
+
+        static PAINTSTRUCT ps;
+
+        switch (msg)
+        {
+            case WM_LBUTTONUP:
+            {
+            for (auto callback : button->mClickCallbacks)
+            {
+                callback();
+            }
+            break;
+            }
+        }
+        return CallWindowProc(button->mOrigWndProc, hwnd, msg, wParam, lParam);
+    }
+
+    void Button::CreateWindowClass()
+    {
+        HINSTANCE hInstance = GetModuleHandle(NULL);
+
+        WindowClass = new WNDCLASSEX();
+        WindowClass->cbSize = sizeof(WNDCLASSEX);
+        WindowClass->style = CS_DBLCLKS;
+        WindowClass->lpfnWndProc = WndProc;
+        WindowClass->cbClsExtra = 0;
+        WindowClass->cbWndExtra = 0;
+        WindowClass->hInstance = GetModuleHandle(nullptr);
+        WindowClass->hIcon = LoadIcon(nullptr, IDI_APPLICATION);
+        WindowClass->hCursor = LoadCursor(nullptr, IDC_ARROW);
+        WindowClass->hbrBackground = HBRUSH(COLOR_WINDOW + 1);
+        WindowClass->lpszMenuName = nullptr;
+        WindowClass->hIconSm = LoadIcon(nullptr, IDI_APPLICATION);
+        WindowClass->lpszClassName = L"NativeUIButton";
+
+        if (!RegisterClassEx(WindowClass))
+        {
+            MessageBox(NULL, L"Window Registration Failed!", L"Error!", MB_ICONEXCLAMATION | MB_OK);
+        }
+    }
 
 	void Button::SetText(const char* arg_text)
 	{
@@ -29,5 +96,10 @@ namespace NativeUI
             MessageBox(NULL, L"Failed to set button image!", L"Error!", MB_ICONEXCLAMATION | MB_OK);
         else
             SendMessage(mHwnd, BM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)hBitmap);
+    }
+
+    void Button::RegisterClickCallback(std::function<void()> inCallback)
+    {
+        mClickCallbacks.push_back(inCallback);
     }
 }

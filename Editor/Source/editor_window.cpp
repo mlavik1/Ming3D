@@ -6,6 +6,10 @@
 #include "panel.h"
 #include "table_layout_panel.h"
 #include "scene_view.h"
+#include "tree_view.h"
+#include "Components/mesh_component.h" // TEMP
+#include "World/world.h"
+#include "GameEngine/game_engine.h"
 
 namespace Ming3D
 {
@@ -30,6 +34,19 @@ namespace Ming3D
         window->AddMenuItem("Create_Actor_Actor", "Actor", "Create_Actor");
 
         window->SetMenuItemClickEvent("File_Quit", []() { terminate(); });
+        window->SetMenuItemClickEvent("Create_Actor_Actor", [&]() 
+        {
+            Actor* actor1 = new Actor();
+            actor1->GetTransform()->SetLocalPosition(glm::vec3(-1.5f, 0.0f, 0.0f));
+            actor1->GetTransform()->SetLocalScale(glm::vec3(2.0f, 2.0f, 2.0f));
+            actor1->GetTransform()->SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
+            //MeshComponent* meshComp1 = actor1->AddComponent<MeshComponent>();
+            //meshComp1->SetMesh("Resources//Mvr_PetCow_walk.dae");
+            GGameEngine->GetWorld()->AddActor(actor1);
+            mSceneHierarchyView->AddActor(actor1);
+            mPropertyInspector->SelectActor(actor1);
+        }
+        );
 
 		// Main panel
 		NativeUI::TableLayoutPanel* mainPanel = new NativeUI::TableLayoutPanel(window, 1, 2);
@@ -43,7 +60,7 @@ namespace Ming3D
 		editorMainPanel->SetColumnWidth(0, 0.2f);
 		editorMainPanel->SetColumnWidth(1, 0.6f);
 		editorMainPanel->SetColumnWidth(2, 0.2f);
-		NativeUI::TableLayoutCell* contentBrowserCell = editorMainPanel->GetCell(0, 0);
+		NativeUI::TableLayoutCell* leftBrowserCell = editorMainPanel->GetCell(0, 0);
 		NativeUI::TableLayoutCell* viewContainerCell = editorMainPanel->GetCell(1, 0);
 		NativeUI::TableLayoutCell* propertyInspectorCell = editorMainPanel->GetCell(2, 0);
 
@@ -53,6 +70,25 @@ namespace Ming3D
 		viewportsPanel->SetRowHeight(1, 0.3f);
 		NativeUI::TableLayoutCell* gameViewCell = viewportsPanel->GetCell(0, 0);
         NativeUI::TableLayoutCell* debugViewCell = viewportsPanel->GetCell(0, 1);
+
+        // Panel containing scene hierarchy and content browser
+		NativeUI::TableLayoutPanel* leftPanel = new NativeUI::TableLayoutPanel(leftBrowserCell->mContainerPanel, 1, 2);
+        leftPanel->SetRowHeight(0, 0.5f);
+        leftPanel->SetRowHeight(1, 0.5f);
+		NativeUI::TableLayoutCell* sceneHierarchyCell = leftPanel->GetCell(0, 0);
+        NativeUI::TableLayoutCell* contentBrowserCell = leftPanel->GetCell(0, 1);
+
+        // Scene hierarchy
+        mSceneHierarchyView = new SceneHierarchyView(sceneHierarchyCell->mContainerPanel);
+        mSceneHierarchyView->SetVerticalSizeMode(NativeUI::SizeMode::Relative);
+        mSceneHierarchyView->SetHorizontalSizeMode(NativeUI::SizeMode::Relative);
+        mSceneHierarchyView->SetSize(1.0f, 1.0f);
+
+        // Property inspector
+        mPropertyInspector = new PropertyInspector(propertyInspectorCell->mContainerPanel);
+        mPropertyInspector->SetVerticalSizeMode(NativeUI::SizeMode::Relative);
+        mPropertyInspector->SetHorizontalSizeMode(NativeUI::SizeMode::Relative);
+        mPropertyInspector->SetSize(1.0f, 1.0f);
 
 		// Test buttons
 		NativeUI::Button* testBtnToolbar = new NativeUI::Button(toolbarCell->mContainerPanel);
@@ -67,11 +103,17 @@ namespace Ming3D
 		mSceneView->SetVerticalSizeMode(NativeUI::SizeMode::Relative);
 		mSceneView->SetHorizontalSizeMode(NativeUI::SizeMode::Relative);
 
-		//mapEditorViewCell->mContainerPanel->ShowScrollbar(true);
+
+        for (Actor* actor : GGameEngine->GetWorld()->GetActors())
+        {
+            mSceneHierarchyView->AddActor(actor);
+            //mPropertyInspector->SelectActor(actor);
+        }
 	}
 
     void EditorWindow::OnTick()
     {
         mSceneView->OnTick();
+        mPropertyInspector->OnTick();
     }
 }

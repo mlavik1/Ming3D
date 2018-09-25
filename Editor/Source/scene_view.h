@@ -1,5 +1,5 @@
-#ifndef MING3D_GAME_VIEW_H
-#define MING3D_GAME_VIEW_H
+#ifndef MING3D_SCENE_VIEW_H
+#define MING3D_SCENE_VIEW_H
 
 #include "user_control.h"
 

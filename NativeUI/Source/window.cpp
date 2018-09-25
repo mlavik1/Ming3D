@@ -111,7 +111,8 @@ namespace NativeUI
 
 	void Window::SetTitle(const char* arg_title)
 	{
-		SetWindowText(mHwnd, (LPCWSTR)arg_title);
+        std::wstring wstr = TextUtils::UTF8ToWChar(arg_title);
+		SetWindowText(mHwnd, wstr.c_str());
 	}
 
 	void Window::Maximize()
