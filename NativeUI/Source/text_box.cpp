@@ -99,7 +99,7 @@ namespace NativeUI
 
     void TextBox::SetReadonly(bool arg_readonly)
     {
-        mReadOnly = true;
+        mReadOnly = arg_readonly;
         //SendMessage(mEditHWND, EM_SETREADONLY, (WPARAM)arg_readonly, 0);
     }
 

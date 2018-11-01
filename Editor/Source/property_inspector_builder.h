@@ -18,20 +18,28 @@ namespace Ming3D
         std::vector<NativeUI::Control*> mControls;
 
         float mCurrHeight = 0.0f;
+        float mCurrWidth = 0.0f;
 
         const float ctrlHeight = 20.0f;
         const float vertPadding = 10.0f;
 
-        NativeUI::Button* CreateButton(std::string inText, int inFontSize, float inCtrlHeight, float& outCurrHeight);
-        NativeUI::TextBox* CreateTextBox(std::string inText, int inFontSize, float inCtrlHeight, float& outCurrHeight);
+        bool mHorizontalMode = false;
+
+        std::vector<NativeUI::Control*> mQueueHorizontalControls;
+
+        NativeUI::Button* CreateButton(std::string inText, int inFontSize, float inCtrlHeight);
+        NativeUI::TextBox* CreateTextBox(std::string inText, int inFontSize, float inCtrlHeight);
 
     public:
         PropertyInspectorBuilder(NativeUI::Control* inControl);
 
-        void Text(std::string inText, int inTextSize = 12);
+        void Text(std::string inText, int inTextSize = 14);
         void Space();
         void Button(std::string inText, std::function<void()> inCallbback);
         void PropertyField(Property* inProp, Object* inObject, std::string inName);
+
+        void BeginHorizontal();
+        void EndHorizontal();
 
         void Clear();
     };

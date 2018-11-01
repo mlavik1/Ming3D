@@ -31,13 +31,13 @@ namespace Ming3D
         propInspectorBuilder->Clear();
 
         // Header text
-        propInspectorBuilder->Text(mSelectedActor->GetClass()->GetName().c_str(), 20);
+        propInspectorBuilder->Text(mSelectedActor->GetClass()->GetName().c_str(), 22);
 
         propInspectorBuilder->Space();
 
         if (mSelectedActor->GetClass()->GetAllProperties(true).size() > 0)
         {
-            propInspectorBuilder->Text("Properties:", 16);
+            propInspectorBuilder->Text("Properties:", 18);
         }
 
         for (Property* prop : mSelectedActor->GetClass()->GetAllProperties(true))
@@ -49,13 +49,13 @@ namespace Ming3D
 
         if (mSelectedActor->GetComponents().size() > 0)
         {
-            propInspectorBuilder->Text("Components:", 16);
+            propInspectorBuilder->Text("Components:", 18);
         }
 
         for (Component* comp : mSelectedActor->GetComponents())
         {
             // TODO: Show component properties + custom inspectors
-            propInspectorBuilder->Text(comp->GetClass()->GetName().c_str(), 14);
+            propInspectorBuilder->Text(comp->GetClass()->GetName().c_str(), 16);
 
             if (comp->GetClass() == MeshComponent::GetStaticClass())
             {
