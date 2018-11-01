@@ -12,4 +12,14 @@ namespace NativeUI
         delete[] wstr;
         return returnString;
     }
+
+    std::string TextUtils::WCharToUTF8(std::wstring arg_string)
+    {
+        int charsNum = WideCharToMultiByte(CP_UTF8, 0, arg_string.c_str(), -1, NULL, 0, 0, FALSE);
+        char* str = new char[charsNum];
+        WideCharToMultiByte(CP_UTF8, 0, arg_string.c_str(), -1, str, charsNum, 0, FALSE); // convert to wide char
+        std::string returnString(str);
+        delete[] str;
+        return returnString;
+    }
 }

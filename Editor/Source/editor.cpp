@@ -32,7 +32,7 @@ namespace Ming3D
 
         // TODO: Create/load scene
 
-		mEditorWinndow = new EditorWindow();
+		mEditorWindow = new EditorWindow();
 
         bool running = true;
 		while(running)
@@ -45,7 +45,7 @@ namespace Ming3D
 				DispatchMessage(&msg);
 
                 engine->Update();
-                mEditorWinndow->OnTick();
+                mEditorWindow->OnTick();
 			}
 			if (msg.message == WM_QUIT)
 			{

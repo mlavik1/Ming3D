@@ -9,6 +9,7 @@ namespace NativeUI
     {
     public:
         static std::wstring UTF8ToWChar(std::string arg_string);
+        static std::string WCharToUTF8(std::wstring arg_string);
     };
 }
 

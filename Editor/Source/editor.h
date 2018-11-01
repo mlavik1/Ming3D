@@ -9,12 +9,14 @@ namespace Ming3D
 	{
 	private:
 		Editor();
-		EditorWindow* mEditorWinndow = nullptr;
+		EditorWindow* mEditorWindow = nullptr;
 
 	public:
 		static Editor* CreateEditor();
 		
 		void RunEditor();
+
+        EditorWindow* GetEditorWindow() { return mEditorWindow; }
 	};
 
 	extern Editor* GEditor;

@@ -4,6 +4,7 @@
 #include "property_reflection.h"
 #include <string>
 #include <stdint.h>
+#include <typeinfo>
 
 namespace Ming3D
 {
@@ -33,15 +34,17 @@ namespace Ming3D
         std::string mName;
         PropertyHandleBase* mPropertyHandle;
         PropertyFlag mFlags = (PropertyFlag)0;
+        std::string mTypeName;
 
     public:
-        Property(const char* inName, PropertyHandleBase* inPropHandle, PropertyFlag inFlags = (PropertyFlag)0);
+        Property(const char* inName, PropertyHandleBase* inPropHandle, std::string inTypeName, PropertyFlag inFlags = (PropertyFlag)0);
 
         std::string GetPropertyName() { return mName; }
         PropertyHandleBase* GetPropertyHandle() { return mPropertyHandle; }
 
         PropertyFlag GetPropertyFlags();
         bool HasPropertyFlag(PropertyFlag inFlag);
+        std::string GetTypeName();
 
     };
 }

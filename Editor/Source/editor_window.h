@@ -19,6 +19,7 @@ namespace Ming3D
 		EditorWindow();
 
 		inline SceneView* GetSceneView() { return mSceneView; }
+        inline PropertyInspector* GetPropertyInspector() { return mPropertyInspector; }
 
         void OnTick();
 	};

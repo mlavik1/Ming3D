@@ -14,6 +14,14 @@ namespace NativeUI
 		EnableScrollBar(mHwnd, SB_BOTH, ESB_ENABLE_BOTH);
 	}
 
+    Control::~Control()
+    {
+        if (mHwnd != NULL)
+        {
+            DestroyWindow(mHwnd);
+        }
+    }
+
 	void Control::UpdateClientCoords()
 	{
 		float width = mSize.x;

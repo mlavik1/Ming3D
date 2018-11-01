@@ -17,9 +17,6 @@ namespace NativeUI
 
         static std::unordered_map<HWND, Button*> ButtonInstances;
 
-        static WNDCLASSEX* WindowClass;
-        static void CreateWindowClass();
-
 	public:
 		Button(Control* arg_parent);
         virtual ~Button();

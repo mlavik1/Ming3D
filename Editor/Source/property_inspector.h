@@ -7,6 +7,7 @@
 
 #include "text_box.h"
 #include "button.h"
+#include "property_inspector_builder.h"
 
 namespace Ming3D
 {
@@ -16,12 +17,11 @@ namespace Ming3D
         Actor* mSelectedActor = nullptr;
         std::vector<Control*> mControls;
 
-        NativeUI::TextBox* CreateTextBox(std::string inText, int inFontSize, float inCtrlHeight, float& outCurrHeight);
-        NativeUI::Button* CreateButton(std::string inText, int inFontSize, float inCtrlHeight, float& outCurrHeight);
-
         bool mNeedsRefresh = false;
 
         void RefreshInternal();
+
+        PropertyInspectorBuilder* propInspectorBuilder;
 
     public:
         PropertyInspector(Control* arg_parent);

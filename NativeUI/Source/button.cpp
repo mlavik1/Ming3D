@@ -5,14 +5,9 @@ namespace NativeUI
 {
     std::unordered_map<HWND, Button*> Button::ButtonInstances;
 
-    WNDCLASSEX* Button::WindowClass;
-
 	Button::Button(Control* arg_parent)
 		: Control(arg_parent)
 	{
-        if(WindowClass == nullptr)
-            CreateWindowClass();
-
         mHwnd = CreateWindow(L"BUTTON", L"", WS_CHILD | WS_VISIBLE /*| BS_BITMAP*/, 0, 0, 50, 50, arg_parent->GetHwnd(), NULL, GetModuleHandle(NULL), NULL);
 		//mHwnd = CreateWindow(L"NativeUIButton", L"", WS_CHILD | WS_VISIBLE, 0, 0, 50, 50, arg_parent->GetHwnd(), NULL, GetModuleHandle(NULL), NULL);
         mOrigWndProc = (WNDPROC)SetWindowLong(mHwnd, GWL_WNDPROC, (LONG)WndProc);
@@ -53,30 +48,6 @@ namespace NativeUI
             }
         }
         return CallWindowProc(button->mOrigWndProc, hwnd, msg, wParam, lParam);
-    }
-
-    void Button::CreateWindowClass()
-    {
-        HINSTANCE hInstance = GetModuleHandle(NULL);
-
-        WindowClass = new WNDCLASSEX();
-        WindowClass->cbSize = sizeof(WNDCLASSEX);
-        WindowClass->style = CS_DBLCLKS;
-        WindowClass->lpfnWndProc = WndProc;
-        WindowClass->cbClsExtra = 0;
-        WindowClass->cbWndExtra = 0;
-        WindowClass->hInstance = GetModuleHandle(nullptr);
-        WindowClass->hIcon = LoadIcon(nullptr, IDI_APPLICATION);
-        WindowClass->hCursor = LoadCursor(nullptr, IDC_ARROW);
-        WindowClass->hbrBackground = HBRUSH(COLOR_WINDOW + 1);
-        WindowClass->lpszMenuName = nullptr;
-        WindowClass->hIconSm = LoadIcon(nullptr, IDI_APPLICATION);
-        WindowClass->lpszClassName = L"NativeUIButton";
-
-        if (!RegisterClassEx(WindowClass))
-        {
-            MessageBox(NULL, L"Window Registration Failed!", L"Error!", MB_ICONEXCLAMATION | MB_OK);
-        }
     }
 
 	void Button::SetText(const char* arg_text)

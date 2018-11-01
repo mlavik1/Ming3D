@@ -135,7 +135,7 @@ namespace Ming3D
         Property* RegisterProperty(const char* inName, VarType Class::*inVarPtr, PropertyFlag inFlags = (PropertyFlag)0)
         {
             PropertyHandleBase* propHandle = new PropertyHandle<VarType, Class>(inVarPtr);
-            Property* prop = new Property(inName, propHandle, inFlags);
+            Property* prop = new Property(inName, propHandle, typeid(VarType).name(), inFlags);
             AddProperty(prop);
             return prop;
         }

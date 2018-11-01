@@ -1,4 +1,7 @@
 #include "scene_hierarchy_view.h"
+#include "editor_window.h"
+#include "editor.h"
+#include "property_inspector.h"
 
 namespace Ming3D
 {
@@ -17,6 +20,11 @@ namespace Ming3D
     {
         mTreeView->AddItem(NativeUI::TreeViewItem(inActor->GetActorName(), (long)&inActor));
         mSelectedActor = inActor;
+        mTreeView->RegisterSelectCallback((long)&inActor, [inActor]()
+        {
+            GEditor->GetEditorWindow()->GetPropertyInspector()->SelectActor(inActor);
+        }
+        );
     }
 
     void SceneHierarchyView::RemoveActor(Actor* inActor)

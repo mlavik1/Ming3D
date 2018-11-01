@@ -13,6 +13,7 @@ namespace Ming3D
     public:
         virtual void Serialise(void* inObject, DataWriter& outDataWriter) = 0;
         virtual void Deserialise(void* outObject, DataWriter& inDataWriter) = 0;
+        virtual void* GetValuePtr(void* inObject) = 0;
     };
 
     template<typename VarType, typename ClassType>
@@ -35,6 +36,10 @@ namespace Ming3D
         virtual void Deserialise(void* outObject, DataWriter& inDataWriter) override
         {
             TypeSerialisationTraits<VarType>::Read(inDataWriter, ((ClassType*)outObject)->*varPtr);
+        }
+        virtual void* GetValuePtr(void* inObject) override
+        {
+            return &(((ClassType*)inObject)->*varPtr);
         }
     };
 }
