@@ -4,6 +4,8 @@
 #include "window_base.h"
 #include "GameEngine/game_engine.h"
 #include "render_device.h"
+#include "Components/component.h"
+#include "Actors/actor.h"
 
 namespace Ming3D
 {
@@ -46,6 +48,8 @@ namespace Ming3D
 
         for (RenderSceneObject* obj : mRenderScene->mSceneObjects)
         {
+            obj->mModelMatrix = obj->mOwnerComponent->GetParent()->GetTransform().GetWorldTransformMatrix(); // TODO
+
             glm::mat4 Projection = glm::perspective<float>(glm::radians(45.0f), (float)window->GetWidth() / (float)window->GetHeight(), 0.1f, 100.0f);
 
             // Camera matrix

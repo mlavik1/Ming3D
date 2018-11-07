@@ -29,6 +29,7 @@ namespace Ming3D
 
         NativeUI::Button* CreateButton(std::string inText, int inFontSize, float inCtrlHeight);
         NativeUI::TextBox* CreateTextBox(std::string inText, int inFontSize, float inCtrlHeight);
+        NativeUI::TextBox* CreateFloatEditBox(int inFontSize, float inCtrlHeight, std::function<float()> inValueSetter, std::function<void(float)> inOnChangedCallback);
 
     public:
         PropertyInspectorBuilder(NativeUI::Control* inControl);

@@ -24,6 +24,8 @@ namespace Ming3D
 
         virtual void InitialiseComponent();
         virtual void Tick(float inDeltaTime);
+
+        Actor* GetParent() { return mParent; }
     };
 }
 #endif

@@ -2,6 +2,8 @@
 
 #include "button.h"
 #include <typeinfo>
+#include "Actors/transform.h"
+#include <algorithm>
 
 namespace Ming3D
 {
@@ -30,11 +32,11 @@ namespace Ming3D
 
     void PropertyInspectorBuilder::PropertyField(Property* inProp, Object* inObject, std::string inName)
     {
-        BeginHorizontal();
         const std::string typeName = inProp->GetTypeName();
         const void* valPtr = inProp->GetPropertyHandle()->GetValuePtr(inObject);
         if (typeName == typeid(std::string).name())
         {
+            BeginHorizontal();
             std::string strHeader = inProp->GetPropertyName() + ":";
             std::string* stringPtr = (std::string*)valPtr;
             NativeUI::TextBox* txtHeader = CreateTextBox(strHeader, 14, ctrlHeight);
@@ -45,10 +47,39 @@ namespace Ming3D
             {
                 *(std::string*)valPtr = newString; }
             );
-            // TODO: on text changed: set property value
+            EndHorizontal();
             mCurrHeight += vertPadding;
         }
-        EndHorizontal();
+        else if (typeName == typeid(Transform).name())
+        {
+            std::string strHeader = inProp->GetPropertyName() + ":";
+            NativeUI::TextBox* txtHeader = CreateTextBox(strHeader, 16, ctrlHeight);
+            
+            Transform* transform = (Transform*)valPtr;
+            glm::vec3 localPos = transform->GetLocalPosition();
+            glm::vec3 localScale = transform->GetLocalScale();
+            glm::vec3 localRot = transform->GetLocalScale();
+
+            BeginHorizontal();
+            NativeUI::TextBox* txtPosHeader = CreateTextBox("Position", 14, ctrlHeight);
+            NativeUI::TextBox* txtPosX = CreateFloatEditBox(14, ctrlHeight, [localPos]()->float { return localPos.x; }, [transform](float newVal) {glm::vec3 pos = transform->GetLocalPosition(); pos.x = newVal; transform->SetLocalPosition(pos); });
+            NativeUI::TextBox* txtPosY = CreateTextBox(std::to_string(localPos.y), 14, ctrlHeight);
+            NativeUI::TextBox* txtPosZ = CreateTextBox(std::to_string(localPos.z), 14, ctrlHeight);
+            EndHorizontal();
+            BeginHorizontal();
+            NativeUI::TextBox* txtScaleHeader = CreateTextBox("Scale", 14, ctrlHeight);
+            NativeUI::TextBox* txtScaleX = CreateTextBox(std::to_string(localScale.x), 14, ctrlHeight);
+            NativeUI::TextBox* txtScaleY = CreateTextBox(std::to_string(localScale.y), 14, ctrlHeight);
+            NativeUI::TextBox* txtScaleZ = CreateTextBox(std::to_string(localScale.z), 14, ctrlHeight);
+            EndHorizontal();
+            BeginHorizontal();
+            NativeUI::TextBox* txtRotHeader = CreateTextBox("Rotation", 14, ctrlHeight);
+            NativeUI::TextBox* txtRotX = CreateTextBox(std::to_string(localRot.x), 14, ctrlHeight);
+            NativeUI::TextBox* txtRotY = CreateTextBox(std::to_string(localRot.y), 14, ctrlHeight);
+            NativeUI::TextBox* txtRotZ = CreateTextBox(std::to_string(localRot.z), 14, ctrlHeight);
+            EndHorizontal();
+            mCurrHeight += vertPadding;
+        }
     }
 
     NativeUI::Button* PropertyInspectorBuilder::CreateButton(std::string inText, int inFontSize, float inCtrlHeight)
@@ -89,6 +120,21 @@ namespace Ming3D
         return txtBox;
     }
 
+    NativeUI::TextBox* PropertyInspectorBuilder::CreateFloatEditBox(int inFontSize, float inCtrlHeight, std::function<float()> inValueSetter, std::function<void(float)> inOnChangedCallback)
+    {
+        NativeUI::TextBox* textBox = CreateTextBox("", inFontSize, inCtrlHeight);
+        textBox->SetReadonly(false);
+        float val = inValueSetter();
+        textBox->SetText(std::to_string(val));
+        textBox->RegisterTextChangedCallback(
+            [inOnChangedCallback](std::string newStr)
+        {
+            inOnChangedCallback(std::strtof(newStr.c_str(), 0));
+        }
+        );
+        return textBox;
+    }
+
     void PropertyInspectorBuilder::BeginHorizontal()
     {
         mHorizontalMode = true;
@@ -105,8 +151,9 @@ namespace Ming3D
             NativeUI::Control* ctrl = mQueueHorizontalControls[iCtrl];
             ctrl->SetPosition(ctrlWidth * iCtrl, ctrl->GetPosition().y);
             ctrl->SetSize(ctrlWidth, ctrl->GetSize().y);
-            maxHeight = max(maxHeight, ctrl->GetSize().y);
+            maxHeight = std::max(maxHeight, ctrl->GetSize().y);
         }
+        mCurrHeight += maxHeight;
         mQueueHorizontalControls.clear();
     }
 

@@ -10,19 +10,18 @@ namespace Ming3D
     void Actor::InitialiseClass()
     {
         Actor::GetStaticClass()->RegisterProperty("mActorName", &Actor::mActorName, PropertyFlag::Serialise);
+        Actor::GetStaticClass()->RegisterProperty("mTransform", &Actor::mTransform, PropertyFlag::Serialise);
     }
 
     Actor::Actor()
     {
-        mTransform = new Transform();
-        mTransform->mActor = this;
+        mTransform.mActor = this;
         SetObjectFlag(ObjectFlag::Serialise); // serialised by default
         mActorName = std::string("Actor_") + std::to_string(instanceCounter++);
     }
 
     Actor::~Actor()
     {
-        delete mTransform;
     }
 
     void Actor::AddComponent(Component* inComp)
@@ -48,7 +47,7 @@ namespace Ming3D
     void Actor::AddChild(Actor* inActor)
     {
         mChildren.push_back(inActor);
-        inActor->mTransform->mParentTransform = mTransform;
+        inActor->mTransform.mParentTransform = &mTransform;
     }
 
     void Actor::Serialise(DataWriter* outWriter, PropertyFlag inPropFlags, ObjectFlag inObjFlag)

@@ -43,7 +43,8 @@ namespace Ming3D
             if (meshData->mTexture != nullptr)
                 meshBuffer->mTextureBuffer = renderDevice->CreateTextureBuffer(meshData->mTexture->GetTextureInfo(), meshData->mTexture->GetTextureData());
 
-            renderSceneObject->mModelMatrix = mParent->GetTransform()->GetWorldTransformMatrix();
+            renderSceneObject->mOwnerComponent = this;
+            renderSceneObject->mModelMatrix = mParent->GetTransform().GetWorldTransformMatrix();
             renderSceneObject->mMeshes.push_back(meshBuffer);
             renderSceneObject->mShaderProgram = renderDevice->CreateShaderProgram("Resources//shader_PNT.shader");
         }
