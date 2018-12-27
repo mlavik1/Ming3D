@@ -16,6 +16,17 @@ namespace NativeUI
 
     Control::~Control()
     {
+        if (mParent)
+        {
+            for (auto childIter = mParent->mChildren.begin(); childIter != mParent->mChildren.end(); childIter++)
+            {
+                if (*childIter == this)
+                {
+                    mParent->mChildren.erase(childIter);
+                    break;
+                }
+            }
+        }
         if (mHwnd != NULL)
         {
             DestroyWindow(mHwnd);
