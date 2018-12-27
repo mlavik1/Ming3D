@@ -74,6 +74,7 @@ namespace NativeUI
                     wchar_t txt[512];
                     GetWindowText(textBox->mEditHWND, txt, 100);
                     std::string str = TextUtils::WCharToUTF8(txt);
+                    textBox->mText = str;
                     for (auto callback : textBox->mTextChangedCallbacks)
                     {
                         callback(str);
@@ -114,6 +115,11 @@ namespace NativeUI
     {
         HFONT font = CreateFont(arg_size, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"Arial");
         SendMessage(mEditHWND, WM_SETFONT, (WPARAM)font, TRUE);
+    }
+
+    std::string TextBox::GetText() const
+    {
+        return mText;
     }
 
     void TextBox::RegisterTextChangedCallback(std::function<void(std::string)> inCallback)

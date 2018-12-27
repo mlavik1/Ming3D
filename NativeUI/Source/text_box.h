@@ -32,6 +32,8 @@ namespace NativeUI
 		void SetText(std::string arg_text);
         void SetFontSize(int arg_size);
 
+        std::string GetText() const;
+
         void RegisterTextChangedCallback(std::function<void(std::string)> inCallback);
 
 	};

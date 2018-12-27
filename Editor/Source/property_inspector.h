@@ -7,7 +7,7 @@
 
 #include "text_box.h"
 #include "button.h"
-#include "property_inspector_builder.h"
+#include "window_layout_builder.h"
 
 namespace Ming3D
 {
@@ -21,7 +21,10 @@ namespace Ming3D
 
         void RefreshInternal();
 
-        PropertyInspectorBuilder* propInspectorBuilder;
+        WindowLayoutBuilder* layoutBuilder;
+
+        EditorControlStyle headerTextStyle;
+        EditorControlStyle subHeaderTextStyle;
 
     public:
         PropertyInspector(Control* arg_parent);

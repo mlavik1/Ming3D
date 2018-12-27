@@ -7,7 +7,9 @@ namespace Ming3D
     PropertyInspector::PropertyInspector(Control* arg_parent)
         : UserControl(arg_parent)
     {
-        propInspectorBuilder = new PropertyInspectorBuilder(this);
+        layoutBuilder = new WindowLayoutBuilder(this);
+        headerTextStyle.fontSize = 22;
+        subHeaderTextStyle.fontSize = 18;
     }
 
     void PropertyInspector::SelectActor(Actor* inActor)
@@ -28,57 +30,60 @@ namespace Ming3D
 
         mNeedsRefresh = false;
 
-        propInspectorBuilder->Clear();
+        layoutBuilder->BeginBuilding();
 
         // Header text
-        propInspectorBuilder->Text(mSelectedActor->GetClass()->GetName().c_str(), 22);
+        layoutBuilder->LabelField(mSelectedActor->GetClass()->GetName(), headerTextStyle);
 
-        propInspectorBuilder->Space();
+        layoutBuilder->Space();
 
         if (mSelectedActor->GetClass()->GetAllProperties(true).size() > 0)
         {
-            propInspectorBuilder->Text("Properties:", 18);
+            layoutBuilder->TextField("Properties:", subHeaderTextStyle);
         }
 
         for (Property* prop : mSelectedActor->GetClass()->GetAllProperties(true))
         {
-            propInspectorBuilder->PropertyField(prop, mSelectedActor, prop->GetPropertyName().c_str());
+            layoutBuilder->PropertyField(prop, mSelectedActor, prop->GetPropertyName().c_str());
         }
 
-        propInspectorBuilder->Space();
+        layoutBuilder->Space();
 
         if (mSelectedActor->GetComponents().size() > 0)
         {
-            propInspectorBuilder->Text("Components:", 18);
+            layoutBuilder->TextField("Components:", subHeaderTextStyle);
         }
 
         for (Component* comp : mSelectedActor->GetComponents())
         {
             // TODO: Show component properties + custom inspectors
-            propInspectorBuilder->Text(comp->GetClass()->GetName().c_str(), 16);
+            layoutBuilder->TextField(comp->GetClass()->GetName());
 
             if (comp->GetClass() == MeshComponent::GetStaticClass())
             {
-                propInspectorBuilder->Button("Set mesh", [comp]()
+                if(layoutBuilder->Button("Set mesh"))
                 {
                     ((MeshComponent*)comp)->SetMesh("Resources//Mvr_PetCow_walk.dae"); // TEMP TEST
-                });
+                }
             }
         }
 
         for (Class* compClass : Component::GetStaticClass()->GetChildClasses())
         {
-            propInspectorBuilder->Button(std::string("Add ") + compClass->GetName(), [this, compClass]()
+            if(layoutBuilder->Button(std::string("Add ") + compClass->GetName()))
             {
                 mSelectedActor->AddComponent((Component*)compClass->CreateInstance());
                 Refresh();
-            });
+            }
         }
+
+        layoutBuilder->EndBuilding();
     }
 
     void PropertyInspector::OnTick()
     {
-        if (mNeedsRefresh)
-            RefreshInternal();
+        // TODO: only refresh when window is visible (or when window has focus? - add setting for it)
+        //if (mNeedsRefresh)
+        RefreshInternal();
     }
 }
