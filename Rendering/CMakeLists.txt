@@ -12,13 +12,15 @@ add_library(Rendering STATIC ${SRC_FILES})
 
 #list(APPEND CMAKE_PREFIX_PATH "E:/Libraries/SDL2-devel-all")
 
+set(SDL2_DIR "${EXTERNAL_LIB_DIR}/SDL2-devel-all" CACHE PATH "Directory to search for SDL2 in")
+
 # Find packages
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(GLEW)
 if(NOT GLEW_FOUND)
-    set(GLEW_SEARCH_PATH "" CACHE PATH "GLEW path")
+    set(GLEW_SEARCH_PATH "${EXTERNAL_LIB_DIR}/glew-2.1.0" CACHE PATH "GLEW path")
     list(APPEND CMAKE_PREFIX_PATH "${GLEW_SEARCH_PATH}")
     list(APPEND CMAKE_LIBRARY_PATH "${GLEW_SEARCH_PATH}/lib/Release/Win32")
     find_package(GLEW REQUIRED)

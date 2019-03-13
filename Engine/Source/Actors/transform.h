@@ -35,13 +35,18 @@ namespace Ming3D
         void SetLocalRotation(glm::quat inRot);
         void SetLocalRotation(glm::mat4 inRot);
 
+        void SetWorldPosition(glm::vec3 inPosition);
+        void SetWorldScale(glm::vec3 inScale);
+        void SetWorldRotation(glm::quat inRot);
+        void SetWorldRotation(glm::mat4 inRot);
+
         inline glm::vec3 GetLocalPosition() { return mLocalPosition; }
         inline glm::vec3 GetLocalScale() { return mLocalScale; }
         inline glm::quat GetLocalRotation() { return mLocalRotation; }
 
-        glm::vec3 GetWorldPosition() { return mWorldPosition; }
-        glm::vec3 GetWorldScale() { return mWorldScale; }
-        glm::quat GetWorldRotation() { return mWorldRotation; }
+        glm::vec3 GetWorldPosition() const { return mWorldPosition; }
+        glm::vec3 GetWorldScale() const { return mWorldScale; }
+        glm::quat GetWorldRotation() const { return mWorldRotation; }
 
         inline glm::mat4 GetLocalTransformMatrix() { return mLocalTransformMatrix; }
         inline glm::mat4 GetWorldTransformMatrix() { return mWorldTransformMatrix; }

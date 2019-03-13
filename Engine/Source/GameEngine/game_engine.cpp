@@ -13,6 +13,7 @@
 #include "render_window.h"
 #include "SceneRenderer/scene_renderer.h"
 #include "Networking/network_manager.h"
+#include "Physics/physics_manager.h"
 
 #ifdef _WIN32
 #include "Source/Platform/platform_win32.h"
@@ -37,6 +38,7 @@ namespace Ming3D
         mTimeManager = new TimeManager();
         mWorld = new World();
         mSceneRenderer = new SceneRenderer();
+        mPhysicsManager = new PhysicsManager();
         mNetworkManager = new NetworkManager();
     }
 
@@ -49,6 +51,7 @@ namespace Ming3D
         delete mWindow;
         delete mSceneRenderer;
         delete mNetworkManager;
+        delete mPhysicsManager;
         delete mPlatform;
     }
 
@@ -62,6 +65,8 @@ namespace Ming3D
         mRenderTarget = mRenderDevice->CreateRenderTarget(mRenderWindow);
         mTimeManager->Initialise();
 
+        mPhysicsManager->CreatePhysicsScene();
+
         Camera* camera = new Camera();
         camera->mRenderTarget = mRenderTarget;
         mSceneRenderer->AddCamera(camera);
@@ -71,6 +76,8 @@ namespace Ming3D
     {
         mTimeManager->UpdateTime();
         float deltaTime = mTimeManager->GetDeltaTimeSeconds();
+
+        mPhysicsManager->SimulateScenes(deltaTime);
 
         for (Actor* actor : mWorld->GetActors())
         {

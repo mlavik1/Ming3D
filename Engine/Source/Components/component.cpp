@@ -28,4 +28,14 @@ namespace Ming3D
     {
 
     }
+
+    void Component::InitialTick()
+    {
+
+    }
+
+    void Component::PostMove()
+    {
+        
+    }
 }

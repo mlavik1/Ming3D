@@ -11,8 +11,12 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMake/")
 set(BUILD_ROOT "${CMAKE_SOURCE_DIR}/build")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build")
 
-SET(LIB_DIR "${CMAKE_SOURCE_DIR}/Dependencies/lib/Windows/x86")
-SET(ENGINE_LIB_DIR "${CMAKE_SOURCE_DIR}/build/Ming3D/Debug")
+set(LIB_DIR "${CMAKE_SOURCE_DIR}/Dependencies/lib/Windows/x86")
+set(ENGINE_LIB_DIR "${CMAKE_SOURCE_DIR}/build/Ming3D/Debug")
+
+set(EXTERNAL_LIB_DIR "${CMAKE_SOURCE_DIR}/ExternalLibraries" CACHE PATH "External library directory")
+
+set(SDL_SEARCH_PATH ${ExternalLibraries})
 
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)

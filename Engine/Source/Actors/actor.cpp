@@ -18,6 +18,8 @@ namespace Ming3D
         mTransform.mActor = this;
         SetObjectFlag(ObjectFlag::Serialise); // serialised by default
         mActorName = std::string("Actor_") + std::to_string(instanceCounter++);
+
+        mCompCallbackSubscribers[ComponentCallbackType::PostMove] = std::vector<Component*>();
     }
 
     Actor::~Actor()
@@ -32,6 +34,7 @@ namespace Ming3D
         {
             inComp->InitialiseComponent();
         }
+        newComponents.push_back(inComp);
     }
 
     void Actor::InitialiseActor()
@@ -41,7 +44,10 @@ namespace Ming3D
 
     void Actor::Tick(float inDeltaTime)
     {
-
+        // TODO: do this somewhere else
+        for (Component* comp : newComponents)
+            comp->InitialTick();
+        newComponents.clear();
     }
 
     void Actor::AddChild(Actor* inActor)
@@ -157,6 +163,23 @@ namespace Ming3D
             child->Deserialise(inReader, inPropFlags, inObjFlags);
 
             delete[] actorClassName;
+        }
+    }
+
+    void Actor::RegisterComponentCallback(const ComponentCallbackType &inType, Component* inComp)
+    {
+        auto &compArr = mCompCallbackSubscribers[inType];
+        if(std::find(compArr.begin(), compArr.end(), inComp) == compArr.end())
+            compArr.push_back(inComp);
+    }
+
+    void Actor::OnTransformMoved()
+    {
+        // Notify components
+        auto &subscribers = mCompCallbackSubscribers[ComponentCallbackType::PostMove];
+        for (Component* comp : subscribers)
+        {
+            comp->PostMove();
         }
     }
 }

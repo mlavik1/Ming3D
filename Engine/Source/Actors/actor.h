@@ -4,6 +4,8 @@
 #include "Object/game_object.h"
 #include <vector>
 #include "transform.h"
+#include "Components/component_callback_types.h"
+#include <unordered_map>
 
 namespace Ming3D
 {
@@ -21,6 +23,9 @@ namespace Ming3D
         std::vector<Actor*> mChildren;
         bool mIsInitialised = false;
         std::string mActorName;
+
+        std::vector<Component*> newComponents;
+        std::unordered_map<ComponentCallbackType, std::vector<Component*>> mCompCallbackSubscribers;
 
         static uint64_t instanceCounter;
 
@@ -65,9 +70,26 @@ namespace Ming3D
         void SerialiseChildActors(DataWriter* outWriter, PropertyFlag inPropFlags, ObjectFlag inObjFlags);
         void DeserialiseChildActors(DataWriter* inReader, PropertyFlag inPropFlags, ObjectFlag inObjFlag);
 
+        void RegisterComponentCallback(const ComponentCallbackType &inType, Component* inComp);
+
+        /** Caled from Transform after movement. */
+        void OnTransformMoved();
+
         inline Transform& GetTransform() { return mTransform; }
         std::vector<Component*> GetComponents() { return mComponents; }
         std::string GetActorName() { return mActorName; }
+        
+        template<typename T>
+        T* GetComponent()
+        {
+            static_assert(std::is_base_of<Component, T>::value, "Must be a subclass of component");
+            for(Component* comp : mComponents)
+            {
+                if (static_cast<Object*>(comp)->GetClass() == T::GetStaticClass())
+                    return static_cast<T*>(comp);
+            }
+            return nullptr;
+        }
     };
 }
 #endif

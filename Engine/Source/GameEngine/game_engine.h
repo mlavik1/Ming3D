@@ -13,6 +13,7 @@ namespace Ming3D
     class SceneRenderer;
     class RenderTarget;
     class NetworkManager;
+    class PhysicsManager;
 
 	class GameEngine
 	{
@@ -27,6 +28,7 @@ namespace Ming3D
         SceneRenderer* mSceneRenderer = nullptr;
         RenderTarget* mRenderTarget = nullptr;
         NetworkManager* mNetworkManager = nullptr;
+        PhysicsManager* mPhysicsManager = nullptr;
 
 	public:
 		GameEngine();
@@ -43,6 +45,7 @@ namespace Ming3D
         inline World* GetWorld() { return mWorld; }
         inline Platform* GetPlatform() { return mPlatform; }
         inline NetworkManager* GetNetworkManager() { return mNetworkManager; }
+        inline PhysicsManager* GetPhysicsManager() { return mPhysicsManager; }
     };
 }
 
