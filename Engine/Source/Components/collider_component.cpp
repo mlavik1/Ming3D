@@ -33,4 +33,9 @@ namespace Ming3D
     {
 
     }
+
+    void ColliderComponent::UpdatePhysicsShape()
+    {
+
+    }
 }

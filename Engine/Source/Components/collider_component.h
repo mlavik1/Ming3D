@@ -17,6 +17,7 @@ namespace Ming3D
         virtual void InitialTick() override;
         
         virtual void RecreatePhysicsShape();
+        virtual void UpdatePhysicsShape();
 
         physx::PxMaterial* mPxMaterial = nullptr;
         physx::PxShape* mPxShape = nullptr;

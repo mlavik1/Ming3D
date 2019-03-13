@@ -9,7 +9,7 @@ namespace Ming3D
 {
     class BoxColliderComponent : public ColliderComponent
     {
-        DEFINE_CLASS(Ming3D::BoxColliderComponent, Ming3D::Component)
+        DEFINE_CLASS(Ming3D::BoxColliderComponent, Ming3D::ColliderComponent)
 
     private:
         glm::vec3 mSize = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -20,6 +20,7 @@ namespace Ming3D
         virtual void InitialiseComponent() override;
 
         virtual void RecreatePhysicsShape() override;
+        virtual void UpdatePhysicsShape() override;
 
         virtual void PostMove() override;
     
