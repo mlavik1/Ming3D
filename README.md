@@ -3,8 +3,14 @@ Game engine.
 
 This is a playground for me to learn different things.
 
-Currently working on rendering.
-
+# How to clone and build
+- Download CMake
+- Clone (recursively, since it contains modules)
+- Run DownloadLibs.py (or DownloadLibs.bat if on Windows)
+- Open CMake
+- Set source code directory ("Where is the source code: " in CMake GUI) to the repository root directory
+- Configure and Generate
+- For the test project, modify the "TestType" variable to select the type of test you want to use.
 
 # Renderer
 
