@@ -38,7 +38,7 @@ namespace Ming3D
         if(mPxMaterial == nullptr)
             mPxMaterial = GGameEngine->GetPhysicsManager()->GetPxPhysics()->createMaterial(0.5, 0.5, 0.5);
 
-        glm::vec3 size = mSize * mParent->GetTransform().GetWorldScale();
+        const glm::vec3 size = mSize * mParent->GetTransform().GetWorldScale();
 
         physx::PxRigidActor* pxActor = rigidBodyComp->GetPhysicsActor()->GetRigidActor();
         mPxShape = pxActor->createShape(physx::PxBoxGeometry(size.x, size.y, size.z), *mPxMaterial);
@@ -55,8 +55,7 @@ namespace Ming3D
         if (mPxMaterial == nullptr)
             mPxMaterial = GGameEngine->GetPhysicsManager()->GetPxPhysics()->createMaterial(0.5, 0.5, 0.5);
 
-        glm::vec3 size = mSize * mParent->GetTransform().GetWorldScale();
-
+        const glm::vec3 size = mSize * mParent->GetTransform().GetWorldScale();
         physx::PxBoxGeometry pxGeom = physx::PxBoxGeometry(size.x, size.y, size.z);
 
         physx::PxRigidActor* pxActor = rigidBodyComp->GetPhysicsActor()->GetRigidActor();
@@ -73,8 +72,6 @@ namespace Ming3D
     void BoxColliderComponent::SetSize(glm::vec3 size)
     {
         mSize = size;
-
-        if(mPxShape != nullptr)
-            UpdatePhysicsShape();
+        UpdatePhysicsShape();
     }
 }

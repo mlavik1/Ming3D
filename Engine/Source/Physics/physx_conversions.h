@@ -5,6 +5,8 @@
 #include "foundation/PxQuat.h"
 #include "glm/vec3.hpp"
 #include "glm/gtx/quaternion.hpp"
+#include "force_mode.h"
+#include "PxForceMode.h"
 
 namespace Ming3D
 {
@@ -28,6 +30,19 @@ namespace Ming3D
         inline glm::quat pxQuatToGlmQuat(const physx::PxQuat& quat)
         {
             return glm::quat(quat.w, quat.x, quat.y, quat.z);
+        }
+
+        inline physx::PxForceMode::Enum forceModeToPxForceMode(const ForceMode& mode)
+        {
+            switch (mode)
+            {
+            case ForceMode::Force:
+                return physx::PxForceMode::eFORCE;
+            case ForceMode::Impulse:
+                return physx::PxForceMode::eIMPULSE;
+            case ForceMode::Acceleration:
+                return physx::PxForceMode::eACCELERATION;
+            }
         }
     };
 }

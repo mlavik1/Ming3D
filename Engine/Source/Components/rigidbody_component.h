@@ -3,6 +3,7 @@
 
 #include "component.h"
 #include "Physics/physics_actor.h"
+#include "Physics/force_mode.h"
 
 namespace Ming3D
 {
@@ -17,6 +18,7 @@ namespace Ming3D
         bool mIsStatic = false;
         int mScene = 0;
         bool mIsKinematic = false;
+        float mMass = 1.0f;
 
         void RecreatePhysicsActor();
         void DestroyPhysicsActor();
@@ -30,8 +32,11 @@ namespace Ming3D
         virtual void InitialTick() override;
         
         void SetStatic(bool setStatic);
+        void SetMass(float mass);
         void SetKinematic(bool setKinematic);
         void SetScene(int scene);
+        void AddForce(const glm::vec3& force, const ForceMode& forceMode);
+        void AddForceAtPos(const glm::vec3& force, const glm::vec3& pos, const ForceMode& forceMode);
 
         virtual void PostMove() override;
 

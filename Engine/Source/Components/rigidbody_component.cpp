@@ -54,7 +54,8 @@ namespace Ming3D
         else
         {
             mPhysicsActor = new DynamicPhysicsActor();
-            ((DynamicPhysicsActor*)mPhysicsActor)->SetKinematic(mIsKinematic);
+            static_cast<DynamicPhysicsActor*>(mPhysicsActor)->SetKinematic(mIsKinematic);
+            static_cast<DynamicPhysicsActor*>(mPhysicsActor)->SetMass(mMass);
         }
 
         mPhysicsActor->GetRigidActor()->userData = this;
@@ -82,15 +83,6 @@ namespace Ming3D
         RecreatePhysicsActor();
     }
 
-    void RigidBodyComponent::SetKinematic(bool setKinematic)
-    {
-        mIsKinematic = setKinematic;
-        if (!mIsStatic && mPhysicsActor != nullptr)
-        {
-            ((DynamicPhysicsActor*)mPhysicsActor)->SetKinematic(setKinematic);
-        }
-    }
-
     void RigidBodyComponent::SetScene(int scene)
     {
         if (mScene == scene)
@@ -98,6 +90,35 @@ namespace Ming3D
 
         mScene = scene;
         RecreatePhysicsActor();
+    }
+
+    void RigidBodyComponent::SetKinematic(bool setKinematic)
+    {
+        mIsKinematic = setKinematic;
+        if (!mIsStatic && mPhysicsActor != nullptr)
+        {
+            static_cast<DynamicPhysicsActor*>(mPhysicsActor)->SetKinematic(setKinematic);
+        }
+    }
+
+    void RigidBodyComponent::SetMass(float mass)
+    {
+        mMass = mass;
+
+        if (!mIsStatic && mPhysicsActor != nullptr)
+            static_cast<DynamicPhysicsActor*>(mPhysicsActor)->SetMass(mass);
+    }
+
+    void RigidBodyComponent::AddForce(const glm::vec3& force, const ForceMode& forceMode)
+    {
+        if (!mIsStatic && mPhysicsActor != nullptr)
+            static_cast<DynamicPhysicsActor*>(mPhysicsActor)->AddForce(force, forceMode);
+    }
+
+    void RigidBodyComponent::AddForceAtPos(const glm::vec3& force, const glm::vec3& pos, const ForceMode& forceMode)
+    {
+        if (!mIsStatic && mPhysicsActor != nullptr)
+            static_cast<DynamicPhysicsActor*>(mPhysicsActor)->AddForceAtPos(force, pos, forceMode);
     }
 
     void RigidBodyComponent::PostMove()

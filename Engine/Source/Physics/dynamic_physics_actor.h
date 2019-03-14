@@ -3,6 +3,7 @@
 
 #include "physics_actor.h"
 #include "Actors/transform.h"
+#include "force_mode.h"
 
 namespace Ming3D
 {
@@ -20,6 +21,9 @@ namespace Ming3D
         virtual void UpdateTransform(const Transform& inTrans) override;
 
         void SetKinematic(bool inKinematic);
+        void SetMass(float mass);
+        void AddForce(const glm::vec3& force, const ForceMode& forceMode);
+        void AddForceAtPos(const glm::vec3& force, const glm::vec3& pos, const ForceMode& forceMode);
 
         bool IsKinematic() const { return mIsKinematic; };
     };
