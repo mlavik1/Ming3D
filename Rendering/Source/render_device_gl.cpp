@@ -323,7 +323,7 @@ namespace Ming3D
             const size_t vertexComponentSize = VertexData::GetVertexComponentSize(vertexComponent);
             glEnableVertexAttribArray(vertexComponentIndex);
             glBindBuffer(GL_ARRAY_BUFFER, vertexBufferGL->GetGLBuffer());
-            glVertexAttribPointer(vertexComponentIndex, 3, GL_FLOAT, GL_FALSE, vertexBufferGL->GetVertexSize(), (void*)vertexComponentOffset);
+            glVertexAttribPointer(vertexComponentIndex, VertexData::GetVertexComponentSize(vertexComponent) / sizeof(float), GL_FLOAT, GL_FALSE, vertexBufferGL->GetVertexSize(), (void*)vertexComponentOffset);
             vertexComponentIndex++;
             vertexComponentOffset += vertexComponentSize;
         }
