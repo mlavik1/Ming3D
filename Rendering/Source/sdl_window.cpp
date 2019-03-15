@@ -22,8 +22,11 @@ namespace Ming3D
 
     void SDLWindow::Initialise()
     {
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
         if(mSDLWindow == nullptr)
             mSDLWindow = SDL_CreateWindow("Ming3D", 0, 0, mWindowWidth, mWindowHeight, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
+
         mGLContext = SDL_GL_CreateContext(mSDLWindow);
     }
 
