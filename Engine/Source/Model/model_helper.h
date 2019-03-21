@@ -34,7 +34,6 @@ namespace Ming3D
     {
     public:
         std::vector<MeshData*> mMeshes;
-        ShaderProgram* mShaderProgram = nullptr;
         glm::vec3 mPosition;
     };
 

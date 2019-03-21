@@ -272,7 +272,7 @@ namespace Ming3D { namespace ShaderConverter
         * Parse the source code of a shader program.
         * Send the parsed program to a ShaderWriter to convert it.
         */
-        ParsedShaderProgram* ParseShaderProgram(const char* inShaderProgramPath);
+        ParsedShaderProgram* ParseShaderProgram(const std::string& inShaderProgramPath);
     };
 }}
 

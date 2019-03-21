@@ -6,9 +6,9 @@ namespace Ming3D
     class MeshBuffer
     {
     public:
-        VertexBuffer* mVertexBuffer;
-        IndexBuffer* mIndexBuffer;
-        TextureBuffer* mTextureBuffer;
+        VertexBuffer* mVertexBuffer = nullptr;
+        IndexBuffer* mIndexBuffer = nullptr;
+        TextureBuffer* mTextureBuffer = nullptr;
     };
 }
 

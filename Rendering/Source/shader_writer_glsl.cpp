@@ -269,7 +269,7 @@ namespace Ming3D { namespace ShaderConverter
         }
     }
 
-    bool ShaderWriterGLSL::WriteShader(ParsedShaderProgram* inParsedShaderProgram, ShaderProgramDataGLSL& outData)
+    bool ShaderWriterGLSL::WriteShader(const ParsedShaderProgram* inParsedShaderProgram, ShaderProgramDataGLSL& outData)
     {
         mCurrentShaderProgram = inParsedShaderProgram;
 

@@ -13,6 +13,7 @@
 #include "render_window.h"
 #include "rasteriser_state.h"
 #include "depth_stencil_state.h"
+#include "shader_parser.h" // TODO: Move ShaderConverter::ParsedShaderProgram to own file
 
 #include <string>
 
@@ -32,7 +33,7 @@ namespace Ming3D
         virtual RenderTarget* CreateRenderTarget(TextureInfo inTextureInfo, int numTextures) = 0;
         virtual VertexBuffer* CreateVertexBuffer(VertexData* inVertexData) = 0;
         virtual IndexBuffer* CreateIndexBuffer(IndexData* inIndexData) = 0;
-        virtual ShaderProgram* CreateShaderProgram(const std::string& inShaderProgramPath) = 0;
+        virtual ShaderProgram* CreateShaderProgram(const ShaderConverter::ParsedShaderProgram* inShaderProgramPath) = 0;
         virtual TextureBuffer* CreateTextureBuffer(TextureInfo inTextureInfo, void* inTextureData) = 0;
         virtual RenderWindow* CreateRenderWindow(WindowBase* inWindow) = 0;
         virtual RasteriserState* CreateRasteriserState(RasteriserStateCullMode inCullMode, bool inDepthClipEnabled) = 0;

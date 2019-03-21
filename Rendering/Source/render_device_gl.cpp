@@ -111,10 +111,8 @@ namespace Ming3D
         return indexBuffer;
     }
 
-    ShaderProgram* RenderDeviceGL::CreateShaderProgram(const std::string& inShaderProgramPath)
+    ShaderProgram* RenderDeviceGL::CreateShaderProgram(const ShaderConverter::ParsedShaderProgram* parsedProgram)
     {
-        ShaderConverter::ShaderParser shaderParser;
-        ShaderConverter::ParsedShaderProgram* parsedProgram = shaderParser.ParseShaderProgram(inShaderProgramPath.c_str());
         ShaderConverter::ShaderWriterGLSL shaderWriter;
         ShaderConverter::ShaderProgramDataGLSL convertedShaderData;
         shaderWriter.WriteShader(parsedProgram, convertedShaderData);

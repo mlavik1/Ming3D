@@ -622,7 +622,7 @@ namespace Ming3D {
             return EParseResult::Parsed;
         }
 
-        ParsedShaderProgram* ShaderParser::ParseShaderProgram(const char* inShaderProgramPath)
+        ParsedShaderProgram* ShaderParser::ParseShaderProgram(const std::string& inShaderProgramPath)
         {
 
             ParsedShaderProgram* parsedShaderProgram = new ParsedShaderProgram();

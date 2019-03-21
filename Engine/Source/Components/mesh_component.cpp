@@ -6,11 +6,17 @@
 #include "render_device.h"
 #include "SceneRenderer/scene_renderer.h"
 #include "Actors/actor.h"
+#include "Model/material_factory.h"
 
 IMPLEMENT_CLASS(Ming3D::MeshComponent)
 
 namespace Ming3D
 {
+    MeshComponent::MeshComponent()
+    {
+        mMaterial = MaterialFactory::CreateMaterial("Resources//shader_PNT.shader"); // TODO !!!!!!!!!!!!!!!
+    }
+
     void MeshComponent::InitialiseClass()
     {
 
@@ -46,7 +52,7 @@ namespace Ming3D
             renderSceneObject->mOwnerComponent = this;
             renderSceneObject->mModelMatrix = mParent->GetTransform().GetWorldTransformMatrix();
             renderSceneObject->mMeshes.push_back(meshBuffer);
-            renderSceneObject->mShaderProgram = renderDevice->CreateShaderProgram("Resources//shader_PNT.shader");
+            renderSceneObject->mMaterial = mMaterial->mMaterialBuffer;
         }
 
         GGameEngine->GetSceneRenderer()->AddSceneObject(renderSceneObject);

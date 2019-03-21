@@ -33,7 +33,7 @@ namespace Ming3D
         virtual RenderTarget* CreateRenderTarget(TextureInfo inTextureInfo, int numTextures) override;
         virtual VertexBuffer* CreateVertexBuffer(VertexData* inVertexData) override;
         virtual IndexBuffer* CreateIndexBuffer(IndexData* inIndexData) override;
-        virtual ShaderProgram* CreateShaderProgram(const std::string& inShaderProgramPath) override;
+        virtual ShaderProgram* CreateShaderProgram(const ShaderConverter::ParsedShaderProgram* parsedProgram) override;
         virtual TextureBuffer* CreateTextureBuffer(TextureInfo inTextureInfo, void* inTextureData) override;
         virtual RenderWindow* CreateRenderWindow(WindowBase* inWindow) override;
         virtual RasteriserState* CreateRasteriserState(RasteriserStateCullMode inCullMode, bool inDepthClipEnabled) override;

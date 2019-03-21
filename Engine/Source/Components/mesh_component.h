@@ -2,6 +2,7 @@
 #define MING3D_MESHCOMPONENT_H
 
 #include "component.h"
+#include "Model/material.h"
 
 namespace Ming3D
 {
@@ -12,7 +13,10 @@ namespace Ming3D
     private:
         static void InitialiseClass();
 
+        Material* mMaterial = nullptr;
+
     public:
+        MeshComponent();
         virtual void InitialiseComponent();
         void SetMesh(const char* meshFile);
     };

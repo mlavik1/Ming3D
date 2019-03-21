@@ -239,16 +239,8 @@ namespace Ming3D
         return indexBuffer;
     }
 
-    ShaderProgram* RenderDeviceD3D11::CreateShaderProgram(const std::string& inShaderProgramPath)
+    ShaderProgram* RenderDeviceD3D11::CreateShaderProgram(const ShaderConverter::ParsedShaderProgram* parsedProgram)
     {
-        ShaderConverter::ShaderParser shaderParser;
-        ShaderConverter::ParsedShaderProgram* parsedProgram = shaderParser.ParseShaderProgram(inShaderProgramPath.c_str());
-        if (parsedProgram == nullptr)
-        {
-            LOG_ERROR() << "Failed to create shader program, for " << inShaderProgramPath;
-            return nullptr;
-        }
-
         ShaderConverter::ShaderWriterHLSL shaderWriter;
         ShaderConverter::ShaderProgramDataHLSL convertedShaderData;
         shaderWriter.WriteShader(parsedProgram, convertedShaderData);

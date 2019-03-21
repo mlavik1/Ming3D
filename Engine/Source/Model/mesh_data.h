@@ -14,7 +14,6 @@ namespace Ming3D
         std::vector<unsigned int> mIndices;
         bool mHasNormals = false;
         bool mHasTexCoords = false;
-        Texture* mTexture;
     };
 }
 

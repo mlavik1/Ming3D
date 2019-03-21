@@ -9,6 +9,7 @@ namespace Ming3D
     {
     public:
         static void LoadTextureData(const char* inFilePath, Texture* outTexture);
+        static void CreateEmptyTexture(Texture* outTexture);
     };
 }
 

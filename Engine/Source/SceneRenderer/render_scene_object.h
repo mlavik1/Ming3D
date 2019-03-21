@@ -7,6 +7,7 @@
 #include "shader_program.h"
 #include "Model/mesh_buffer.h"
 #include "Components/component.h"
+#include "Model/material_buffer.h"
 
 namespace Ming3D
 {
@@ -15,8 +16,8 @@ namespace Ming3D
     public:
         Component* mOwnerComponent = nullptr;
         std::vector<MeshBuffer*> mMeshes;
-        ShaderProgram* mShaderProgram = nullptr;
         glm::mat4 mModelMatrix;
+        MaterialBuffer* mMaterial = nullptr;
     };
 }
 
