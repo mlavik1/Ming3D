@@ -11,64 +11,13 @@
 #include <unordered_map>
 #include <stack>
 #include "shader_tokeniser.h"
+#include "shader_info.h"
 
 namespace Ming3D { namespace ShaderConverter
 {
     enum class TerminatorType
     {
         LineBreak, Parenthesis, CurlyBrackets
-    };
-
-    class ShaderStructMember
-    {
-    public:
-        std::string mVariableType;
-        std::string mVariableName;
-        std::string mSemantic;
-    };
-
-    class ShaderVariableInfo
-    {
-    public:
-        std::string mVariableType;
-        std::string mVariableName;
-    };
-
-    class ShaderStructInfo
-    {
-    public:
-        std::string mStructName;
-        std::vector<ShaderStructMember> mMemberVariables;
-
-        ShaderStructInfo() {}
-
-        ShaderStructInfo(const std::string& inName, const std::vector<ShaderStructMember>& inMembers)
-        {
-            mStructName = inName;
-            mMemberVariables = inMembers;
-        }
-    };
-
-    class ShaderFunctionInfo
-    {
-    public:
-        std::string mFunctionName;
-        std::string mReturnValueType;
-        std::vector<ShaderVariableInfo> mParameters;
-    };
-
-    class ShaderUniformInfo
-    {
-    public:
-        std::string mUniformType;
-        std::string mUniformName;
-    };
-
-    class ShaderTextureInfo
-    {
-    public:
-        std::string mTextureType; // TODO: Use enum for texture types
-        std::string mTextureName;
     };
 
     enum class EOperatorAssociativity
@@ -204,18 +153,18 @@ namespace Ming3D { namespace ShaderConverter
     {
     public:
         std::vector<ShaderVariableInfo> mVariables;
-        std::vector<ShaderStructInfo> mStructs;
+        std::vector<ShaderDatatypeInfo> mStructs;
         std::vector<ShaderFunctionInfo> mFunctions;
     };
 
     class ParsedShader
     {
     public:
-        std::vector<ShaderStructInfo> mStructDefinitions;
+        std::vector<ShaderDatatypeInfo> mStructDefinitions;
         std::vector<ShaderFunctionDefinition*> mFunctionDefinitions;
         ShaderFunctionDefinition* mMainFunction = nullptr;
-        ShaderStructInfo mInput;
-        ShaderStructInfo mOutput;
+        ShaderDatatypeInfo mInput;
+        ShaderDatatypeInfo mOutput;
     };
 
     class ParsedShaderProgram
@@ -224,9 +173,9 @@ namespace Ming3D { namespace ShaderConverter
         ParsedShader* mVertexShader = nullptr;
         ParsedShader* mFragmentShader = nullptr;
 
-        std::vector<ShaderStructInfo> mStructDefinitions;
+        std::vector<ShaderDatatypeInfo> mStructDefinitions;
         std::vector<ShaderFunctionDefinition*> mFunctionDefinitions;
-        std::vector<ShaderUniformInfo> mShaderUniforms;
+        std::vector<ShaderVariableInfo> mShaderUniforms;
         std::vector<ShaderTextureInfo> mShaderTextures;
     };
 
@@ -237,30 +186,31 @@ namespace Ming3D { namespace ShaderConverter
     class ShaderParser
     {
     private:
-        std::set<std::string> mBuiltinDataTypes = { "float", "int", "bool", "void", "Texture2D" };
         std::set<std::string> mControlStatementIdentifiers = { "for", "while", "if", "else" };
-        std::unordered_map<std::string, ShaderStructInfo> mBuiltinStructs;
+
+        std::unordered_map<std::string, ShaderDatatypeInfo> mBuiltinDatatypes;
 
         std::unordered_map<std::string, OperatorInfo> mUnaryOperatorsMap;
         std::unordered_map<std::string, OperatorInfo> mBinaryOperatorsMap;
 
         std::unordered_map<std::string, ShaderVariableInfo> mVariablesInScope;
-        std::unordered_map<std::string, ShaderStructInfo> mStructsInScope;
         std::unordered_map<std::string, ShaderFunctionInfo> mFunctionsInScope;
+
+        std::unordered_map<std::string, ShaderDatatypeInfo> mCurrentProgramStructDefs;
+        std::unordered_map<std::string, ShaderDatatypeInfo> mCurrentShaderStructDefs;
 
         std::stack<ShaderParserScope> mScopeStack;
 
         OperatorInfo mDefaultOuterOperatorInfo = { "", 999, EOperatorAssociativity::LeftToRight };
 
-        void OnParseError(TokenParser inTokenParser, const char* inErrorString);
+        void OnParseError(TokenParser inTokenParser, const std::string& inErrorString);
 
         void PushScopeStack();
         void PopScopeStack();
         void AddVariableToScope(const ShaderVariableInfo& inVariable);
-        void AddStructToScope(const ShaderStructInfo& inStruct);
         void AddFunctionToScope(const ShaderFunctionInfo& inFunc);
 
-        bool GetStructInfo(const char* inStructName, ShaderStructInfo& outStructInfo, ParsedShaderProgram* inShaderProgram, ParsedShader* inShader);
+        bool GetTypeInfo(const std::string& inName, ShaderDatatypeInfo& outTypeInfo);
 
         bool IsTypeIdentifier(const char* inTokenString);
         bool IsControlStatementIdentifier(const char* inTokenString);
@@ -291,7 +241,7 @@ namespace Ming3D { namespace ShaderConverter
         * @param inTokenParser  Token parser, containing all tokens and the index of the current one.
         * @param outExpression  Expression returned by this function (or nullptr if it fails).
         */
-        EParseResult ParseStructBody(TokenParser& inTokenParser, ShaderStructInfo* outStructInfo);
+        EParseResult ParseStructBody(TokenParser& inTokenParser, ShaderDatatypeInfo* outStructInfo);
 
         /*
         * Parse a function definition.

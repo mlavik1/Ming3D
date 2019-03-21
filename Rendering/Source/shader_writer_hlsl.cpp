@@ -35,20 +35,20 @@ namespace Ming3D { namespace ShaderConverter
 
     void ShaderWriterHLSL::WriteVariableDeclaration(ShaderStream& inStream, ShaderVariableInfo inVarInfo)
     {
-        inStream << GetConvertedType(inVarInfo.mVariableType) << " " << GetVariableIdentifierString(inVarInfo.mVariableName);
+        inStream << GetConvertedType(inVarInfo.mDatatypeInfo.mName) << " " << GetVariableIdentifierString(inVarInfo.mName);
     }
 
     void ShaderWriterHLSL::WriteFunctionDefinition(ShaderStream& inStream, const ShaderFunctionDefinition* inFunctionDef, bool isMainFunction)
     {
         const bool isPSMain = isMainFunction && mCurrentShader == mCurrentProgram->mFragmentShader;
-        std::string returnType = GetConvertedType(inFunctionDef->mFunctionInfo.mReturnValueType);
+        std::string returnType = GetConvertedType(inFunctionDef->mFunctionInfo.mReturnValueType.mName);
         if (isPSMain)
         {
             returnType = "float4";
         }
         else if (isMainFunction && inFunctionDef->mFunctionInfo.mParameters.size() > 1)
         {
-            returnType = GetConvertedType(inFunctionDef->mFunctionInfo.mParameters[1].mVariableType);
+            returnType = GetConvertedType(inFunctionDef->mFunctionInfo.mParameters[1].mDatatypeInfo.mName);
         }
         inStream << returnType << " ";
         inStream << inFunctionDef->mFunctionInfo.mFunctionName << "(";
@@ -94,7 +94,7 @@ namespace Ming3D { namespace ShaderConverter
         }
         else
         {
-            inStream << "return " << inFunctionDef->mFunctionInfo.mParameters[1].mVariableName << ";\n";
+            inStream << "return " << inFunctionDef->mFunctionInfo.mParameters[1].mName << ";\n";
         }
 
         inStream.RemoveIndent();
@@ -295,9 +295,9 @@ namespace Ming3D { namespace ShaderConverter
         if (inParsedShaderProgram->mFragmentShader)
             shaders.push_back(inParsedShaderProgram->mFragmentShader);
 
-        for (ShaderUniformInfo uniformInfo : inParsedShaderProgram->mShaderUniforms)
+        for (ShaderVariableInfo uniformInfo : inParsedShaderProgram->mShaderUniforms)
         {
-            mAvailableUniforms.emplace(uniformInfo.mUniformName);
+            mAvailableUniforms.emplace(uniformInfo.mName);
         }
         for (ShaderTextureInfo textureInfo : inParsedShaderProgram->mShaderTextures)
         {
@@ -311,7 +311,7 @@ namespace Ming3D { namespace ShaderConverter
 
             ShaderDataHLSL& currShaderData = currShader == inParsedShaderProgram->mVertexShader ? outData.mVertexShader : outData.mFragmentShader;
 
-            std::vector<ShaderUniformInfo> currShaderUniforms;
+            std::vector<ShaderVariableInfo> currShaderUniforms;
 
             ShaderStream shaderBodyStream;
             ShaderStream shaderHeaderStream;
@@ -328,18 +328,18 @@ namespace Ming3D { namespace ShaderConverter
 
             // *** Shader header ***
 
-            std::vector<ShaderStructInfo> structDefinitions = currShader->mStructDefinitions;
+            std::vector<ShaderDatatypeInfo> structDefinitions = currShader->mStructDefinitions;
             structDefinitions.insert(structDefinitions.end(), inParsedShaderProgram->mStructDefinitions.begin(), inParsedShaderProgram->mStructDefinitions.end());
 
             // Write structs (from shader program and shader)
-            for (ShaderStructInfo structInfo : structDefinitions)
+            for (ShaderDatatypeInfo structInfo : structDefinitions)
             {
-                shaderHeaderStream << "struct " << structInfo.mStructName << "\n" << "{" << "\n";
+                shaderHeaderStream << "struct " << structInfo.mName << "\n" << "{" << "\n";
 
                 shaderHeaderStream.AddIndent();
                 for (const ShaderStructMember member : structInfo.mMemberVariables)
                 {
-                    shaderHeaderStream << GetConvertedType(member.mVariableType) << " " << member.mVariableName;
+                    shaderHeaderStream << GetConvertedType(member.mDatatype.mName) << " " << member.mName;
                     if (member.mSemantic != "")
                     {
                         shaderHeaderStream << " : " << member.mSemantic;
@@ -356,11 +356,11 @@ namespace Ming3D { namespace ShaderConverter
             shaderHeaderStream << "cbuffer SHADER_CONSTANT_BUFFER : register(b0)\n";
             shaderHeaderStream << "{\n";
             shaderHeaderStream.AddIndent();
-            for (const ShaderUniformInfo uniformInfo : inParsedShaderProgram->mShaderUniforms)
+            for (const ShaderVariableInfo uniformInfo : inParsedShaderProgram->mShaderUniforms)
             {
-                if (mReferencedUniforms.find(uniformInfo.mUniformName) != mReferencedUniforms.end())
+                if (mReferencedUniforms.find(uniformInfo.mName) != mReferencedUniforms.end())
                 {
-                    shaderHeaderStream << GetConvertedType(uniformInfo.mUniformType) << " " << uniformInfo.mUniformName << ";\n";
+                    shaderHeaderStream << GetConvertedType(uniformInfo.mDatatypeInfo.mName) << " " << uniformInfo.mName << ";\n";
                     currShaderUniforms.push_back(uniformInfo);
                 }
             }

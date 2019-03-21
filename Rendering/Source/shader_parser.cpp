@@ -14,10 +14,16 @@ namespace Ming3D {
     {
         ShaderParser::ShaderParser()
         {
-            mBuiltinStructs.emplace("vec2", ShaderStructInfo("vec2", { { "float", "x" },{ "float", "y" },{ "float", "r" },{ "float", "g" } }));
-            mBuiltinStructs.emplace("vec3", ShaderStructInfo("vec3", { { "float", "x" },{ "float", "y" },{ "float", "z" },{ "float", "r" },{ "float", "g" },{ "float", "b" } }));
-            mBuiltinStructs.emplace("vec4", ShaderStructInfo("vec4", { { "float", "x" },{ "float", "y" },{ "float", "z" },{ "float", "w" },{ "float", "r" },{ "float", "g" },{ "float", "b" },{ "float", "a" } }));
-            mBuiltinStructs.emplace("mat4", ShaderStructInfo("mat4", {})); // TODO
+            mBuiltinDatatypes.emplace("float", ShaderDatatypeInfo(EShaderDatatype::Float, "float"));
+            mBuiltinDatatypes.emplace("int", ShaderDatatypeInfo(EShaderDatatype::Int, "int"));
+            mBuiltinDatatypes.emplace("bool", ShaderDatatypeInfo(EShaderDatatype::Bool, "bool"));
+            mBuiltinDatatypes.emplace("void", ShaderDatatypeInfo(EShaderDatatype::Void, "void"));
+            mBuiltinDatatypes.emplace("Texture2D", ShaderDatatypeInfo(EShaderDatatype::Texture2D, "Texture2D"));
+
+            mBuiltinDatatypes.emplace("vec2", ShaderDatatypeInfo(EShaderDatatype::Vec2, "vec2", { ShaderStructMember(mBuiltinDatatypes["float"], "x"), ShaderStructMember(mBuiltinDatatypes["float"], "y"), ShaderStructMember(mBuiltinDatatypes["float"], "r"), ShaderStructMember(mBuiltinDatatypes["float"], "g") }));
+            mBuiltinDatatypes.emplace("vec3", ShaderDatatypeInfo(EShaderDatatype::Vec3, "vec3", { ShaderStructMember(mBuiltinDatatypes["float"], "x"), ShaderStructMember(mBuiltinDatatypes["float"], "y"), ShaderStructMember(mBuiltinDatatypes["float"], "z"), ShaderStructMember(mBuiltinDatatypes["float"], "r"), ShaderStructMember(mBuiltinDatatypes["float"], "g"), ShaderStructMember(mBuiltinDatatypes["float"], "b") }));
+            mBuiltinDatatypes.emplace("vec4", ShaderDatatypeInfo(EShaderDatatype::Vec4, "vec4", { ShaderStructMember(mBuiltinDatatypes["float"], "x"), ShaderStructMember(mBuiltinDatatypes["float"], "y"), ShaderStructMember(mBuiltinDatatypes["float"], "z"), ShaderStructMember(mBuiltinDatatypes["float"], "w"), ShaderStructMember(mBuiltinDatatypes["float"], "r"), ShaderStructMember(mBuiltinDatatypes["float"], "g"), ShaderStructMember(mBuiltinDatatypes["float"], "b"), ShaderStructMember(mBuiltinDatatypes["float"], "a") }));
+            mBuiltinDatatypes.emplace("mat4", ShaderDatatypeInfo(EShaderDatatype::Mat4x4, "mat4", { }));
 
             mUnaryOperatorsMap.emplace("++", OperatorInfo{ "++", 3, EOperatorAssociativity::LeftToRight });
             mUnaryOperatorsMap.emplace("--", OperatorInfo{ "--", 3, EOperatorAssociativity::LeftToRight });
@@ -43,7 +49,7 @@ namespace Ming3D {
             mBinaryOperatorsMap.emplace("-=", OperatorInfo{ "-=", 16, EOperatorAssociativity::LeftToRight });
         }
 
-        void ShaderParser::OnParseError(TokenParser inTokenParser, const char* inErrorString)
+        void ShaderParser::OnParseError(TokenParser inTokenParser, const std::string& inErrorString)
         {
             // TODO: PRINT THE LINE THAT HAS THE ERROR
             LOG_ERROR() << "Parsing error, in line " << inTokenParser.GetCurrentToken().mLineNumber << ":" << inErrorString;
@@ -61,7 +67,7 @@ namespace Ming3D {
         {
             for (const ShaderVariableInfo& var : mScopeStack.top().mVariables)
             {
-                mVariablesInScope.erase(var.mVariableName);
+                mVariablesInScope.erase(var.mName);
             }
             mScopeStack.pop();
         }
@@ -69,13 +75,7 @@ namespace Ming3D {
         void ShaderParser::AddVariableToScope(const ShaderVariableInfo& inVariable)
         {
             mScopeStack.top().mVariables.push_back(inVariable);
-            mVariablesInScope.emplace(inVariable.mVariableName, inVariable);
-        }
-
-        void ShaderParser::AddStructToScope(const ShaderStructInfo& inStruct)
-        {
-            mScopeStack.top().mStructs.push_back(inStruct);
-            mStructsInScope.emplace(inStruct.mStructName, inStruct);
+            mVariablesInScope.emplace(inVariable.mName, inVariable);
         }
 
         void ShaderParser::AddFunctionToScope(const ShaderFunctionInfo& inFunc)
@@ -84,37 +84,34 @@ namespace Ming3D {
             mFunctionsInScope.emplace(inFunc.mFunctionName, inFunc);
         }
 
-        bool ShaderParser::GetStructInfo(const char* inStructName, ShaderStructInfo& outStructInfo, ParsedShaderProgram* inShaderProgram, ParsedShader* inShader)
+        bool ShaderParser::GetTypeInfo(const std::string& inName, ShaderDatatypeInfo& outTypeInfo)
         {
-            for (ShaderStructInfo structInfo : inShaderProgram->mStructDefinitions)
+            if (mBuiltinDatatypes.find(inName) != mBuiltinDatatypes.end())
             {
-                if (structInfo.mStructName == inStructName)
-                {
-                    outStructInfo = structInfo;
-                    return true;
-                }
+                outTypeInfo = mBuiltinDatatypes[inName];
+                return true;
             }
-            if (inShader != nullptr)
+            if (mCurrentProgramStructDefs.find(inName) != mCurrentProgramStructDefs.end())
             {
-                for (ShaderStructInfo structInfo : inShader->mStructDefinitions)
-                {
-                    if (structInfo.mStructName == inStructName)
-                    {
-                        outStructInfo = structInfo;
-                        return true;
-                    }
-                }
+                outTypeInfo = mCurrentProgramStructDefs[inName];
+                return true;
             }
+            if (mCurrentShaderStructDefs.find(inName) != mCurrentShaderStructDefs.end())
+            {
+                outTypeInfo = mCurrentShaderStructDefs[inName];
+                return true;
+            }
+
             return false;
         }
 
         bool ShaderParser::IsTypeIdentifier(const char* inTokenString)
         {
-            if (mBuiltinDataTypes.find(inTokenString) != mBuiltinDataTypes.end())
+            if (mBuiltinDatatypes.find(inTokenString) != mBuiltinDatatypes.end())
                 return true;
-            if (mBuiltinStructs.find(inTokenString) != mBuiltinStructs.end())
+            if (mCurrentProgramStructDefs.find(inTokenString) != mCurrentProgramStructDefs.end())
                 return true;
-            if (mStructsInScope.find(inTokenString) != mStructsInScope.end())
+            if (mCurrentShaderStructDefs.find(inTokenString) != mCurrentShaderStructDefs.end())
                 return true;
             if (mFunctionsInScope.find(inTokenString) != mFunctionsInScope.end())
                 return true;
@@ -361,7 +358,7 @@ namespace Ming3D {
             return EParseResult::Parsed;
         }
 
-        EParseResult ShaderParser::ParseStructBody(TokenParser& inTokenParser, ShaderStructInfo* outStructInfo)
+        EParseResult ShaderParser::ParseStructBody(TokenParser& inTokenParser, ShaderDatatypeInfo* outStructInfo)
         {
             while (inTokenParser.GetCurrentToken().mTokenString != "}")
             {
@@ -386,9 +383,17 @@ namespace Ming3D {
                         OnParseError(inTokenParser, "Missing semicolon after struct member definition");
                         return EParseResult::Error;
                     }
+                    
+                    ShaderDatatypeInfo typeInfo;
+                    if (!GetTypeInfo(typeToken.mTokenString, typeInfo))
+                    {
+                        OnParseError(inTokenParser, "Invalid datatype");
+                        return EParseResult::Error;
+                    }
+
                     ShaderStructMember structMember;
-                    structMember.mVariableType = typeToken.mTokenString;
-                    structMember.mVariableName = identifierToken.mTokenString;
+                    structMember.mDatatype = typeInfo;
+                    structMember.mName = identifierToken.mTokenString;
                     structMember.mSemantic = semanticName;
                     outStructInfo->mMemberVariables.push_back(structMember);
                     inTokenParser.Advance();
@@ -406,7 +411,14 @@ namespace Ming3D {
         EParseResult ShaderParser::ParseFunctionDefinition(TokenParser& inTokenParser, ShaderFunctionDefinition** outDefinition)
         {
             ShaderFunctionInfo funcInfo;
-            funcInfo.mReturnValueType = inTokenParser.GetCurrentToken().mTokenString;
+            std::string strRetType = inTokenParser.GetCurrentToken().mTokenString;
+            ShaderDatatypeInfo retType;
+            if (!GetTypeInfo(strRetType, retType))
+            {
+                OnParseError(inTokenParser, std::string("Invalid return type: ") + strRetType);
+                return EParseResult::Error;
+            }
+            funcInfo.mReturnValueType = retType;
             inTokenParser.Advance();
             funcInfo.mFunctionName = inTokenParser.GetCurrentToken().mTokenString; // TODO: check if valid identifier name
             inTokenParser.Advance();
@@ -429,10 +441,17 @@ namespace Ming3D {
                     OnParseError(inTokenParser, "Invalid function parameter type");
                     return EParseResult::Error;
                 }
+                std::string typeString = inTokenParser.GetCurrentToken().mTokenString;
+                ShaderDatatypeInfo typeInfo;
+                if (!GetTypeInfo(typeString, typeInfo))
+                {
+                    OnParseError(inTokenParser, "Invalid function parameter type");
+                    return EParseResult::Error;
+                }
                 ShaderVariableInfo funcParam;
-                funcParam.mVariableType = inTokenParser.GetCurrentToken().mTokenString;
+                funcParam.mDatatypeInfo = typeInfo;
                 inTokenParser.Advance();
-                funcParam.mVariableName = inTokenParser.GetCurrentToken().mTokenString;
+                funcParam.mName = inTokenParser.GetCurrentToken().mTokenString;
                 funcInfo.mParameters.push_back(funcParam);
                 AddVariableToScope(funcParam);
                 inTokenParser.Advance();
@@ -625,15 +644,15 @@ namespace Ming3D {
                 {
                     tokenParser.Advance();
                     tokenParser.Advance(); // TODO: check
-                    ShaderStructInfo inputStruct;
+                    ShaderDatatypeInfo inputStruct;
                     EParseResult inputParseResult = ParseStructBody(tokenParser, &inputStruct);
                     if (inputParseResult == EParseResult::Parsed)
                     {
                         for (ShaderStructMember member : inputStruct.mMemberVariables)
                         {
-                            ShaderUniformInfo uniformInfo;
-                            uniformInfo.mUniformName = member.mVariableName;
-                            uniformInfo.mUniformType = member.mVariableType;
+                            ShaderVariableInfo uniformInfo;
+                            uniformInfo.mName = member.mName;
+                            uniformInfo.mDatatypeInfo = member.mDatatype;
                             parsedShaderProgram->mShaderUniforms.push_back(uniformInfo);
                         }
                         tokenParser.Advance();
@@ -648,15 +667,15 @@ namespace Ming3D {
                 {
                     tokenParser.Advance();
                     tokenParser.Advance();
-                    ShaderStructInfo inputStruct;
+                    ShaderDatatypeInfo inputStruct;
                     EParseResult inputParseResult = ParseStructBody(tokenParser, &inputStruct);
                     if (inputParseResult == EParseResult::Parsed)
                     {
                         for (ShaderStructMember member : inputStruct.mMemberVariables)
                         {
                             ShaderTextureInfo textureInfo;
-                            textureInfo.mTextureName = member.mVariableName;
-                            textureInfo.mTextureType = member.mVariableType; // TODO: use enum
+                            textureInfo.mTextureName = member.mName;
+                            textureInfo.mTextureType = member.mDatatype.mName; // TODO: use enum
                             parsedShaderProgram->mShaderTextures.push_back(textureInfo);
                         }
                         tokenParser.Advance();
@@ -670,17 +689,17 @@ namespace Ming3D {
                 else if (currToken.mTokenString == "struct")
                 {
                     tokenParser.Advance();
-                    ShaderStructInfo structInfo;
-                    structInfo.mStructName = tokenParser.GetCurrentToken().mTokenString; // TODO: Check valid identifier name
+                    ShaderDatatypeInfo structInfo;
+                    structInfo.mName = tokenParser.GetCurrentToken().mTokenString; // TODO: Check valid identifier name
                     tokenParser.Advance(); // TODO: check that current token is "{"
                     tokenParser.Advance();
                     EParseResult inputParseResult = ParseStructBody(tokenParser, &structInfo);
                     if (inputParseResult == EParseResult::Parsed)
                     {
                         if (currentParsingShader != nullptr)
-                            currentParsingShader->mStructDefinitions.push_back(structInfo);
+                            mCurrentShaderStructDefs.emplace(structInfo.mName, structInfo);
                         else
-                            parsedShaderProgram->mStructDefinitions.push_back(structInfo);
+                            mCurrentProgramStructDefs.emplace(structInfo.mName, structInfo);
                     }
                     else if (inputParseResult == EParseResult::Error)
                     {
@@ -716,6 +735,10 @@ namespace Ming3D {
                     {
                         if (currToken.mTokenString == "}")
                         {
+                            for (auto& structDef : mCurrentShaderStructDefs)
+                                currentParsingShader->mStructDefinitions.push_back(structDef.second);
+                            mCurrentShaderStructDefs.clear();
+
                             parsedShaders.push_back(currentParsingShader);
                             currentParsingShader = nullptr; // end of shader
                             PopScopeStack();
@@ -733,21 +756,11 @@ namespace Ming3D {
                                     currentParsingShader->mMainFunction = functionDef;
                                     if (functionDef->mFunctionInfo.mParameters.size() > 0)
                                     {
-                                        if (!GetStructInfo(functionDef->mFunctionInfo.mParameters[0].mVariableType.c_str(), currentParsingShader->mInput, parsedShaderProgram, currentParsingShader))
-                                        {
-                                            OnParseError(tokenParser, "Invalid shader input parameter in main");
-                                            failed = true;
-                                            break;
-                                        }
+                                        currentParsingShader->mInput = functionDef->mFunctionInfo.mParameters[0].mDatatypeInfo;
                                     }
                                     if (functionDef->mFunctionInfo.mParameters.size() > 1)
                                     {
-                                        if (!GetStructInfo(functionDef->mFunctionInfo.mParameters[1].mVariableType.c_str(), currentParsingShader->mOutput, parsedShaderProgram, currentParsingShader))
-                                        {
-                                            OnParseError(tokenParser, "Invalid shader output parameter in main");
-                                            failed = true;
-                                            break;
-                                        }
+                                        currentParsingShader->mOutput = functionDef->mFunctionInfo.mParameters[1].mDatatypeInfo;
                                     }
                                 }
                                 else
@@ -799,12 +812,16 @@ namespace Ming3D {
                 return nullptr;
             }
 
-            if (parsedShaderProgram->mVertexShader->mOutput.mStructName != parsedShaderProgram->mFragmentShader->mInput.mStructName)
+            if (parsedShaderProgram->mVertexShader->mOutput.mDatatype != parsedShaderProgram->mFragmentShader->mInput.mDatatype)
             {
                 LOG_ERROR() << "Input and output of shaders must match";
                 delete parsedShaderProgram;
                 return nullptr;
             }
+
+            for (auto& structDef : mCurrentProgramStructDefs)
+                parsedShaderProgram->mStructDefinitions.push_back(structDef.second);
+            mCurrentProgramStructDefs.clear();
 
             // TODO: Print any errors from here + PRINT THE LINE THAT HAS THE ERROR!
 

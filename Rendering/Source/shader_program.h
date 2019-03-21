@@ -3,24 +3,17 @@
 
 #include "graphics_data.h"
 #include <string.h>
+#include "shader_info.h"
 
 namespace Ming3D
 {
-    enum ShaderVariableType
-    {
-        Float,
-        Int,
-        Mat4x4,
-        Vec4
-    };
-
     class ShaderUniformInfo
     {
     public:
-        ShaderVariableType mType;
+        ShaderDatatypeInfo mType;
         std::string mName;
     
-        ShaderUniformInfo(const ShaderVariableType& inType, const std::string& inName)
+        ShaderUniformInfo(const ShaderDatatypeInfo& inType, const std::string& inName)
         {
             mType = inType;
             mName = inName;

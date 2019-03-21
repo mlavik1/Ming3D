@@ -74,19 +74,25 @@ namespace Ming3D
 
     size_t RenderDeviceD3D11::GetShaderUniformSize(const ShaderUniformInfo& inShaderUniform)
     {
-        switch (inShaderUniform.mType)
+        switch (inShaderUniform.mType.mDatatype)
         {
-        case ShaderVariableType::Float:
+        case EShaderDatatype::Float:
             return sizeof(float);
             break;
-        case ShaderVariableType::Int:
+        case EShaderDatatype::Int:
             return sizeof(int);
             break;
-        case ShaderVariableType::Mat4x4:
-            return sizeof(DirectX::XMFLOAT4X4);
+        case EShaderDatatype::Vec2:
+            return sizeof(DirectX::XMFLOAT2);
             break;
-        case ShaderVariableType::Vec4:
+        case EShaderDatatype::Vec3:
+            return sizeof(DirectX::XMFLOAT3);
+            break;
+        case EShaderDatatype::Vec4:
             return sizeof(DirectX::XMFLOAT4);
+            break;
+        case EShaderDatatype::Mat4x4:
+            return sizeof(DirectX::XMFLOAT4X4);
             break;
         default:
             __AssertComment(false, "Unhandled shader uniform type");
@@ -252,7 +258,7 @@ namespace Ming3D
 
         std::vector<EVertexComponent> vertexComponents;
         const std::unordered_map<std::string, EVertexComponent> vertexComponentSemanticMap = { {"POSITION", EVertexComponent::Position},{ "NORMAL", EVertexComponent::Normal },{ "TEXCOORD", EVertexComponent::TexCoord },{ "COLOR", EVertexComponent::Colour } };
-        for (const ShaderConverter::ShaderStructMember inputVar : parsedProgram->mVertexShader->mInput.mMemberVariables)
+        for (const ShaderStructMember inputVar : parsedProgram->mVertexShader->mInput.mMemberVariables)
         {
             auto vertCompMatch = vertexComponentSemanticMap.find(inputVar.mSemantic);
             if (vertCompMatch != vertexComponentSemanticMap.end())
@@ -323,12 +329,12 @@ namespace Ming3D
             ShaderConverter::ShaderDataHLSL& currShaderData = iShader == 0 ? convertedShaderData.mVertexShader : convertedShaderData.mFragmentShader; // TODO
 
             size_t currentUniformOffset = 0;
-            for (const ShaderConverter::ShaderUniformInfo& parserUniformInfo : shaderDataList[iShader].mUniforms)
+            for (const ShaderVariableInfo& parserUniformInfo : shaderDataList[iShader].mUniforms)
             {
                 // TEMP - FIX THIS
-                ShaderVariableType varType = parserUniformInfo.mUniformType == "float" ? ShaderVariableType::Float : (parserUniformInfo.mUniformType == "int" ? ShaderVariableType::Int : parserUniformInfo.mUniformType == "vec4" ? ShaderVariableType::Vec4 : ShaderVariableType::Mat4x4);
+                ShaderDatatypeInfo varType = parserUniformInfo.mDatatypeInfo;
 
-                ShaderUniformInfo uniformInfo(varType, parserUniformInfo.mUniformName);
+                ShaderUniformInfo uniformInfo(varType, parserUniformInfo.mName);
 
                 const size_t currentUniformSize = GetShaderUniformSize(uniformInfo);
                 shaderConstantMap.emplace(uniformInfo.mName, ShaderConstantD3D11(currentUniformOffset, currentUniformSize));
