@@ -1,6 +1,7 @@
 #include "property_inspector.h"
 #include "Components/component.h"
 #include "Components/mesh_component.h"
+#include "Model/model_helper.h"
 
 namespace Ming3D
 {
@@ -63,7 +64,8 @@ namespace Ming3D
             {
                 if(layoutBuilder->Button("Set mesh"))
                 {
-                    ((MeshComponent*)comp)->SetMesh("Resources//Mvr_PetCow_walk.dae"); // TEMP TEST
+                    // TODO
+                    //((MeshComponent*)comp)->SetMesh("Resources//Mvr_PetCow_walk.dae"); // TEMP TEST
                 }
             }
         }

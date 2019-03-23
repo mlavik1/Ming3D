@@ -20,7 +20,6 @@ namespace Ming3D
         
         Transform mTransform;
         std::vector<Component*> mComponents;
-        std::vector<Actor*> mChildren;
         bool mIsInitialised = false;
         std::string mActorName;
 
@@ -46,8 +45,6 @@ namespace Ming3D
 
         virtual void InitialiseActor();
         virtual void Tick(float inDeltaTime);
-
-        void AddChild(Actor* inActor);
 
         /**
         * Serialises the actor and all its properties, children and components.

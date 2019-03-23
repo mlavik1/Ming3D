@@ -6,7 +6,7 @@
 #include <unordered_map>
 #include <stack>
 
-namespace Ming3D { namespace ShaderConverter
+namespace Ming3D
 {
     enum class ETokenType
     {
@@ -69,6 +69,6 @@ namespace Ming3D { namespace ShaderConverter
         const Token& GetTokenFromOffset(const int inOffset);
         bool HasMoreTokens();
     };
-}}
+}
 
 #endif

@@ -1,6 +1,6 @@
 #include "shader_writer.h"
 
-namespace Ming3D { namespace ShaderConverter
+namespace Ming3D
 {
     void ShaderStream::ClearStream()
     {
@@ -21,4 +21,4 @@ namespace Ming3D { namespace ShaderConverter
     {
         return mStream;
     }
-}}
+}

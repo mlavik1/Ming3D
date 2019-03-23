@@ -239,10 +239,10 @@ namespace Ming3D
         return indexBuffer;
     }
 
-    ShaderProgram* RenderDeviceD3D11::CreateShaderProgram(const ShaderConverter::ParsedShaderProgram* parsedProgram)
+    ShaderProgram* RenderDeviceD3D11::CreateShaderProgram(const ParsedShaderProgram* parsedProgram)
     {
-        ShaderConverter::ShaderWriterHLSL shaderWriter;
-        ShaderConverter::ShaderProgramDataHLSL convertedShaderData;
+        ShaderWriterHLSL shaderWriter;
+        ShaderProgramDataHLSL convertedShaderData;
         shaderWriter.WriteShader(parsedProgram, convertedShaderData);
 
         std::string vertexShaderCode = convertedShaderData.mVertexShader.mSource;
@@ -310,7 +310,7 @@ namespace Ming3D
         shaderProgram->mVS = pVS;
         shaderProgram->mPS = pPS;
 
-        std::vector<ShaderConverter::ShaderDataHLSL> shaderDataList;
+        std::vector<ShaderDataHLSL> shaderDataList;
         shaderDataList.push_back(convertedShaderData.mVertexShader);
         shaderDataList.push_back(convertedShaderData.mFragmentShader);
 
@@ -318,7 +318,7 @@ namespace Ming3D
         {
             std::unordered_map<std::string, ShaderConstantD3D11> shaderConstantMap;
 
-            ShaderConverter::ShaderDataHLSL& currShaderData = iShader == 0 ? convertedShaderData.mVertexShader : convertedShaderData.mFragmentShader; // TODO
+            ShaderDataHLSL& currShaderData = iShader == 0 ? convertedShaderData.mVertexShader : convertedShaderData.mFragmentShader; // TODO
 
             size_t currentUniformOffset = 0;
             for (const ShaderVariableInfo& parserUniformInfo : shaderDataList[iShader].mUniforms)
@@ -554,7 +554,7 @@ namespace Ming3D
         return d3dDepthStencilState;
     }
 
-    void RenderDeviceD3D11::SetTexture(TextureBuffer* inTexture, int inSlot)
+    void RenderDeviceD3D11::SetTexture(const TextureBuffer* inTexture, int inSlot)
     {
         TextureBufferD3D11* d3dTexture = (TextureBufferD3D11*)inTexture;
         GetDeviceContext()->PSSetSamplers(inSlot, 1, &mDefaultSamplerState);

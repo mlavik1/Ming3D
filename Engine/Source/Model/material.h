@@ -2,18 +2,24 @@
 #define MING3D_MATERIAL_H
 
 #include "material_buffer.h"
-#include "shader_parser.h"
+#include <vector>
 
 namespace Ming3D
 {
+    class ParsedShaderProgram;
+    class Texture;
+
     class Material
     {
     public:
         MaterialBuffer* mMaterialBuffer;
-        ShaderConverter::ParsedShaderProgram* mShaderProgramData;
+        ParsedShaderProgram* mShaderProgramData;
+        std::vector<Texture*> mTextures;
 
-        Material(ShaderConverter::ParsedShaderProgram* shaderProgram);
+        Material(ParsedShaderProgram* shaderProgram);
         ~Material();
+
+        void SetTexture(size_t textureIndex, Texture* texture);
     };
 }
 

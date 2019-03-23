@@ -6,7 +6,7 @@
 
 #include <set>
 
-namespace Ming3D { namespace ShaderConverter
+namespace Ming3D
 {
     struct ShaderDataHLSL
     {
@@ -45,6 +45,6 @@ namespace Ming3D { namespace ShaderConverter
     public:
         bool WriteShader(const ParsedShaderProgram* inParsedShaderProgram, ShaderProgramDataHLSL& outData);
     };
-}}
+}
 
 #endif

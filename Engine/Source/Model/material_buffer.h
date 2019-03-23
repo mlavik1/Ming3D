@@ -1,12 +1,14 @@
 #ifndef MING3D_MATERIALBUFFER_H
 #define MING3D_MATERIALBUFFER_H
 
-#include "shader_program.h"
-#include "texture_buffer.h"
 #include <vector>
 
 namespace Ming3D
 {
+    // forward declarations
+    class ShaderProgram;
+    class TextureBuffer;
+
     class MaterialBuffer
     {
     public:

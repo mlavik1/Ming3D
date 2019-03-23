@@ -4,7 +4,7 @@
 #include <fstream>
 #include "Debug/debug.h"
 
-namespace Ming3D { namespace ShaderConverter
+namespace Ming3D
 {
     std::string ShaderWriterHLSL::GetVariableIdentifierString(const std::string inName)
     {
@@ -398,4 +398,4 @@ namespace Ming3D { namespace ShaderConverter
 
         return true;
     }
-}}
+}

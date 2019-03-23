@@ -111,10 +111,10 @@ namespace Ming3D
         return indexBuffer;
     }
 
-    ShaderProgram* RenderDeviceGL::CreateShaderProgram(const ShaderConverter::ParsedShaderProgram* parsedProgram)
+    ShaderProgram* RenderDeviceGL::CreateShaderProgram(const ParsedShaderProgram* parsedProgram)
     {
-        ShaderConverter::ShaderWriterGLSL shaderWriter;
-        ShaderConverter::ShaderProgramDataGLSL convertedShaderData;
+        ShaderWriterGLSL shaderWriter;
+        ShaderProgramDataGLSL convertedShaderData;
         shaderWriter.WriteShader(parsedProgram, convertedShaderData);
         delete parsedProgram;
 
@@ -231,7 +231,7 @@ namespace Ming3D
         return depthStencilState;
     }
 
-    void RenderDeviceGL::SetTexture(TextureBuffer* inTexture, int inSlot)
+    void RenderDeviceGL::SetTexture(const TextureBuffer* inTexture, int inSlot)
     {
         glEnable(GL_TEXTURE_2D); // TODO
         TextureBufferGL* glTexture = (TextureBufferGL*)inTexture;

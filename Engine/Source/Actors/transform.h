@@ -3,6 +3,7 @@
 
 #include "glm/glm.hpp"
 #include "glm/gtc/quaternion.hpp"
+#include <list>
 
 namespace Ming3D
 {
@@ -21,6 +22,7 @@ namespace Ming3D
 
         Actor* mActor = nullptr;
         Transform* mParentTransform = nullptr;
+        std::list<Transform*> mChildren;
 
         glm::mat4 mLocalTransformMatrix;
         glm::mat4 mWorldTransformMatrix;
@@ -39,6 +41,8 @@ namespace Ming3D
         void SetWorldScale(glm::vec3 inScale);
         void SetWorldRotation(glm::quat inRot);
         void SetWorldRotation(glm::mat4 inRot);
+
+        void SetParent(Transform* inParent);
 
         inline glm::vec3 GetLocalPosition() { return mLocalPosition; }
         inline glm::vec3 GetLocalScale() { return mLocalScale; }

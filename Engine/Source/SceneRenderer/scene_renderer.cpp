@@ -78,7 +78,12 @@ namespace Ming3D
 
             for (MeshBuffer* meshBuffer : obj->mMeshes)
             {
-                renderDevice->SetTexture(meshBuffer->mTextureBuffer, 0); // temp
+                for(size_t iTexture = 0; iTexture < currMaterial->mTextureBuffers.size(); iTexture++)
+                {
+                    const TextureBuffer* texture = currMaterial->mTextureBuffers[iTexture];
+                    if(texture != nullptr)
+                        renderDevice->SetTexture(texture, iTexture); // temp
+                }
                 renderDevice->RenderPrimitive(meshBuffer->mVertexBuffer, meshBuffer->mIndexBuffer);
             }
         }

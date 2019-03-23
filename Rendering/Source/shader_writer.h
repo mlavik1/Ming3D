@@ -3,7 +3,7 @@
 
 #include <sstream>
 
-namespace Ming3D { namespace ShaderConverter
+namespace Ming3D
 {
     // TODO: move to a separate file
     class ShaderStream
@@ -41,6 +41,6 @@ namespace Ming3D { namespace ShaderConverter
     class ShaderWriter
     {
     };
-}}
+}
 
 #endif

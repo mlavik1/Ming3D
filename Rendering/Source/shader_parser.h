@@ -13,7 +13,7 @@
 #include "shader_tokeniser.h"
 #include "shader_info.h"
 
-namespace Ming3D { namespace ShaderConverter
+namespace Ming3D
 {
     enum class TerminatorType
     {
@@ -34,114 +34,6 @@ namespace Ming3D { namespace ShaderConverter
         EOperatorAssociativity mAssociativity;
     };
 
-    enum class EExpressionType
-    {
-        BinaryOperation, UnaryOperation, Literal, VariableAccess, FunctionCall
-    };
-
-    class ShaderExpression
-    {
-    public:
-        std::string mValueType; // TODO
-        virtual EExpressionType GetExpressionType() const = 0;
-    };
-
-    class BinaryOperationExpression : public ShaderExpression
-    {
-    public:
-        std::string mOperator;
-        ShaderExpression* mLeftOperand;
-        ShaderExpression* mRightOperand;
-        virtual EExpressionType GetExpressionType() const override { return EExpressionType::BinaryOperation; }
-    };
-
-    class UnaryOperationExpression : public ShaderExpression
-    {
-    public:
-        std::string mOperator;
-        ShaderExpression* mOperand;
-        virtual EExpressionType GetExpressionType() const override { return EExpressionType::UnaryOperation; }
-    };
-
-    class LiteralExpression : public ShaderExpression
-    {
-    public:
-        Token mToken;
-        virtual EExpressionType GetExpressionType() const override { return EExpressionType::Literal; }
-    };
-
-    class VariableAccessExpression : public ShaderExpression
-    {
-    public:
-        ShaderExpression* mOuterExpression = nullptr;
-        Token mIdentifier;
-        virtual EExpressionType GetExpressionType() const override { return EExpressionType::VariableAccess; }
-    };
-
-    class FunctionCallExpression : public ShaderExpression
-    {
-    public:
-        Token mIdentifier;
-        std::vector<ShaderExpression*> mParameterExpressions;
-        virtual EExpressionType GetExpressionType() const override { return EExpressionType::FunctionCall; }
-    };
-
-    enum class EStatementType
-    {
-        VariableDefinition, Expression, ReturnStatement, ControlStatement
-    };
-
-    class ShaderStatement
-    {
-    public:
-        virtual EStatementType GetStatementType() const = 0;
-    };
-
-    class VariableDefinitionStatement : public ShaderStatement
-    {
-    public:
-        std::string mVariableType;
-        std::string mVariableName;
-        ShaderExpression* mAssignmentExpression = nullptr;
-        virtual EStatementType GetStatementType() const override { return EStatementType::VariableDefinition; };
-    };
-
-    class ExpressionStatement : public ShaderStatement
-    {
-    public:
-        ShaderExpression* mExpression = nullptr;
-        virtual EStatementType GetStatementType() const override { return EStatementType::Expression; };
-    };
-
-    class ReturnStatement : public ShaderStatement
-    {
-    public:
-        ShaderExpression* mReturnValueExpression = nullptr;
-        virtual EStatementType GetStatementType() const override { return EStatementType::ReturnStatement; };
-    };
-
-    class ShaderStatementBlock
-    {
-    public:
-        std::vector<ShaderStatement*> mStatements;
-    };
-
-    class ControlStatement : public ShaderStatement
-    {
-    public:
-        std::string mIdentifier;
-        ShaderStatementBlock* mExpressionStatements = nullptr;
-        ShaderStatementBlock* mStatementBlock = nullptr;
-        virtual EStatementType GetStatementType() const override { return EStatementType::ControlStatement; };
-    };
-
-    class ShaderFunctionDefinition
-    {
-    public:
-        ShaderFunctionInfo mFunctionInfo;
-        ShaderStatementBlock* mStatementBlock;
-    };
-
     enum EParseResult
     {
         Parsed,
@@ -155,28 +47,6 @@ namespace Ming3D { namespace ShaderConverter
         std::vector<ShaderVariableInfo> mVariables;
         std::vector<ShaderDatatypeInfo> mStructs;
         std::vector<ShaderFunctionInfo> mFunctions;
-    };
-
-    class ParsedShader
-    {
-    public:
-        std::vector<ShaderDatatypeInfo> mStructDefinitions;
-        std::vector<ShaderFunctionDefinition*> mFunctionDefinitions;
-        ShaderFunctionDefinition* mMainFunction = nullptr;
-        ShaderDatatypeInfo mInput;
-        ShaderDatatypeInfo mOutput;
-    };
-
-    class ParsedShaderProgram
-    {
-    public:
-        ParsedShader* mVertexShader = nullptr;
-        ParsedShader* mFragmentShader = nullptr;
-
-        std::vector<ShaderDatatypeInfo> mStructDefinitions;
-        std::vector<ShaderFunctionDefinition*> mFunctionDefinitions;
-        std::vector<ShaderVariableInfo> mShaderUniforms;
-        std::vector<ShaderTextureInfo> mShaderTextures;
     };
 
     /**
@@ -274,6 +144,6 @@ namespace Ming3D { namespace ShaderConverter
         */
         ParsedShaderProgram* ParseShaderProgram(const std::string& inShaderProgramPath);
     };
-}}
+}
 
 #endif
