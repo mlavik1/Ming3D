@@ -3,16 +3,19 @@
 
 #include "vertex.h"
 #include <vector>
+#include "graphics_data.h"
 
 namespace Ming3D
 {
     class Mesh
     {
     public:
-        std::vector<Vertex> mVertices;
-        std::vector<unsigned int> mIndices;
+        VertexData* mVertexData = nullptr;
+        IndexData* mIndexData = nullptr;
         bool mHasNormals = false;
         bool mHasTexCoords = false;
+
+        ~Mesh();
     };
 }
 

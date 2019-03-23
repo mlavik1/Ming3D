@@ -56,6 +56,7 @@ namespace Ming3D
         
     public:
         VertexData(std::vector<EVertexComponent> inComponents, size_t inNumVertices);
+        VertexData(VertexLayout inLayout, size_t inNumVertices);
         void GetComponentOffsets(EVertexComponent inComponent, std::vector<size_t>& outOffsets);
         size_t GetNumVertices();
         size_t GetVertexSize();

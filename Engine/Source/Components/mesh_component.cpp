@@ -35,14 +35,11 @@ namespace Ming3D
         MeshBuffer* meshBuffer = new MeshBuffer();
 
         // TODO: Store vertex layout in mesh
-        VertexData vertexData({ EVertexComponent::Position, EVertexComponent::Normal, EVertexComponent::TexCoord }, inMesh->mVertices.size());
-        IndexData indexData(inMesh->mIndices.size());
+        VertexData* vertexData = inMesh->mVertexData;
+        IndexData* indexData(inMesh->mIndexData);
 
-        memcpy(vertexData.GetDataPtr(), inMesh->mVertices.data(), inMesh->mVertices.size() * sizeof(Vertex));
-        memcpy(indexData.GetData(), inMesh->mIndices.data(), inMesh->mIndices.size() * sizeof(unsigned int));
-
-        meshBuffer->mVertexBuffer = renderDevice->CreateVertexBuffer(&vertexData);
-        meshBuffer->mIndexBuffer = renderDevice->CreateIndexBuffer(&indexData);
+        meshBuffer->mVertexBuffer = renderDevice->CreateVertexBuffer(vertexData);
+        meshBuffer->mIndexBuffer = renderDevice->CreateIndexBuffer(indexData);
 
         mRenderSceneObject->mOwnerComponent = this;
         mRenderSceneObject->mModelMatrix = mParent->GetTransform().GetWorldTransformMatrix();

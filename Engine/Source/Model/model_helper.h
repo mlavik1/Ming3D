@@ -8,6 +8,7 @@
 #include "glm/glm.hpp"
 #include "Actors/actor.h"
 #include "vertex.h"
+#include "graphics_data.h"
 
 namespace Ming3D
 {
@@ -16,10 +17,8 @@ namespace Ming3D
     class MeshData
     {
     public:
-        std::vector<Vertex> mVertices;
+        VertexData* mVertexData = nullptr;
         std::vector<unsigned int> mIndices;
-        bool mHasNormals = false;
-        bool mHasTexCoords = false;
 
         // TODO: bones
 

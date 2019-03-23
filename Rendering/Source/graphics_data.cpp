@@ -13,6 +13,11 @@ namespace Ming3D
         mData.resize(inNumVertices * mVertexSize);
     }
 
+    VertexData::VertexData(VertexLayout inLayout, size_t inNumVertices)
+        : VertexData(inLayout.VertexComponents, inNumVertices)
+    {
+    }
+
     void VertexData::GetComponentOffsets(EVertexComponent inComponent, std::vector<size_t>& outOffsets)
     {
         size_t offset = 0;

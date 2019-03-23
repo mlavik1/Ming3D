@@ -29,33 +29,42 @@ namespace Ming3D
 
             modelData->mMeshes.push_back(meshData);
 
+            VertexLayout vertLayout;
+            vertLayout.VertexComponents.push_back(EVertexComponent::Position);
+            if (scene->mMeshes[m]->HasNormals())
+                vertLayout.VertexComponents.push_back(EVertexComponent::Normal);
+            if (scene->mMeshes[m]->HasTextureCoords(0))
+                vertLayout.VertexComponents.push_back(EVertexComponent::TexCoord);
+            
+            VertexData* vertData = new VertexData(vertLayout, scene->mMeshes[m]->mNumVertices);
+            size_t vertSize = vertData->GetVertexSize();
+            char* currVert = (char*)vertData->GetDataPtr();
+
             // Get Vertices
-            if (scene->mMeshes[m]->mNumVertices > 0)
+            for (unsigned int i = 0; i < scene->mMeshes[m]->mNumVertices; ++i)
             {
-                meshData->mHasNormals = scene->mMeshes[m]->HasNormals();
-                meshData->mHasTexCoords = scene->mMeshes[m]->HasTextureCoords(0);
+                const aiVector3D aiv = scene->mMeshes[m]->mVertices[i];
+                glm::vec3 v(aiv.x, aiv.y, aiv.z);
+                memcpy(currVert, &v, sizeof(v));
+                currVert += sizeof(v);
 
-                for (unsigned int i = 0; i < scene->mMeshes[m]->mNumVertices; ++i)
+                if (scene->mMeshes[m]->HasNormals())
                 {
-                    Vertex vertex;
-
-                    aiVector3D &v = scene->mMeshes[m]->mVertices[i];
-                    vertex.mVertex = glm::vec3(v.x, v.y, v.z);
-
-                    if (scene->mMeshes[m]->HasNormals())
-                    {
-                        aiVector3D &vn = scene->mMeshes[m]->mNormals[i];
-                        vertex.mNormal = glm::vec3(vn.x, vn.y, vn.z);
-                    }
-                    if (scene->mMeshes[m]->HasTextureCoords(0))
-                    {
-                        aiVector3D vt = scene->mMeshes[m]->mTextureCoords[0][i];
-                        vertex.mTexCoord = glm::vec2(vt.x, vt.y);
-                    }
-
-                    meshData->mVertices.push_back(vertex);
+                    const aiVector3D aivn = scene->mMeshes[m]->mNormals[i];
+                    glm::vec3 vn(aivn.x, aivn.y, aivn.z);
+                    memcpy(currVert, &vn, sizeof(vn));
+                    currVert += sizeof(vn);
+                }
+                if (scene->mMeshes[m]->HasTextureCoords(0))
+                {
+                    const aiVector3D aivt = scene->mMeshes[m]->mTextureCoords[0][i];
+                    glm::vec2 vt(aivt.x, aivt.y);
+                    memcpy(currVert, &vt, sizeof(vt));
+                    currVert += sizeof(vt);
                 }
             }
+
+            meshData->mVertexData = vertData;
 
             for (unsigned int f = 0; f < scene->mMeshes[m]->mNumFaces; f++)
             {
@@ -100,10 +109,10 @@ namespace Ming3D
             childActor->GetTransform().SetParent(&inActor->GetTransform());
 
             Mesh* mesh = new Mesh();
-            mesh->mVertices = meshData->mVertices;
-            mesh->mIndices = meshData->mIndices;
-            mesh->mHasNormals = meshData->mHasNormals;
-            mesh->mHasTexCoords = meshData->mHasTexCoords;
+            mesh->mVertexData = meshData->mVertexData;
+            mesh->mIndexData = new IndexData(meshData->mIndices.size());
+            if (meshData->mIndices.size() > 0)
+                memcpy(mesh->mIndexData->GetData(), &meshData->mIndices[0], meshData->mIndices.size() * sizeof(meshData->mIndices[0]));
 
             MeshComponent* meshComp = childActor->AddComponent<MeshComponent>();
             meshComp->SetMesh(mesh);
