@@ -6,15 +6,20 @@
 #include "texture_loader.h"
 #include "Debug/debug.h"
 #include "Debug/st_assert.h"
+#include "Components/mesh_component.h"
+#include "mesh.h"
+#include "material_factory.h"
+#include "shader_program.h"
+#include "texture.h"
 
 namespace Ming3D
 {
-    ModelData* ModelLoader::LoadModel(const char* inModel)
+    ModelData* ModelDataImporter::ImportModelData(const char* inModel)
     {
         ModelData* modelData = new ModelData();
 
         Assimp::Importer importer;
-        const aiScene * scene = importer.ReadFile(inModel, aiProcess_Triangulate | aiProcess_OptimizeMeshes | aiProcess_JoinIdenticalVertices | aiProcess_RemoveRedundantMaterials | aiProcess_GenSmoothNormals);
+        const aiScene * scene = importer.ReadFile(inModel, aiProcess_Triangulate | aiProcess_OptimizeMeshes | aiProcess_OptimizeGraph | aiProcess_JoinIdenticalVertices | aiProcess_RemoveRedundantMaterials | aiProcess_GenSmoothNormals);
 
         __Assert(scene != nullptr);
 
@@ -80,5 +85,31 @@ namespace Ming3D
 
         }
         return modelData;
+    }
+
+    bool ModelLoader::LoadModel(const char* inModel, Actor* inActor)
+    {
+        ModelData* modelData = ModelDataImporter::ImportModelData(inModel);
+
+        if (modelData == nullptr)
+            return false;
+
+        for (MeshData* meshData : modelData->mMeshes)
+        {
+            Actor* childActor = new Actor();
+            childActor->GetTransform().SetParent(&inActor->GetTransform());
+
+            Mesh* mesh = new Mesh();
+            mesh->mVertices = meshData->mVertices;
+            mesh->mIndices = meshData->mIndices;
+            mesh->mHasNormals = meshData->mHasNormals;
+            mesh->mHasTexCoords = meshData->mHasTexCoords;
+
+            MeshComponent* meshComp = childActor->AddComponent<MeshComponent>();
+            meshComp->SetMesh(mesh);
+            Material* material = MaterialFactory::CreateMaterial("Resources//shader_PNT.shader"); // TODO: Generate shader based on vertex layout
+            meshComp->SetMaterial(material);
+            material->SetTexture(0, meshData->mTexture);
+        }
     }
 }

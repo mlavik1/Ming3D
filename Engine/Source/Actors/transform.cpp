@@ -67,6 +67,21 @@ namespace Ming3D
         UpdateTransformMatrix();
     }
 
+    void Transform::SetParent(Transform* inParent)
+    {
+        if (mParentTransform == inParent)
+            return;
+
+        if (mParentTransform != nullptr)
+        {
+            mParentTransform->mChildren.remove(this);
+        }
+
+        mParentTransform = inParent;
+        mParentTransform->mChildren.push_back(this);
+        UpdateTransformMatrix();
+    }
+
     void Transform::UpdateTransformMatrix()
     {
         mLocalTransformMatrix = glm::translate(glm::mat4(1.0f), mWorldPosition) * glm::toMat4(mWorldRotation) * glm::scale(glm::mat4(1.0f), mWorldScale);
@@ -74,5 +89,8 @@ namespace Ming3D
 
         if(mActor != nullptr)
             mActor->OnTransformMoved();
+
+        for (Transform* child : mChildren) // TODO
+            child->UpdateTransformMatrix();
     }
 }

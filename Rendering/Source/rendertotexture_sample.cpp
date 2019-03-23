@@ -2,6 +2,7 @@
 #include "Debug/debug.h"
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
+#include "shader_parser.h"
 
 namespace Ming3D
 {
@@ -49,7 +50,9 @@ namespace Ming3D
             }
 
             // TODO: Use different shaders, based on vertex layout?
-            modelData->mShaderProgram = mRenderDevice->CreateShaderProgram("Resources//shader_PNT.shader");
+            ShaderParser parser;
+            ParsedShaderProgram* prog = parser.ParseShaderProgram("Resources//shader_PNT.shader");
+            modelData->mShaderProgram = mRenderDevice->CreateShaderProgram(prog);
         }
 
     }

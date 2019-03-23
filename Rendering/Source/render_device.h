@@ -13,6 +13,7 @@
 #include "render_window.h"
 #include "rasteriser_state.h"
 #include "depth_stencil_state.h"
+#include "shader_info.h"
 
 #include <string>
 
@@ -32,13 +33,13 @@ namespace Ming3D
         virtual RenderTarget* CreateRenderTarget(TextureInfo inTextureInfo, int numTextures) = 0;
         virtual VertexBuffer* CreateVertexBuffer(VertexData* inVertexData) = 0;
         virtual IndexBuffer* CreateIndexBuffer(IndexData* inIndexData) = 0;
-        virtual ShaderProgram* CreateShaderProgram(const std::string& inShaderProgramPath) = 0;
+        virtual ShaderProgram* CreateShaderProgram(const ParsedShaderProgram* inShaderProgramPath) = 0;
         virtual TextureBuffer* CreateTextureBuffer(TextureInfo inTextureInfo, void* inTextureData) = 0;
         virtual RenderWindow* CreateRenderWindow(WindowBase* inWindow) = 0;
         virtual RasteriserState* CreateRasteriserState(RasteriserStateCullMode inCullMode, bool inDepthClipEnabled) = 0;
         virtual DepthStencilState* CreateDepthStencilState(DepthStencilDepthFunc inDepthFunc, bool inDepthEnabled) = 0;
 
-        virtual void SetTexture(TextureBuffer* inTexture, int inSlot) = 0;
+        virtual void SetTexture(const TextureBuffer* inTexture, int inSlot) = 0;
         virtual void SetActiveShaderProgram(ShaderProgram* inProgram) = 0;
         virtual void BeginRenderWindow(RenderWindow* inWindow) = 0;
         virtual void EndRenderWindow(RenderWindow* inWindow) = 0;

@@ -5,19 +5,13 @@
 #define MING3D_MODELLOADER_H
 
 #include <vector>
-#include "shader_program.h"
 #include "glm/glm.hpp"
-#include "texture.h"
+#include "Actors/actor.h"
+#include "vertex.h"
 
 namespace Ming3D
 {
-    class Vertex
-    {
-    public:
-        glm::vec3 mVertex;
-        glm::vec3 mNormal;
-        glm::vec2 mTexCoord;
-    };
+    class Texture;
 
     class MeshData
     {
@@ -27,6 +21,8 @@ namespace Ming3D
         bool mHasNormals = false;
         bool mHasTexCoords = false;
 
+        // TODO: bones
+
         Texture* mTexture;
     };
 
@@ -34,14 +30,19 @@ namespace Ming3D
     {
     public:
         std::vector<MeshData*> mMeshes;
-        ShaderProgram* mShaderProgram = nullptr;
         glm::vec3 mPosition;
+    };
+
+    class ModelDataImporter
+    {
+    public:
+        static ModelData* ImportModelData(const char* inModel);
     };
 
     class ModelLoader
     {
     public:
-        ModelData* LoadModel(const char* inModel);
+        static bool LoadModel(const char* inModel, Actor* inActor);
     };
 }
 #endif

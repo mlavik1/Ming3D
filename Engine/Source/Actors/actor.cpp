@@ -50,12 +50,6 @@ namespace Ming3D
         newComponents.clear();
     }
 
-    void Actor::AddChild(Actor* inActor)
-    {
-        mChildren.push_back(inActor);
-        inActor->mTransform.mParentTransform = &mTransform;
-    }
-
     void Actor::Serialise(DataWriter* outWriter, PropertyFlag inPropFlags, ObjectFlag inObjFlag)
     {
         // Replicate properties
@@ -127,8 +121,10 @@ namespace Ming3D
     {
         // Find child actors to serialise
         std::vector<Actor*> serialisedChildren;
-        for (Actor* childActor : mChildren)
+
+        for (Transform* child : mTransform.mChildren)
         {
+            Actor* childActor = child->mActor;
             if (childActor->HasObjectFlags(inObjFlags))
                 serialisedChildren.push_back(childActor);
         }
@@ -159,7 +155,7 @@ namespace Ming3D
                 return;
             }
             Actor* child = (Actor*)actorClass->CreateInstance();
-            AddChild(child);
+            child->GetTransform().SetParent(&mTransform);
             child->Deserialise(inReader, inPropFlags, inObjFlags);
 
             delete[] actorClassName;

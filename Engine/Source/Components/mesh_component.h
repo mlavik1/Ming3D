@@ -2,6 +2,9 @@
 #define MING3D_MESHCOMPONENT_H
 
 #include "component.h"
+#include "Model/material.h"
+#include "Model/mesh.h"
+#include "SceneRenderer/render_scene_object.h"
 
 namespace Ming3D
 {
@@ -12,9 +15,15 @@ namespace Ming3D
     private:
         static void InitialiseClass();
 
+        Mesh* mMesh = nullptr;
+        Material* mMaterial = nullptr;
+        RenderSceneObject* mRenderSceneObject = nullptr;
+
     public:
+        MeshComponent();
         virtual void InitialiseComponent();
-        void SetMesh(const char* meshFile);
+        void SetMesh(Mesh* inMesh);
+        void SetMaterial(Material* inMat);
     };
 }
 

@@ -6,7 +6,7 @@
 
 #include <set>
 
-namespace Ming3D { namespace ShaderConverter
+namespace Ming3D
 {
     struct ShaderDataGLSL
     {
@@ -26,7 +26,7 @@ namespace Ming3D { namespace ShaderConverter
         std::set<std::string> mAvailableUniforms;
         std::set<std::string> mReferencedUniforms;
 
-        ParsedShaderProgram* mCurrentShaderProgram = nullptr;
+        const ParsedShaderProgram* mCurrentShaderProgram = nullptr;
         ParsedShader* mCurrentShader = nullptr;
 
         std::string GetVariableIdentifierString(const std::string inName);
@@ -41,8 +41,8 @@ namespace Ming3D { namespace ShaderConverter
         void WriteStatementBlock(ShaderStream& inStream, const ShaderStatementBlock* inStatementBlock);
 
     public:
-        bool WriteShader(ParsedShaderProgram* inParsedShaderProgram, ShaderProgramDataGLSL& outData);
+        bool WriteShader(const ParsedShaderProgram* inParsedShaderProgram, ShaderProgramDataGLSL& outData);
     };
-}}
+}
 
 #endif

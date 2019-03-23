@@ -46,8 +46,16 @@ namespace Ming3D
         WindowBase* window = GGameEngine->GetMainWindow();
         RenderDevice* renderDevice = GGameEngine->GetRenderDevice();
 
+        MaterialBuffer* currMaterial = nullptr;
+
         for (RenderSceneObject* obj : mRenderScene->mSceneObjects)
         {
+            if (obj->mMaterial != currMaterial)
+            {
+                currMaterial = obj->mMaterial;
+                renderDevice->SetActiveShaderProgram(currMaterial->mShaderProgram);
+            }
+
             obj->mModelMatrix = obj->mOwnerComponent->GetParent()->GetTransform().GetWorldTransformMatrix(); // TODO
 
             glm::mat4 Projection = glm::perspective<float>(glm::radians(45.0f), (float)window->GetWidth() / (float)window->GetHeight(), 0.1f, 100.0f);
@@ -65,14 +73,17 @@ namespace Ming3D
 
             glm::mat4 mvp = Projection * view * model;
 
-            renderDevice->SetActiveShaderProgram(obj->mShaderProgram);
-
             renderDevice->SetShaderUniformMat4x4("MVP", mvp);
             renderDevice->SetShaderUniformVec4("test", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 
             for (MeshBuffer* meshBuffer : obj->mMeshes)
             {
-                renderDevice->SetTexture(meshBuffer->mTextureBuffer, 0); // temp
+                for(size_t iTexture = 0; iTexture < currMaterial->mTextureBuffers.size(); iTexture++)
+                {
+                    const TextureBuffer* texture = currMaterial->mTextureBuffers[iTexture];
+                    if(texture != nullptr)
+                        renderDevice->SetTexture(texture, iTexture); // temp
+                }
                 renderDevice->RenderPrimitive(meshBuffer->mVertexBuffer, meshBuffer->mIndexBuffer);
             }
         }

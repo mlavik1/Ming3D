@@ -6,7 +6,7 @@
 #include "Debug/debug.h"
 #include "Debug/st_assert.h"
 
-namespace Ming3D { namespace ShaderConverter
+namespace Ming3D
 {
     Tokeniser::Tokeniser(const char* inSourceText)
     {
@@ -197,4 +197,4 @@ namespace Ming3D { namespace ShaderConverter
         return mCurrentTokenIndex < mTokens.size();
     }
 
-}}
+}

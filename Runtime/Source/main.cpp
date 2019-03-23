@@ -9,6 +9,7 @@
 #include "World/world.h"
 #include "Actors/actor.h"
 #include "Components/mesh_component.h"
+#include "Model/model_helper.h"
 
 using namespace Ming3D;
 
@@ -22,9 +23,8 @@ int main()
     actor1->GetTransform().SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
     actor1->GetTransform().SetLocalScale(glm::vec3(2.0f, 2.0f, 2.0f));
     actor1->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
-    MeshComponent* meshComp1 = actor1->AddComponent<MeshComponent>();
-    meshComp1->SetMesh("Resources//Mvr_PetCow_walk.dae");
     gameEngine->GetWorld()->AddActor(actor1);
+    ModelLoader::LoadModel("Resources//Mvr_PetCow_walk.dae", actor1);
 
     while (true)
     {
