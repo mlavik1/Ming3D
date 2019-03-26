@@ -2,6 +2,11 @@
 
 namespace Ming3D
 {
+    VertexData::VertexData()
+    {
+
+    }
+
     VertexData::VertexData(std::vector<EVertexComponent> inComponents, size_t inNumVertices)
     {
         mVertexLayout.VertexComponents = inComponents;
@@ -16,6 +21,14 @@ namespace Ming3D
     VertexData::VertexData(VertexLayout inLayout, size_t inNumVertices)
         : VertexData(inLayout.VertexComponents, inNumVertices)
     {
+    }
+
+    VertexData::VertexData(const VertexData& other)
+    {
+        mData.resize(other.mData.size());
+        memcpy(&mData[0], &other.mData[0], other.mData.size());
+        mVertexLayout = other.mVertexLayout;
+        mVertexSize = other.mVertexSize;
     }
 
     void VertexData::GetComponentOffsets(EVertexComponent inComponent, std::vector<size_t>& outOffsets)

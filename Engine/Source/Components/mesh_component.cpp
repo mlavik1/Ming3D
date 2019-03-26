@@ -41,7 +41,6 @@ namespace Ming3D
         meshBuffer->mVertexBuffer = renderDevice->CreateVertexBuffer(vertexData);
         meshBuffer->mIndexBuffer = renderDevice->CreateIndexBuffer(indexData);
 
-        mRenderSceneObject->mOwnerComponent = this;
         mRenderSceneObject->mModelMatrix = mParent->GetTransform().GetWorldTransformMatrix();
         mRenderSceneObject->mMeshes.push_back(meshBuffer);
 
@@ -53,5 +52,12 @@ namespace Ming3D
         mMaterial = inMat;
 
         mRenderSceneObject->mMaterial = mMaterial->mMaterialBuffer;
+    }
+
+    void MeshComponent::Tick(float inDeltaTime)
+    {
+        Component::Tick(inDeltaTime);
+
+        mRenderSceneObject->mModelMatrix = mParent->GetTransform().GetWorldTransformMatrix();
     }
 }

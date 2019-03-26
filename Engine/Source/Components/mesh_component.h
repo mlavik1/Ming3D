@@ -24,6 +24,8 @@ namespace Ming3D
         virtual void InitialiseComponent();
         void SetMesh(Mesh* inMesh);
         void SetMaterial(Material* inMat);
+    
+        virtual void Tick(float inDeltaTime) override;
     };
 }
 

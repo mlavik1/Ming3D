@@ -82,10 +82,6 @@ namespace Ming3D
         for (Actor* actor : mWorld->GetActors())
         {
             actor->Tick(deltaTime);
-            for (Component* comp : actor->GetComponents())
-            {
-                comp->Tick(deltaTime);
-            }
         }
 
         mNetworkManager->UpdateNetworks();

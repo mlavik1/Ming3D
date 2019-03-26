@@ -7,7 +7,6 @@
 #include <vector>
 #include "glm/glm.hpp"
 #include "Actors/actor.h"
-#include "vertex.h"
 #include "graphics_data.h"
 
 namespace Ming3D

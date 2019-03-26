@@ -13,7 +13,6 @@ namespace Ming3D
     class RenderSceneObject
     {
     public:
-        Component* mOwnerComponent = nullptr;
         std::vector<MeshBuffer*> mMeshes;
         glm::mat4 mModelMatrix;
         MaterialBuffer* mMaterial = nullptr;

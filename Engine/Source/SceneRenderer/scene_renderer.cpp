@@ -56,8 +56,6 @@ namespace Ming3D
                 renderDevice->SetActiveShaderProgram(currMaterial->mShaderProgram);
             }
 
-            obj->mModelMatrix = obj->mOwnerComponent->GetParent()->GetTransform().GetWorldTransformMatrix(); // TODO
-
             glm::mat4 Projection = glm::perspective<float>(glm::radians(45.0f), (float)window->GetWidth() / (float)window->GetHeight(), 0.1f, 100.0f);
 
             // Camera matrix

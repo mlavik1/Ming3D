@@ -48,6 +48,18 @@ namespace Ming3D
         for (Component* comp : newComponents)
             comp->InitialTick();
         newComponents.clear();
+
+        // TODO: refactor actor/component update loop
+        for (Component* comp : GetComponents())
+        {
+            comp->Tick(inDeltaTime);
+        }
+
+        // TODO: refactor actor/component update loop
+        for (Transform* childTrans : mTransform.mChildren)
+        {
+            childTrans->mActor->Tick(inDeltaTime);
+        }
     }
 
     void Actor::Serialise(DataWriter* outWriter, PropertyFlag inPropFlags, ObjectFlag inObjFlag)

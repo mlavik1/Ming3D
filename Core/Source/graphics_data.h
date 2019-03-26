@@ -55,8 +55,10 @@ namespace Ming3D
         size_t mVertexSize = 0;
         
     public:
+        VertexData();
         VertexData(std::vector<EVertexComponent> inComponents, size_t inNumVertices);
         VertexData(VertexLayout inLayout, size_t inNumVertices);
+        VertexData(const VertexData& other);
         void GetComponentOffsets(EVertexComponent inComponent, std::vector<size_t>& outOffsets);
         size_t GetNumVertices();
         size_t GetVertexSize();
