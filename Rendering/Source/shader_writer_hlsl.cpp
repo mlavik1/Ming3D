@@ -295,10 +295,14 @@ namespace Ming3D
         if (inParsedShaderProgram->mFragmentShader)
             shaders.push_back(inParsedShaderProgram->mFragmentShader);
 
-        for (ShaderVariableInfo uniformInfo : inParsedShaderProgram->mShaderUniforms)
+        for (const ShaderUniformBlock& uniformBlock : inParsedShaderProgram->mShaderUniformBlocks)
         {
-            mAvailableUniforms.emplace(uniformInfo.mName);
+            for (const ShaderVariableInfo& uniformInfo : uniformBlock.mShaderUniforms)
+            {
+                mAvailableUniforms.emplace(uniformInfo.mName);
+            }
         }
+
         for (ShaderTextureInfo textureInfo : inParsedShaderProgram->mShaderTextures)
         {
             mAvailableUniforms.emplace(textureInfo.mTextureName);
@@ -353,20 +357,26 @@ namespace Ming3D
             shaderHeaderStream << "\n";
 
             // Write constant buffers
-            shaderHeaderStream << "cbuffer SHADER_CONSTANT_BUFFER : register(b0)\n";
-            shaderHeaderStream << "{\n";
-            shaderHeaderStream.AddIndent();
-            for (const ShaderVariableInfo uniformInfo : inParsedShaderProgram->mShaderUniforms)
+            size_t numUniformBlocks = inParsedShaderProgram->mShaderUniformBlocks.size();
+            for(size_t iBlock = 0; iBlock < numUniformBlocks; iBlock++)
             {
-                if (mReferencedUniforms.find(uniformInfo.mName) != mReferencedUniforms.end())
+                const ShaderUniformBlock& uniformBlock = inParsedShaderProgram->mShaderUniformBlocks[iBlock];
+
+                shaderHeaderStream << "cbuffer SHADER_CONSTANT_BUFFER : register(b" << iBlock << ")\n";
+                shaderHeaderStream << "{\n";
+                shaderHeaderStream.AddIndent();
+                for (const ShaderVariableInfo& uniformInfo : uniformBlock.mShaderUniforms)
                 {
-                    shaderHeaderStream << GetConvertedType(uniformInfo.mDatatypeInfo.mName) << " " << uniformInfo.mName << ";\n";
-                    currShaderUniforms.push_back(uniformInfo);
+                    //if (mReferencedUniforms.find(uniformInfo.mName) != mReferencedUniforms.end())
+                    {
+                        shaderHeaderStream << GetConvertedType(uniformInfo.mDatatypeInfo.mName) << " " << uniformInfo.mName << ";\n";
+                        currShaderUniforms.push_back(uniformInfo);
+                    }
                 }
+                shaderHeaderStream.RemoveIndent();
+                shaderHeaderStream << "}";
+                shaderHeaderStream << "\n";
             }
-            shaderHeaderStream.RemoveIndent();
-            shaderHeaderStream << "}";
-            shaderHeaderStream << "\n";
 
             // Sampler states
             if (inParsedShaderProgram->mShaderTextures.size() > 0)

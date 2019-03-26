@@ -10,6 +10,7 @@
 #include "shader_writer_hlsl.h"
 #include <d3dx11.h>
 #include <d3dx10.h>
+#include "shader_constant_d3d11.h"
 
 namespace Ming3D
 {
@@ -262,7 +263,6 @@ namespace Ming3D
                 LOG_ERROR() << "Invalid semantic: " << inputVar.mSemantic;
             }
         }
-        delete parsedProgram;
 
         ID3D10Blob* vsBlob;
         ID3D10Blob* psBlob;
@@ -314,69 +314,56 @@ namespace Ming3D
         shaderDataList.push_back(convertedShaderData.mVertexShader);
         shaderDataList.push_back(convertedShaderData.mFragmentShader);
 
-        for (size_t iShader = 0; iShader < shaderDataList.size(); iShader++)
+        const size_t numCBuffers = parsedProgram->mShaderUniformBlocks.size();
+        for (size_t iCBuffer = 0; iCBuffer < numCBuffers; iCBuffer++)
         {
-            std::unordered_map<std::string, ShaderConstantD3D11> shaderConstantMap;
+            const ShaderUniformBlock& uniformBlock = parsedProgram->mShaderUniformBlocks[iCBuffer];
+            ConstantBufferD3D11* cBuffer = new ConstantBufferD3D11();
 
-            ShaderDataHLSL& currShaderData = iShader == 0 ? convertedShaderData.mVertexShader : convertedShaderData.mFragmentShader; // TODO
-
-            size_t currentUniformOffset = 0;
-            for (const ShaderVariableInfo& parserUniformInfo : shaderDataList[iShader].mUniforms)
+            size_t cBufferSize = 0;
+            for(size_t iVar = 0; iVar < uniformBlock.mShaderUniforms.size(); iVar++)
             {
-                // TEMP - FIX THIS
+                const ShaderVariableInfo& parserUniformInfo = uniformBlock.mShaderUniforms[iVar];
+                shaderProgram->mConstantNameMap.emplace(parserUniformInfo.mName, ShaderConstantRef{iCBuffer, iVar});
+
                 ShaderDatatypeInfo varType = parserUniformInfo.mDatatypeInfo;
-
                 ShaderUniformInfo uniformInfo(varType, parserUniformInfo.mName);
-
                 const size_t currentUniformSize = GetShaderUniformSize(uniformInfo);
-                shaderConstantMap.emplace(uniformInfo.mName, ShaderConstantD3D11(currentUniformOffset, currentUniformSize));
-                currentUniformOffset += currentUniformSize;
+                ShaderConstantD3D11 scInfo(uniformInfo, cBufferSize, currentUniformSize);
+                cBuffer->mShaderConstants.push_back(scInfo);
+                cBufferSize += currentUniformSize;
             }
-            const size_t constantBufferSize = currentUniformOffset;
+            ID3D11Buffer*   constantBuffer = NULL;
 
-            ShaderD3D11* shaderStage = new ShaderD3D11();
-            shaderProgram->mShaders.push_back(shaderStage);
+            char* cBufferData = new char[cBufferSize];
 
-            if (iShader == 0) // TODO
-                shaderStage->mType = EShaderTypeD3D11::VertexShader;
-            else
-                shaderStage->mType = EShaderTypeD3D11::PixelShader;
+            D3D11_BUFFER_DESC cbDesc;
+            cbDesc.ByteWidth = cBufferSize;
+            cbDesc.Usage = D3D11_USAGE_DYNAMIC;
+            cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+            cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+            cbDesc.MiscFlags = 0;
+            cbDesc.StructureByteStride = 0;
 
-            if (!shaderConstantMap.empty())
+            D3D11_SUBRESOURCE_DATA subresData;
+            subresData.pSysMem = cBufferData;
+            subresData.SysMemPitch = 0;
+            subresData.SysMemSlicePitch = 0;
+
+            HRESULT hr = mDevice->CreateBuffer(&cbDesc, &subresData, &constantBuffer);
+
+            if (FAILED(hr))
             {
-                ID3D11Buffer*   constantBuffer = NULL;
-
-                char* constData = new char[constantBufferSize];
-
-                D3D11_BUFFER_DESC cbDesc;
-                cbDesc.ByteWidth = constantBufferSize;
-                cbDesc.Usage = D3D11_USAGE_DYNAMIC;
-                cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-                cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-                cbDesc.MiscFlags = 0;
-                cbDesc.StructureByteStride = 0;
-
-                D3D11_SUBRESOURCE_DATA subresData;
-                subresData.pSysMem = constData;
-                subresData.SysMemPitch = 0;
-                subresData.SysMemSlicePitch = 0;
-
-                HRESULT hr = mDevice->CreateBuffer(&cbDesc, &subresData, &constantBuffer);
-
-                if (FAILED(hr))
-                {
-                    LOG_ERROR() << "Failed to create constant buffer";
-                    return nullptr;
-                }
-
-                shaderStage->mConstantBuffer = constantBuffer;
-                shaderStage->mConstantData = constData;
-                shaderStage->mShaderConstantMap = shaderConstantMap;
-                shaderStage->mShaderConstantsSize = constantBufferSize;
+                LOG_ERROR() << "Failed to create constant buffer";
+                return nullptr;
             }
+
+            cBuffer->mConstantBuffer = constantBuffer;
+            cBuffer->mConstantData = cBufferData;
+            cBuffer->mShaderConstantsSize = cBufferSize;
+            shaderProgram->mConstantBuffers.push_back(cBuffer);
         }
 
-       
         return shaderProgram;
     }
 
@@ -570,15 +557,11 @@ namespace Ming3D
         mDeviceContext->VSSetShader(dxShaderProgram->mVS, 0, 0);
         mDeviceContext->PSSetShader(dxShaderProgram->mPS, 0, 0);
 
-        for (ShaderD3D11* shader : dxShaderProgram->mShaders)
+        for (const ConstantBufferD3D11* cBuffer : dxShaderProgram->mConstantBuffers)
         {
-            if (shader->mConstantBuffer != nullptr)
-            {
-                if (shader->mType == EShaderTypeD3D11::VertexShader) // TODO
-                    mDeviceContext->VSSetConstantBuffers(0, 1, &shader->mConstantBuffer);
-                else
-                    mDeviceContext->PSSetConstantBuffers(0, 1, &shader->mConstantBuffer);
-            }
+            // TODO: Check if cbuffer is used by each shader
+            mDeviceContext->VSSetConstantBuffers(0, 1, &cBuffer->mConstantBuffer);
+            mDeviceContext->PSSetConstantBuffers(0, 1, &cBuffer->mConstantBuffer);
         }
     }
 
@@ -641,33 +624,26 @@ namespace Ming3D
     {
         __Assert(mActiveShaderProgram != nullptr);
 
-        bool foundUniform = false;
-
-        for (ShaderD3D11* currShader : mActiveShaderProgram->mShaders)
+        auto scIter = mActiveShaderProgram->mConstantNameMap.find(inName);
+        if (scIter != mActiveShaderProgram->mConstantNameMap.end())
         {
-            auto shaderConstIter = currShader->mShaderConstantMap.find(inName);
-            if (shaderConstIter == currShader->mShaderConstantMap.end())
-            {
-                break;
-            }
-            foundUniform = true;
+            const ShaderConstantRef& scRef = scIter->second;
+            const ConstantBufferD3D11* cBuffer = mActiveShaderProgram->mConstantBuffers[scRef.mCBufferIndex];
+            const ShaderConstantD3D11& scInfo = cBuffer->mShaderConstants[scRef.mConstantIndex];
 
-            const ShaderConstantD3D11 shaderConst = shaderConstIter->second;
-
-            void* shaderConstData = currShader->mConstantData;
+            void* shaderConstData = cBuffer->mConstantData;
 
             glm::mat4 mat = glm::transpose(inMat);
-            *((DirectX::XMFLOAT4X4*)((char*)shaderConstData + shaderConst.mOffset)) = DirectX::XMFLOAT4X4(&mat[0][0]);
+            *((DirectX::XMFLOAT4X4*)((char*)shaderConstData + scInfo.mOffset)) = DirectX::XMFLOAT4X4(&mat[0][0]);
 
             D3D11_MAPPED_SUBRESOURCE mappedResource;
-            mDeviceContext->Map(currShader->mConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+            mDeviceContext->Map(cBuffer->mConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 
-            memcpy(mappedResource.pData, shaderConstData, currShader->mShaderConstantsSize);
+            memcpy(mappedResource.pData, shaderConstData, cBuffer->mShaderConstantsSize);
 
-            mDeviceContext->Unmap(currShader->mConstantBuffer, 0);
+            mDeviceContext->Unmap(cBuffer->mConstantBuffer, 0);
         }
-
-        if (!foundUniform)
+        else
         {
             LOG_ERROR() << "Could not find shader constant: " << inName;
         }
@@ -694,29 +670,25 @@ namespace Ming3D
 
         bool foundUniform = false;
 
-        for (ShaderD3D11* currShader : mActiveShaderProgram->mShaders)
+        auto scIter = mActiveShaderProgram->mConstantNameMap.find(inName);
+        if (scIter != mActiveShaderProgram->mConstantNameMap.end())
         {
-            auto shaderConstIter = currShader->mShaderConstantMap.find(inName);
-            if (shaderConstIter == currShader->mShaderConstantMap.end())
-            {
-                break;
-            }
-            foundUniform = true;
+            const ShaderConstantRef& scRef = scIter->second;
+            const ConstantBufferD3D11* cBuffer = mActiveShaderProgram->mConstantBuffers[scRef.mCBufferIndex];
+            const ShaderConstantD3D11& scInfo = cBuffer->mShaderConstants[scRef.mConstantIndex];
 
-            const ShaderConstantD3D11 shaderConst = shaderConstIter->second;
+            void* shaderConstData = cBuffer->mConstantData;
 
-            void* shaderConstData = currShader->mConstantData;
-
-            *((DirectX::XMFLOAT4*)((char*)shaderConstData + shaderConst.mOffset)) = DirectX::XMFLOAT4(&inVec[0]);
+            *((DirectX::XMFLOAT4*)((char*)shaderConstData + scInfo.mOffset)) = DirectX::XMFLOAT4(&inVec[0]);
 
             D3D11_MAPPED_SUBRESOURCE mappedResource;
-            mDeviceContext->Map(currShader->mConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+            mDeviceContext->Map(cBuffer->mConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 
-            memcpy(mappedResource.pData, shaderConstData, currShader->mShaderConstantsSize);
+            memcpy(mappedResource.pData, shaderConstData, cBuffer->mShaderConstantsSize);
 
-            mDeviceContext->Unmap(currShader->mConstantBuffer, 0);
+            mDeviceContext->Unmap(cBuffer->mConstantBuffer, 0);
         }
-        if (!foundUniform)
+        else
         {
             LOG_ERROR() << "Could not find shader constant: " << inName;
         }

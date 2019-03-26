@@ -116,7 +116,6 @@ namespace Ming3D
         ShaderWriterGLSL shaderWriter;
         ShaderProgramDataGLSL convertedShaderData;
         shaderWriter.WriteShader(parsedProgram, convertedShaderData);
-        delete parsedProgram;
 
         GLuint program = glCreateProgram();
         GLuint vs = glCreateShader(GL_VERTEX_SHADER);
@@ -165,6 +164,7 @@ namespace Ming3D
         shaderProgram->SetGLProgram(program);
         shaderProgram->SetGLVertexShader(vs);
         shaderProgram->SetGLFragmentShader(fs);
+
         return shaderProgram;
     }
 

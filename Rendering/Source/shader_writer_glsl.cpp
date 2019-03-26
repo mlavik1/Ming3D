@@ -279,10 +279,14 @@ namespace Ming3D
         if (inParsedShaderProgram->mFragmentShader)
             shaders.push_back(inParsedShaderProgram->mFragmentShader);
 
-        for (ShaderVariableInfo uniformInfo : inParsedShaderProgram->mShaderUniforms)
+        for (const ShaderUniformBlock& uniformBlock : inParsedShaderProgram->mShaderUniformBlocks)
         {
-            mAvailableUniforms.emplace(uniformInfo.mName);
+            for (const ShaderVariableInfo& uniformInfo : uniformBlock.mShaderUniforms)
+            {
+                mAvailableUniforms.emplace(uniformInfo.mName);
+            }
         }
+
         for (ShaderTextureInfo textureInfo : inParsedShaderProgram->mShaderTextures)
         {
             mAvailableUniforms.emplace(textureInfo.mTextureName);
@@ -330,11 +334,14 @@ namespace Ming3D
             shaderHeaderStream << "\n";
 
             // Write uniforms
-            for (const ShaderVariableInfo uniformInfo : inParsedShaderProgram->mShaderUniforms)
+            for (const ShaderUniformBlock& uniformBlock : inParsedShaderProgram->mShaderUniformBlocks)
             {
-                if (mReferencedUniforms.find(uniformInfo.mName) != mReferencedUniforms.end())
+                for (const ShaderVariableInfo& uniformInfo : uniformBlock.mShaderUniforms)
                 {
-                    shaderHeaderStream << "uniform " << GetConvertedType(uniformInfo.mDatatypeInfo.mName) << " " << uniformInfo.mName << ";\n";
+                    if (mReferencedUniforms.find(uniformInfo.mName) != mReferencedUniforms.end())
+                    {
+                        shaderHeaderStream << "uniform " << GetConvertedType(uniformInfo.mDatatypeInfo.mName) << " " << uniformInfo.mName << ";\n";
+                    }
                 }
             }
             shaderHeaderStream << "\n";

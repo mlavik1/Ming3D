@@ -4,28 +4,10 @@
 #include "graphics_data.h"
 #include <string.h>
 #include "shader_info.h"
+#include "shader_constant.h"
 
 namespace Ming3D
 {
-    class ShaderUniformInfo
-    {
-    public:
-        ShaderDatatypeInfo mType;
-        std::string mName;
-    
-        ShaderUniformInfo(const ShaderDatatypeInfo& inType, const std::string& inName)
-        {
-            mType = inType;
-            mName = inName;
-        }
-    };
-
-    struct ShaderProgramConstructionInfo
-    {
-        std::vector<ShaderUniformInfo> mUniforms;
-        VertexLayout mVertexLayout;
-    };
-
     class ShaderProgram
     {
     private:

@@ -5,36 +5,27 @@
 
 #include <d3d11.h>
 #include <unordered_map>
+#include <vector>
+#include "shader_constant_d3d11.h"
 
 namespace Ming3D
 {
-    struct ShaderConstantD3D11
+    struct ShaderConstantRef
     {
     public:
-        size_t mOffset;
-        size_t mSize;
-        ShaderConstantD3D11(const size_t inOffset, const size_t inSize)
-        {
-            mOffset = inOffset;
-            mSize = inSize;
-        }
+        size_t mCBufferIndex;
+        size_t mConstantIndex;
     };
 
-    enum class EShaderTypeD3D11
-    {
-        VertexShader, PixelShader
-    };
-
-    class ShaderD3D11
+    class ConstantBufferD3D11 // TODO: move to separate file
     {
     public:
+        ~ConstantBufferD3D11();
+
         ID3D11Buffer* mConstantBuffer;
         void* mConstantData = nullptr;
-        std::unordered_map<std::string, ShaderConstantD3D11> mShaderConstantMap;
+        std::vector<ShaderConstantD3D11> mShaderConstants;
         size_t mShaderConstantsSize;
-        EShaderTypeD3D11 mType;
-
-        ~ShaderD3D11();
     };
 
     class ShaderProgramD3D11 : public ShaderProgram
@@ -43,7 +34,8 @@ namespace Ming3D
         ID3D11VertexShader* mVS;
         ID3D11PixelShader* mPS;
         ID3D11InputLayout* mInputLayout; // TODO: Do not create one per shader program
-        std::vector<ShaderD3D11*> mShaders;
+        std::vector<ConstantBufferD3D11*> mConstantBuffers;
+        std::unordered_map<std::string, ShaderConstantRef> mConstantNameMap;
 
     public:
         virtual ~ShaderProgramD3D11();

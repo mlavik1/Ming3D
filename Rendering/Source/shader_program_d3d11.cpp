@@ -2,7 +2,7 @@
 
 namespace Ming3D
 {
-    ShaderD3D11::~ShaderD3D11()
+    ConstantBufferD3D11::~ConstantBufferD3D11()
     {
         if (mConstantData != nullptr)
         {
@@ -29,11 +29,7 @@ namespace Ming3D
             delete mInputLayout;
         }
 
-        for (ShaderD3D11* shader : mShaders)
-        {
-            delete shader;
-        }
-
-        mShaders.clear();
+        for (ConstantBufferD3D11* cBuffer : mConstantBuffers)
+            delete cBuffer;
     }
 }

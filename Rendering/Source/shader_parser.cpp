@@ -647,13 +647,15 @@ namespace Ming3D
                 EParseResult inputParseResult = ParseStructBody(tokenParser, &inputStruct);
                 if (inputParseResult == EParseResult::Parsed)
                 {
+                    ShaderUniformBlock uniformBlock;
                     for (ShaderStructMember member : inputStruct.mMemberVariables)
                     {
                         ShaderVariableInfo uniformInfo;
                         uniformInfo.mName = member.mName;
                         uniformInfo.mDatatypeInfo = member.mDatatype;
-                        parsedShaderProgram->mShaderUniforms.push_back(uniformInfo);
+                        uniformBlock.mShaderUniforms.push_back(uniformInfo);
                     }
+                    parsedShaderProgram->mShaderUniformBlocks.push_back(uniformBlock);
                     tokenParser.Advance();
                 }
                 else if (inputParseResult == EParseResult::Error)

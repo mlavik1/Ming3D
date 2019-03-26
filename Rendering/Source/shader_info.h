@@ -187,6 +187,12 @@ namespace Ming3D
         ShaderStatementBlock* mStatementBlock;
     };
 
+    class ShaderUniformBlock
+    {
+    public:
+        std::vector<ShaderVariableInfo> mShaderUniforms;
+    };
+
     class ParsedShader
     {
     public:
@@ -205,7 +211,7 @@ namespace Ming3D
 
         std::vector<ShaderDatatypeInfo> mStructDefinitions;
         std::vector<ShaderFunctionDefinition*> mFunctionDefinitions;
-        std::vector<ShaderVariableInfo> mShaderUniforms;
+        std::vector<ShaderUniformBlock> mShaderUniformBlocks;
         std::vector<ShaderTextureInfo> mShaderTextures;
     };
 }
