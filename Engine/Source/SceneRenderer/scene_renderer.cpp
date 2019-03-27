@@ -19,6 +19,38 @@ namespace Ming3D
         delete mRenderScene;
     }
 
+    void SceneRenderer::UpdateUniforms(MaterialBuffer* inMat)
+    {
+        RenderDevice* renderDevice = GGameEngine->GetRenderDevice();
+
+        for (const std::string& uniformName : inMat->mModifiedUniforms)
+        {
+            auto it = inMat->mShaderUniformMap.find(uniformName);
+            assert(it != inMat->mShaderUniformMap.end());
+            const ShaderUniformData* uniformData = it->second;
+            switch (uniformData->mUniformInfo.mDatatypeInfo.mDatatype)
+            {
+            case EShaderDatatype::Mat4x4:
+            {
+                glm::mat4 val;
+                uniformData->GetData(&val);
+                renderDevice->SetShaderUniformMat4x4(uniformName.c_str(), val); // TODO: pass pointer instead of uniform name string?
+                break;
+            }
+            case EShaderDatatype::Vec4:
+            {
+                glm::vec4 val;
+                uniformData->GetData(&val);
+                renderDevice->SetShaderUniformVec4(uniformName.c_str(), val); // TODO: pass pointer instead of uniform name string?
+                break;
+            }
+            default:
+                assert(0); // TODO: add support for other types
+            }
+        }
+        inMat->mModifiedUniforms.clear();
+    }
+
     void SceneRenderer::AddCamera(Camera* inCamera)
     {
         mCameras.push_back(inCamera);
@@ -55,6 +87,8 @@ namespace Ming3D
                 currMaterial = obj->mMaterial;
                 renderDevice->SetActiveShaderProgram(currMaterial->mShaderProgram);
             }
+
+            UpdateUniforms(currMaterial);
 
             glm::mat4 Projection = glm::perspective<float>(glm::radians(45.0f), (float)window->GetWidth() / (float)window->GetHeight(), 0.1f, 100.0f);
 

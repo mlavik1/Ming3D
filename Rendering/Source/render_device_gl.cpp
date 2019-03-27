@@ -357,13 +357,15 @@ namespace Ming3D
 
     void RenderDeviceGL::SetShaderUniformMat4x4(const char* inName, const glm::mat4 inMat)
     {
-        GLuint MatrixID = glGetUniformLocation(mActiveShaderProgram->GetGLProgram(), inName);
+        GLuint loc = glGetUniformLocation(mActiveShaderProgram->GetGLProgram(), inName);
 
-        glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &inMat[0][0]);
+        glUniformMatrix4fv(loc, 1, GL_FALSE, &inMat[0][0]);
     }
 
     void RenderDeviceGL::SetShaderUniformVec4(const char* inName, const glm::vec4 inVec)
     {
+        GLuint loc = glGetUniformLocation(mActiveShaderProgram->GetGLProgram(), inName);
 
+        glUniform4fv(loc, 1, (float*)&inVec[0]);
     }
 }

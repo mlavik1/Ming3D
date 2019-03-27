@@ -3,6 +3,7 @@
 
 #include "material_buffer.h"
 #include <vector>
+#include "glm/glm.hpp"
 
 namespace Ming3D
 {
@@ -20,6 +21,9 @@ namespace Ming3D
         ~Material();
 
         void SetTexture(size_t textureIndex, Texture* texture);
+
+        void SetShaderUniformVec4(const std::string& inName, const glm::vec4& inVal);
+        void SetShaderUniformMat4x4(const std::string& inName, const glm::mat4& inVal);
     };
 }
 

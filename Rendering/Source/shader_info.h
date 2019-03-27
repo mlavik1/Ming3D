@@ -4,12 +4,13 @@
 #include <string>
 #include <vector>
 #include "shader_tokeniser.h"
+#include "glm/glm.hpp"
 
 namespace Ming3D
 {
     enum class EShaderDatatype
     {
-        Struct, Float, Int, Bool, Void, Vec2, Vec3, Vec4, Mat4x4, Texture2D, None
+        None = 0, Struct = 1, Float = 2, Int = 3, Bool = 4, Void = 5, Vec2 = 6, Vec3 = 7, Vec4 = 8, Mat4x4 = 9, Texture2D = 10
     };
 
     class ShaderStructMember; // fwd.decl.
@@ -22,23 +23,11 @@ namespace Ming3D
         std::string mParentType = "";
         std::vector<ShaderStructMember> mMemberVariables;
 
-        ShaderDatatypeInfo()
-        {
-            mDatatype = EShaderDatatype::None;
-        }
+        ShaderDatatypeInfo();
+        ShaderDatatypeInfo(EShaderDatatype inType, std::string inName);
+        ShaderDatatypeInfo(EShaderDatatype inType, std::string inName, std::vector<ShaderStructMember> inChildren);
 
-        ShaderDatatypeInfo(EShaderDatatype inType, std::string inName)
-        {
-            mDatatype = inType;
-            mName = inName;
-        }
-
-        ShaderDatatypeInfo(EShaderDatatype inType, std::string inName, std::vector<ShaderStructMember> inChildren)
-        {
-            mDatatype = inType;
-            mName = inName;
-            mMemberVariables = inChildren;
-        }
+        size_t GetDataSize() const;
     };
 
     class ShaderStructMember

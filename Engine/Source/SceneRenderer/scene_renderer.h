@@ -12,6 +12,8 @@ namespace Ming3D
         RenderScene* mRenderScene;
         std::vector<Camera*> mCameras;
 
+        void UpdateUniforms(MaterialBuffer* inMat);
+
     public:
         SceneRenderer();
         ~SceneRenderer();
