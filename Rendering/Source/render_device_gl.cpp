@@ -355,17 +355,39 @@ namespace Ming3D
         mDefaultDepthStencilState = glStencilState;
     }
 
-    void RenderDeviceGL::SetShaderUniformMat4x4(const char* inName, const glm::mat4 inMat)
+    void RenderDeviceGL::SetShaderUniformFloat(const std::string& inName, float inVal)
     {
-        GLuint loc = glGetUniformLocation(mActiveShaderProgram->GetGLProgram(), inName);
+        GLuint loc = glGetUniformLocation(mActiveShaderProgram->GetGLProgram(), inName.c_str()); // TODO: cache
+        glUniform1f(loc, inVal);
+    }
 
+    void RenderDeviceGL::SetShaderUniformInt(const std::string& inName, int inVal)
+    {
+        GLuint loc = glGetUniformLocation(mActiveShaderProgram->GetGLProgram(), inName.c_str()); // TODO: cache
+        glUniform1i(loc, inVal);
+    }
+
+    void RenderDeviceGL::SetShaderUniformMat4x4(const std::string& inName, const glm::mat4 inMat)
+    {
+        GLuint loc = glGetUniformLocation(mActiveShaderProgram->GetGLProgram(), inName.c_str()); // TODO: cache
         glUniformMatrix4fv(loc, 1, GL_FALSE, &inMat[0][0]);
     }
 
-    void RenderDeviceGL::SetShaderUniformVec4(const char* inName, const glm::vec4 inVec)
+    void RenderDeviceGL::SetShaderUniformVec2(const std::string& inName, const glm::vec2 inVec)
     {
-        GLuint loc = glGetUniformLocation(mActiveShaderProgram->GetGLProgram(), inName);
+        GLuint loc = glGetUniformLocation(mActiveShaderProgram->GetGLProgram(), inName.c_str()); // TODO: cache
+        glUniform2fv(loc, 1, (float*)&inVec[0]);
+    }
 
+    void RenderDeviceGL::SetShaderUniformVec3(const std::string& inName, const glm::vec3 inVec)
+    {
+        GLuint loc = glGetUniformLocation(mActiveShaderProgram->GetGLProgram(), inName.c_str()); // TODO: cache
+        glUniform3fv(loc, 1, (float*)&inVec[0]);
+    }
+
+    void RenderDeviceGL::SetShaderUniformVec4(const std::string& inName, const glm::vec4 inVec)
+    {
+        GLuint loc = glGetUniformLocation(mActiveShaderProgram->GetGLProgram(), inName.c_str()); // TODO: cache
         glUniform4fv(loc, 1, (float*)&inVec[0]);
     }
 }

@@ -28,13 +28,41 @@ namespace Ming3D
             auto it = inMat->mShaderUniformMap.find(uniformName);
             assert(it != inMat->mShaderUniformMap.end());
             const ShaderUniformData* uniformData = it->second;
-            switch (uniformData->mUniformInfo.mDatatypeInfo.mDatatype)
+            switch (uniformData->mTypeInfo.mDatatype)
             {
+            case EShaderDatatype::Float:
+            {
+                float val;
+                uniformData->GetData(&val);
+                renderDevice->SetShaderUniformFloat(uniformName.c_str(), val); // TODO: pass pointer instead of uniform name string?
+                break;
+            }
+            case EShaderDatatype::Int:
+            {
+                int val;
+                uniformData->GetData(&val);
+                renderDevice->SetShaderUniformInt(uniformName.c_str(), val); // TODO: pass pointer instead of uniform name string?
+                break;
+            }
             case EShaderDatatype::Mat4x4:
             {
                 glm::mat4 val;
                 uniformData->GetData(&val);
                 renderDevice->SetShaderUniformMat4x4(uniformName.c_str(), val); // TODO: pass pointer instead of uniform name string?
+                break;
+            }
+            case EShaderDatatype::Vec2:
+            {
+                glm::vec2 val;
+                uniformData->GetData(&val);
+                renderDevice->SetShaderUniformVec2(uniformName.c_str(), val); // TODO: pass pointer instead of uniform name string?
+                break;
+            }
+            case EShaderDatatype::Vec3:
+            {
+                glm::vec3 val;
+                uniformData->GetData(&val);
+                renderDevice->SetShaderUniformVec3(uniformName.c_str(), val); // TODO: pass pointer instead of uniform name string?
                 break;
             }
             case EShaderDatatype::Vec4:

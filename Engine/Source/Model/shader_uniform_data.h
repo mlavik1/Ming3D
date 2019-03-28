@@ -12,11 +12,11 @@ namespace Ming3D
         size_t mSize;
 
     public:
-        ShaderVariableInfo mUniformInfo;
+        ShaderDatatypeInfo mTypeInfo;
 
-        ShaderUniformData(ShaderVariableInfo info, size_t size)
+        ShaderUniformData(ShaderDatatypeInfo datatype, size_t size)
         {
-            mUniformInfo = info;
+            mTypeInfo = datatype;
             mData = new char[size];
             mSize = size;
         }

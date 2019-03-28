@@ -620,35 +620,6 @@ namespace Ming3D
         mDeviceContext->DrawIndexed(inIndexBuffer->GetNumIndices(), 0, 0);
     }
 
-    void RenderDeviceD3D11::SetShaderUniformMat4x4(const char* inName, const glm::mat4 inMat)
-    {
-        __Assert(mActiveShaderProgram != nullptr);
-
-        auto scIter = mActiveShaderProgram->mConstantNameMap.find(inName);
-        if (scIter != mActiveShaderProgram->mConstantNameMap.end())
-        {
-            const ShaderConstantRef& scRef = scIter->second;
-            const ConstantBufferD3D11* cBuffer = mActiveShaderProgram->mConstantBuffers[scRef.mCBufferIndex];
-            const ShaderConstantD3D11& scInfo = cBuffer->mShaderConstants[scRef.mConstantIndex];
-
-            void* shaderConstData = cBuffer->mConstantData;
-
-            glm::mat4 mat = glm::transpose(inMat);
-            *((DirectX::XMFLOAT4X4*)((char*)shaderConstData + scInfo.mOffset)) = DirectX::XMFLOAT4X4(&mat[0][0]);
-
-            D3D11_MAPPED_SUBRESOURCE mappedResource;
-            mDeviceContext->Map(cBuffer->mConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-
-            memcpy(mappedResource.pData, shaderConstData, cBuffer->mShaderConstantsSize);
-
-            mDeviceContext->Unmap(cBuffer->mConstantBuffer, 0);
-        }
-        else
-        {
-            LOG_ERROR() << "Could not find shader constant: " << inName;
-        }
-    }
-
     void RenderDeviceD3D11::SetRasteriserState(RasteriserState* inState)
     {
         if (inState == nullptr)
@@ -664,7 +635,7 @@ namespace Ming3D
         GetDeviceContext()->OMSetDepthStencilState(depthStencilState->mDepthStencilState, 1);
     }
 
-    void RenderDeviceD3D11::SetShaderUniformVec4(const char* inName, const glm::vec4 inVec)
+    void RenderDeviceD3D11::SetConstantBufferData(const std::string& inName, const void* inData, size_t inSize)
     {
         __Assert(mActiveShaderProgram != nullptr);
 
@@ -679,7 +650,7 @@ namespace Ming3D
 
             void* shaderConstData = cBuffer->mConstantData;
 
-            *((DirectX::XMFLOAT4*)((char*)shaderConstData + scInfo.mOffset)) = DirectX::XMFLOAT4(&inVec[0]);
+            memcpy((char*)shaderConstData + scInfo.mOffset, inData, inSize);
 
             D3D11_MAPPED_SUBRESOURCE mappedResource;
             mDeviceContext->Map(cBuffer->mConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
@@ -692,6 +663,41 @@ namespace Ming3D
         {
             LOG_ERROR() << "Could not find shader constant: " << inName;
         }
+    }
+
+    void RenderDeviceD3D11::SetShaderUniformFloat(const std::string& inName, float inVal)
+    {
+        SetConstantBufferData(inName, &inVal, sizeof(inVal));
+    }
+
+    void RenderDeviceD3D11::SetShaderUniformInt(const std::string& inName, int inVal)
+    {
+        SetConstantBufferData(inName, &inVal, sizeof(inVal));
+    }
+
+    void RenderDeviceD3D11::SetShaderUniformVec2(const std::string& inName, const glm::vec2 inVec)
+    {
+        DirectX::XMFLOAT2 value(&inVec[0]);
+        SetConstantBufferData(inName, &value, sizeof(value));
+    }
+
+    void RenderDeviceD3D11::SetShaderUniformVec3(const std::string& inName, const glm::vec3 inVec)
+    {
+        DirectX::XMFLOAT3 value(&inVec[0]);
+        SetConstantBufferData(inName, &value, sizeof(value));
+    }
+
+    void RenderDeviceD3D11::SetShaderUniformVec4(const std::string& inName, const glm::vec4 inVec)
+    {
+        DirectX::XMFLOAT4 value(&inVec[0]);
+        SetConstantBufferData(inName, &value, sizeof(value));
+    }
+
+    void RenderDeviceD3D11::SetShaderUniformMat4x4(const std::string& inName, const glm::mat4 inMat)
+    {
+        glm::mat4 mat = glm::transpose(inMat);
+        DirectX::XMFLOAT4X4 value(&mat[0][0]);
+        SetConstantBufferData(inName, &value, sizeof(value));
     }
 
 }

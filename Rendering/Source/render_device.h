@@ -48,9 +48,13 @@ namespace Ming3D
         virtual void RenderPrimitive(VertexBuffer* inVertexBuffer, IndexBuffer* inIndexBuffer) = 0;
         virtual void SetRasteriserState(RasteriserState* inState) = 0;
         virtual void SetDepthStencilState(DepthStencilState* inState) = 0;
-
-        virtual void SetShaderUniformMat4x4(const char* inName, const glm::mat4 inMat) = 0;
-        virtual void SetShaderUniformVec4(const char* inName, const glm::vec4 inVec) = 0;
+        
+        virtual void SetShaderUniformFloat(const std::string& inName, float inVal) = 0;
+        virtual void SetShaderUniformInt(const std::string& inName, int inVal) = 0;
+        virtual void SetShaderUniformMat4x4(const std::string& inName, const glm::mat4 inMat) = 0;
+        virtual void SetShaderUniformVec2(const std::string& inName, const glm::vec2 inVec) = 0;
+        virtual void SetShaderUniformVec3(const std::string& inName, const glm::vec3 inVec) = 0;
+        virtual void SetShaderUniformVec4(const std::string& inName, const glm::vec4 inVec) = 0;
     };
 }
 #endif

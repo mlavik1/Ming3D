@@ -29,7 +29,7 @@ namespace Ming3D
             for (size_t iUniform = 0; iUniform < uniformBlock.mShaderUniforms.size(); iUniform++)
             {
                 const ShaderVariableInfo& uniform = uniformBlock.mShaderUniforms[iUniform];
-                ShaderUniformData* uniformData = new ShaderUniformData(uniform, uniform.mDatatypeInfo.GetDataSize());
+                ShaderUniformData* uniformData = new ShaderUniformData(uniform.mDatatypeInfo, uniform.mDatatypeInfo.GetDataSize());
                 switch (uniform.mDatatypeInfo.mDatatype)
                 {
                 case EShaderDatatype::Mat4x4:
@@ -62,6 +62,26 @@ namespace Ming3D
         if (mMaterialBuffer->mTextureBuffers[textureIndex] != nullptr)
             delete mMaterialBuffer->mTextureBuffers[textureIndex];
         mMaterialBuffer->mTextureBuffers[textureIndex] = GGameEngine->GetRenderDevice()->CreateTextureBuffer(texture->GetTextureInfo(), texture->GetTextureData());
+    }
+
+    void Material::SetShaderUniformFloat(const std::string& inName, float inVal)
+    {
+        mMaterialBuffer->SetShaderUniformFloat(inName, inVal);
+    }
+
+    void Material::SetShaderUniformInt(const std::string& inName, int inVal)
+    {
+        mMaterialBuffer->SetShaderUniformInt(inName, inVal);
+    }
+
+    void Material::SetShaderUniformVec2(const std::string& inName, const glm::vec2& inVal)
+    {
+        mMaterialBuffer->SetShaderUniformVec2(inName, inVal);
+    }
+
+    void Material::SetShaderUniformVec3(const std::string& inName, const glm::vec3& inVal)
+    {
+        mMaterialBuffer->SetShaderUniformVec3(inName, inVal);
     }
 
     void Material::SetShaderUniformVec4(const std::string& inName, const glm::vec4& inVal)

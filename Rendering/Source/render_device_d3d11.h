@@ -32,6 +32,8 @@ namespace Ming3D
 
         size_t GetShaderUniformSize(const ShaderUniformInfo& inShaderUniform);
 
+        void SetConstantBufferData(const std::string& inName, const void* inData, size_t inSize);
+
     public:
         RenderDeviceD3D11();
         ~RenderDeviceD3D11();
@@ -56,8 +58,12 @@ namespace Ming3D
         virtual void SetRasteriserState(RasteriserState* inState) override;
         virtual void SetDepthStencilState(DepthStencilState* inState) override;
 
-        virtual void SetShaderUniformMat4x4(const char* inName, const glm::mat4 inMat) override;
-        virtual void SetShaderUniformVec4(const char* inName, const glm::vec4 inVec) override;
+        virtual void SetShaderUniformFloat(const const std::string& inName, float inVal) override;
+        virtual void SetShaderUniformInt(const std::string& inName, int inVal) override;
+        virtual void SetShaderUniformMat4x4(const std::string& inName, const glm::mat4 inMat) override;
+        virtual void SetShaderUniformVec2(const std::string& inName, const glm::vec2 inVec) override;
+        virtual void SetShaderUniformVec3(const std::string& inName, const glm::vec3 inVec) override;
+        virtual void SetShaderUniformVec4(const std::string& inName, const glm::vec4 inVec) override;
 
         ID3D11Device* GetDevice() { return mDevice; }
         ID3D11DeviceContext* GetDeviceContext() { return mDeviceContext; }
