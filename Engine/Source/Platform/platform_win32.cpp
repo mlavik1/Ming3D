@@ -4,9 +4,7 @@
 #include <windows.h>
 #include <ws2tcpip.h>
 
-//#define MING3D_USE_OPENGL
-
-#ifdef MING3D_USE_OPENGL
+#ifdef MING3D_FORCE_OPENGL
 #include <SDL.h>
 #include "sdl_window.h"
 #include "render_device_gl.h"
@@ -30,7 +28,7 @@ namespace Ming3D
 
     void PlatformWin32::Initialise()
     {
-#ifdef MING3D_USE_OPENGL
+#ifdef MING3D_FORCE_OPENGL
         if (SDL_Init(SDL_INIT_VIDEO) != 0)
             LOG_ERROR() << "Failed to initialise SDL";
         else
@@ -54,7 +52,7 @@ namespace Ming3D
 
     RenderDevice* PlatformWin32::CreateRenderDevice()
     {
-#ifdef MING3D_USE_OPENGL
+#ifdef MING3D_FORCE_OPENGL
         LOG_INFO() << "Using OpenGL, version " << glGetString(GL_VERSION);
         return new RenderDeviceGL();
 #else
@@ -65,7 +63,7 @@ namespace Ming3D
     WindowBase* PlatformWin32::CreateOSWindow()
     {
         WindowBase* window;
-#ifdef MING3D_USE_OPENGL
+#ifdef MING3D_FORCE_OPENGL
         window = new SDLWindow();
 #else
         window = new WinAPIWindow();
