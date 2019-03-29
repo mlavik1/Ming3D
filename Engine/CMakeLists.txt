@@ -60,7 +60,7 @@ include_directories ("../Networking/Source")
 include_directories ("../Include/glm")
 include_directories (${SDL2_INCLUDE_DIR})
 include_directories ("../3rdParty/assimp/include")
-include_directories ("${CMAKE_BINARY_DIR}/3rdParty/assimp/include")
+include_directories ("${BUILD_ROOT}/3rdParty/assimp/include")
 
 add_library(Engine STATIC ${SRC_FILES})
 
