@@ -4,9 +4,14 @@
 
 namespace Ming3D
 {
-    void TextureLoader::LoadTextureData(const char* inFilePath, Texture* outTexture)
+    Texture* TextureLoader::LoadTextureData(const char* inFilePath)
     {
         SDL_Surface * surface = IMG_Load(inFilePath);
+
+        if (surface == nullptr)
+            return nullptr;
+
+        Texture* texture = new Texture();
 
         unsigned int bytesPerPixel = surface->format->BytesPerPixel;
         PixelFormat pixelFormat;
@@ -47,7 +52,7 @@ namespace Ming3D
             memcpy(&textureData[0], surface->pixels, textureSize);
         }
 
-        outTexture->SetTextureData(textureData, bytesPerPixel, pixelFormat, surface->w, surface->h);
+        texture->SetTextureData(textureData, bytesPerPixel, pixelFormat, surface->w, surface->h);
         /*
         #ifndef MING3D_FORCE_OPENGL // TODO - TEMP HACK: what to do about this? OpenGL and D3D use a different origin (Upper-Left vs BottomLeft). If we try to solve it by flipping the Y-coordinate in the shader, we also have to do that when rendering to texture, which is ugly..
         char* buffer = new char[surface->w * surface->h * bytesPerPixel];
@@ -62,6 +67,7 @@ namespace Ming3D
         */
         delete[] textureData;
         SDL_FreeSurface(surface);
+        return texture;
     }
 
     void TextureLoader::CreateEmptyTexture(Texture* outTexture)

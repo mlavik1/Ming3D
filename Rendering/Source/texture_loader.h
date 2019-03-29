@@ -8,7 +8,7 @@ namespace Ming3D
     class TextureLoader
     {
     public:
-        static void LoadTextureData(const char* inFilePath, Texture* outTexture);
+        static Texture* LoadTextureData(const char* inFilePath);
         static void CreateEmptyTexture(Texture* outTexture);
     };
 }

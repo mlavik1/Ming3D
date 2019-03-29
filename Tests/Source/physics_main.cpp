@@ -8,8 +8,11 @@
 #include "Components/rigidbody_component.h"
 #include "Components/box_collider_component.h"
 #include "Model/model_helper.h"
+#include "Debug/debug_graphics.h"
+#include "glm/gtx/rotate_vector.hpp"
 
 #include <iostream>
+#include "SceneRenderer/render_scene_object.h" // TEMP
 
 using namespace Ming3D;
 
@@ -40,6 +43,8 @@ int main()
     BoxColliderComponent* boxComp2 = actor2->AddComponent<BoxColliderComponent>();
     boxComp2->SetSize(glm::vec3(0.25f, 0.25f, 0.25f));
     gameEngine->GetWorld()->AddActor(actor2);
+
+    DebugGraphics::DrawBox(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.2f, 1.2f, 1.2f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 
     while (true)
     {

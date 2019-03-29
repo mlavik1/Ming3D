@@ -140,15 +140,13 @@ namespace Ming3D
             if (scene->mMaterials[matIndex]->GetTexture(aiTextureType::aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
             {
                 std::string texturePath = std::string("Resources//") + std::string(path.C_Str());
-                meshData->mTexture = new Texture();
-                TextureLoader::LoadTextureData(texturePath.c_str(), meshData->mTexture);
+                meshData->mTexture = TextureLoader::LoadTextureData(texturePath.c_str());
             }
             else
             {
                 // TODO: set default (white?) texture
                 LOG_WARNING() << "Material has no valid texture";
-                meshData->mTexture = new Texture;
-                TextureLoader::LoadTextureData("Resources//texture.jpg", meshData->mTexture);
+                meshData->mTexture = nullptr;
             }
 
         }
