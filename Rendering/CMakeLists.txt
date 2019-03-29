@@ -45,7 +45,7 @@ include_directories ("../Include/glm")
 include_directories(${SDL2_INCLUDE_DIR})
 include_directories(${GLEW_INCLUDE_DIRS})
 include_directories ("../3rdParty/assimp/include") #TODO: Rendering project should not read files
-include_directories ("${CMAKE_BINARY_DIR}/3rdParty/assimp/include") #TODO: Rendering project should not read files
+include_directories ("${BUILD_ROOT}/3rdParty/assimp/include") #TODO: Rendering project should not read files
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     include_directories($ENV{DXSDK_DIR}Include)
     include_directories($ENV{DXSDK_DIR}/Include)

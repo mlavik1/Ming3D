@@ -6,6 +6,7 @@
 #include "render_device.h"
 #include "Components/component.h"
 #include "Actors/actor.h"
+#include "Model/shader_uniform_data.h"
 
 namespace Ming3D
 {

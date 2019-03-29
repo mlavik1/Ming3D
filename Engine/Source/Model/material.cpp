@@ -4,6 +4,7 @@
 #include "shader_parser.h"
 #include "texture.h"
 #include "shader_info.h"
+#include "shader_uniform_data.h"
 
 namespace Ming3D
 {

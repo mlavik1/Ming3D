@@ -1,4 +1,5 @@
 #include "material_buffer.h"
+#include "shader_uniform_data.h"
 
 namespace Ming3D
 {

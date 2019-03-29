@@ -4,7 +4,6 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include "shader_uniform_data.h"
 #include "glm/glm.hpp"
 #include <set>
 
@@ -13,6 +12,7 @@ namespace Ming3D
     // forward declarations
     class ShaderProgram;
     class TextureBuffer;
+    class ShaderUniformData;
 
     class MaterialBuffer
     {

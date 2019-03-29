@@ -6,17 +6,14 @@ project(Ming3D)
 
 set(CMAKE_BUILD_TYPE Debug)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMake/")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/CMake/")
 
-set(BUILD_ROOT "${CMAKE_SOURCE_DIR}/build")
+set(BUILD_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/build")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build")
 
-set(LIB_DIR "${CMAKE_SOURCE_DIR}/Dependencies/lib/Windows/x86")
-set(ENGINE_LIB_DIR "${CMAKE_SOURCE_DIR}/build/Ming3D/Debug")
+set(EXTERNAL_LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/ExternalLibraries" CACHE PATH "External library directory")
 
-set(EXTERNAL_LIB_DIR "${CMAKE_SOURCE_DIR}/ExternalLibraries" CACHE PATH "External library directory")
-
-set(SDL_SEARCH_PATH ${ExternalLibraries})
+set(SDL_SEARCH_PATH ${EXTERNAL_LIB_DIR})
 
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -25,13 +22,22 @@ IF(WIN32)
 	add_definitions(-DUNICODE)
 endif()
 
+set(MING3D_BUILD_EDITOR ON CACHE BOOL "Build editor project")
+set(MING3D_BUILD_TESTS ON CACHE BOOL "Build test project")
+
 # project
 add_subdirectory(3rdParty)
 add_subdirectory(Core)
 add_subdirectory(Runtime)
-add_subdirectory(Tests)
 add_subdirectory(Networking)
 add_subdirectory(Rendering)
 add_subdirectory(Engine)
-add_subdirectory(NativeUI)
-add_subdirectory(Editor)
+
+if(MING3D_BUILD_EDITOR)
+	add_subdirectory(NativeUI)
+	add_subdirectory(Editor)
+endif()
+
+if(MING3D_BUILD_TESTS)
+	add_subdirectory(Tests)
+endif()
