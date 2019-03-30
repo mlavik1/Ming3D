@@ -10,6 +10,7 @@
 #include "Actors/actor.h"
 #include "Components/mesh_component.h"
 #include "Model/model_helper.h"
+#include "Components/camera_component.h"
 
 using namespace Ming3D;
 
@@ -18,6 +19,11 @@ int main()
 {
 	GameEngine* gameEngine = new GameEngine();
 	gameEngine->Initialise();
+
+    Actor* camActor = new Actor();
+    camActor->AddComponent<CameraComponent>();
+    camActor->GetTransform().SetWorldPosition(glm::vec3(0.0f, 2.0f, 6.0f));
+    gameEngine->GetWorld()->AddActor(camActor);
 
     Actor* actor1 = new Actor();
     actor1->GetTransform().SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));

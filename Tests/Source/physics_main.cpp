@@ -7,6 +7,7 @@
 #include "Components/mesh_component.h"
 #include "Components/rigidbody_component.h"
 #include "Components/box_collider_component.h"
+#include "Components/camera_component.h"
 #include "Model/model_helper.h"
 #include "Debug/debug_graphics.h"
 #include "glm/gtx/rotate_vector.hpp"
@@ -23,6 +24,12 @@ int main()
     gameEngine->Initialise();
     gameEngine->Start();
     
+    Actor* camActor = new Actor();
+    camActor->AddComponent<CameraComponent>();
+    camActor->GetTransform().SetWorldPosition(glm::vec3(0.0f, 2.0f, 6.0f));
+    camActor->GetTransform().SetWorldRotation(glm::rotate(-0.3f, glm::vec3(1.0f, 0.0f, 0.0f)));
+    gameEngine->GetWorld()->AddActor(camActor);
+
     Actor* actor1 = new Actor();
     actor1->GetTransform().SetLocalPosition(glm::vec3(-1.0f, -2.0f, 1.0f));
     actor1->GetTransform().SetLocalScale(glm::vec3(2.0f, 2.0f, 2.0f));

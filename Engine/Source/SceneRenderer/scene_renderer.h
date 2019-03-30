@@ -3,6 +3,7 @@
 
 #include "render_scene.h"
 #include "camera.h"
+#include <list>
 
 namespace Ming3D
 {
@@ -10,7 +11,7 @@ namespace Ming3D
     {
     private:
         RenderScene* mRenderScene;
-        std::vector<Camera*> mCameras;
+        std::list<Camera*> mCameras;
 
         void UpdateUniforms(MaterialBuffer* inMat);
 
@@ -19,10 +20,11 @@ namespace Ming3D
         ~SceneRenderer();
 
         void AddCamera(Camera* inCamera);
+        void RemoveCamera(Camera* inCamera);
         void AddSceneObject(RenderSceneObject* inObject);
 
         void RenderCameras();
-        void RenderObjects();
+        void RenderObjects(Camera* camera);
     };
 }
 

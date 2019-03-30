@@ -14,6 +14,7 @@ namespace Ming3D
     class RenderTarget;
     class NetworkManager;
     class PhysicsManager;
+    class CameraComponent;
 
 	class GameEngine
 	{
@@ -38,6 +39,9 @@ namespace Ming3D
         void Start();
         void Update();
 
+        void AddCamera(CameraComponent* inCamera);
+        void RemoveCamera(CameraComponent* inCamera);
+
         inline RenderDevice* GetRenderDevice() { return mRenderDevice; }
         inline SceneRenderer* GetSceneRenderer() { return mSceneRenderer; }
         inline WindowBase* GetMainWindow() { return mWindow; }
@@ -46,6 +50,7 @@ namespace Ming3D
         inline Platform* GetPlatform() { return mPlatform; }
         inline NetworkManager* GetNetworkManager() { return mNetworkManager; }
         inline PhysicsManager* GetPhysicsManager() { return mPhysicsManager; }
+        inline RenderTarget* GetMainRenderTarget() { return mRenderTarget; }
     };
 }
 

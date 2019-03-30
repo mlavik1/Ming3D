@@ -11,6 +11,10 @@ int main()
     GameEngine engine;
     engine.Initialise(); // in order to register classes
 
+    Actor* camActor = new Actor();
+    camActor->AddComponent<CameraComponent>();
+    camActor->GetTransform().SetWorldPosition(glm::vec3(0.0f, 2.0f, 6.0f));
+    engine->GetWorld()->AddActor(camActor);
 
     PropertyHandleBase* propHandle = TestActor::GetStaticClass()->GetPropertyByName("TestPropertyInt")->GetPropertyHandle();
 

@@ -85,6 +85,11 @@ namespace Ming3D
         mCameras.push_back(inCamera);
     }
 
+    void SceneRenderer::RemoveCamera(Camera* inCamera)
+    {
+        mCameras.remove(inCamera);
+    }
+
     void SceneRenderer::AddSceneObject(RenderSceneObject* inObject)
     {
         mRenderScene->mSceneObjects.push_back(inObject);
@@ -97,12 +102,12 @@ namespace Ming3D
             if (camera->mRenderTarget == nullptr)
                 continue;
             GGameEngine->GetRenderDevice()->BeginRenderTarget(camera->mRenderTarget);
-            RenderObjects();
+            RenderObjects(camera);
             GGameEngine->GetRenderDevice()->EndRenderTarget(camera->mRenderTarget);
         }
     }
 
-    void SceneRenderer::RenderObjects()
+    void SceneRenderer::RenderObjects(Camera* camera)
     {
         WindowBase* window = GGameEngine->GetMainWindow();
         RenderDevice* renderDevice = GGameEngine->GetRenderDevice();
@@ -121,17 +126,9 @@ namespace Ming3D
 
             glm::mat4 Projection = glm::perspective<float>(glm::radians(45.0f), (float)window->GetWidth() / (float)window->GetHeight(), 0.1f, 100.0f);
 
-            // Camera matrix
-            glm::mat4 view = glm::lookAt(
-                glm::vec3(0, 2, 6), // pos
-                glm::vec3(0, 0, 0), // lookat
-                glm::vec3(0, 1, 0)  // up
-            );
-
-            glm::mat4 model = obj->mModelMatrix;//glm::mat4(1.0f);
-            //glm::vec3 pos = obj->mPosition;// glm::vec3(2.0f, 0.0f, 0.0f);
-            //model = glm::translate(model, pos);
-
+            // matrices
+            glm::mat4 view = camera->mCameraMatrix;
+            glm::mat4 model = obj->mModelMatrix;
             glm::mat4 mvp = Projection * view * model;
 
             renderDevice->SetShaderUniformMat4x4("MVP", mvp);

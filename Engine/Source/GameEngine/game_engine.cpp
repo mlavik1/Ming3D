@@ -14,6 +14,7 @@
 #include "SceneRenderer/scene_renderer.h"
 #include "Networking/network_manager.h"
 #include "Physics/physics_manager.h"
+#include "Components/camera_component.h"
 
 #ifdef _WIN32
 #include "Source/Platform/platform_win32.h"
@@ -66,10 +67,6 @@ namespace Ming3D
         mTimeManager->Initialise();
 
         mPhysicsManager->CreatePhysicsScene();
-
-        Camera* camera = new Camera();
-        camera->mRenderTarget = mRenderTarget;
-        mSceneRenderer->AddCamera(camera);
 	}
 
     void GameEngine::Update()
@@ -89,7 +86,17 @@ namespace Ming3D
         mRenderDevice->BeginRenderWindow(mRenderWindow);
         mSceneRenderer->RenderCameras();
         mRenderDevice->EndRenderWindow(mRenderWindow);
-}
+    }
+
+    void GameEngine::AddCamera(CameraComponent* inCamera)
+    {
+        mSceneRenderer->AddCamera(inCamera->GetCamera());
+    }
+
+    void GameEngine::RemoveCamera(CameraComponent* inCamera)
+    {
+        mSceneRenderer->RemoveCamera(inCamera->GetCamera());
+    }
 
     void GameEngine::Start()
     {

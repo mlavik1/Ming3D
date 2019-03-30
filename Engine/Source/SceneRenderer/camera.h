@@ -2,10 +2,11 @@
 #define MING3D_CAMERA_H
 
 #include "glm/glm.hpp"
-#include "render_target.h"
 
 namespace Ming3D
 {
+    class RenderTarget;
+
     class Camera
     {
     public:
