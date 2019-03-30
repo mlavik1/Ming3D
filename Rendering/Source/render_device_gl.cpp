@@ -19,7 +19,7 @@ namespace Ming3D
             LOG_ERROR() << "Failed to initialise GLEW";
         }
 
-        mDefaultRasteriserState = (RasteriserStateGL*)CreateRasteriserState(RasteriserStateCullMode::Front, true);
+        mDefaultRasteriserState = (RasteriserStateGL*)CreateRasteriserState(RasteriserStateCullMode::Back, true);
         mDefaultDepthStencilState = (DepthStencilStateGL*)CreateDepthStencilState(DepthStencilDepthFunc::Less, true);
 
         SetRasteriserState(mDefaultRasteriserState);
@@ -277,9 +277,6 @@ namespace Ming3D
         //glDepthFunc(GL_LEQUAL);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glEnable(GL_CULL_FACE);
-        glCullFace(GL_BACK);
-        glFrontFace(GL_CCW);
     }
 
     void RenderDeviceGL::EndRenderTarget(RenderTarget* inTarget)
@@ -345,7 +342,7 @@ namespace Ming3D
         {
             glEnable(GL_CULL_FACE);
             glCullFace(glRasterState->mCullMode == RasteriserStateCullMode::Front ? GL_FRONT : GL_BACK);
-            glFrontFace(GL_CW);
+            glFrontFace(GL_CCW);
         }
     }
 

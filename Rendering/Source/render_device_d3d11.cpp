@@ -63,7 +63,7 @@ namespace Ming3D
             return;
         }
 
-        mDefaultRasteriserState = (RasteriserStateD3D11*)CreateRasteriserState(RasteriserStateCullMode::Front, true);
+        mDefaultRasteriserState = (RasteriserStateD3D11*)CreateRasteriserState(RasteriserStateCullMode::Back, true);
         SetRasteriserState(mDefaultRasteriserState);
     }
 
