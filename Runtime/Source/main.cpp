@@ -11,6 +11,8 @@
 #include "Components/mesh_component.h"
 #include "Model/model_helper.h"
 #include "Components/camera_component.h"
+#include "glm/gtx//rotate_vector.hpp"
+#include "Input/input_manager.h"
 
 using namespace Ming3D;
 
@@ -32,46 +34,38 @@ int main()
     gameEngine->GetWorld()->AddActor(actor1);
     ModelLoader::LoadModel("Resources//Mvr_PetCow_walk.dae", actor1);
 
+    const float camSpeed = 3.0f;
+    const float camRotSpeed = 1.0f;
+
     while (true)
     {
         gameEngine->Update();
+        actor1->GetTransform().Rotate(0.001f, glm::vec3(0,1,0));
+
+        float speed = camSpeed * GGameEngine->GetDeltaTime();
+        float rotSpeed = camRotSpeed * GGameEngine->GetDeltaTime();
+        Transform& camTrans = camActor->GetTransform();
+
+        glm::vec3 camPos = camTrans.GetWorldPosition();
+        if (GGameEngine->GetInputManager()->GetKey(KeyCode::Key_W))
+            camPos += camTrans.GetUp() * speed;
+        else if (GGameEngine->GetInputManager()->GetKey(KeyCode::Key_S))
+            camPos += camTrans.GetUp() * -speed;
+        else if (GGameEngine->GetInputManager()->GetKey(KeyCode::Key_D))
+            camPos += camTrans.GetRight() * speed;
+        else if (GGameEngine->GetInputManager()->GetKey(KeyCode::Key_A))
+            camPos += camTrans.GetRight() * -speed;
+        else if (GGameEngine->GetInputManager()->GetKey(KeyCode::Key_Up))
+            camPos += camTrans.GetForward() * speed;
+        else if (GGameEngine->GetInputManager()->GetKey(KeyCode::Key_Down))
+            camPos += camTrans.GetForward() * -speed;
+
+        camTrans.SetWorldPosition(camPos);
+
+        if (GGameEngine->GetInputManager()->GetKey(KeyCode::Key_Right))
+            camTrans.Rotate(-rotSpeed, glm::vec3(0.0f, 1.0f, 0.0f));
+        else if (GGameEngine->GetInputManager()->GetKey(KeyCode::Key_Left))
+            camTrans.Rotate(rotSpeed, glm::vec3(0.0f, 1.0f, 0.0f));
     }
-
-
-	// TESTS:
-
-	std::vector<int> intVec({ 1, 3, 7 });
-	int* intPtr = new int(3);
-
-	Function* funcTestFunction = CoreTestClass::GetStaticClass()->GetFunctionByName("IntBoolTestFunction");
-	Function* funcStringTestFunction = CoreTestClass::GetStaticClass()->GetFunctionByName("StringTestFunction");
-	Function* funcIntVectorTestFunction = CoreTestClass::GetStaticClass()->GetFunctionByName("IntVectorTestFunction");
-	Function* funcIntPointerTestFunction = CoreTestClass::GetStaticClass()->GetFunctionByName("IntPointerTestFunction");
-	Function* funcObjectTestFunction = CoreTestClass::GetStaticClass()->GetFunctionByName("ObjectTestFunction");
-
-	CoreTestClass* testMingObject = new CoreTestClass();
-
-	testMingObject->CallFunction(funcTestFunction, FunctionArgs({ FunctionParam<int>(3), FunctionParam<bool>(true)}));
-	testMingObject->CallFunction(funcStringTestFunction, FunctionArgs({ FunctionParam<std::string>("test")}));
-	testMingObject->CallFunction(funcIntVectorTestFunction, FunctionArgs({ FunctionParam<std::vector<int>>(intVec) }));
-	testMingObject->CallFunction(funcIntPointerTestFunction, FunctionArgs({ FunctionParam<int*>(intPtr) }));
-
-	FunctionArgs intVecArgs1({ FunctionParam<std::vector<int>>(intVec) });
-	DataWriter dataWriter(1);
-	funcIntVectorTestFunction->SerialiseFunctionArgs(intVecArgs1, dataWriter);
-	FunctionArgs intVecArgs2 = funcIntVectorTestFunction->DeserialiseFunctionArgs(dataWriter);
-
-	testMingObject->CallFunction(funcIntVectorTestFunction, intVecArgs2);
-
-	TestClass testClass;
-	testClass.mTestValue = 3;
-	testMingObject->CallFunction(funcObjectTestFunction, FunctionArgs({ FunctionParam<TestClass>(testClass)}));
-
-
-	while (true)
-	{
-
-	}
-
 	return 0;
 }

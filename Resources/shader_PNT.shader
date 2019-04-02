@@ -30,7 +30,7 @@ shader VertexShader
 {
 	void main(VSInput input, FSInput output)
 	{
-		output.Position = test + MVP * input.Position;
+		output.Position = MVP * input.Position;
 		output.Normal = input.Normal;
 		output.TexCoord = input.TexCoord;
 	}

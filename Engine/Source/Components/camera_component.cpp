@@ -31,12 +31,15 @@ namespace Ming3D
 
     void CameraComponent::Tick(float inDeltaTime)
     {
+        /*
         // TODO
         glm::mat4 mat = mParent->GetTransform().GetWorldTransformMatrix();
         glm::vec3 pos = mParent->GetTransform().GetWorldPosition();
-        glm::vec3 forward = mat * glm::vec4(0.0f, 0.0, -1.0f, 0.0f);
-        glm::vec3 up = mat * glm::vec4(0.0f, 1.0, 0.0f, 0.0f);
-
+        glm::vec3 forward = mParent->GetTransform().GetForward();
+        glm::vec3 up = mParent->GetTransform().GetUp();
         mCamera->mCameraMatrix = glm::lookAt(pos, pos + forward, up);
+        */
+
+        mCamera->mCameraMatrix = glm::inverse(mParent->GetTransform().GetWorldTransformMatrix());
     }
 }

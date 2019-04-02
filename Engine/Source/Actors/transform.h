@@ -44,6 +44,12 @@ namespace Ming3D
 
         void SetParent(Transform* inParent);
 
+        void Rotate(float inAngle, const glm::vec3& inAxis);
+
+        glm::vec3 GetForward() const;
+        glm::vec3 GetUp() const;
+        glm::vec3 GetRight() const;
+
         inline glm::vec3 GetLocalPosition() { return mLocalPosition; }
         inline glm::vec3 GetLocalScale() { return mLocalScale; }
         inline glm::quat GetLocalRotation() { return mLocalRotation; }

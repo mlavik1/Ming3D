@@ -15,6 +15,8 @@
 #include "Networking/network_manager.h"
 #include "Physics/physics_manager.h"
 #include "Components/camera_component.h"
+#include "Input/input_handler.h"
+#include "Input/input_manager.h"
 
 #ifdef _WIN32
 #include "Source/Platform/platform_win32.h"
@@ -61,6 +63,8 @@ namespace Ming3D
         mClassManager->InitialiseClasses();
         mPlatform->Initialise();
         mWindow = mPlatform->CreateOSWindow();
+        mInputHandler = mPlatform->CreateInputHandler();
+        mInputManager = new InputManager();
         mRenderDevice = mPlatform->CreateRenderDevice();
         mRenderWindow = mPlatform->CreateRenderWindow(mWindow, mRenderDevice);
         mRenderTarget = mRenderDevice->CreateRenderTarget(mRenderWindow);
@@ -73,6 +77,10 @@ namespace Ming3D
     {
         mTimeManager->UpdateTime();
         float deltaTime = mTimeManager->GetDeltaTimeSeconds();
+        mDeltaTime = deltaTime;
+
+        mPlatform->Update();
+        mInputManager->Update();
 
         mPhysicsManager->SimulateScenes(deltaTime);
 

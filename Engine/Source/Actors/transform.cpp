@@ -2,6 +2,7 @@
 
 #include "glm/gtx/quaternion.hpp"
 #include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtx/rotate_vector.hpp"
 #include "actor.h"
 
 namespace Ming3D
@@ -80,6 +81,27 @@ namespace Ming3D
         mParentTransform = inParent;
         mParentTransform->mChildren.push_back(this);
         UpdateTransformMatrix();
+    }
+
+    void Transform::Rotate(float inAngle, const glm::vec3& inAxis)
+    {
+        glm::quat newRot = glm::rotate(GetWorldRotation(), inAngle, inAxis);
+        SetWorldRotation(newRot);
+    }
+
+    glm::vec3 Transform::GetForward() const
+    {
+        return glm::normalize(mWorldTransformMatrix * glm::vec4(0.0f, 0.0f, -1.0f, 0.0f));
+    }
+
+    glm::vec3 Transform::GetUp() const
+    {
+        return glm::normalize(mWorldTransformMatrix * glm::vec4(0.0f, 1.0f, 0.0f, 0.0f));
+    }
+
+    glm::vec3 Transform::GetRight() const
+    {
+        return glm::normalize(mWorldTransformMatrix * glm::vec4(1.0f, 0.0f, 0.0f, 0.0f));
     }
 
     void Transform::UpdateTransformMatrix()

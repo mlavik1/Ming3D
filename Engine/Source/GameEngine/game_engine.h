@@ -15,6 +15,8 @@ namespace Ming3D
     class NetworkManager;
     class PhysicsManager;
     class CameraComponent;
+    class InputHandler;
+    class InputManager;
 
 	class GameEngine
 	{
@@ -30,6 +32,10 @@ namespace Ming3D
         RenderTarget* mRenderTarget = nullptr;
         NetworkManager* mNetworkManager = nullptr;
         PhysicsManager* mPhysicsManager = nullptr;
+        InputHandler* mInputHandler = nullptr;
+        InputManager* mInputManager = nullptr;
+
+        float mDeltaTime;
 
 	public:
 		GameEngine();
@@ -51,6 +57,10 @@ namespace Ming3D
         inline NetworkManager* GetNetworkManager() { return mNetworkManager; }
         inline PhysicsManager* GetPhysicsManager() { return mPhysicsManager; }
         inline RenderTarget* GetMainRenderTarget() { return mRenderTarget; }
+        inline InputHandler* GetInputHandler() { return mInputHandler; }
+        inline InputManager* GetInputManager() { return mInputManager; }
+        
+        float GetDeltaTime() const { return mDeltaTime; }
     };
 }
 

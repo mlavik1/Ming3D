@@ -3,6 +3,8 @@
 
 #include "window_base.h"
 #include <Windows.h>
+#include <unordered_map>
+#include <functional>
 
 namespace Ming3D
 {
@@ -12,6 +14,8 @@ namespace Ming3D
         HWND mHWND = nullptr;
         unsigned int mWindowWidth = 800;
         unsigned int mWindowHeight = 600;
+
+        static bool ClassInitialised;
 
     public:
         WinAPIWindow();
@@ -23,6 +27,10 @@ namespace Ming3D
         virtual void BeginRender() override;
         virtual void EndRender() override;
         virtual void* GetOSWindowHandle() override;
+
+        std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)> mWndProcCallback;
+    
+        static std::unordered_map<HWND, WinAPIWindow*> WindowInstances;
     };
 }
 #endif

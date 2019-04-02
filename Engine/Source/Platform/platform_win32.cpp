@@ -8,19 +8,30 @@
 #include <SDL.h>
 #include "sdl_window.h"
 #include "render_device_gl.h"
+#include "Input/input_handler_sdl.h"
 #else
 #include "render_device_d3d11.h"
 #include "winapi_window.h"
 #endif
+#include "Input/input_handler_win32.h"
 
 #include "Debug/debug.h"
 
 #pragma comment (lib, "Ws2_32.lib") // REMOVE ME
 
 #include "net_socket_winsock.h"
+#include "GameEngine/game_engine.h"
 
 namespace Ming3D
 {
+#ifndef MING3D_FORCE_OPENGL
+    LRESULT WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+    {
+        InputHandlerWin32* inputHandler = (InputHandlerWin32*)GGameEngine->GetInputHandler();
+        return inputHandler->HandleWindowProc(hWnd, message, wParam, lParam);
+    }
+#endif
+
     PlatformWin32::~PlatformWin32()
     {
         WSACleanup();
@@ -50,6 +61,22 @@ namespace Ming3D
         }
     }
 
+    void PlatformWin32::Update()
+    {
+        MSG msg;
+        msg.message = ~WM_QUIT;
+        if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+        {
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+
+        }
+        if (msg.message == WM_QUIT)
+        {
+            //GGameEngine->Shutdown();
+        }
+    }
+
     RenderDevice* PlatformWin32::CreateRenderDevice()
     {
 #ifdef MING3D_FORCE_OPENGL
@@ -67,6 +94,7 @@ namespace Ming3D
         window = new SDLWindow();
 #else
         window = new WinAPIWindow();
+        ((WinAPIWindow*)window)->mWndProcCallback = WindowProc;
 #endif
         window->Initialise();
         return window;
@@ -80,5 +108,14 @@ namespace Ming3D
     NetSocket* PlatformWin32::CreateSocket()
     {
         return new NetSocketWinsock();
+    }
+
+    InputHandler* PlatformWin32::CreateInputHandler()
+    {
+#if MING3D_FORCE_OPENGL
+        return new InputHandlerSDL();
+#else
+        return new InputHandlerWin32();
+#endif
     }
 }

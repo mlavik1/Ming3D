@@ -129,10 +129,10 @@ namespace Ming3D
             // matrices
             glm::mat4 view = camera->mCameraMatrix;
             glm::mat4 model = obj->mModelMatrix;
+
             glm::mat4 mvp = Projection * view * model;
 
             renderDevice->SetShaderUniformMat4x4("MVP", mvp);
-            renderDevice->SetShaderUniformVec4("test", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 
             for (MeshBuffer* meshBuffer : obj->mMeshes)
             {

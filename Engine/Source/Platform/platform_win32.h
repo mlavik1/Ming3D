@@ -10,10 +10,13 @@ namespace Ming3D
     public:
         ~PlatformWin32();
         virtual void Initialise() override;
+        virtual void Update() override;
         virtual RenderDevice* CreateRenderDevice() override;
         virtual WindowBase* CreateOSWindow() override;
         virtual RenderWindow* CreateRenderWindow(WindowBase* inWindow, RenderDevice* inDevice) override;
         virtual NetSocket* CreateSocket() override;
+        virtual InputHandler* CreateInputHandler() override;
+
     };
 }
 
