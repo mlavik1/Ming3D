@@ -589,7 +589,8 @@ namespace Ming3D
 
         GRenderDeviceD3D11->GetDeviceContext()->OMSetRenderTargets(1, &mRenderTarget->mBackBuffer, NULL);
 
-        mDeviceContext->ClearRenderTargetView(mRenderTarget->GetBackBuffer(), D3DXCOLOR(0.0f, 0.2f, 0.4f, 1.0f));
+        const float clearCol[4] = { 0.0f, 0.2f, 0.4f, 1.0f };
+        mDeviceContext->ClearRenderTargetView(mRenderTarget->GetBackBuffer(), clearCol);
     }
 
     void RenderDeviceD3D11::EndRenderTarget(RenderTarget* inTarget)
