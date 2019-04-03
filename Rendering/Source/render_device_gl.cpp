@@ -228,6 +228,24 @@ namespace Ming3D
     DepthStencilState* RenderDeviceGL::CreateDepthStencilState(DepthStencilDepthFunc inDepthFunc, bool inDepthEnabled)
     {
         DepthStencilStateGL* depthStencilState = new DepthStencilStateGL();
+        switch (inDepthFunc)
+        {
+        case DepthStencilDepthFunc::Less:
+            depthStencilState->mDepthFunc = GL_LESS;
+            break;
+        case DepthStencilDepthFunc::LEqual:
+            depthStencilState->mDepthFunc = GL_LEQUAL;
+            break;
+        case DepthStencilDepthFunc::Equal:
+            depthStencilState->mDepthFunc = GL_EQUAL;
+            break;
+        case DepthStencilDepthFunc::GEqual:
+            depthStencilState->mDepthFunc = GL_LEQUAL;
+            break;
+        case DepthStencilDepthFunc::Greater:
+            depthStencilState->mDepthFunc = GL_GREATER;
+            break;
+        }
         return depthStencilState;
     }
 
@@ -272,6 +290,7 @@ namespace Ming3D
 
         glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_DEPTH_BUFFER_BIT);
 
         //glEnable(GL_DEPTH_TEST);
         //glDepthFunc(GL_LEQUAL);
@@ -350,6 +369,9 @@ namespace Ming3D
     {
         DepthStencilStateGL* glStencilState = (DepthStencilStateGL*)inState;
         mDefaultDepthStencilState = glStencilState;
+
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(glStencilState->mDepthFunc);
     }
 
     void RenderDeviceGL::SetShaderUniformFloat(const std::string& inName, float inVal)
