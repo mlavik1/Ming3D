@@ -80,6 +80,7 @@ namespace Ming3D
         mDeltaTime = deltaTime;
 
         mPlatform->Update();
+        mInputHandler->Update();
         mInputManager->Update();
 
         mPhysicsManager->SimulateScenes(deltaTime);

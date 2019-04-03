@@ -12,6 +12,8 @@ namespace Ming3D
     public:
         LRESULT HandleWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
+        virtual void Update() override;
+
     private:
         void HandleKeyDown(WPARAM wParam);
         void HandleKeyUp(WPARAM wParam);

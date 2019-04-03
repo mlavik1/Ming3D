@@ -4,6 +4,11 @@
 
 namespace Ming3D
 {
+    void InputHandlerWin32::Update()
+    {
+
+    }
+
     LRESULT InputHandlerWin32::HandleWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
         switch (uMsg)
@@ -46,8 +51,6 @@ namespace Ming3D
         case VK_SHIFT: return KeyCode::Key_Shift;
         case VK_RETURN: return KeyCode::Key_Enter;
         case VK_SPACE: return KeyCode::Key_Space;
-        case VK_LWIN: return KeyCode::Key_Win;
-        case VK_RWIN: return KeyCode::Key_Win;
         case VK_UP: return KeyCode::Key_Up;
         case VK_DOWN: return KeyCode::Key_Down;
         case VK_RIGHT: return KeyCode::Key_Right;

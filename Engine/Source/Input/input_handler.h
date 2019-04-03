@@ -5,7 +5,8 @@ namespace Ming3D
 {
     class InputHandler
     {
-
+    public:
+        virtual void Update() = 0;
     };
 }
 

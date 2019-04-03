@@ -26,7 +26,7 @@ namespace Ming3D
         MouseButton mButton;
     };
 
-    typedef union InputEvent
+    union InputEvent
     {
         InputEventType mType; // common for all
         KeyboardEvent mKey;
