@@ -24,14 +24,6 @@
 
 namespace Ming3D
 {
-#ifndef MING3D_FORCE_OPENGL
-    LRESULT WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-    {
-        InputHandlerWin32* inputHandler = (InputHandlerWin32*)GGameEngine->GetInputHandler();
-        return inputHandler->HandleWindowProc(hWnd, message, wParam, lParam);
-    }
-#endif
-
     PlatformWin32::~PlatformWin32()
     {
         WSACleanup();
@@ -93,8 +85,14 @@ namespace Ming3D
 #ifdef MING3D_FORCE_OPENGL
         window = new SDLWindow();
 #else
+        auto wndProcCallback = [](HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) -> LRESULT
+        {
+            InputHandlerWin32* inputHandler = (InputHandlerWin32*)GGameEngine->GetInputHandler();
+            return inputHandler->HandleWindowProc(hWnd, message, wParam, lParam);
+        };
+
         window = new WinAPIWindow();
-        ((WinAPIWindow*)window)->mWndProcCallback = WindowProc;
+        ((WinAPIWindow*)window)->mWndProcCallback = wndProcCallback;
 #endif
         window->Initialise();
         return window;

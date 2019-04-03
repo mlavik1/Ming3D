@@ -15,7 +15,7 @@ namespace Ming3D
         mHWND = inHWND;
     }
 
-    LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+    LRESULT CALLBACK WinAPIWindow::WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
         switch (message)
         {

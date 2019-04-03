@@ -17,6 +17,8 @@ namespace Ming3D
 
         static bool ClassInitialised;
 
+        static LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+
     public:
         WinAPIWindow();
         WinAPIWindow(HWND inHWND);
