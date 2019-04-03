@@ -80,7 +80,12 @@ namespace Ming3D
             aiString path;  // filename
             if (scene->mMaterials[matIndex]->GetTexture(aiTextureType::aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
             {
-                std::string texturePath = std::string("Resources//") + std::string(path.C_Str());
+                std::string texturePath = inModel;
+                size_t iLastSlash = texturePath.find_last_of('//');
+                if (iLastSlash != std::string::npos)
+                    texturePath = texturePath.substr(0, iLastSlash + 1) + std::string(path.C_Str());
+                else
+                    texturePath = std::string("Resources//") + std::string(path.C_Str());
                 meshData->mTexture = TextureLoader::LoadTextureData(texturePath.c_str());
             }
             else
