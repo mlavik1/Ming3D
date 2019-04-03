@@ -3,7 +3,7 @@
 
 #include "depth_stencil_state.h"
 
-#include <D3D11.h>
+#include <d3d11.h>
 
 namespace Ming3D
 {

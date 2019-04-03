@@ -4,12 +4,11 @@
 #include "Debug/st_assert.h"
 #include "vertex_buffer_d3d11.h"
 #include "index_buffer_d3d11.h"
-#include <D3Dcompiler.h>
-#include <DirectXMath.h>
 #include "texture_buffer_d3d11.h"
 #include "shader_writer_hlsl.h"
-#include <d3dx11.h>
-#include <d3dx10.h>
+#include <d3d11.h>
+#include <d3dcompiler.h>
+#include <DirectXMath.h>
 #include "shader_constant_d3d11.h"
 
 namespace Ming3D

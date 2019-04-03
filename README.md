@@ -4,7 +4,7 @@ Game engine.
 This is a playground for me to learn different things.
 
 # How to clone and build
-- Download and install DirectX SDK: https://www.microsoft.com/en-us/download/confirmation.aspx?id=6812
+- Download and install Windows 10 SDK (or Windows 8 SDK on Windows 8 - not tested yet): https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk
 - Download CMake
 - Clone (recursively, since it contains modules)
 - If you have Python 2: Run DownloadLibs.py (or DownloadLibs.bat if on Windows)
