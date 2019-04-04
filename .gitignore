@@ -11,3 +11,6 @@ build
 CMakeFiles
 .vs
 ExternalLibraries
+
+# files
+DebugLog.txt

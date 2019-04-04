@@ -36,7 +36,7 @@ namespace Ming3D
 
     public:
         RenderDeviceD3D11();
-        ~RenderDeviceD3D11();
+        virtual ~RenderDeviceD3D11();
 
         virtual RenderTarget* CreateRenderTarget(RenderWindow* inWindow) override;
         virtual RenderTarget* CreateRenderTarget(TextureInfo inTextureInfo, int numTextures) override;

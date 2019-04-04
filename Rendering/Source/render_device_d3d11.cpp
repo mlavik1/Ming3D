@@ -64,10 +64,22 @@ namespace Ming3D
 
         mDefaultRasteriserState = (RasteriserStateD3D11*)CreateRasteriserState(RasteriserStateCullMode::Front, true);
         SetRasteriserState(mDefaultRasteriserState);
+
+        mDefaultDepthStencilState = (DepthStencilStateD3D11*)CreateDepthStencilState(DepthStencilDepthFunc::LEqual, true);
+        SetDepthStencilState(mDefaultDepthStencilState);
     }
 
     RenderDeviceD3D11::~RenderDeviceD3D11()
     {
+        if (mDefaultDepthStencilState != nullptr)
+        {
+            DepthStencilStateD3D11* d3dDepthStencilState = (DepthStencilStateD3D11*)mDefaultDepthStencilState;
+            d3dDepthStencilState->mDepthStencilTexture->Release();
+            d3dDepthStencilState->mDepthStencilView->Release();
+            d3dDepthStencilState->mDepthStencilState->Release();
+            delete mDefaultDepthStencilState;
+        }
+
         mDevice->Release();
         mDeviceContext->Release();
     }
@@ -121,6 +133,8 @@ namespace Ming3D
 
         viewport.TopLeftX = 0;
         viewport.TopLeftY = 0;
+        viewport.MinDepth = 0;
+        viewport.MaxDepth = 1;
         viewport.Width = inWindow->GetWindow()->GetWidth();
         viewport.Height = inWindow->GetWindow()->GetHeight();
 
@@ -537,6 +551,40 @@ namespace Ming3D
             delete d3dDepthStencilState;
             return nullptr;
         }
+
+        // Create depth stencil texture
+        D3D11_TEXTURE2D_DESC descDepth;
+        ZeroMemory(&descDepth, sizeof(descDepth));
+        descDepth.Width = 1280; // TODO: I guess this should match the render target?
+        descDepth.Height = 960; // TODO: I guess this should match the render target?
+        descDepth.MipLevels = 1;
+        descDepth.ArraySize = 1;
+        descDepth.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+        descDepth.SampleDesc.Count = 4;
+        descDepth.SampleDesc.Quality = 0;
+        descDepth.Usage = D3D11_USAGE_DEFAULT;
+        descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+        descDepth.CPUAccessFlags = 0;
+        descDepth.MiscFlags = 0;
+
+        mDevice->CreateTexture2D(&descDepth, nullptr, &d3dDepthStencilState->mDepthStencilTexture);
+
+        // Create depth stencil view
+        D3D11_DEPTH_STENCIL_VIEW_DESC descDSV;
+        ZeroMemory(&descDSV, sizeof(descDSV));
+
+        descDSV.Format = descDepth.Format;
+        descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
+        descDSV.Texture2D.MipSlice = 0;;
+
+        result = GetDevice()->CreateDepthStencilView(d3dDepthStencilState->mDepthStencilTexture, &descDSV, &d3dDepthStencilState->mDepthStencilView);
+        if (FAILED(result))
+        {
+            LOG_ERROR() << "Faield to create depth stencil view";
+            delete d3dDepthStencilState;
+            return nullptr;
+        }
+
         return d3dDepthStencilState;
     }
 
@@ -586,10 +634,12 @@ namespace Ming3D
 
         mRenderTarget->BeginRendering();
 
-        GRenderDeviceD3D11->GetDeviceContext()->OMSetRenderTargets(1, &mRenderTarget->mBackBuffer, NULL);
+        GRenderDeviceD3D11->GetDeviceContext()->OMSetRenderTargets(1, &mRenderTarget->mBackBuffer, mDefaultDepthStencilState->mDepthStencilView);
 
         const float clearCol[4] = { 0.0f, 0.2f, 0.4f, 1.0f };
         mDeviceContext->ClearRenderTargetView(mRenderTarget->GetBackBuffer(), clearCol);
+        mDeviceContext->ClearDepthStencilView(mDefaultDepthStencilState->mDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
     }
 
     void RenderDeviceD3D11::EndRenderTarget(RenderTarget* inTarget)

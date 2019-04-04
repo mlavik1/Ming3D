@@ -12,7 +12,9 @@ namespace Ming3D
         friend class RenderDeviceD3D11;
     private:
         ID3D11DepthStencilState* mDepthStencilState;
+        ID3D11DepthStencilView* mDepthStencilView;
         D3D11_DEPTH_STENCIL_DESC mDepthStencilStateDesc;
+        ID3D11Texture2D* mDepthStencilTexture;
     };
 }
 
