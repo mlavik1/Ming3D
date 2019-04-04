@@ -19,7 +19,7 @@ namespace Ming3D
 
     ctrl_id WindowLayoutBuilder::GetControlKeyHash(int typeHash, int verticalIndex, int horizontalIndex)
     {
-        return ((uint32_t)typeHash << 32) | ((uint32_t)verticalIndex << 16) | (uint32_t)horizontalIndex;
+        return ((ctrl_id)typeHash << 32) | ((ctrl_id)verticalIndex << 16) | (ctrl_id)horizontalIndex;
     }
 
     NativeUI::Control* WindowLayoutBuilder::GetControl(ctrl_id controlKeyHash)
@@ -100,7 +100,7 @@ namespace Ming3D
 
     int WindowLayoutBuilder::IntField(int inValue, const EditorControlStyle &inStyle)
     {
-        int controlKeyHash = GetControlKeyHash(MING3D_FLOATFIELD_HASH, mCurrVertIndex, mCurrHorIndex);
+        ctrl_id controlKeyHash = GetControlKeyHash(MING3D_FLOATFIELD_HASH, mCurrVertIndex, mCurrHorIndex);
 
         std::string newStrVal = TextFieldInternal(std::to_string(inValue), controlKeyHash, false, inStyle);
 
@@ -118,7 +118,7 @@ namespace Ming3D
     {
         // TODO: if(CachedControlData.updatedByUser || inVal != CachedControlData.floatValue)
 
-        int controlKeyHash = GetControlKeyHash(MING3D_FLOATFIELD_HASH, mCurrVertIndex, mCurrHorIndex);
+        ctrl_id controlKeyHash = GetControlKeyHash(MING3D_FLOATFIELD_HASH, mCurrVertIndex, mCurrHorIndex);
 
         std::string newStrVal = TextFieldInternal(std::to_string(inValue), controlKeyHash, false, inStyle);
 
@@ -134,7 +134,7 @@ namespace Ming3D
 
     std::string WindowLayoutBuilder::TextField(const std::string& inText, const EditorControlStyle &inStyle)
     {
-        int controlKeyHash = GetControlKeyHash(MING3D_FLOATFIELD_HASH, mCurrVertIndex, mCurrHorIndex);
+        ctrl_id controlKeyHash = GetControlKeyHash(MING3D_FLOATFIELD_HASH, mCurrVertIndex, mCurrHorIndex);
 
         std::string newStr = TextFieldInternal(inText, controlKeyHash, false, inStyle);
 
@@ -150,7 +150,7 @@ namespace Ming3D
 
     void WindowLayoutBuilder::LabelField(const std::string& inText, const EditorControlStyle &inStyle)
     {
-        int controlKeyHash = GetControlKeyHash(MING3D_FLOATFIELD_HASH, mCurrVertIndex, mCurrHorIndex);
+        ctrl_id controlKeyHash = GetControlKeyHash(MING3D_FLOATFIELD_HASH, mCurrVertIndex, mCurrHorIndex);
 
         TextFieldInternal(inText, controlKeyHash, true, inStyle);
         mCurrVertIndex++; // TODO: handle horizontal mode
@@ -163,7 +163,7 @@ namespace Ming3D
 
     bool WindowLayoutBuilder::Button(const std::string& inText, const EditorControlStyle &inStyle)
     {
-        int controlKeyHash = GetControlKeyHash(MING3D_BUTTON_HASH, mCurrVertIndex, mCurrHorIndex);
+        ctrl_id controlKeyHash = GetControlKeyHash(MING3D_BUTTON_HASH, mCurrVertIndex, mCurrHorIndex);
 
         // Create control if it doesn't exist
         NativeUI::Button* btn = (NativeUI::Button*)GetControl(controlKeyHash);

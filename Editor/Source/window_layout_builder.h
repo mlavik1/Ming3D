@@ -78,24 +78,24 @@ namespace Ming3D
 
         ctrl_id GetControlKeyHash(int typeHash, int verticalIndex, int horizontalIndex);
         NativeUI::Control* GetControl(ctrl_id controlKeyHash);
-        std::string TextFieldInternal(std::string inText, uint64_t controlKeyHash, bool readOnly, const const EditorControlStyle &inStyle);
+        std::string TextFieldInternal(std::string inText, uint64_t controlKeyHash, bool readOnly, const EditorControlStyle &inStyle);
 
     public:
         WindowLayoutBuilder(NativeUI::Control* inControl);
 
         void Space();
         
-        bool BoolField(bool inValue, const const EditorControlStyle &inStyle);
+        bool BoolField(bool inValue, const EditorControlStyle &inStyle);
         bool BoolField(bool inValue);
-        int IntField(int inValue, const const EditorControlStyle &inStyle);
+        int IntField(int inValue, const EditorControlStyle &inStyle);
         int IntField(int inValue);
-        float FloatField(float inValue, const const EditorControlStyle &inStyle);
+        float FloatField(float inValue, const EditorControlStyle &inStyle);
         float FloatField(float inValue);
-        std::string TextField(const std::string& inText, const const EditorControlStyle &inStyle);
+        std::string TextField(const std::string& inText, const EditorControlStyle &inStyle);
         std::string TextField(const std::string& inText);
-        void LabelField(const std::string& inText, const const EditorControlStyle &inStyle);
+        void LabelField(const std::string& inText, const EditorControlStyle &inStyle);
         void LabelField(const std::string& inText);
-        bool Button(const std::string& inText, const const EditorControlStyle &inStyle);
+        bool Button(const std::string& inText, const EditorControlStyle &inStyle);
         bool Button(const std::string& inText);
 
         void PropertyField(Property* inProp, Object* inObject, std::string inName);

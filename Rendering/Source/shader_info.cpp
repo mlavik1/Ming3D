@@ -40,5 +40,6 @@ namespace Ming3D
         }
         default: assert(0); // Unhandled data size
         }
+        return 0;
     }
 }

@@ -81,7 +81,7 @@ namespace Ming3D
             if (scene->mMaterials[matIndex]->GetTexture(aiTextureType::aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
             {
                 std::string texturePath = inModel;
-                size_t iLastSlash = texturePath.find_last_of('//');
+                size_t iLastSlash = texturePath.find_last_of("//");
                 if (iLastSlash != std::string::npos)
                     texturePath = texturePath.substr(0, iLastSlash + 1) + std::string(path.C_Str());
                 else

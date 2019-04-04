@@ -71,6 +71,7 @@ namespace Ming3D
             return sizeof(float) * 4;
             break;
         }
+        return 0;
     }
 
 

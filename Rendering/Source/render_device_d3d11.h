@@ -58,7 +58,7 @@ namespace Ming3D
         virtual void SetRasteriserState(RasteriserState* inState) override;
         virtual void SetDepthStencilState(DepthStencilState* inState) override;
 
-        virtual void SetShaderUniformFloat(const const std::string& inName, float inVal) override;
+        virtual void SetShaderUniformFloat(const std::string& inName, float inVal) override;
         virtual void SetShaderUniformInt(const std::string& inName, int inVal) override;
         virtual void SetShaderUniformMat4x4(const std::string& inName, const glm::mat4 inMat) override;
         virtual void SetShaderUniformVec2(const std::string& inName, const glm::vec2 inVec) override;

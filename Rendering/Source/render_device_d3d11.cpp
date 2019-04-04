@@ -135,8 +135,8 @@ namespace Ming3D
         viewport.TopLeftY = 0;
         viewport.MinDepth = 0;
         viewport.MaxDepth = 1;
-        viewport.Width = inWindow->GetWindow()->GetWidth();
-        viewport.Height = inWindow->GetWindow()->GetHeight();
+        viewport.Width = (float)inWindow->GetWindow()->GetWidth();
+        viewport.Height = (float)inWindow->GetWindow()->GetHeight();
 
         GRenderDeviceD3D11->GetDeviceContext()->RSSetViewports(1, &viewport);
 
@@ -556,7 +556,7 @@ namespace Ming3D
         D3D11_TEXTURE2D_DESC descDepth;
         ZeroMemory(&descDepth, sizeof(descDepth));
         descDepth.Width = 1280; // TODO: I guess this should match the render target?
-        descDepth.Height = 960; // TODO: I guess this should match the render target?
+        descDepth.Height = 960; // TODO: I guess this should match the render target?   
         descDepth.MipLevels = 1;
         descDepth.ArraySize = 1;
         descDepth.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
