@@ -32,4 +32,18 @@ namespace Ming3D
     {
         mGLFragmentShader = inFS;
     }
+
+    GLuint ShaderProgramGL::GetUniformLocation(const std::string& inName)
+    {
+        auto locIter = mCachedUniformLocations.find(inName);
+        if (locIter != mCachedUniformLocations.end())
+            return locIter->second;
+        else if(mGLProgram)
+        {
+            GLuint loc = glGetUniformLocation(mGLProgram, inName.c_str());
+            if (loc != -1)
+                mCachedUniformLocations.emplace(inName, loc);
+            return loc;
+        }
+    }
 }

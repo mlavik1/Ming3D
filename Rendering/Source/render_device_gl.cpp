@@ -376,37 +376,37 @@ namespace Ming3D
 
     void RenderDeviceGL::SetShaderUniformFloat(const std::string& inName, float inVal)
     {
-        GLuint loc = glGetUniformLocation(mActiveShaderProgram->GetGLProgram(), inName.c_str()); // TODO: cache
+        GLuint loc = mActiveShaderProgram->GetUniformLocation(inName);
         glUniform1f(loc, inVal);
     }
 
     void RenderDeviceGL::SetShaderUniformInt(const std::string& inName, int inVal)
     {
-        GLuint loc = glGetUniformLocation(mActiveShaderProgram->GetGLProgram(), inName.c_str()); // TODO: cache
+        GLuint loc = mActiveShaderProgram->GetUniformLocation(inName);
         glUniform1i(loc, inVal);
     }
 
     void RenderDeviceGL::SetShaderUniformMat4x4(const std::string& inName, const glm::mat4 inMat)
     {
-        GLuint loc = glGetUniformLocation(mActiveShaderProgram->GetGLProgram(), inName.c_str()); // TODO: cache
+        GLuint loc = mActiveShaderProgram->GetUniformLocation(inName);
         glUniformMatrix4fv(loc, 1, GL_FALSE, &inMat[0][0]);
     }
 
     void RenderDeviceGL::SetShaderUniformVec2(const std::string& inName, const glm::vec2 inVec)
     {
-        GLuint loc = glGetUniformLocation(mActiveShaderProgram->GetGLProgram(), inName.c_str()); // TODO: cache
+        GLuint loc = mActiveShaderProgram->GetUniformLocation(inName);
         glUniform2fv(loc, 1, (float*)&inVec[0]);
     }
 
     void RenderDeviceGL::SetShaderUniformVec3(const std::string& inName, const glm::vec3 inVec)
     {
-        GLuint loc = glGetUniformLocation(mActiveShaderProgram->GetGLProgram(), inName.c_str()); // TODO: cache
+        GLuint loc = mActiveShaderProgram->GetUniformLocation(inName);
         glUniform3fv(loc, 1, (float*)&inVec[0]);
     }
 
     void RenderDeviceGL::SetShaderUniformVec4(const std::string& inName, const glm::vec4 inVec)
     {
-        GLuint loc = glGetUniformLocation(mActiveShaderProgram->GetGLProgram(), inName.c_str()); // TODO: cache
+        GLuint loc = mActiveShaderProgram->GetUniformLocation(inName);
         glUniform4fv(loc, 1, (float*)&inVec[0]);
     }
 }

@@ -3,6 +3,8 @@
 
 #include "shader_program.h"
 #include <gl/glew.h>
+#include <string>
+#include <unordered_map>
 
 namespace Ming3D
 {
@@ -12,6 +14,7 @@ namespace Ming3D
         GLuint mGLProgram = -1;
         GLuint mGLVertexShader = -1;
         GLuint mGLFragmentShader = -1;
+        std::unordered_map<std::string, GLuint> mCachedUniformLocations;
 
     public:
         virtual ~ShaderProgramGL();
@@ -23,6 +26,8 @@ namespace Ming3D
         GLuint GetGLProgram() { return mGLProgram; }
         GLuint GetGLVertexShader() { return mGLVertexShader; }
         GLuint GetGLFragmentShader() { return mGLFragmentShader; }
+
+        GLuint GetUniformLocation(const std::string& inName);
 
     };
 }
