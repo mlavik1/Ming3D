@@ -26,7 +26,7 @@ namespace Ming3D
 
         RenderSceneObject* renderSceneObject = new RenderSceneObject();
         renderSceneObject->mModelMatrix = glm::translate(glm::mat4(1.0f), boxPos) * glm::mat4(1.0f) * glm::scale(glm::mat4(1.0f), boxSize);
-        renderSceneObject->mMeshes.push_back(meshBuffer);
+        renderSceneObject->mMesh = meshBuffer;
         Material* mat = MaterialFactory::CreateMaterial("Resources//debuggraphics.shader");
         renderSceneObject->mMaterial = mat->mMaterialBuffer;
 

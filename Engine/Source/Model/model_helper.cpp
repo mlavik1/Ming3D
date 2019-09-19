@@ -23,6 +23,29 @@ namespace Ming3D
 
         __Assert(scene != nullptr);
 
+        for (unsigned int m = 0; m < scene->mNumMaterials; m++)
+        {
+            MaterialData* matData = new MaterialData();
+            modelData->mMaterials.push_back(matData);
+            aiString path;  // filename
+            if (scene->mMaterials[m]->GetTexture(aiTextureType::aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
+            {
+                std::string texturePath = inModel;
+                size_t iLastSlash = texturePath.find_last_of("//");
+                if (iLastSlash != std::string::npos)
+                    texturePath = texturePath.substr(0, iLastSlash + 1) + std::string(path.C_Str());
+                else
+                    texturePath = std::string("Resources//") + std::string(path.C_Str());
+                matData->mTexture = TextureLoader::LoadTextureData(texturePath.c_str());
+            }
+            else
+            {
+                // TODO: set default (white?) texture - OR USE COLOUR (no texture)
+                LOG_WARNING() << "Material has no valid texture";
+                matData->mTexture = nullptr;
+            }
+        }
+
         for (unsigned int m = 0; m < scene->mNumMeshes; m++)
         {
             MeshData* meshData = new MeshData();
@@ -77,24 +100,7 @@ namespace Ming3D
             }
 
             int matIndex = scene->mMeshes[m]->mMaterialIndex;
-            aiString path;  // filename
-            if (scene->mMaterials[matIndex]->GetTexture(aiTextureType::aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
-            {
-                std::string texturePath = inModel;
-                size_t iLastSlash = texturePath.find_last_of("//");
-                if (iLastSlash != std::string::npos)
-                    texturePath = texturePath.substr(0, iLastSlash + 1) + std::string(path.C_Str());
-                else
-                    texturePath = std::string("Resources//") + std::string(path.C_Str());
-                meshData->mTexture = TextureLoader::LoadTextureData(texturePath.c_str());
-            }
-            else
-            {
-                // TODO: set default (white?) texture
-                LOG_WARNING() << "Material has no valid texture";
-                meshData->mTexture = nullptr;
-            }
-
+            meshData->mMaterialIndex = matIndex;
         }
         return modelData;
     }
@@ -105,6 +111,16 @@ namespace Ming3D
 
         if (modelData == nullptr)
             return false;
+
+        std::vector<Material*> materials;
+        materials.reserve(modelData->mMaterials.size());
+        for (MaterialData* matData : modelData->mMaterials)
+        {
+            Material* material = MaterialFactory::CreateMaterial("Resources//shader_PNT.shader"); // TODO: Generate shader based on vertex layout
+            if (matData->mTexture != nullptr)
+                material->SetTexture(0, matData->mTexture);
+            materials.push_back(material);
+        }
 
         for (MeshData* meshData : modelData->mMeshes)
         {
@@ -119,10 +135,8 @@ namespace Ming3D
 
             MeshComponent* meshComp = childActor->AddComponent<MeshComponent>();
             meshComp->SetMesh(mesh);
-            Material* material = MaterialFactory::CreateMaterial("Resources//shader_PNT.shader"); // TODO: Generate shader based on vertex layout
+            Material* material = meshData->mMaterialIndex >= 0 ? materials[meshData->mMaterialIndex] : nullptr;
             meshComp->SetMaterial(material);
-            if(meshData->mTexture != nullptr)
-                material->SetTexture(0, meshData->mTexture);
         }
     }
 }

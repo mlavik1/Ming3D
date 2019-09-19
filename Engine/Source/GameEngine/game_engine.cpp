@@ -93,7 +93,7 @@ namespace Ming3D
         mNetworkManager->UpdateNetworks();
 
         mRenderDevice->BeginRenderWindow(mRenderWindow);
-        mSceneRenderer->RenderCameras();
+        mSceneRenderer->Render();
         mRenderDevice->EndRenderWindow(mRenderWindow);
     }
 

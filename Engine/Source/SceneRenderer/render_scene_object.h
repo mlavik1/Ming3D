@@ -13,7 +13,7 @@ namespace Ming3D
     class RenderSceneObject
     {
     public:
-        std::vector<MeshBuffer*> mMeshes;
+        MeshBuffer* mMesh;
         glm::mat4 mModelMatrix;
         MaterialBuffer* mMaterial = nullptr;
     };
