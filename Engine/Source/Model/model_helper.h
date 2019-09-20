@@ -21,13 +21,20 @@ namespace Ming3D
 
         // TODO: bones
 
-        Texture* mTexture;
+        int mMaterialIndex;
+    };
+
+    class MaterialData
+    {
+    public:
+        Texture * mTexture;
     };
 
     class ModelData
     {
     public:
         std::vector<MeshData*> mMeshes;
+        std::vector<MaterialData*> mMaterials;
         glm::vec3 mPosition;
     };
 

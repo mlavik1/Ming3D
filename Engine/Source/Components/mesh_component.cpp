@@ -42,7 +42,7 @@ namespace Ming3D
         meshBuffer->mIndexBuffer = renderDevice->CreateIndexBuffer(indexData);
 
         mRenderSceneObject->mModelMatrix = mParent->GetTransform().GetWorldTransformMatrix();
-        mRenderSceneObject->mMeshes.push_back(meshBuffer);
+        mRenderSceneObject->mMesh = meshBuffer;
 
         GGameEngine->GetSceneRenderer()->AddSceneObject(mRenderSceneObject);
     }
