@@ -17,6 +17,7 @@
 #include "Components/camera_component.h"
 #include "Input/input_handler.h"
 #include "Input/input_manager.h"
+#include "Debug/debug_stats.h"
 
 #ifdef _WIN32
 #include "Source/Platform/platform_win32.h"
@@ -95,6 +96,20 @@ namespace Ming3D
         mRenderDevice->BeginRenderWindow(mRenderWindow);
         mSceneRenderer->Render();
         mRenderDevice->EndRenderWindow(mRenderWindow);
+
+        HandleDebugStats();
+    }
+
+    void GameEngine::HandleDebugStats()
+    {
+#ifdef MING3D_DEBUG_STATS_ENABLED
+        // TODO: use other key combination
+        if (mInputManager->GetKeyDown(KeyCode::Key_Space))
+        {
+            DebugStats_PrintAllStats();
+        }
+#endif
+        ClearFrameStats();
     }
 
     void GameEngine::AddCamera(CameraComponent* inCamera)

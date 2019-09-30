@@ -9,6 +9,7 @@
 #include "Debug/debug.h"
 #include "Debug/st_assert.h"
 #include "shader_writer_glsl.h"
+#include "Debug/debug_stats.h"
 
 namespace Ming3D
 {
@@ -170,6 +171,8 @@ namespace Ming3D
 
     TextureBuffer* RenderDeviceGL::CreateTextureBuffer(TextureInfo inTextureInfo, void* inTextureData)
     {
+        ADD_DEBUG_STAT_INT("CreateTextureBuffer", 1);
+
         TextureBufferGL* textureBuffer = new TextureBufferGL();
 
         __Assert(inTextureData); // TODO: Clear if null
@@ -251,6 +254,8 @@ namespace Ming3D
 
     void RenderDeviceGL::SetTexture(const TextureBuffer* inTexture, int inSlot)
     {
+        ADD_FRAME_STAT_INT("SetTexture", 1);
+
         glEnable(GL_TEXTURE_2D); // TODO
         TextureBufferGL* glTexture = (TextureBufferGL*)inTexture;
         glActiveTexture(GL_TEXTURE0 + inSlot);
@@ -259,6 +264,8 @@ namespace Ming3D
 
     void RenderDeviceGL::SetActiveShaderProgram(ShaderProgram* inProgram)
     {
+        ADD_FRAME_STAT_INT("SetActiveShaderProgram", 1);
+
         mActiveShaderProgram = (ShaderProgramGL*)inProgram;
         if (mActiveShaderProgram != nullptr)
         {
@@ -327,6 +334,10 @@ namespace Ming3D
 
     void RenderDeviceGL::RenderPrimitive(VertexBuffer* inVertexBuffer, IndexBuffer* inIndexBuffer)
     {
+        int oldVal = GET_FRAME_STAT_INT("RenderPrimitive");
+        int newVal = GET_FRAME_STAT_INT("RenderPrimitive") + 1;
+        ADD_FRAME_STAT_INT("RenderPrimitive", 1);
+
         VertexBufferGL* vertexBufferGL = (VertexBufferGL*)inVertexBuffer;
         IndexBufferGL* indexBufferGL = (IndexBufferGL*)inIndexBuffer;
         
@@ -376,36 +387,54 @@ namespace Ming3D
 
     void RenderDeviceGL::SetShaderUniformFloat(const std::string& inName, float inVal)
     {
+        // TODO: cache values - don't set again if already set
+        ADD_FRAME_STAT_INT("SetConstantBufferData", 1);
+
         GLuint loc = mActiveShaderProgram->GetUniformLocation(inName);
         glUniform1f(loc, inVal);
     }
 
     void RenderDeviceGL::SetShaderUniformInt(const std::string& inName, int inVal)
     {
+        // TODO: cache values - don't set again if already set
+        ADD_FRAME_STAT_INT("SetConstantBufferData", 1);
+
         GLuint loc = mActiveShaderProgram->GetUniformLocation(inName);
         glUniform1i(loc, inVal);
     }
 
     void RenderDeviceGL::SetShaderUniformMat4x4(const std::string& inName, const glm::mat4 inMat)
     {
+        // TODO: cache values - don't set again if already set
+        ADD_FRAME_STAT_INT("SetConstantBufferData", 1);
+
         GLuint loc = mActiveShaderProgram->GetUniformLocation(inName);
         glUniformMatrix4fv(loc, 1, GL_FALSE, &inMat[0][0]);
     }
 
     void RenderDeviceGL::SetShaderUniformVec2(const std::string& inName, const glm::vec2 inVec)
     {
+        // TODO: cache values - don't set again if already set
+        ADD_FRAME_STAT_INT("SetConstantBufferData", 1);
+
         GLuint loc = mActiveShaderProgram->GetUniformLocation(inName);
         glUniform2fv(loc, 1, (float*)&inVec[0]);
     }
 
     void RenderDeviceGL::SetShaderUniformVec3(const std::string& inName, const glm::vec3 inVec)
     {
+        // TODO: cache values - don't set again if already set
+        ADD_FRAME_STAT_INT("SetConstantBufferData", 1);
+
         GLuint loc = mActiveShaderProgram->GetUniformLocation(inName);
         glUniform3fv(loc, 1, (float*)&inVec[0]);
     }
 
     void RenderDeviceGL::SetShaderUniformVec4(const std::string& inName, const glm::vec4 inVec)
     {
+        // TODO: cache values - don't set again if already set
+        ("SetConstantBufferData", 1);
+
         GLuint loc = mActiveShaderProgram->GetUniformLocation(inName);
         glUniform4fv(loc, 1, (float*)&inVec[0]);
     }

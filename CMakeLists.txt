@@ -25,9 +25,13 @@ endif()
 set(MING3D_BUILD_EDITOR ON CACHE BOOL "Build editor project")
 set(MING3D_BUILD_TESTS ON CACHE BOOL "Build test project")
 set(MING3D_FORCE_OPENGL OFF CACHE BOOL "Use OpenGL as the preferred graphics API")
+set(MING3D_DEBUG_STATS OFF CACHE BOOL "Enable debug stats")
 
 IF(MING3D_FORCE_OPENGL)
 	add_definitions(-DMING3D_FORCE_OPENGL)
+endif()
+IF(MING3D_DEBUG_STATS)
+	add_definitions(-DMING3D_DEBUG_STATS_ENABLED)
 endif()
 
 # project

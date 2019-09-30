@@ -10,6 +10,7 @@
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
 #include "shader_constant_d3d11.h"
+#include "Debug/debug_stats.h"
 
 namespace Ming3D
 {
@@ -382,6 +383,8 @@ namespace Ming3D
 
     TextureBuffer* RenderDeviceD3D11::CreateTextureBuffer(TextureInfo inTextureInfo, void* inTextureData)
     {
+        ADD_DEBUG_STAT_INT("CreateTextureBuffer", 1);
+        
         TextureBufferD3D11* textureBuffer = new TextureBufferD3D11();
 
         __AssertComment(inTextureInfo.mBytesPerPixel % 2 == 0, "Bytes per pixel must be a power of 2");
@@ -590,6 +593,8 @@ namespace Ming3D
 
     void RenderDeviceD3D11::SetTexture(const TextureBuffer* inTexture, int inSlot)
     {
+        ADD_FRAME_STAT_INT("SetTexture", 1);
+
         TextureBufferD3D11* d3dTexture = (TextureBufferD3D11*)inTexture;
         GetDeviceContext()->PSSetSamplers(inSlot, 1, &mDefaultSamplerState);
         GetDeviceContext()->PSSetShaderResources(0, 1, &d3dTexture->mTextureResourceView);
@@ -597,6 +602,8 @@ namespace Ming3D
 
     void RenderDeviceD3D11::SetActiveShaderProgram(ShaderProgram* inProgram)
     {
+        ADD_FRAME_STAT_INT("SetActiveShaderProgram", 1);
+
         __AssertComment(inProgram, "SetActiveShaderProgram called with null program");
 
         ShaderProgramD3D11* dxShaderProgram = (ShaderProgramD3D11*)inProgram;
@@ -653,6 +660,8 @@ namespace Ming3D
 
     void RenderDeviceD3D11::RenderPrimitive(VertexBuffer* inVertexBuffer, IndexBuffer* inIndexBuffer)
     {
+        ADD_FRAME_STAT_INT("RenderPrimitive", 1);
+        
         VertexBufferD3D11* vertexBufferDX = (VertexBufferD3D11*)inVertexBuffer;
         IndexBufferD3D11* indexBufferDX = (IndexBufferD3D11*)inIndexBuffer;
 
@@ -688,6 +697,8 @@ namespace Ming3D
     void RenderDeviceD3D11::SetConstantBufferData(const std::string& inName, const void* inData, size_t inSize)
     {
         __Assert(mActiveShaderProgram != nullptr);
+
+        ADD_FRAME_STAT_INT("SetConstantBufferData", 1);
 
         bool foundUniform = false;
 

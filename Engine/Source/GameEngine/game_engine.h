@@ -37,6 +37,8 @@ namespace Ming3D
 
         float mDeltaTime;
 
+        void HandleDebugStats();
+
 	public:
 		GameEngine();
 		~GameEngine();
