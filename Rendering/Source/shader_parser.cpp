@@ -6,6 +6,7 @@
 #include "Debug/debug.h"
 #include "Debug/st_assert.h"
 #include "shader_tokeniser.h"
+#include "shader_preprocessor.h"
 
 #define MING3D_BreakOnShaderParserError
 
@@ -627,6 +628,9 @@ namespace Ming3D
         ParsedShaderProgram* parsedShaderProgram = new ParsedShaderProgram();
         std::ifstream shaderFile(inShaderProgramPath);
         std::string shaderString((std::istreambuf_iterator<char>(shaderFile)), std::istreambuf_iterator<char>());
+
+        ShaderPreprocessor preprocessor(shaderString);
+        preprocessor.PreprocessShader(shaderString);
 
         TokenParser tokenParser(shaderString.c_str());
 
