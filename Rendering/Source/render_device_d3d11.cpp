@@ -291,14 +291,22 @@ namespace Ming3D
 
         if (errorBlobVS)
         {
-            OutputDebugStringA((char*)errorBlobVS->GetBufferPointer());
+            LPVOID err = errorBlobVS->GetBufferPointer();
+            LOG_ERROR() << "Error when compiling Vertex Shader: " << parsedProgram->mProgramPath << "\n   " << (char*)err;
             errorBlobVS->Release();
         }
         if (errorBlobPS)
         {
-            OutputDebugStringA((char*)errorBlobPS->GetBufferPointer());
+            LPVOID err = errorBlobPS->GetBufferPointer();
+            LOG_ERROR() << "Error when compiling Pixel Shader:" << parsedProgram->mProgramPath << "\n   " << (char*)err;
             errorBlobPS->Release();
         }
+
+        // TODO: use placeholder material if null-program is returned
+        __AssertComment(vsBlob != nullptr && psBlob != nullptr, "Failed compiling shader - see log for error.");
+
+        if (vsBlob == nullptr || psBlob == nullptr)
+            return nullptr;
 
         HRESULT vsRes = mDevice->CreateVertexShader(vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), NULL, &pVS);
         HRESULT psRes = mDevice->CreatePixelShader(psBlob->GetBufferPointer(), psBlob->GetBufferSize(), NULL, &pPS);

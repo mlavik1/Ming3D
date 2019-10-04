@@ -3,15 +3,10 @@
 
 namespace Ming3D
 {
-    ShaderPreprocessor::ShaderPreprocessor(const std::string& inShaderText)
-        : mSourceText(inShaderText)
+    ShaderPreprocessor::ShaderPreprocessor(TokenParser& inTokenParser)
+        : mTokenParser(inTokenParser)
     {
 
-    }
-
-    bool ShaderPreprocessor::IsTokenDelimiter(char inChar)
-    {
-        return (*mReadPos == ' ' || *mReadPos == '(' || *mReadPos == ')' || *mReadPos == ',' || *mReadPos == '+' || *mReadPos == '-' || *mReadPos == '/' || *mReadPos == '*' || *mReadPos == '=');
     }
 
     bool ShaderPreprocessor::IsCurrentScopeIgnored()
@@ -45,37 +40,12 @@ namespace Ming3D
             return PreprocessorDirective::Invalid;
     }
 
-    std::string ShaderPreprocessor::ParseToken()
-    {
-        while (IsTokenDelimiter(*mReadPos))
-        {
-            if (!IsCurrentScopeIgnored())
-                mOutputStream << *mReadPos;
-            mReadPos++;
-        }
-
-        const char* startPos = mReadPos;
-
-        if (*mReadPos == '#')
-            mReadPos++;
-
-        while (!IsTokenDelimiter(*mReadPos) && *mReadPos != 0 && *mReadPos !='\n')
-        {
-            mReadPos++;
-        }
-
-        if (mReadPos != startPos)
-            return std::string(startPos, mReadPos);
-        else
-            return "";
-    }
-
-    void ShaderPreprocessor::ProcessToken(const std::string& inToken)
+    void ShaderPreprocessor::ProcessToken(Token inToken)
     {
         // handle preprocessor directives
-        if (inToken[0] == '#')
+        if (inToken.mTokenType == ETokenType::PreprocessorDirective)
         {
-            PreprocessorDirective directive = GetPreprocessorDirective(inToken);
+            PreprocessorDirective directive = GetPreprocessorDirective(inToken.mTokenString);
 
             switch (directive)
             {
@@ -83,8 +53,12 @@ namespace Ming3D
             {
                 if (!IsCurrentScopeIgnored())
                 {
-                    std::string defName = ParseToken();
-                    std::string defVal = ParseToken();
+                    mTokenParser.Advance();
+                    const Token defNameToken = mTokenParser.GetCurrentToken();
+                    mTokenParser.Advance();
+                    const Token defValToken = mTokenParser.GetCurrentToken();
+                    std::string defName = defNameToken.mTokenString;
+                    std::string defVal = defValToken.mTokenType == ETokenType::NewLine ? "" : defValToken.mTokenString;
                     mDefinitions.emplace(defName, defVal);
                 }
                 break;
@@ -92,7 +66,8 @@ namespace Ming3D
             case PreprocessorDirective::Ifdef:
             case PreprocessorDirective::Ifndef:
             {
-                std::string def = ParseToken();
+                mTokenParser.Advance();
+                std::string def = mTokenParser.GetCurrentToken().mTokenString;
                 ShaderPreprocessorScope scope;
                 scope.mScopeType = ShaderPreprocessorScopeType::IfBody;
                 scope.mIgnoreContent = IsCurrentScopeIgnored() || (mDefinitions.find(def) == mDefinitions.end()) == (directive == PreprocessorDirective::Ifdef);
@@ -118,44 +93,31 @@ namespace Ming3D
         else if(!IsCurrentScopeIgnored())
         {
             // replace preprocessor definition
-            auto defIter = mDefinitions.find(inToken);
-            if (defIter != mDefinitions.end())
+            if (inToken.mTokenType == ETokenType::Identifier)
             {
-                mOutputStream << defIter->second;
+                auto defIter = mDefinitions.find(inToken.mTokenString);
+                if (defIter != mDefinitions.end())
+                {
+                    inToken.mTokenString = defIter->second;
+                }
             }
-            else
-            {
-                mOutputStream << inToken;
-            }
+            // push preprocessed token
+            if(inToken.mTokenType != ETokenType::NewLine)
+                mPreprocessedTokens.push_back(inToken);
         }
     }
 
-    void ShaderPreprocessor::PreprocessShader(std::string& outShaderText)
+    void ShaderPreprocessor::PreprocessShader()
     {
-        mReadPos = mSourceText.data();
-        while (*mReadPos != 0)
+        while (mTokenParser.HasMoreTokens())
         {
-            // handle comments
-            if (mReadPos[0] == '/' && mReadPos[1] == '/')
-            {
-                while (*mReadPos != 0 && *mReadPos != '\n')
-                    mReadPos++;
-                mOutputStream << "\n";
-            }
-            
-            // parse next token
-            std::string token = ParseToken();
+            Token token = mTokenParser.GetCurrentToken();
 
-            // process token, if current scope should be printed
             ProcessToken(token);
-            
-            // always print new-lines, to make sure line numbers are preserved
-            while (*mReadPos == '\n')
-            {
-                mOutputStream << *mReadPos;
-                mReadPos++;
-            }
+
+            mTokenParser.Advance();
         }
-        outShaderText = mOutputStream.str();
+        mTokenParser.SetTokens(mPreprocessedTokens);
+        mTokenParser.ResetPosition();
     }
 }

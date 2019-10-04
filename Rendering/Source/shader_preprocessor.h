@@ -5,6 +5,7 @@
 #include <sstream>
 #include <stack>
 #include <unordered_map>
+#include "shader_tokeniser.h"
 
 namespace Ming3D
 {
@@ -33,21 +34,18 @@ namespace Ming3D
     class ShaderPreprocessor
     {
     private:
-        const const std::string& mSourceText;
+        TokenParser& mTokenParser;
         std::stack<ShaderPreprocessorScope> mScopeStack;
         std::unordered_map<std::string, std::string> mDefinitions;
-        const char* mReadPos;
-        std::stringstream mOutputStream;
+        std::vector<Token> mPreprocessedTokens;
 
-        bool IsTokenDelimiter(char inChar);
         PreprocessorDirective GetPreprocessorDirective(const std::string& inToken);
-        std::string ParseToken();
-        void ProcessToken(const std::string& inToken);
+        void ProcessToken(Token inToken);
         bool IsCurrentScopeIgnored();
 
     public:
-        ShaderPreprocessor(const std::string& inShaderText);
-        void PreprocessShader(std::string& outShaderText);
+        ShaderPreprocessor(TokenParser& inTokenParser);
+        void PreprocessShader();
     };
 }
 

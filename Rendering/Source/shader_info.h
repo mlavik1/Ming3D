@@ -195,6 +195,8 @@ namespace Ming3D
     class ParsedShaderProgram
     {
     public:
+        std::string mProgramPath;
+
         ParsedShader* mVertexShader = nullptr;
         ParsedShader* mFragmentShader = nullptr;
 

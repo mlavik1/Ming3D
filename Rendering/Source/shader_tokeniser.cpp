@@ -23,18 +23,17 @@ namespace Ming3D
     {
         Token outToken;
 
-        // Remove whitespaces and tabs from beginning, and count linebreaks
-        while (true)
-        {
-            if (*mSourceStringPos == '\n')
-            {
-                mLineNumber++;
-            }
-            else if (*mSourceStringPos != ' ' && *mSourceStringPos != '\t')
-            {
-                break;
-            }
+        // Remove whitespaces and tabs from beginning
+        while (*mSourceStringPos == ' ' || *mSourceStringPos == '\t')
             mSourceStringPos++;
+
+        if (*mSourceStringPos == '\n')
+        {
+            mSourceStringPos++;
+            mLineNumber++; // count linebreaks
+            outToken.mTokenType = ETokenType::NewLine;
+            outToken.mTokenString = "\n";
+            return outToken;
         }
 
         // End of file
@@ -149,6 +148,10 @@ namespace Ming3D
         {
             outToken.mTokenType = ETokenType::Operator;
         }
+        else if (outToken.mTokenString[0] == '#')
+        {
+            outToken.mTokenType = ETokenType::PreprocessorDirective;
+        }
         else
         {
             outToken.mTokenType = ETokenType::Identifier;
@@ -177,6 +180,11 @@ namespace Ming3D
         }
     }
 
+    void TokenParser::ResetPosition()
+    {
+        mCurrentTokenIndex = 0;
+    }
+
     void TokenParser::Advance()
     {
         mCurrentTokenIndex++;
@@ -197,4 +205,8 @@ namespace Ming3D
         return mCurrentTokenIndex < mTokens.size();
     }
 
+    void TokenParser::SetTokens(std::vector<Token>& inTokens)
+    {
+        mTokens = inTokens;
+    }
 }
