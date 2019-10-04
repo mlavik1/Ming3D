@@ -6,6 +6,7 @@
 #include "Debug/debug.h"
 #include "Debug/st_assert.h"
 #include "shader_tokeniser.h"
+#include "shader_preprocessor.h"
 
 #define MING3D_BreakOnShaderParserError
 
@@ -367,7 +368,13 @@ namespace Ming3D
                 inTokenParser.Advance();
                 const Token identifierToken = inTokenParser.GetCurrentToken();
                 inTokenParser.Advance();
-                    
+                
+                if (identifierToken.mTokenString == "")
+                {
+                    OnParseError(inTokenParser, "Missing identifier for struct member");
+                    return EParseResult::Error;
+                }
+
                 std::string semanticName;
 
                 if (inTokenParser.GetCurrentToken().mTokenString == ":")
@@ -623,12 +630,15 @@ namespace Ming3D
 
     ParsedShaderProgram* ShaderParser::ParseShaderProgram(const std::string& inShaderProgramPath)
     {
-
         ParsedShaderProgram* parsedShaderProgram = new ParsedShaderProgram();
+        parsedShaderProgram->mProgramPath = inShaderProgramPath;
         std::ifstream shaderFile(inShaderProgramPath);
         std::string shaderString((std::istreambuf_iterator<char>(shaderFile)), std::istreambuf_iterator<char>());
 
         TokenParser tokenParser(shaderString.c_str());
+
+        ShaderPreprocessor preprocessor(tokenParser);
+        preprocessor.PreprocessShader();
 
         std::vector<ParsedShader*> parsedShaders;
         ParsedShader* currentParsingShader = nullptr;

@@ -15,6 +15,8 @@ namespace Ming3D
         IntegerLiteral,
         BooleanLiteral,
         Operator,
+        NewLine,
+        PreprocessorDirective,
         Identifier
     };
 
@@ -64,10 +66,12 @@ namespace Ming3D
 
     public:
         TokenParser(const char* inShaderCode);
+        void ResetPosition();
         void Advance();
         const Token& GetCurrentToken();
         const Token& GetTokenFromOffset(const int inOffset);
         bool HasMoreTokens();
+        void SetTokens(std::vector<Token>& inTokens);
     };
 }
 
