@@ -56,6 +56,8 @@ namespace Ming3D
     class ShaderParser
     {
     private:
+        ShaderParserParams mParams;
+
         std::set<std::string> mControlStatementIdentifiers = { "for", "while", "if", "else" };
 
         std::unordered_map<std::string, ShaderDatatypeInfo> mBuiltinDatatypes;
@@ -142,7 +144,7 @@ namespace Ming3D
         * Parse the source code of a shader program.
         * Send the parsed program to a ShaderWriter to convert it.
         */
-        ParsedShaderProgram* ParseShaderProgram(const std::string& inShaderProgramPath);
+        ParsedShaderProgram* ParseShaderProgram(const ShaderParserParams& inParams);
     };
 }
 

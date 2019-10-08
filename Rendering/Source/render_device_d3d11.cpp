@@ -11,6 +11,7 @@
 #include <DirectXMath.h>
 #include "shader_constant_d3d11.h"
 #include "Debug/debug_stats.h"
+#include "shader_info_hlsl.h"
 
 namespace Ming3D
 {
@@ -254,17 +255,67 @@ namespace Ming3D
         return indexBuffer;
     }
 
-    ShaderProgram* RenderDeviceD3D11::CreateShaderProgram(const ParsedShaderProgram* parsedProgram)
+    ShaderProgram* RenderDeviceD3D11::CreateShaderProgram(ParsedShaderProgram* parsedProgram)
     {
-        ShaderWriterHLSL shaderWriter;
         ShaderProgramDataHLSL convertedShaderData;
-        shaderWriter.WriteShader(parsedProgram, convertedShaderData);
+        // Get the converted shaders (if already converted)
+        ConvertedShaderProgramHLSL* convertedProgram = static_cast<ConvertedShaderProgramHLSL*>(parsedProgram->mConvertedProgram);
+        // Convert shaders to HLSL (if not already converted)
+        if (parsedProgram->mConvertedProgram == nullptr)
+        {
+            ShaderWriterHLSL shaderWriter;
+            shaderWriter.WriteShader(parsedProgram, convertedShaderData);
 
-        std::string vertexShaderCode = convertedShaderData.mVertexShader.mSource;
-        std::string pixelShaderCode = convertedShaderData.mFragmentShader.mSource;
+            std::string vertexShaderCode = convertedShaderData.mVertexShader;
+            std::string pixelShaderCode = convertedShaderData.mFragmentShader;
 
+            ID3D10Blob* vsBlob;
+            ID3D10Blob* psBlob;
+
+            ID3DBlob* errorBlobVS;
+            ID3DBlob* errorBlobPS;
+            D3DCompile(vertexShaderCode.data(), vertexShaderCode.size(), "", NULL, NULL, "main", "vs_4_0", 0, NULL, &vsBlob, &errorBlobVS);
+            D3DCompile(pixelShaderCode.data(), pixelShaderCode.size(), "", NULL, NULL, "main", "ps_4_0", 0, NULL, &psBlob, &errorBlobPS);
+
+            if (errorBlobVS)
+            {
+                LPVOID err = errorBlobVS->GetBufferPointer();
+                LOG_ERROR() << "Error when compiling Vertex Shader: " << parsedProgram->mProgramPath << "\n   " << (char*)err;
+                errorBlobVS->Release();
+            }
+            if (errorBlobPS)
+            {
+                LPVOID err = errorBlobPS->GetBufferPointer();
+                LOG_ERROR() << "Error when compiling Pixel Shader:" << parsedProgram->mProgramPath << "\n   " << (char*)err;
+                errorBlobPS->Release();
+            }
+
+            // TODO: use placeholder material if null-program is returned
+            __AssertComment(vsBlob != nullptr && psBlob != nullptr, "Failed compiling shader - see log for error.");
+
+            if (vsBlob == nullptr || psBlob == nullptr)
+                return nullptr;
+
+            convertedProgram = new ConvertedShaderProgramHLSL();
+            convertedProgram->vsBlob = vsBlob;
+            convertedProgram->psBlob = psBlob;
+            parsedProgram->mConvertedProgram = convertedProgram;
+        }
+
+        ID3D10Blob* vsBlob = convertedProgram->vsBlob;
+        ID3D10Blob* psBlob = convertedProgram->psBlob;
+        ID3D11VertexShader* pVS;
+        ID3D11PixelShader* pPS;
+        // Create shaders
+        HRESULT vsRes = mDevice->CreateVertexShader(vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), NULL, &pVS);
+        HRESULT psRes = mDevice->CreatePixelShader(psBlob->GetBufferPointer(), psBlob->GetBufferSize(), NULL, &pPS);
+        // Set shaders
+        mDeviceContext->VSSetShader(pVS, 0, 0);
+        mDeviceContext->PSSetShader(pPS, 0, 0);
+
+        // Gather Vertex Components
         std::vector<EVertexComponent> vertexComponents;
-        const std::unordered_map<std::string, EVertexComponent> vertexComponentSemanticMap = { {"POSITION", EVertexComponent::Position},{ "NORMAL", EVertexComponent::Normal },{ "TEXCOORD", EVertexComponent::TexCoord },{ "COLOR", EVertexComponent::Colour } };
+        const std::unordered_map<std::string, EVertexComponent> vertexComponentSemanticMap = { { "POSITION", EVertexComponent::Position },{ "NORMAL", EVertexComponent::Normal },{ "TEXCOORD", EVertexComponent::TexCoord },{ "COLOR", EVertexComponent::Colour } };
         for (const ShaderStructMember inputVar : parsedProgram->mVertexShader->mInput.mMemberVariables)
         {
             auto vertCompMatch = vertexComponentSemanticMap.find(inputVar.mSemantic);
@@ -278,42 +329,7 @@ namespace Ming3D
             }
         }
 
-        ID3D10Blob* vsBlob;
-        ID3D10Blob* psBlob;
-        ID3D11VertexShader* pVS;
-        ID3D11PixelShader* pPS;
-        ID3D11InputLayout* inputLayout;
-
-        ID3DBlob* errorBlobVS;
-        ID3DBlob* errorBlobPS;
-        D3DCompile(vertexShaderCode.data(), vertexShaderCode.size(), "", NULL, NULL, "main", "vs_4_0", 0, NULL, &vsBlob, &errorBlobVS);
-        D3DCompile(pixelShaderCode.data(), pixelShaderCode.size(), "", NULL, NULL, "main", "ps_4_0", 0, NULL, &psBlob, &errorBlobPS);
-
-        if (errorBlobVS)
-        {
-            LPVOID err = errorBlobVS->GetBufferPointer();
-            LOG_ERROR() << "Error when compiling Vertex Shader: " << parsedProgram->mProgramPath << "\n   " << (char*)err;
-            errorBlobVS->Release();
-        }
-        if (errorBlobPS)
-        {
-            LPVOID err = errorBlobPS->GetBufferPointer();
-            LOG_ERROR() << "Error when compiling Pixel Shader:" << parsedProgram->mProgramPath << "\n   " << (char*)err;
-            errorBlobPS->Release();
-        }
-
-        // TODO: use placeholder material if null-program is returned
-        __AssertComment(vsBlob != nullptr && psBlob != nullptr, "Failed compiling shader - see log for error.");
-
-        if (vsBlob == nullptr || psBlob == nullptr)
-            return nullptr;
-
-        HRESULT vsRes = mDevice->CreateVertexShader(vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), NULL, &pVS);
-        HRESULT psRes = mDevice->CreatePixelShader(psBlob->GetBufferPointer(), psBlob->GetBufferSize(), NULL, &pPS);
-
-        mDeviceContext->VSSetShader(pVS, 0, 0);
-        mDeviceContext->PSSetShader(pPS, 0, 0);
-
+        // Create input element descriptions (for input layout)
         const char* vertCompNames[] = { "POSITION", "NORMAL", "TEXCOORD", "COLOR" }; // TEMP - TODO
         const DXGI_FORMAT vertFormats[] = { DXGI_FORMAT_R32G32B32_FLOAT , DXGI_FORMAT_R32G32B32_FLOAT , DXGI_FORMAT_R32G32_FLOAT , DXGI_FORMAT_R32G32B32A32_FLOAT }; // TODO
         UINT byteOffset = 0;
@@ -325,16 +341,14 @@ namespace Ming3D
             byteOffset += VertexData::GetVertexComponentSize(vertexComp);
         }
 
+        // Create input layout
+        ID3D11InputLayout* inputLayout;
         mDevice->CreateInputLayout(inputElements.data(), inputElements.size(), vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &inputLayout);
         
         ShaderProgramD3D11* shaderProgram = new ShaderProgramD3D11();
         shaderProgram->mInputLayout = inputLayout;
         shaderProgram->mVS = pVS;
         shaderProgram->mPS = pPS;
-
-        std::vector<ShaderDataHLSL> shaderDataList;
-        shaderDataList.push_back(convertedShaderData.mVertexShader);
-        shaderDataList.push_back(convertedShaderData.mFragmentShader);
 
         const size_t numCBuffers = parsedProgram->mShaderUniformBlocks.size();
         for (size_t iCBuffer = 0; iCBuffer < numCBuffers; iCBuffer++)

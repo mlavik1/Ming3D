@@ -22,8 +22,15 @@
 #include "net_socket_winsock.h"
 #include "GameEngine/game_engine.h"
 
+#include "platform_file_win32.h"
+
 namespace Ming3D
 {
+    PlatformWin32::PlatformWin32()
+    {
+        mPlatformFile = new PlatformFileWin32();
+    }
+
     PlatformWin32::~PlatformWin32()
     {
         WSACleanup();

@@ -5,20 +5,14 @@
 #include "shader_parser.h"
 
 #include <set>
+#include <string>
 
 namespace Ming3D
 {
-    struct ShaderDataHLSL
-    {
-        std::string mSource;
-        std::vector<ShaderVariableInfo> mUniforms;
-        std::vector<ShaderTextureInfo> mTextures;
-    };
-
     struct ShaderProgramDataHLSL
     {
-        ShaderDataHLSL mVertexShader;
-        ShaderDataHLSL mFragmentShader;
+        std::string mVertexShader;
+        std::string mFragmentShader;
     };
 
     class ShaderWriterHLSL : public ShaderWriter

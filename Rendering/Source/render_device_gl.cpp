@@ -112,11 +112,22 @@ namespace Ming3D
         return indexBuffer;
     }
 
-    ShaderProgram* RenderDeviceGL::CreateShaderProgram(const ParsedShaderProgram* parsedProgram)
+    ShaderProgram* RenderDeviceGL::CreateShaderProgram(ParsedShaderProgram* parsedProgram)
     {
         ShaderWriterGLSL shaderWriter;
-        ShaderProgramDataGLSL convertedShaderData;
-        shaderWriter.WriteShader(parsedProgram, convertedShaderData);
+
+        ConvertedShaderProgramGLSL* convertedProgram = static_cast<ConvertedShaderProgramGLSL*>(parsedProgram->mConvertedProgram);
+        if (convertedProgram == nullptr)
+        {
+            ShaderProgramDataGLSL convertedShaderData;
+            if (!shaderWriter.WriteShader(parsedProgram, convertedShaderData))
+                return nullptr;
+            convertedProgram = new ConvertedShaderProgramGLSL();
+            convertedProgram->mShaderProgramData = convertedShaderData;
+            parsedProgram->mConvertedProgram = convertedProgram;
+        }
+
+        ShaderProgramDataGLSL convertedShaderData = convertedProgram->mShaderProgramData;
 
         GLuint program = glCreateProgram();
         GLuint vs = glCreateShader(GL_VERTEX_SHADER);

@@ -51,7 +51,9 @@ namespace Ming3D
 
             // TODO: Use different shaders, based on vertex layout?
             ShaderParser parser;
-            ParsedShaderProgram* prog = parser.ParseShaderProgram("Resources//shader_PNT.shader");
+            ShaderParserParams params;
+            params.mShaderProgramPath = "Resources//shader_PNT.shader";
+            ParsedShaderProgram* prog = parser.ParseShaderProgram(params);
             modelData->mShaderProgram = mRenderDevice->CreateShaderProgram(prog);
         }
 

@@ -628,11 +628,13 @@ namespace Ming3D
         return EParseResult::Parsed;
     }
 
-    ParsedShaderProgram* ShaderParser::ParseShaderProgram(const std::string& inShaderProgramPath)
+    ParsedShaderProgram* ShaderParser::ParseShaderProgram(const ShaderParserParams& inParams)
     {
+        mParams = inParams;
+
         ParsedShaderProgram* parsedShaderProgram = new ParsedShaderProgram();
-        parsedShaderProgram->mProgramPath = inShaderProgramPath;
-        std::ifstream shaderFile(inShaderProgramPath);
+        parsedShaderProgram->mProgramPath = inParams.mShaderProgramPath;
+        std::ifstream shaderFile(inParams.mShaderProgramPath);
         std::string shaderString((std::istreambuf_iterator<char>(shaderFile)), std::istreambuf_iterator<char>());
 
         TokenParser tokenParser(shaderString.c_str());
@@ -802,7 +804,7 @@ namespace Ming3D
 
         if (failed)
         {
-            LOG_ERROR() << "Failed parsing shader: " << inShaderProgramPath;
+            LOG_ERROR() << "Failed parsing shader: " << inParams.mShaderProgramPath;
             delete parsedShaderProgram;
             return nullptr;
         }
@@ -836,7 +838,7 @@ namespace Ming3D
 
         // TODO: Print any errors from here + PRINT THE LINE THAT HAS THE ERROR!
 
-        LOG_INFO() << "Successfully parsed shader program: " << inShaderProgramPath;
+        LOG_INFO() << "Successfully parsed shader program: " << inParams.mShaderProgramPath;
 
         return parsedShaderProgram;
     }

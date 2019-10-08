@@ -6,19 +6,10 @@
 
 #include <set>
 
+#include "shader_info_glsl.h"
+
 namespace Ming3D
 {
-    struct ShaderDataGLSL
-    {
-        std::string mSource;
-    };
-
-    struct ShaderProgramDataGLSL
-    {
-        ShaderDataGLSL mVertexShader;
-        ShaderDataGLSL mFragmentShader;
-    };
-
     class ShaderWriterGLSL : public ShaderWriter
     {
     private:

@@ -14,7 +14,6 @@ namespace Ming3D
     {
     public:
         MaterialBuffer* mMaterialBuffer;
-        ParsedShaderProgram* mShaderProgramData;
         std::vector<Texture*> mTextures;
 
         Material(ParsedShaderProgram* shaderProgram);

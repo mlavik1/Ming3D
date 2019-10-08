@@ -5,6 +5,7 @@
 #include "window_base.h"
 #include "render_window.h"
 #include "Input/input_handler.h"
+#include "platform_file.h"
 
 namespace Ming3D
 {
@@ -13,6 +14,8 @@ namespace Ming3D
     class Platform
     {
     public:
+        PlatformFile * mPlatformFile = nullptr;
+
         virtual void Initialise() = 0;
         virtual void Update() = 0;
 

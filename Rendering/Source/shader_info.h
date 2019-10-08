@@ -5,6 +5,7 @@
 #include <vector>
 #include "shader_tokeniser.h"
 #include "glm/glm.hpp"
+#include <map>
 
 namespace Ming3D
 {
@@ -182,6 +183,15 @@ namespace Ming3D
         std::vector<ShaderVariableInfo> mShaderUniforms;
     };
 
+    /**
+    * Base class for converted (and possibly compiled) shader data.
+    */
+    class ConvertedShaderProgram
+    {
+    public:
+        virtual ~ConvertedShaderProgram() {}
+    };
+
     class ParsedShader
     {
     public:
@@ -190,6 +200,12 @@ namespace Ming3D
         ShaderFunctionDefinition* mMainFunction = nullptr;
         ShaderDatatypeInfo mInput;
         ShaderDatatypeInfo mOutput;
+
+        ~ParsedShader()
+        {
+            if(mMainFunction != nullptr)
+                delete mMainFunction;
+        }
     };
 
     class ParsedShaderProgram
@@ -204,6 +220,25 @@ namespace Ming3D
         std::vector<ShaderFunctionDefinition*> mFunctionDefinitions;
         std::vector<ShaderUniformBlock> mShaderUniformBlocks;
         std::vector<ShaderTextureInfo> mShaderTextures;
+        ConvertedShaderProgram* mConvertedProgram = nullptr;
+
+        ~ParsedShaderProgram()
+        {
+            for (ShaderFunctionDefinition* def : mFunctionDefinitions)
+                delete def; 
+            if (mVertexShader != nullptr)
+                delete mVertexShader;
+            if (mFragmentShader != nullptr)
+                delete mFragmentShader;
+            if (mConvertedProgram != nullptr)
+                delete mConvertedProgram;
+        }
+    };
+
+    struct ShaderParserParams
+    {
+        std::string mShaderProgramPath;
+        std::map<std::string, std::string> mPreprocessorDefinitions;
     };
 }
 

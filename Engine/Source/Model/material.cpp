@@ -11,7 +11,6 @@ namespace Ming3D
     Material::Material(ParsedShaderProgram* shaderProgram)
     {
         size_t numTextures = shaderProgram->mShaderTextures.size();
-        mShaderProgramData = shaderProgram;
         mMaterialBuffer = new MaterialBuffer();
         mTextures.resize(numTextures);
         mMaterialBuffer->mTextureBuffers.resize(numTextures);
@@ -49,7 +48,6 @@ namespace Ming3D
 
     Material::~Material()
     {
-        delete mShaderProgramData; // TODO: reference count
     }
 
     void Material::SetTexture(size_t textureIndex, Texture* texture)

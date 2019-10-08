@@ -313,7 +313,7 @@ namespace Ming3D
             mCurrentShader = currShader;
             mReferencedUniforms.clear();
 
-            ShaderDataHLSL& currShaderData = currShader == inParsedShaderProgram->mVertexShader ? outData.mVertexShader : outData.mFragmentShader;
+            std::string& currShaderText = currShader == inParsedShaderProgram->mVertexShader ? outData.mVertexShader : outData.mFragmentShader;
 
             std::vector<ShaderVariableInfo> currShaderUniforms;
 
@@ -390,16 +390,15 @@ namespace Ming3D
                 if (mReferencedUniforms.find(textureInfo.mTextureName) != mReferencedUniforms.end())
                 {
                     shaderHeaderStream << GetConvertedType(textureInfo.mTextureType) << " " << textureInfo.mTextureName << ";\n";
-                    currShaderData.mTextures.push_back(textureInfo);
                 }
             }
 
             std::stringstream outStream;
             outStream << shaderHeaderStream.GetStream().str() << "\n" << shaderBodyStream.GetStream().str();
 
-            currShaderData.mSource = outStream.str();
-            currShaderData.mUniforms = currShaderUniforms;
+            currShaderText = outStream.str();
 
+            // Write converted shader text
             std::ofstream oFile;
             oFile.open(std::string("converted_shader_." + (currShader == inParsedShaderProgram->mVertexShader ? std::string("vs") : std::string("fs"))));
             oFile << outStream.str().c_str();

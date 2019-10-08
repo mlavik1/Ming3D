@@ -8,6 +8,7 @@ namespace Ming3D
     class PlatformWin32 : public Platform
     {
     public:
+        PlatformWin32();
         ~PlatformWin32();
         virtual void Initialise() override;
         virtual void Update() override;
