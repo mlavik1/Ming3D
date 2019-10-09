@@ -20,4 +20,35 @@ namespace Ming3D
 
         return false;
     }
+
+    bool PlatformFileWin32::OpenFileDialog(const std::string inTitile, std::string& outFilePath)
+    {
+        char filename[MAX_PATH];
+        ZeroMemory(&filename, sizeof(filename));
+
+        OPENFILENAMEA ofn;
+        ZeroMemory(&ofn, sizeof(ofn));
+        ofn.lStructSize = sizeof(ofn);
+        ofn.hwndOwner = NULL; // TODO: get window handle
+        ofn.lpstrFilter = "Any File\0*.*\0";
+        ofn.lpstrFile = filename;
+        ofn.nMaxFile = MAX_PATH;
+        ofn.lpstrTitle = inTitile.c_str();
+        ofn.Flags = OFN_DONTADDTORECENT | OFN_FILEMUSTEXIST;
+
+        if (GetOpenFileNameA(&ofn))
+        {
+            size_t iChar = 0;
+            while (filename[iChar] != 0)
+            {
+                if (filename[iChar] == '\\')
+                    filename[iChar] = '/';
+                iChar++;
+            }
+            outFilePath = filename;
+            return true;
+        }
+        else
+            return false;
+    }
 }

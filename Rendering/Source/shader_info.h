@@ -238,7 +238,7 @@ namespace Ming3D
     struct ShaderParserParams
     {
         std::string mShaderProgramPath;
-        std::map<std::string, std::string> mPreprocessorDefinitions;
+        std::unordered_map<std::string, std::string> mPreprocessorDefinitions;
     };
 }
 

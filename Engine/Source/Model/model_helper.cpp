@@ -44,6 +44,9 @@ namespace Ming3D
                 LOG_WARNING() << "Material has no valid texture";
                 matData->mTexture = nullptr;
             }
+            aiColor4D diffCol;
+            if (aiGetMaterialColor(scene->mMaterials[m], AI_MATKEY_COLOR_DIFFUSE, &diffCol) == AI_SUCCESS)
+                matData->mColour = glm::vec4(diffCol.r, diffCol.g, diffCol.b, diffCol.a);
         }
 
         for (unsigned int m = 0; m < scene->mNumMeshes; m++)
@@ -116,9 +119,17 @@ namespace Ming3D
         materials.reserve(modelData->mMaterials.size());
         for (MaterialData* matData : modelData->mMaterials)
         {
-            Material* material = MaterialFactory::CreateMaterial("Resources//shader_PNT.shader"); // TODO: Generate shader based on vertex layout
+            MaterialParams matParams;
+            matParams.mShaderProgramPath = "Resources//shader_PNT.shader";
+            if (matData->mTexture == nullptr)
+                matParams.mPreprocessorDefinitions.emplace("use_mat_colour", "");
+            
+            Material* material = MaterialFactory::CreateMaterial(matParams); // TODO: Generate shader based on vertex layout
+            
             if (matData->mTexture != nullptr)
                 material->SetTexture(0, matData->mTexture);
+            else
+                material->SetShaderUniformVec4("colour", matData->mColour);
             materials.push_back(material);
         }
 

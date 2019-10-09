@@ -2,6 +2,9 @@ ShaderUniforms
 {
 	mat4 MVP;
 	vec4 test;
+#ifdef use_mat_colour
+    vec4 colour;
+#endif
 }
 
 ShaderTextures
@@ -41,7 +44,11 @@ shader FragmentShader
 {
 	void main(FSInput input)
 	{
+    #ifdef use_mat_colour
+        SetFragmentColour(colour);
+    #else
 		SetFragmentColour(ReadTexture(inTexture, input.TexCoord));
+    #endif
 	}
 }
 

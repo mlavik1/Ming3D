@@ -45,6 +45,8 @@ namespace Ming3D
 
     public:
         ShaderPreprocessor(TokenParser& inTokenParser);
+        
+        void AddDefinition(const std::string name, const std::string value);
         void PreprocessShader();
     };
 }

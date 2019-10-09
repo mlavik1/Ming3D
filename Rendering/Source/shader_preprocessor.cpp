@@ -59,7 +59,7 @@ namespace Ming3D
                     const Token defValToken = mTokenParser.GetCurrentToken();
                     std::string defName = defNameToken.mTokenString;
                     std::string defVal = defValToken.mTokenType == ETokenType::NewLine ? "" : defValToken.mTokenString;
-                    mDefinitions.emplace(defName, defVal);
+                    AddDefinition(defName, defVal);
                 }
                 break;
             }
@@ -105,6 +105,11 @@ namespace Ming3D
             if(inToken.mTokenType != ETokenType::NewLine)
                 mPreprocessedTokens.push_back(inToken);
         }
+    }
+
+    void ShaderPreprocessor::AddDefinition(const std::string name, const std::string value)
+    {
+        mDefinitions.emplace(name, value);
     }
 
     void ShaderPreprocessor::PreprocessShader()

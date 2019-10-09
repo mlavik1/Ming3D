@@ -7,8 +7,16 @@ namespace Ming3D
 {
     Material* MaterialFactory::CreateMaterial(const std::string& inShaderProgram)
     {
-        ShaderParserParams params;
+        MaterialParams params;
         params.mShaderProgramPath = inShaderProgram;
+        return CreateMaterial(params);
+    }
+
+    Material* MaterialFactory::CreateMaterial(const MaterialParams& inParams)
+    {
+        ShaderParserParams params;
+        params.mShaderProgramPath = inParams.mShaderProgramPath;
+        params.mPreprocessorDefinitions = inParams.mPreprocessorDefinitions;
         ParsedShaderProgram* parsedProgram = nullptr;
         if (!ShaderCache::GetCachedProgramInfo(params, parsedProgram))
         {

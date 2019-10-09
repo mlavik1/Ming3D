@@ -26,6 +26,8 @@ namespace Ming3D
         void SetMaterial(Material* inMat);
     
         virtual void Tick(float inDeltaTime) override;
+
+        Mesh* GetMesh() { return mMesh; };
     };
 }
 

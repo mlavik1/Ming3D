@@ -28,6 +28,7 @@ namespace Ming3D
     {
     public:
         Texture * mTexture;
+        glm::vec4 mColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
     };
 
     class ModelData

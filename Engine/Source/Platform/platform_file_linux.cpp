@@ -12,4 +12,9 @@ namespace Ming3D
     {
         return false;
     }
+
+    bool PlatformFileLinux::OpenFileDialog(const std::string inTitile, std::string& outFilePath)
+    {
+        return false;
+    }
 }

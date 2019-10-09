@@ -1,15 +1,15 @@
 #ifndef MING3D_PLATFORM_H
 #define MING3D_PLATFORM_H
 
-#include "render_device.h"
-#include "window_base.h"
-#include "render_window.h"
 #include "Input/input_handler.h"
 #include "platform_file.h"
 
 namespace Ming3D
 {
     class NetSocket;
+    class RenderDevice;
+    class WindowBase;
+    class RenderWindow;
 
     class Platform
     {

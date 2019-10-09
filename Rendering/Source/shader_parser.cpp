@@ -640,6 +640,8 @@ namespace Ming3D
         TokenParser tokenParser(shaderString.c_str());
 
         ShaderPreprocessor preprocessor(tokenParser);
+        for (auto preprocdef : mParams.mPreprocessorDefinitions)
+            preprocessor.AddDefinition(preprocdef.first, preprocdef.second);
         preprocessor.PreprocessShader();
 
         std::vector<ParsedShader*> parsedShaders;
