@@ -41,6 +41,7 @@ add_subdirectory(Runtime)
 add_subdirectory(Networking)
 add_subdirectory(Rendering)
 add_subdirectory(Engine)
+add_subdirectory(Viewer)
 
 if(MING3D_BUILD_EDITOR)
 	add_subdirectory(NativeUI)
