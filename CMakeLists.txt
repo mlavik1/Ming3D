@@ -20,6 +20,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 IF(WIN32)
 	add_definitions(-DUNICODE)
+	add_definitions(-DMING3D_D3D11)
 endif()
 
 set(MING3D_BUILD_EDITOR ON CACHE BOOL "Build editor project")

@@ -1,3 +1,4 @@
+#ifdef MING3D_D3D11
 #include "render_device_d3d11.h"
 
 #include "Debug/debug.h"
@@ -784,3 +785,5 @@ namespace Ming3D
     }
 
 }
+#endif
+
