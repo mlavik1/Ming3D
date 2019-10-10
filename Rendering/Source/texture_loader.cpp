@@ -54,7 +54,7 @@ namespace Ming3D
 
         texture->SetTextureData(textureData, bytesPerPixel, pixelFormat, surface->w, surface->h);
         /*
-        #ifndef MING3D_FORCE_OPENGL // TODO - TEMP HACK: what to do about this? OpenGL and D3D use a different origin (Upper-Left vs BottomLeft). If we try to solve it by flipping the Y-coordinate in the shader, we also have to do that when rendering to texture, which is ugly..
+        #ifndef MING3D_OPENGL // TODO - TEMP HACK: what to do about this? OpenGL and D3D use a different origin (Upper-Left vs BottomLeft). If we try to solve it by flipping the Y-coordinate in the shader, we also have to do that when rendering to texture, which is ugly..
         char* buffer = new char[surface->w * surface->h * bytesPerPixel];
         memcpy(buffer, outTexture->mTextureData.data(), surface->w * surface->h * bytesPerPixel);
         for (size_t i = 0; i < surface->h; i++)

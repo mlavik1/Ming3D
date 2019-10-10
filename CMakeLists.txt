@@ -18,21 +18,31 @@ set(SDL_SEARCH_PATH ${EXTERNAL_LIB_DIR})
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-IF(WIN32)
-	add_definitions(-DUNICODE)
-	add_definitions(-DMING3D_D3D11)
-endif()
-
+# Cache variables
 set(MING3D_BUILD_EDITOR ON CACHE BOOL "Build editor project")
 set(MING3D_BUILD_TESTS ON CACHE BOOL "Build test project")
-set(MING3D_FORCE_OPENGL OFF CACHE BOOL "Use OpenGL as the preferred graphics API")
 set(MING3D_DEBUG_STATS OFF CACHE BOOL "Enable debug stats")
-
-IF(MING3D_FORCE_OPENGL)
-	add_definitions(-DMING3D_FORCE_OPENGL)
+if(WIN32)
+    set(MING3D_RENDERING_API "D3D11" CACHE STRING "Rendering API")
+    set_property(CACHE MING3D_RENDERING_API PROPERTY STRINGS D3D11 OpenGL)
+else()
+    set(MING3D_RENDERING_API "OpenGL" CACHE STRING "Rendering API")
+    set_property(CACHE MING3D_RENDERING_API PROPERTY STRINGS OpenGL)
 endif()
+
+# Set rendering API
+if(MING3D_RENDERING_API STREQUAL "OpenGL")
+    add_definitions(-DMING3D_OPENGL)
+else()
+    add_definitions(-DMING3D_D3D11)
+endif()
+
 IF(MING3D_DEBUG_STATS)
 	add_definitions(-DMING3D_DEBUG_STATS_ENABLED)
+endif()
+
+IF(WIN32)
+    add_definitions(-DUNICODE)
 endif()
 
 # project

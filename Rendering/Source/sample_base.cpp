@@ -10,12 +10,11 @@
 
 #include "Debug/debug.h"
 
-#ifdef MING3D_FORCE_OPENGL
+#ifdef MING3D_OPENGL
 #include <SDL.h>
 #include "sdl_window.h"
 #include "render_device_gl.h"
 #else
-#include <Windows.h>
 #include "render_device_d3d11.h"
 #include "winapi_window.h"
 #endif
@@ -49,7 +48,7 @@ namespace Ming3D
 
     void SampleBase::init()
     {
-#ifdef MING3D_FORCE_OPENGL
+#ifdef MING3D_OPENGL
         if (SDL_Init(SDL_INIT_VIDEO) != 0)
             LOG_ERROR() << "Failed to initialise SDL";
         else
@@ -62,14 +61,14 @@ namespace Ming3D
         }
 #endif
 
-#ifdef MING3D_FORCE_OPENGL
+#ifdef MING3D_OPENGL
         mMainWindow = new SDLWindow();
 #else
         mMainWindow = new WinAPIWindow();
 #endif
         mMainWindow->Initialise();
 
-#ifdef MING3D_FORCE_OPENGL
+#ifdef MING3D_OPENGL
         LOG_INFO() << "Using OpenGL, version " << glGetString(GL_VERSION);
         mRenderDevice = new RenderDeviceGL();
 #else

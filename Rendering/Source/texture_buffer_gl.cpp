@@ -1,3 +1,4 @@
+#ifdef MING3D_OPENGL
 #include "texture_buffer_gl.h"
 
 #include "Debug/st_assert.h"
@@ -22,3 +23,4 @@ namespace Ming3D
         return mGLTexture;
     }
 }
+#endif

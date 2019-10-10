@@ -1,3 +1,4 @@
+#ifdef MING3D_OPENGL
 #include "render_device_gl.h"
 
 #include "vertex_buffer_gl.h"
@@ -450,3 +451,4 @@ namespace Ming3D
         glUniform4fv(loc, 1, (float*)&inVec[0]);
     }
 }
+#endif
