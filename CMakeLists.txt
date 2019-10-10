@@ -22,12 +22,21 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(MING3D_BUILD_EDITOR ON CACHE BOOL "Build editor project")
 set(MING3D_BUILD_TESTS ON CACHE BOOL "Build test project")
 set(MING3D_DEBUG_STATS OFF CACHE BOOL "Enable debug stats")
+
 if(WIN32)
+    # Graphics API
     set(MING3D_RENDERING_API "D3D11" CACHE STRING "Rendering API")
     set_property(CACHE MING3D_RENDERING_API PROPERTY STRINGS D3D11 OpenGL)
+    # Physics API
+    set(MING3D_PHYSICS_API "PhysX" CACHE STRING "Physics API")
+    set_property(CACHE MING3D_PHYSICS_API PROPERTY STRINGS PhysX Null)
 else()
+    # Graphics API
     set(MING3D_RENDERING_API "OpenGL" CACHE STRING "Rendering API")
     set_property(CACHE MING3D_RENDERING_API PROPERTY STRINGS OpenGL)
+    # Physics API
+    set(MING3D_PHYSICS_API "Null" CACHE STRING "Physics API")
+    set_property(CACHE MING3D_PHYSICS_API PROPERTY STRINGS Null)
 endif()
 
 # Set rendering API
@@ -37,7 +46,12 @@ else()
     add_definitions(-DMING3D_D3D11)
 endif()
 
-IF(MING3D_DEBUG_STATS)
+# Set physics API
+if(MING3D_PHYSICS_API STREQUAL "PhysX")
+    add_definitions(-DMING3D_PHYSX)
+endif()
+
+if(MING3D_DEBUG_STATS)
 	add_definitions(-DMING3D_DEBUG_STATS_ENABLED)
 endif()
 

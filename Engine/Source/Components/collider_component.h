@@ -2,7 +2,6 @@
 #define MING3D_COLLIDERCOMPONENT_H
 
 #include "component.h"
-#include "Physics/physx_declarations.h"
 
 namespace Ming3D
 {
@@ -18,9 +17,6 @@ namespace Ming3D
         
         virtual void RecreatePhysicsShape();
         virtual void UpdatePhysicsShape();
-
-        physx::PxMaterial* mPxMaterial = nullptr;
-        physx::PxShape* mPxShape = nullptr;
     
     public:
         ColliderComponent();

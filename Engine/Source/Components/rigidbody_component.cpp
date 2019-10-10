@@ -8,7 +8,14 @@
 #include "PxScene.h"
 #include "PxRigidActor.h"
 #include "Actors/actor.h"
-#include "Physics/physx_conversions.h"
+
+#ifdef MING3D_PHYSX
+#include "Physics/API/PhysX/dynamic_physics_actor_physx.h"
+#include "Physics/API/PhysX/static_physics_actor_physx.h"
+#else
+#include "Physics/API/Null/dynamic_physics_actor_null.h"
+#include "Physics/API/Null/static_physics_actor_null.h"
+#endif
 
 IMPLEMENT_CLASS(Ming3D::RigidBodyComponent)
 
@@ -49,16 +56,27 @@ namespace Ming3D
 
         DestroyPhysicsActor();
 
-        if (mIsStatic)
-            mPhysicsActor = new StaticPhysicsActor();
+        if (mIsStatic) {
+#ifdef MING3D_PHYSX
+            mPhysicsActor = new StaticPhysicsActorPhysX();
+#else
+            mPhysicsActor = new StaticPhysicsActorNull();
+#endif
+        }
         else
         {
-            mPhysicsActor = new DynamicPhysicsActor();
+#ifdef MING3D_PHYSX
+            mPhysicsActor = new DynamicPhysicsActorPhysX();
+#else
+            mPhysicsActor = new DynamicPhysicsActorNull();
+#endif
             static_cast<DynamicPhysicsActor*>(mPhysicsActor)->SetKinematic(mIsKinematic);
             static_cast<DynamicPhysicsActor*>(mPhysicsActor)->SetMass(mMass);
         }
 
-        mPhysicsActor->GetRigidActor()->userData = this;
+#ifdef MING3D_PHYSX
+        dynamic_cast<IPhysXActor*>(mPhysicsActor)->GetRigidActor()->userData = this;
+#endif
         physicsScene->RegisterRigidBody(this);
     
         mPhysicsActor->UpdateTransform(mParent->GetTransform());
