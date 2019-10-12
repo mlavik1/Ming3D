@@ -5,13 +5,13 @@
 #include "GameEngine/game_engine.h"
 #include "Physics/physics_manager.h"
 #include "Physics/physics_scene.h"
-#include "PxScene.h"
-#include "PxRigidActor.h"
 #include "Actors/actor.h"
 
 #ifdef MING3D_PHYSX
 #include "Physics/API/PhysX/dynamic_physics_actor_physx.h"
 #include "Physics/API/PhysX/static_physics_actor_physx.h"
+#include "PxScene.h"
+#include "PxRigidActor.h"
 #else
 #include "Physics/API/Null/dynamic_physics_actor_null.h"
 #include "Physics/API/Null/static_physics_actor_null.h"
@@ -78,7 +78,7 @@ namespace Ming3D
         dynamic_cast<IPhysXActor*>(mPhysicsActor)->GetRigidActor()->userData = this;
 #endif
         physicsScene->RegisterRigidBody(this);
-    
+
         mPhysicsActor->UpdateTransform(mParent->GetTransform());
     }
 

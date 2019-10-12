@@ -1,3 +1,4 @@
+#ifdef MING3D_PHYSX
 #include "physics_manager_physx.h"
 #include "Debug/debug.h"
 #include "PxPhysicsAPI.h"
@@ -44,3 +45,4 @@ namespace Ming3D
         }
     }
 }
+#endif

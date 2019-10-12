@@ -1,3 +1,4 @@
+#ifdef MING3D_PHYSX
 #include "static_physics_actor_physx.h"
 
 #include "PxRigidStatic.h"
@@ -26,3 +27,4 @@ namespace Ming3D
         mPxRigidStatic->setGlobalPose(trans);
     }
 }
+#endif

@@ -5,6 +5,22 @@
 #include "class.h"
 #include "function.h"
 
+/*=============================================================================================
+Macros and more for Ming3D::Object and subclasses.
+Enabling reflection on a class:
+	class YourClass : public Object
+	{
+	DEFINE_CLASS(YourClass, Object)
+	...
+	}
+Registering a function (so you can call it by name or use RPCs):
+	DEFINE_FUNCTION(FunctionName, FunctionParameter1Type, FunctionParameter2Type, ......)
+	BEGIN_REGISTER_CLASSPROPERTIES(Ming3D::YourClass)
+	REGISTER_CLASS_FUNCTION(Ming3D::YourClass, FunctionName) // REPEAT FOR EACH FUNCTION
+	.....
+	END_REGISTER_CLASSPROPERTIES(Ming3D::YourClass)
+==============================================================================================*/
+
 typedef uint64_t netguid_t;
 
 enum class ObjectFlag
@@ -44,13 +60,13 @@ private: \
 public: \
 	static Ming3D::Class* GetStaticClass() \
 	{ \
-		if(StaticClass == nullptr) StaticClass = name##::CreateStaticClass(); \
+		if(StaticClass == nullptr) StaticClass = name ::CreateStaticClass(); \
 		return StaticClass; \
 	} \
 	static Ming3D::Class* CreateStaticClass() \
 	{ \
 		if(StaticClass) return StaticClass; \
-		return new Ming3D::Class(#name, &##name##::InitialiseClass, &##name##::_CreateInstanceFromDefaultConstructor, baseclassaccessor); \
+		return new Ming3D::Class(#name, & name ::InitialiseClass, & name ::_CreateInstanceFromDefaultConstructor, baseclassaccessor); \
 	} \
 	virtual Ming3D::Class* GetClass() \
 	{ \
@@ -59,7 +75,7 @@ public: \
 	\
 	static Ming3D::Object* _CreateInstanceFromDefaultConstructor() \
 	{ \
-		return new name##(); \
+		return new name (); \
 	}
 
 /**
@@ -71,12 +87,12 @@ public: \
 */
 #define DEFINE_CLASS(classname, baseclassname) \
     typedef baseclassname Super; \
-	DEFINE_CLASS_INTERNAL(classname, : ##baseclassname##(params), ##baseclassname##::GetStaticClass())
+	DEFINE_CLASS_INTERNAL(classname, : baseclassname (params), baseclassname ::GetStaticClass())
 
 /**
 * Add this to your source file, if DEFINE_CLASS has been used in the header file.
 */
 #define IMPLEMENT_CLASS(classname) \
-	Ming3D::Class* ##classname##::StaticClass = ##classname##::CreateStaticClass();
+	Ming3D::Class* classname ::StaticClass = classname ::CreateStaticClass();
 
 #endif

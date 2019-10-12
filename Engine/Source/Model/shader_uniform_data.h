@@ -2,6 +2,7 @@
 #define MING3D_SHADERUNIFORMDATA_H
 
 #include "shader_info.h"
+#include <cstring>
 
 namespace Ming3D
 {

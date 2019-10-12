@@ -1,5 +1,6 @@
 #include "actor.h"
 #include "Source/Components/component.h"
+#include <algorithm>
 
 IMPLEMENT_CLASS(Ming3D::Actor)
 

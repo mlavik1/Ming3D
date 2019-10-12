@@ -7,6 +7,8 @@
 
 namespace Ming3D
 {
+    class Actor;
+
     class Transform
     {
         friend class Actor;

@@ -1,3 +1,4 @@
+#ifdef MING3D_PHYSX
 #include "physics_scene_physx.h"
 
 #include "PxScene.h"
@@ -109,3 +110,4 @@ namespace Ming3D
         mRigidBodies.remove(rbComp);
     }
 }
+#endif

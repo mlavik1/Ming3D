@@ -1,3 +1,4 @@
+#ifdef MING3D_PHYSX
 #include "dynamic_physics_actor_physx.h"
 
 #include "PxRigidDynamic.h"
@@ -55,3 +56,4 @@ namespace Ming3D
         physx::PxRigidBodyExt::addForceAtPos(*mPxRigidDynamic, PhysXConversions::glmVec3ToPxVec3(force), PhysXConversions::glmVec3ToPxVec3(force), PhysXConversions::forceModeToPxForceMode(forceMode));
     }
 }
+#endif

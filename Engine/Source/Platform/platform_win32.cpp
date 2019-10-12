@@ -1,3 +1,4 @@
+#ifdef _WIN32
 #include "platform_win32.h"
 
 #include <winsock2.h>
@@ -124,3 +125,4 @@ namespace Ming3D
 #endif
     }
 }
+#endif

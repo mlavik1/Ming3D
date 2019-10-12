@@ -3,13 +3,14 @@
 #include "Debug/debug.h"
 #include "GameEngine/game_engine.h"
 #include "Platform/platform.h"
+#include <cstring>
 
 namespace Ming3D
 {
     void GameNetwork::Connect(const char* inHost, int inPort)
     {
         mIsHost = inHost == nullptr;
-        
+
         mListenSocket = GGameEngine->GetPlatform()->CreateSocket();
 
         int listenPort = inPort;
@@ -53,7 +54,7 @@ namespace Ming3D
             SetConnection(clientID, inConnection);
             HandleClientConnected(clientID);
         }
-        
+
         if (!mIsHost && !mConnectedToHost)
             mConnectedToHost = mHostConnection->GetSocket()->Connect(); // TODO: Change return value to ESocketConnectResult
 
@@ -216,7 +217,7 @@ namespace Ming3D
                     break;
                 }
             }
-            
+
             for (int iClient : targets)
             {
                 DataWriter* dataWriter = currMessage.mMessage->Serialise();
@@ -319,7 +320,7 @@ namespace Ming3D
     void GameNetwork::CallRPC(GameObject* inObject, const char* inFunctionName, FunctionArgs inArgs, int inClient)
     {
         NetMessage* msg = CreateRPCMessage(inObject, inFunctionName, inArgs);
-        
+
         if (msg == nullptr)
             return;
 

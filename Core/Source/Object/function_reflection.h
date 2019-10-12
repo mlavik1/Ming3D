@@ -41,7 +41,7 @@ namespace Ming3D
 	/**
 	* Helper class for calling functions.
 	*/
-	static class FunctionCallHelper
+	class FunctionCallHelper
 	{
 	public:
 		template<typename ReturnType, typename Class, typename ... Param, std::size_t ... I>
@@ -54,7 +54,7 @@ namespace Ming3D
 	/**
 	* Helper class for serialising and deserialising function parameters.
 	*/
-	static class FunctionSerialisationHelper
+	class FunctionSerialisationHelper
 	{
 	public:
 		template<typename T>

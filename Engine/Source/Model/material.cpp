@@ -33,8 +33,11 @@ namespace Ming3D
                 switch (uniform.mDatatypeInfo.mDatatype)
                 {
                 case EShaderDatatype::Mat4x4:
-                    uniformData->SetData(&glm::mat4(1.0f));
+                {
+                    glm::mat4 identMat(1.0f);
+                    uniformData->SetData(&identMat);
                     break;
+                }
                 default:
                     uniformData->SetData(&zeroValues);
                 }
@@ -56,7 +59,7 @@ namespace Ming3D
             delete mTextures[textureIndex];
 
         mTextures[textureIndex] = texture;
-        
+
         // TODO: Queue render thread command
         if (mMaterialBuffer->mTextureBuffers[textureIndex] != nullptr)
             delete mMaterialBuffer->mTextureBuffers[textureIndex];

@@ -27,7 +27,7 @@
 #ifdef _WIN32
 #include "Source/Platform/platform_win32.h"
 #else
-// TODO
+#include "Platform/platform_linux.h"
 #endif
 
 namespace Ming3D
@@ -133,6 +133,6 @@ namespace Ming3D
 
     void GameEngine::Start()
     {
-        
+
     }
 }

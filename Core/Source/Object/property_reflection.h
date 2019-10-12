@@ -2,6 +2,7 @@
 #define MING3D_PROPERTYREFLECTION_H
 
 #include "Serialisation/data_writer.h"
+#include "Serialisation/data_serialisation.h"
 
 namespace Ming3D
 {

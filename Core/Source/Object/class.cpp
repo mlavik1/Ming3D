@@ -1,6 +1,7 @@
 #include "class.h"
 #include "object.h"
 #include "Source/Debug/st_assert.h"
+#include <cstring>
 
 namespace Ming3D
 {
