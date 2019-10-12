@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.7)
 
 # Gather c++ files
-file(GLOB_RECURSE SRC_FILES 
+file(GLOB_RECURSE SRC_FILES
     Source/*.cpp
     Source/*.h
 )
@@ -64,7 +64,7 @@ target_link_libraries(Rendering GLEW::GLEW)
 target_link_libraries(Rendering assimp) #TODO: Rendering project should not read files. Instead, read in engine and send data to renderer.
 
 
-# Copy DLLs    
+# Copy DLLs
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     execute_process(COMMAND cmake -E copy ${SDL2_LIBRARY_DIRECTORY}/SDL2.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Release/SDL2.dll)
     execute_process(COMMAND cmake -E copy ${SDL2_LIBRARY_DIRECTORY}/SDL2.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Debug/SDL2.dll)

@@ -19,9 +19,13 @@ set(SDL_SEARCH_PATH ${EXTERNAL_LIB_DIR})
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # Cache variables
-set(MING3D_BUILD_EDITOR ON CACHE BOOL "Build editor project")
 set(MING3D_BUILD_TESTS ON CACHE BOOL "Build test project")
 set(MING3D_DEBUG_STATS OFF CACHE BOOL "Enable debug stats")
+if(WIN32)
+    set(MING3D_BUILD_EDITOR ON CACHE BOOL "Build editor project")
+else()
+    set(MING3D_BUILD_EDITOR OFF)
+endif()
 
 if(WIN32)
     # Graphics API

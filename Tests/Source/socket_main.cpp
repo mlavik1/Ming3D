@@ -2,6 +2,7 @@
 #include "net_socket.h"
 
 #include <iostream>
+#include <cstring>
 
 #include "Debug/debug.h"
 
@@ -134,11 +135,11 @@ int main()
 
         delete connectSocket;
     }
-    
+
 #ifdef _WIN32
     WSACleanup();
 #endif
-    
+
     return 0;
 }
 
