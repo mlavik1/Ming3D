@@ -1,8 +1,5 @@
 #pragma once
 
-#include <Windows.h>
-#include <gl/glew.h>
-
 #include "glm/glm.hpp"
 #include <vector>
 

@@ -1,4 +1,5 @@
 #include "texture.h"
+#include <cstring>
 
 namespace Ming3D
 {

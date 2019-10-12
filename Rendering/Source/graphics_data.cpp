@@ -1,4 +1,5 @@
 #include "graphics_data.h"
+#include <cstring>
 
 namespace Ming3D
 {

@@ -2,7 +2,7 @@
 #define MING3D_TEXTURE_GL_H
 
 #include "texture_buffer.h"
-#include <gl/glew.h>
+#include <GL/glew.h>
 
 namespace Ming3D
 {
