@@ -11,7 +11,7 @@
 #include "Debug/debug.h"
 
 #ifdef MING3D_OPENGL
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include "sdl_window.h"
 #include "render_device_gl.h"
 #else
@@ -82,7 +82,7 @@ namespace Ming3D
     {
 
     }
-    
+
     SampleBase::ModelData* SampleBase::SampleBase::LoadModel(const char* inModel)
     {
         ModelData* modelData = new ModelData();
@@ -165,7 +165,7 @@ namespace Ming3D
             Vertex{ glm::vec3(halfWidth, halfHeight, 0.0f), glm::vec3(), glm::vec2(1.0f, 1.0f) },
             Vertex{ glm::vec3(halfWidth, -halfHeight, 0.0f), glm::vec3(), glm::vec2(1.0f, 0.0f) } };
         meshData->mIndices = { 0, 2, 1, 0, 3, 2 };
-        return meshData; 
+        return meshData;
     }
 
 }

@@ -42,7 +42,7 @@ namespace Ming3D
 #ifdef _WIN32
         mPlatform = new PlatformWin32();
 #else
-        // TODO
+        mPlatform = new PlatformLinux();
 #endif
         mTimeManager = new TimeManager();
         mWorld = new World();

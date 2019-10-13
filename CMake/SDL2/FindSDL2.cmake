@@ -91,7 +91,7 @@ foreach(FIND_SDL2_COMPONENT ${SDL2_FIND_COMPONENTS})
         find_library(SDL2_${FIND_SDL2_COMPONENT_UPPER}_LIBRARY
                      NAMES ${FIND_SDL2_COMPONENT_NAME}
                      PATH_SUFFIXES lib64 lib
-                     PATHS ${FIND_SDL2_PATHS})            
+                     PATHS ${FIND_SDL2_PATHS})
     endif()
 
     if (SDL2_${FIND_SDL2_COMPONENT_UPPER}_LIBRARY)
