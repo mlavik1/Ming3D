@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.3)
+project(Engine)
 
 # Copy DLL from the given path to the EXE binary immediate directory (will be copied to output dir in the end)
 function(copy_dlls bindir outdir dllnames)
