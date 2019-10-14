@@ -28,6 +28,8 @@ namespace Ming3D
             mSDLWindow = SDL_CreateWindow("Ming3D", 0, 0, mWindowWidth, mWindowHeight, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
 
         mGLContext = SDL_GL_CreateContext(mSDLWindow);
+
+        //SDL_GL_MakeCurrent(mSDLWindow, mGLContext);
     }
 
     void SDLWindow::SetSize(unsigned int inWidth, unsigned int inHeight)

@@ -16,6 +16,11 @@ namespace Ming3D
 {
     RenderDeviceGL::RenderDeviceGL()
     {
+        const GLubyte* vendor = glGetString(GL_VENDOR);
+        const GLubyte* renderer = glGetString(GL_RENDERER);
+        LOG_INFO() << "Graphics Vendor: " << vendor;
+        LOG_INFO() << "Graphics Renderer: " << renderer;
+
         if (glewInit())
         {
             LOG_ERROR() << "Failed to initialise GLEW";
