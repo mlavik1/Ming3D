@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.7)
+project(Rendering)
 
 # Gather c++ files
 file(GLOB_RECURSE SRC_FILES

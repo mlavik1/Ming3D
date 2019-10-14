@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.3)
-#project(Core)
+project(Core)
 
 # Gather c++ files
 file(GLOB_RECURSE SRC_FILES 
