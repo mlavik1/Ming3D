@@ -9,23 +9,18 @@ namespace Ming3D
 {
     class DynamicPhysicsActor : public PhysicsActor
     {
-    private:
-        physx::PxRigidDynamic* mPxRigidDynamic = nullptr;
-
-        bool mIsKinematic = false;
-
     public:
-        DynamicPhysicsActor();
-        virtual physx::PxRigidActor* GetRigidActor() override;
+        DynamicPhysicsActor() {};
+        virtual ~DynamicPhysicsActor() {};
 
-        virtual void UpdateTransform(const Transform& inTrans) override;
+        virtual void UpdateTransform(const Transform& inTrans) override = 0;
 
-        void SetKinematic(bool inKinematic);
-        void SetMass(float mass);
-        void AddForce(const glm::vec3& force, const ForceMode& forceMode);
-        void AddForceAtPos(const glm::vec3& force, const glm::vec3& pos, const ForceMode& forceMode);
+        virtual void SetKinematic(bool inKinematic) = 0;
+        virtual void SetMass(float mass) = 0;
+        virtual void AddForce(const glm::vec3& force, const ForceMode& forceMode) = 0;
+        virtual void AddForceAtPos(const glm::vec3& force, const glm::vec3& pos, const ForceMode& forceMode) = 0;
 
-        bool IsKinematic() const { return mIsKinematic; };
+        virtual bool IsKinematic() const = 0;
     };
 }
 

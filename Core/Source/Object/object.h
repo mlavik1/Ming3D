@@ -12,7 +12,7 @@ namespace Ming3D
 	*/
 	class Object
 	{
-		DEFINE_CLASS_INTERNAL(Ming3D::Object, , 0)
+		DEFINE_CLASS_INTERNAL(Object, , 0)
 
 	private:
         ObjectFlag mObjectFlags;

@@ -1,16 +1,32 @@
 #include "box_collider_component.h"
 
 #include "Actors/actor.h"
-#include "PxRigidActor.h"
 #include "GameEngine/game_engine.h"
 #include "Physics/physics_manager.h"
+
+#ifdef MING3D_PHYSX
+#include "PxRigidActor.h"
 #include "PxPhysics.h"
 #include "PxShape.h"
+#include "PxMaterial.h"
+#include "Physics/API/PhysX/physics_manager_physx.h"
+#include "Physics/API/PhysX/iphysx_actor.h"
+#endif
 
 IMPLEMENT_CLASS(Ming3D::BoxColliderComponent)
 
 namespace Ming3D
 {
+    BoxColliderComponent::~BoxColliderComponent()
+    {
+#ifdef MING3D_PHYSX
+        if (mPxMaterial != nullptr)
+            mPxMaterial->release();
+        if (mPxShape != nullptr)
+            mPxShape->release();
+#endif
+    }
+
     void BoxColliderComponent::InitialiseClass()
     {
 
@@ -35,17 +51,20 @@ namespace Ming3D
         RigidBodyComponent* rigidBodyComp = GetParent()->GetComponent<RigidBodyComponent>();
         assert(rigidBodyComp);
 
+#ifdef MING3D_PHYSX
         if(mPxMaterial == nullptr)
-            mPxMaterial = GGameEngine->GetPhysicsManager()->GetPxPhysics()->createMaterial(0.5, 0.5, 0.5);
+            mPxMaterial = static_cast<PhysicsManagerPhysX*>(GGameEngine->GetPhysicsManager())->GetPxPhysics()->createMaterial(0.5, 0.5, 0.5);
 
         const glm::vec3 size = mSize * mParent->GetTransform().GetWorldScale();
 
-        physx::PxRigidActor* pxActor = rigidBodyComp->GetPhysicsActor()->GetRigidActor();
+        physx::PxRigidActor* pxActor = dynamic_cast<IPhysXActor*>(rigidBodyComp->GetPhysicsActor())->GetRigidActor();
         mPxShape = pxActor->createShape(physx::PxBoxGeometry(size.x, size.y, size.z), *mPxMaterial);
+#endif
     }
 
     void BoxColliderComponent::UpdatePhysicsShape()
     {
+#ifdef MING3D_PHYSX
         if (mPxShape == nullptr)
             return;
 
@@ -53,13 +72,14 @@ namespace Ming3D
         assert(rigidBodyComp);
 
         if (mPxMaterial == nullptr)
-            mPxMaterial = GGameEngine->GetPhysicsManager()->GetPxPhysics()->createMaterial(0.5, 0.5, 0.5);
+            mPxMaterial = static_cast<PhysicsManagerPhysX*>(GGameEngine->GetPhysicsManager())->GetPxPhysics()->createMaterial(0.5, 0.5, 0.5);
 
         const glm::vec3 size = mSize * mParent->GetTransform().GetWorldScale();
         physx::PxBoxGeometry pxGeom = physx::PxBoxGeometry(size.x, size.y, size.z);
 
-        physx::PxRigidActor* pxActor = rigidBodyComp->GetPhysicsActor()->GetRigidActor();
+        physx::PxRigidActor* pxActor = dynamic_cast<IPhysXActor*>(rigidBodyComp->GetPhysicsActor())->GetRigidActor();
         mPxShape->setGeometry(pxGeom);
+#endif
     }
 
     void BoxColliderComponent::PostMove()

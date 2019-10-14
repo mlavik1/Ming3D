@@ -1,3 +1,4 @@
+#ifdef _WIN32
 #include "input_handler_win32.h"
 #include "GameEngine/game_engine.h"
 #include "input_manager.h"
@@ -96,3 +97,4 @@ namespace Ming3D
         }
     }
 }
+#endif

@@ -1,28 +1,30 @@
-#include "static_physics_actor.h"
+#ifdef MING3D_PHYSX
+#include "static_physics_actor_physx.h"
 
 #include "PxRigidStatic.h"
 #include "GameEngine/game_engine.h"
-#include "Physics/physics_manager.h"
+#include "physics_manager_physx.h"
 #include "PxPhysics.h"
 #include "physx_conversions.h"
 
 namespace Ming3D
 {
-    StaticPhysicsActor::StaticPhysicsActor()
+    StaticPhysicsActorPhysX::StaticPhysicsActorPhysX()
     {
         physx::PxTransform trans(physx::PxVec3(0.0f, 0.0f, 0.0f));
-        mPxRigidStatic = GGameEngine->GetPhysicsManager()->GetPxPhysics()->createRigidStatic(trans);
+        mPxRigidStatic = static_cast<PhysicsManagerPhysX*>(GGameEngine->GetPhysicsManager())->GetPxPhysics()->createRigidStatic(trans);
     }
 
-    physx::PxRigidActor* StaticPhysicsActor::GetRigidActor()
+    physx::PxRigidActor* StaticPhysicsActorPhysX::GetRigidActor()
     {
         return mPxRigidStatic;
     }
 
-    void StaticPhysicsActor::UpdateTransform(const Transform& inTrans)
+    void StaticPhysicsActorPhysX::UpdateTransform(const Transform& inTrans)
     {
         physx::PxTransform trans(PhysXConversions::glmVec3ToPxVec3(inTrans.GetWorldPosition()), PhysXConversions::glmQuatToPxQuat(inTrans.GetWorldRotation()));
 
         mPxRigidStatic->setGlobalPose(trans);
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#ifdef MING3D_D3D11
 #include "texture_buffer_d3d11.h"
 
 #include "render_device_d3d11.h"
@@ -18,3 +19,5 @@ namespace Ming3D
         }
     }
 }
+#endif
+

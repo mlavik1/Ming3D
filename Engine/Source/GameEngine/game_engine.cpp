@@ -13,16 +13,21 @@
 #include "render_window.h"
 #include "SceneRenderer/scene_renderer.h"
 #include "Networking/network_manager.h"
-#include "Physics/physics_manager.h"
 #include "Components/camera_component.h"
 #include "Input/input_handler.h"
 #include "Input/input_manager.h"
 #include "Debug/debug_stats.h"
 
+#ifdef MING3D_PHYSX
+#include "Physics/API/PhysX/physics_manager_physx.h"
+#else
+#include "Physics/API/Null/physics_manager_null.h"
+#endif
+
 #ifdef _WIN32
 #include "Source/Platform/platform_win32.h"
 #else
-// TODO
+#include "Platform/platform_linux.h"
 #endif
 
 namespace Ming3D
@@ -37,12 +42,16 @@ namespace Ming3D
 #ifdef _WIN32
         mPlatform = new PlatformWin32();
 #else
-        // TODO
+        mPlatform = new PlatformLinux();
 #endif
         mTimeManager = new TimeManager();
         mWorld = new World();
         mSceneRenderer = new SceneRenderer();
-        mPhysicsManager = new PhysicsManager();
+#ifdef MING3D_PHYSX
+        mPhysicsManager = new PhysicsManagerPhysX();
+#else
+        mPhysicsManager = new PhysicsManagerNull();
+#endif
         mNetworkManager = new NetworkManager();
     }
 
@@ -124,6 +133,6 @@ namespace Ming3D
 
     void GameEngine::Start()
     {
-        
+
     }
 }

@@ -1,4 +1,5 @@
 #include "data_writer.h"
+#include <cstring>
 
 namespace Ming3D
 {

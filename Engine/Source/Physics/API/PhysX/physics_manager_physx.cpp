@@ -1,10 +1,12 @@
-#include "physics_manager.h"
+#ifdef MING3D_PHYSX
+#include "physics_manager_physx.h"
 #include "Debug/debug.h"
 #include "PxPhysicsAPI.h"
+#include "physics_scene_physx.h"
 
 namespace Ming3D
 {
-    PhysicsManager::PhysicsManager()
+    PhysicsManagerPhysX::PhysicsManagerPhysX()
     {
         mDefaultAllocatorCallback = new physx::PxDefaultAllocator();
         mDefaultErrorCallback = new physx::PxDefaultErrorCallback();
@@ -17,7 +19,7 @@ namespace Ming3D
             LOG_INFO() << "Initialised PhysX, version: " << PX_PHYSICS_VERSION_MAJOR << "." << PX_PHYSICS_VERSION_MINOR;
     }
 
-    PhysicsManager::~PhysicsManager()
+    PhysicsManagerPhysX::~PhysicsManagerPhysX()
     {
         delete mDefaultAllocatorCallback;
         delete mDefaultErrorCallback;
@@ -28,14 +30,14 @@ namespace Ming3D
         mPxFoundation->release();
     }
 
-    PhysicsScene* PhysicsManager::CreatePhysicsScene()
+    PhysicsScene* PhysicsManagerPhysX::CreatePhysicsScene()
     {
-        PhysicsScene* scene = new PhysicsScene(mPxPhysics);
+        PhysicsScenePhysX* scene = new PhysicsScenePhysX(mPxPhysics);
         mScenes.push_back(scene);
         return scene;
     }
 
-    void PhysicsManager::SimulateScenes(float seconds)
+    void PhysicsManagerPhysX::SimulateScenes(float seconds)
     {
         for (size_t iScene = 0; iScene < mScenes.size(); iScene++)
         {
@@ -43,3 +45,4 @@ namespace Ming3D
         }
     }
 }
+#endif

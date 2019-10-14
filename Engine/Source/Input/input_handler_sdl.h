@@ -3,7 +3,7 @@
 
 #include "input_handler.h"
 #include "input_event.h"
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 namespace Ming3D
 {

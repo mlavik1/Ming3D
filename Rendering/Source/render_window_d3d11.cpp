@@ -1,3 +1,4 @@
+#ifdef MING3D_D3D11
 #include "render_window_d3d11.h"
 
 namespace Ming3D
@@ -30,3 +31,5 @@ namespace Ming3D
         mBackBuffer = inBackBuffer;
     }
 }
+#endif
+

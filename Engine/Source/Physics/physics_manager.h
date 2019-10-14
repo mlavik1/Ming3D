@@ -1,31 +1,21 @@
 #ifndef MING3D_PHYSICSMANAGER_H
 #define MING3D_PHYSICSMANAGER_H
 
-#include <vector>
 #include "physics_scene.h"
-#include "physx_declarations.h"
 
 namespace Ming3D
 {
     class PhysicsManager
     {
-    private:
-        std::vector<PhysicsScene*> mScenes;
-        physx::PxFoundation* mPxFoundation;
-        physx::PxPhysics* mPxPhysics;
-
-        physx::PxDefaultErrorCallback* mDefaultErrorCallback;
-        physx::PxDefaultAllocator* mDefaultAllocatorCallback;
-
     public:
-        PhysicsManager();
-        ~PhysicsManager();
-        PhysicsScene* CreatePhysicsScene();
+        PhysicsManager() {}
+        virtual ~PhysicsManager() {}
         
-        void SimulateScenes(float seconds);
+        virtual PhysicsScene* CreatePhysicsScene() = 0;
+        
+        virtual void SimulateScenes(float seconds) = 0;
 
-        physx::PxPhysics* GetPxPhysics() { return mPxPhysics; }
-        PhysicsScene* GetPhysicsScene(int scene) { return mScenes[scene]; }
+        virtual PhysicsScene* GetPhysicsScene(int scene) = 0;
     };
 }
 

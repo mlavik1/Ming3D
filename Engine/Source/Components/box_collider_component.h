@@ -5,6 +5,10 @@
 #include "rigidbody_component.h"
 #include "glm/vec3.hpp"
 
+#ifdef MING3D_PHYSX
+#include "Physics/API/PhysX/physx_declarations.h"
+#endif
+
 namespace Ming3D
 {
     class BoxColliderComponent : public ColliderComponent
@@ -12,6 +16,13 @@ namespace Ming3D
         DEFINE_CLASS(Ming3D::BoxColliderComponent, Ming3D::ColliderComponent)
 
     private:
+        virtual ~BoxColliderComponent();
+
+#ifdef MING3D_PHYSX
+        physx::PxMaterial* mPxMaterial = nullptr;
+        physx::PxShape* mPxShape = nullptr;
+#endif
+
         glm::vec3 mSize = glm::vec3(1.0f, 1.0f, 1.0f);
 
         static void InitialiseClass();

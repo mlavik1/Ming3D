@@ -6,6 +6,7 @@
 namespace Ming3D
 {
     class World;
+    class Actor;
 
     class Component : public GameObject
     {

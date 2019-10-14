@@ -1,11 +1,12 @@
+#ifdef _WIN32
 #include "platform_win32.h"
 
 #include <winsock2.h>
 #include <windows.h>
 #include <ws2tcpip.h>
 
-#ifdef MING3D_FORCE_OPENGL
-#include <SDL.h>
+#ifdef MING3D_OPENGL
+#include <SDL2/SDL.h>
 #include "sdl_window.h"
 #include "render_device_gl.h"
 #include "Input/input_handler_sdl.h"
@@ -38,11 +39,24 @@ namespace Ming3D
 
     void PlatformWin32::Initialise()
     {
-#ifdef MING3D_FORCE_OPENGL
+#ifdef MING3D_OPENGL
         if (SDL_Init(SDL_INIT_VIDEO) != 0)
             LOG_ERROR() << "Failed to initialise SDL";
         else
         {
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+            //SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+            //SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+
+            SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+            SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+            SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+            SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+            SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+            SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 32);
+            SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+            SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 0);
+
             SDL_version linkedver; SDL_version compiledver;
             SDL_GetVersion(&linkedver);
             SDL_VERSION(&compiledver);
@@ -78,7 +92,7 @@ namespace Ming3D
 
     RenderDevice* PlatformWin32::CreateRenderDevice()
     {
-#ifdef MING3D_FORCE_OPENGL
+#ifdef MING3D_OPENGL
         LOG_INFO() << "Using OpenGL, version " << glGetString(GL_VERSION);
         return new RenderDeviceGL();
 #else
@@ -89,7 +103,7 @@ namespace Ming3D
     WindowBase* PlatformWin32::CreateOSWindow()
     {
         WindowBase* window;
-#ifdef MING3D_FORCE_OPENGL
+#ifdef MING3D_OPENGL
         window = new SDLWindow();
 #else
         auto wndProcCallback = [](HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) -> LRESULT
@@ -117,10 +131,11 @@ namespace Ming3D
 
     InputHandler* PlatformWin32::CreateInputHandler()
     {
-#if MING3D_FORCE_OPENGL
+#if MING3D_OPENGL
         return new InputHandlerSDL();
 #else
         return new InputHandlerWin32();
 #endif
     }
 }
+#endif

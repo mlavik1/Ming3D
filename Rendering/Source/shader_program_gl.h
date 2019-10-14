@@ -2,7 +2,7 @@
 #define MING3D_SHADER_PROGRAM_GL_H
 
 #include "shader_program.h"
-#include <gl/glew.h>
+#include <GL/glew.h>
 #include <string>
 #include <unordered_map>
 

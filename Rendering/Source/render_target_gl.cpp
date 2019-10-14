@@ -1,3 +1,4 @@
+#ifdef MING3D_OPENGL
 #include "render_target_gl.h"
 
 namespace Ming3D
@@ -28,3 +29,4 @@ namespace Ming3D
         return mColourBuffers[inSlot];
     }
 }
+#endif

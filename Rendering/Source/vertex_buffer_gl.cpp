@@ -1,3 +1,4 @@
+#ifdef MING3D_OPENGL
 #include "vertex_buffer_gl.h"
 
 namespace Ming3D
@@ -20,3 +21,4 @@ namespace Ming3D
         return mGLBuffer;
     }
 }
+#endif

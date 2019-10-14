@@ -7,6 +7,7 @@
 #include "Debug/st_assert.h"
 #include "shader_tokeniser.h"
 #include "shader_preprocessor.h"
+#include "Debug/st_assert.h"
 
 #define MING3D_BreakOnShaderParserError
 
@@ -54,7 +55,7 @@ namespace Ming3D
         // TODO: PRINT THE LINE THAT HAS THE ERROR
         LOG_ERROR() << "Parsing error, in line " << inTokenParser.GetCurrentToken().mLineNumber << ":" << inErrorString;
 #ifdef MING3D_BreakOnShaderParserError
-        __debugbreak();
+        __Assert(false);
 #endif
     }
 

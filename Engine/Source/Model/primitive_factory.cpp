@@ -1,6 +1,7 @@
 #include "primitive_factory.h"
 #include "mesh.h"
 #include "glm/gtx/rotate_vector.hpp"
+#include <cstring>
 
 namespace Ming3D
 {
@@ -13,7 +14,7 @@ namespace Ming3D
     };
 
     void CreateRotatedPlane(const std::vector<Vertex>& baseVerts, const std::vector<unsigned int>& baseIndices,
-        glm::vec3& rotDir, float rotAngle, glm::vec3 posOffset,
+        const glm::vec3& rotDir, float rotAngle, const glm::vec3 posOffset,
         std::vector<Vertex>& outVerts, std::vector<unsigned int>& outIndices)
     {
         const size_t indexOffset = outVerts.size();
@@ -25,7 +26,7 @@ namespace Ming3D
             vertex.mNormal = glm::normalize(posOffset);
             outVerts.push_back(vertex);
         }
-    
+
         for (size_t iIndex = 0; iIndex < baseIndices.size(); iIndex++)
         {
             outIndices.push_back(baseIndices[iIndex] + indexOffset);
@@ -44,7 +45,7 @@ namespace Ming3D
             Vertex{ glm::vec3(dx, dy, 0),   glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(1.0f, 1.0f)  },
             Vertex{ glm::vec3(dx, -dy, 0),  glm::vec3(0.0f, 0.0f, 0.0f), glm::vec2(1.0f, 0.0f)  },
         };
-        
+
         const std::vector<unsigned int> baseIndices = { 0, 2, 1, 0, 3, 2 };
 
         std::vector<Vertex> vertices;
@@ -66,7 +67,7 @@ namespace Ming3D
 
         memcpy(mesh->mVertexData->GetDataPtr(), vertices.data(), vertices.size() * sizeof(Vertex));
         memcpy(mesh->mIndexData->GetData(), indices.data(), indices.size() * sizeof(unsigned int));
-        
+
         return mesh;
     }
 }

@@ -1,3 +1,4 @@
+#ifdef _WIN32
 #include "winapi_window.h"
 
 namespace Ming3D
@@ -97,3 +98,5 @@ namespace Ming3D
         return mHWND;
     }
 }
+#endif
+

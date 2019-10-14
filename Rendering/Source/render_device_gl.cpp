@@ -1,3 +1,4 @@
+#ifdef MING3D_OPENGL
 #include "render_device_gl.h"
 
 #include "vertex_buffer_gl.h"
@@ -15,6 +16,11 @@ namespace Ming3D
 {
     RenderDeviceGL::RenderDeviceGL()
     {
+        const GLubyte* vendor = glGetString(GL_VENDOR);
+        const GLubyte* renderer = glGetString(GL_RENDERER);
+        LOG_INFO() << "Graphics Vendor: " << vendor;
+        LOG_INFO() << "Graphics Renderer: " << renderer;
+
         if (glewInit())
         {
             LOG_ERROR() << "Failed to initialise GLEW";
@@ -450,3 +456,4 @@ namespace Ming3D
         glUniform4fv(loc, 1, (float*)&inVec[0]);
     }
 }
+#endif

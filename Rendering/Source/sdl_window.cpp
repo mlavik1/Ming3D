@@ -1,9 +1,9 @@
 #include "sdl_window.h"
 
-#include <SDL.h>
-#include <SDL_video.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_video.h>
 
-#include <SDL_syswm.h>
+#include <SDL2/SDL_syswm.h>
 
 #include "Debug/st_assert.h"
 
@@ -11,7 +11,7 @@ namespace Ming3D
 {
     SDLWindow::SDLWindow()
     {
-        
+
     }
 
     SDLWindow::SDLWindow(const void* inNativewindow)
@@ -28,6 +28,8 @@ namespace Ming3D
             mSDLWindow = SDL_CreateWindow("Ming3D", 0, 0, mWindowWidth, mWindowHeight, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
 
         mGLContext = SDL_GL_CreateContext(mSDLWindow);
+
+        //SDL_GL_MakeCurrent(mSDLWindow, mGLContext);
     }
 
     void SDLWindow::SetSize(unsigned int inWidth, unsigned int inHeight)

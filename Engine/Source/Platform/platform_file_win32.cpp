@@ -1,3 +1,4 @@
+#ifdef _WIN32
 #include "platform_file_win32.h"
 
 #include <Windows.h>
@@ -52,3 +53,4 @@ namespace Ming3D
             return false;
     }
 }
+#endif

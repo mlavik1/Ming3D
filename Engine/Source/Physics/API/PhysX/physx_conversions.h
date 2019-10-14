@@ -5,7 +5,7 @@
 #include "foundation/PxQuat.h"
 #include "glm/vec3.hpp"
 #include "glm/gtx/quaternion.hpp"
-#include "force_mode.h"
+#include "Physics/force_mode.h"
 #include "PxForceMode.h"
 
 namespace Ming3D

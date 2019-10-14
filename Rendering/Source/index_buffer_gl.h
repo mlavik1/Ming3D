@@ -3,7 +3,7 @@
 
 #include "index_buffer.h"
 
-#include <gl/glew.h>
+#include <GL/glew.h>
 
 namespace Ming3D
 {

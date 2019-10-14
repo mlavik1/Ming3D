@@ -1,4 +1,5 @@
-#include "physics_scene.h"
+#ifdef MING3D_PHYSX
+#include "physics_scene_physx.h"
 
 #include "PxScene.h"
 #include "PxPhysics.h"
@@ -8,6 +9,7 @@
 #include "foundation/PxTransform.h"
 #include "Actors/actor.h"
 #include "physx_conversions.h"
+#include "iphysx_actor.h"
 
 namespace Ming3D
 {
@@ -54,7 +56,7 @@ namespace Ming3D
         return physx::PxFilterFlag::eDEFAULT;
     }
 
-    PhysicsScene::PhysicsScene(physx::PxPhysics* pxPhysics)
+    PhysicsScenePhysX::PhysicsScenePhysX(physx::PxPhysics* pxPhysics)
     {
         simulationCallbackHandler = new PhysicsSimulationCallback();
 
@@ -72,13 +74,13 @@ namespace Ming3D
         mPxScene->setVisualizationParameter(physx::PxVisualizationParameter::eACTOR_AXES, 1.0f);	//Enable visualization of actor's axis
     }
 
-    PhysicsScene::~PhysicsScene()
+    PhysicsScenePhysX::~PhysicsScenePhysX()
     {
         mPxScene->release();
         mPxScene = nullptr;
     }
 
-    void PhysicsScene::Simulate(float seconds)
+    void PhysicsScenePhysX::Simulate(float seconds)
     {
         physx::PxReal timestep = static_cast<physx::PxReal>(seconds);
         mPxScene->simulate(timestep);
@@ -90,21 +92,22 @@ namespace Ming3D
             if (rbComp->IsStatic())
                 continue;
 
-            physx::PxTransform pose = rbComp->GetPhysicsActor()->GetRigidActor()->getGlobalPose();
+            physx::PxTransform pose = dynamic_cast<IPhysXActor*>(rbComp->GetPhysicsActor())->GetRigidActor()->getGlobalPose();
             rbComp->GetParent()->GetTransform().SetWorldPosition(PhysXConversions::pxVec3ToGlmVec3(pose.p));
             rbComp->GetParent()->GetTransform().SetWorldRotation(PhysXConversions::pxQuatToGlmQuat(pose.q));
         }
     }
 
-    void PhysicsScene::RegisterRigidBody(RigidBodyComponent* rbComp)
+    void PhysicsScenePhysX::RegisterRigidBody(RigidBodyComponent* rbComp)
     {
-        mPxScene->addActor(*rbComp->GetPhysicsActor()->GetRigidActor());
+        mPxScene->addActor(*dynamic_cast<IPhysXActor*>(rbComp->GetPhysicsActor())->GetRigidActor());
         mRigidBodies.push_back(rbComp);
     }
 
-    void PhysicsScene::UnregisterRigidBody(RigidBodyComponent* rbComp)
+    void PhysicsScenePhysX::UnregisterRigidBody(RigidBodyComponent* rbComp)
     {
-        mPxScene->removeActor(*rbComp->GetPhysicsActor()->GetRigidActor());
+        mPxScene->removeActor(*dynamic_cast<IPhysXActor*>(rbComp->GetPhysicsActor())->GetRigidActor());
         mRigidBodies.remove(rbComp);
     }
 }
+#endif
