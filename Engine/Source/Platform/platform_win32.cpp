@@ -137,5 +137,10 @@ namespace Ming3D
         return new InputHandlerWin32();
 #endif
     }
+    
+    virtual PlatformWin32::std::string ReadConsoleInput()
+    {
+        return std::string("");
+    }
 }
 #endif

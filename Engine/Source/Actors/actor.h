@@ -28,6 +28,21 @@ namespace Ming3D
 
         static uint64_t instanceCounter;
 
+        template<typename T>
+        void GetComponentsInChildrenRecursive(std::vector<T*>& comps)
+        {
+            for(Transform* childTrans : mTransform.mChildren)
+            {
+                childTrans->mActor->GetComponentsInChildrenRecursive<T>(comps);
+            }
+            static_assert(std::is_base_of<Component, T>::value, "Must be a subclass of component");
+            for(Component* comp : mComponents)
+            {
+                if (static_cast<Object*>(comp)->GetClass() == T::GetStaticClass())
+                    comps.push_back(static_cast<T*>(comp));
+            }
+        }
+
     public:
         Actor();
         virtual ~Actor();
@@ -86,6 +101,14 @@ namespace Ming3D
                     return static_cast<T*>(comp);
             }
             return nullptr;
+        }
+        
+        template<typename T>
+        std::vector<T*> GetComponentsInChildren()
+        {
+            std::vector<T*> comps;
+            GetComponentsInChildrenRecursive<T>(comps);
+            return comps;
         }
     };
 }

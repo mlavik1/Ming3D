@@ -11,6 +11,11 @@
 #include "Input/input_manager.h"
 #include "Platform/platform.h"
 #include "Components/mesh_component.h"
+#include "Debug/debug.h"
+#include <sstream>
+#include <vector>
+#include <algorithm>
+#include <limits>
 
 using namespace Ming3D;
 
@@ -30,29 +35,71 @@ int main()
 
     Actor* camActor = new Actor();
     camActor->AddComponent<CameraComponent>();
-    camActor->GetTransform().SetWorldPosition(glm::vec3(0.0f, 2.0f, 6.0f));
+    camActor->GetTransform().SetWorldPosition(glm::vec3(0.0f, 2.0f, 8.0f));
     gameEngine->GetWorld()->AddActor(camActor);
+    
+    std::string modelPath = gameEngine->GetPlatform()->ReadConsoleInput();
+    std::stringstream pathstream;
+    for(const char c : modelPath)
+    {
+        if(c != '\'')
+            pathstream << c;
+    }
+    modelPath = pathstream.str();
+    LOG_INFO() << modelPath;
 
-    Actor* skybox = new Actor();
-    skybox->GetTransform().SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
-    skybox->GetTransform().SetLocalScale(glm::vec3(-50.0f, 50.0f, 50.0f));
-    gameEngine->GetWorld()->AddActor(skybox);
-    ModelLoader::LoadModel("Resources//Skybox//Skybox.obj", skybox);
+    Actor* modelActor = new Actor();
+    modelActor->GetTransform().SetLocalPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+    modelActor->GetTransform().SetLocalScale(glm::vec3(2.0f, 2.0f, 2.0f));
+    modelActor->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
+    gameEngine->GetWorld()->AddActor(modelActor);
+    ModelLoader::LoadModel(modelPath.c_str(), modelActor);
+    LoadModel(modelActor);
 
-    Actor* actor1 = new Actor();
-    actor1->GetTransform().SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
-    actor1->GetTransform().SetLocalScale(glm::vec3(2.0f, 2.0f, 2.0f));
-    actor1->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
-    gameEngine->GetWorld()->AddActor(actor1);
-    LoadModel(actor1);
-
+    // Normalise mesh scale
+    glm::vec3 minPos(std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
+    glm::vec3 maxPos(std::numeric_limits<float>::lowest(), std::numeric_limits<float>::lowest(), std::numeric_limits<float>::lowest());
+    std::vector<MeshComponent*> meshComps = modelActor->GetComponentsInChildren<MeshComponent>();
+    for(MeshComponent* meshComp : meshComps)
+    {
+        // TODO: Create vertex iterator class
+        Mesh* mesh = meshComp->GetMesh();
+        VertexData* vertData = mesh->mVertexData;
+        std::vector<size_t> vertLayoutOffsets;
+        vertData->GetComponentOffsets(EVertexComponent::Position, vertLayoutOffsets);
+        if(vertLayoutOffsets.size() > 0)
+        {
+            const size_t offset = vertLayoutOffsets[0];
+            const size_t vertSize = vertData->GetVertexSize();
+            const size_t numVerts = vertData->GetNumVertices();
+            void* data = vertData->GetDataPtr();
+            
+            for(size_t iVert = offset; iVert < numVerts; iVert += vertSize)
+            {
+                const glm::vec3 pos = *(glm::vec3*)(data + iVert);
+                minPos.x = std::min(minPos.x, pos.x);
+                minPos.y = std::min(minPos.y, pos.y);
+                minPos.z = std::min(minPos.z, pos.z);
+                maxPos.x = std::max(maxPos.x, pos.x);
+                maxPos.y = std::max(maxPos.y, pos.y);
+                maxPos.z = std::max(maxPos.z, pos.z);
+            }
+        }
+    }
+    glm::vec3 bounds = maxPos - minPos;
+    float greatestAxis = std::max(std::max(bounds.x, bounds.y), bounds.z);
+    modelActor->GetTransform().SetLocalScale(modelActor->GetTransform().GetLocalScale() * 1.0f / greatestAxis);
+    LOG_INFO() << greatestAxis;
+    glm::vec3 meshCentre = (maxPos + minPos) * 0.5f;
+    modelActor->GetTransform().SetLocalPosition(-meshCentre);
+    
     const float camSpeed = 3.0f;
     const float camRotSpeed = 1.0f;
 
     while (true)
     {
         gameEngine->Update();
-        actor1->GetTransform().Rotate(0.001f, glm::vec3(0,1,0));
+        modelActor->GetTransform().Rotate(0.001f, glm::vec3(0,1,0));
 
         float speed = camSpeed * GGameEngine->GetDeltaTime();
         float rotSpeed = camRotSpeed * GGameEngine->GetDeltaTime();
