@@ -35,7 +35,7 @@ namespace Ming3D
         ofn.lpstrFile = filename;
         ofn.nMaxFile = MAX_PATH;
         ofn.lpstrTitle = inTitile.c_str();
-        ofn.Flags = OFN_DONTADDTORECENT | OFN_FILEMUSTEXIST;
+        ofn.Flags = OFN_DONTADDTORECENT | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
 
         if (GetOpenFileNameA(&ofn))
         {

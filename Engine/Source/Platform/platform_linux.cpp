@@ -84,7 +84,7 @@ namespace Ming3D
         return new InputHandlerSDL();
     }
     
-    std::string PlatformLinux::ReadConsoleInput()
+    std::string PlatformLinux::ReadConsoleLine()
     {
         char input[256];
         read(0, &input, 256);

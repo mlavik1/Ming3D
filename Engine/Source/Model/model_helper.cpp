@@ -40,8 +40,6 @@ namespace Ming3D
             }
             else
             {
-                // TODO: set default (white?) texture - OR USE COLOUR (no texture)
-                LOG_WARNING() << "Material has no valid texture";
                 matData->mTexture = nullptr;
             }
             aiColor4D diffCol;

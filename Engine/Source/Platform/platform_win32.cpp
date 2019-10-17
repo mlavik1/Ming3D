@@ -24,6 +24,7 @@
 #include "GameEngine/game_engine.h"
 
 #include "platform_file_win32.h"
+#include <string>
 
 namespace Ming3D
 {
@@ -138,9 +139,11 @@ namespace Ming3D
 #endif
     }
     
-    virtual PlatformWin32::std::string ReadConsoleInput()
+    std::string PlatformWin32::ReadConsoleLine()
     {
-        return std::string("");
+        std::string terminalString;
+        std::getline(std::cin, terminalString);
+        return std::string(terminalString);
     }
 }
 #endif

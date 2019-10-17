@@ -26,6 +26,18 @@ void LoadModel(Actor* actor)
     {
         ModelLoader::LoadModel(filePath.c_str(), actor);
     }
+    else
+    {
+        std::string modelPath = GGameEngine->GetPlatform()->ReadConsoleLine();
+        std::stringstream pathstream;
+        for (const char c : modelPath)
+        {
+            if (c != '\'' && c != '"')
+                pathstream << c;
+        }
+        modelPath = pathstream.str();
+        ModelLoader::LoadModel(modelPath.c_str(), actor);
+    }
 }
 
 int main()
@@ -37,23 +49,12 @@ int main()
     camActor->AddComponent<CameraComponent>();
     camActor->GetTransform().SetWorldPosition(glm::vec3(0.0f, 2.0f, 8.0f));
     gameEngine->GetWorld()->AddActor(camActor);
-    
-    std::string modelPath = gameEngine->GetPlatform()->ReadConsoleInput();
-    std::stringstream pathstream;
-    for(const char c : modelPath)
-    {
-        if(c != '\'')
-            pathstream << c;
-    }
-    modelPath = pathstream.str();
-    LOG_INFO() << modelPath;
 
     Actor* modelActor = new Actor();
     modelActor->GetTransform().SetLocalPosition(glm::vec3(0.0f, 0.0f, 0.0f));
     modelActor->GetTransform().SetLocalScale(glm::vec3(2.0f, 2.0f, 2.0f));
     modelActor->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
     gameEngine->GetWorld()->AddActor(modelActor);
-    ModelLoader::LoadModel(modelPath.c_str(), modelActor);
     LoadModel(modelActor);
 
     // Normalise mesh scale
@@ -72,7 +73,7 @@ int main()
             const size_t offset = vertLayoutOffsets[0];
             const size_t vertSize = vertData->GetVertexSize();
             const size_t numVerts = vertData->GetNumVertices();
-            void* data = vertData->GetDataPtr();
+            char* data = (char*)vertData->GetDataPtr();
             
             for(size_t iVert = offset; iVert < numVerts; iVert += vertSize)
             {
@@ -89,9 +90,8 @@ int main()
     glm::vec3 bounds = maxPos - minPos;
     float greatestAxis = std::max(std::max(bounds.x, bounds.y), bounds.z);
     modelActor->GetTransform().SetLocalScale(modelActor->GetTransform().GetLocalScale() * 1.0f / greatestAxis);
-    LOG_INFO() << greatestAxis;
-    glm::vec3 meshCentre = (maxPos + minPos) * 0.5f;
-    modelActor->GetTransform().SetLocalPosition(-meshCentre);
+    //glm::vec3 meshCentre = ((maxPos + minPos) * 0.5f) / greatestAxis;
+    //modelActor->GetTransform().SetLocalPosition(-meshCentre);
     
     const float camSpeed = 3.0f;
     const float camRotSpeed = 1.0f;
