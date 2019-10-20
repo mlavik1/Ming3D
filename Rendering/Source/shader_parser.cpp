@@ -638,6 +638,14 @@ namespace Ming3D
         std::ifstream shaderFile(inParams.mShaderProgramPath);
         std::string shaderString((std::istreambuf_iterator<char>(shaderFile)), std::istreambuf_iterator<char>());
 
+        if (shaderString == "")
+        {
+            LOG_ERROR() << "Failed to read shader: " << inParams.mShaderProgramPath;
+            __AssertComment(false, "Faield to read shader");
+            delete parsedShaderProgram;
+            return nullptr;
+        }
+
         TokenParser tokenParser(shaderString.c_str());
 
         ShaderPreprocessor preprocessor(tokenParser);

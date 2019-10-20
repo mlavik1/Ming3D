@@ -59,6 +59,7 @@ namespace Ming3D
         VertexData(std::vector<EVertexComponent> inComponents, size_t inNumVertices);
         VertexData(VertexLayout inLayout, size_t inNumVertices);
         VertexData(const VertexData& other);
+        size_t GetComponentOffset(EVertexComponent inComponent);
         void GetComponentOffsets(EVertexComponent inComponent, std::vector<size_t>& outOffsets);
         size_t GetNumVertices();
         size_t GetVertexSize();
@@ -89,6 +90,35 @@ namespace Ming3D
         IndexData(size_t inNumIndices);
         size_t GetNumIndices();
         unsigned int* GetData() { return mData.data(); }
+    };
+
+    template <typename T>
+    class VertexDataIterator
+    {
+    private:
+        char* mVertData;
+        char* mCurrPos;
+        size_t mComponentOffset;
+        size_t mVertexSize;
+        size_t mNumVertices;
+        size_t mTotalSize;
+
+    public:
+        VertexDataIterator(VertexData* inVertexData, EVertexComponent inComp)
+        {
+            mVertData = static_cast<char*>(inVertexData->GetDataPtr());
+
+            mComponentOffset = inVertexData->GetComponentOffset(inComp);
+            mVertexSize = inVertexData->GetVertexSize();
+            mNumVertices = inVertexData->GetNumVertices();
+            mTotalSize = mVertexSize * mNumVertices;
+
+            if (mComponentOffset == -1)
+                mNumVertices = 0;
+        }
+
+        size_t GetCount() { return mNumVertices; }
+        T GetElement(const size_t index) { return *reinterpret_cast<T*>(mVertData + (index * mVertexSize)); }
     };
 }
 

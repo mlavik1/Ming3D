@@ -76,9 +76,8 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     execute_process(COMMAND cmake -E copy ${SDL2_LIBRARY_DIRECTORY}/libjpeg-9.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Debug/libjpeg-9.dll)
     execute_process(COMMAND cmake -E copy ${SDL2_LIBRARY_DIRECTORY}/libpng16-16.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Release/libpng16-16.dll)
     execute_process(COMMAND cmake -E copy ${SDL2_LIBRARY_DIRECTORY}/libpng16-16.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Debug/libpng16-16.dll)
-    execute_process(COMMAND cmake -E copy ${SDL2_LIBRARY_DIRECTORY}/libjpeg-9.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Release/libjpeg-9.dll)
-    execute_process(COMMAND cmake -E copy ${SDL2_LIBRARY_DIRECTORY}/libjpeg-9.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Debug/libjpeg-9.dll)
-
+    execute_process(COMMAND cmake -E copy ${SDL2_LIBRARY_DIRECTORY}/zlib1.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Release/zlib1.dll)
+    execute_process(COMMAND cmake -E copy ${SDL2_LIBRARY_DIRECTORY}/zlib1.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Debug/zlib1.dll)
 
     execute_process(COMMAND cmake -E copy ${GLEW_BIN_DIRECTORY}/glew32.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Release/glew32.dll)
     execute_process(COMMAND cmake -E copy ${GLEW_BIN_DIRECTORY}/glew32.dll ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Debug/glew32.dll)

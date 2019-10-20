@@ -47,12 +47,12 @@ int main()
 
     Actor* camActor = new Actor();
     camActor->AddComponent<CameraComponent>();
-    camActor->GetTransform().SetWorldPosition(glm::vec3(0.0f, 2.0f, 8.0f));
+    camActor->GetTransform().SetWorldPosition(glm::vec3(0.0f, 0.0f, 3.0f));
     gameEngine->GetWorld()->AddActor(camActor);
 
     Actor* modelActor = new Actor();
     modelActor->GetTransform().SetLocalPosition(glm::vec3(0.0f, 0.0f, 0.0f));
-    modelActor->GetTransform().SetLocalScale(glm::vec3(2.0f, 2.0f, 2.0f));
+    modelActor->GetTransform().SetLocalScale(glm::vec3(1.0f, 1.0f, 1.0f));
     modelActor->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
     gameEngine->GetWorld()->AddActor(modelActor);
     LoadModel(modelActor);
@@ -66,30 +66,22 @@ int main()
         // TODO: Create vertex iterator class
         Mesh* mesh = meshComp->GetMesh();
         VertexData* vertData = mesh->mVertexData;
-        std::vector<size_t> vertLayoutOffsets;
-        vertData->GetComponentOffsets(EVertexComponent::Position, vertLayoutOffsets);
-        if(vertLayoutOffsets.size() > 0)
+        VertexDataIterator<glm::vec3> vertIterator(vertData, EVertexComponent::Position);
+        size_t vertCount = vertIterator.GetCount();
+        for (size_t iVert = 0; iVert < vertCount; iVert++)
         {
-            const size_t offset = vertLayoutOffsets[0];
-            const size_t vertSize = vertData->GetVertexSize();
-            const size_t numVerts = vertData->GetNumVertices();
-            char* data = (char*)vertData->GetDataPtr();
-            
-            for(size_t iVert = offset; iVert < numVerts; iVert += vertSize)
-            {
-                const glm::vec3 pos = *(glm::vec3*)(data + iVert);
-                minPos.x = std::min(minPos.x, pos.x);
-                minPos.y = std::min(minPos.y, pos.y);
-                minPos.z = std::min(minPos.z, pos.z);
-                maxPos.x = std::max(maxPos.x, pos.x);
-                maxPos.y = std::max(maxPos.y, pos.y);
-                maxPos.z = std::max(maxPos.z, pos.z);
-            }
+            const glm::vec3 pos = vertIterator.GetElement(iVert);
+            minPos.x = std::min(minPos.x, pos.x);
+            minPos.y = std::min(minPos.y, pos.y);
+            minPos.z = std::min(minPos.z, pos.z);
+            maxPos.x = std::max(maxPos.x, pos.x);
+            maxPos.y = std::max(maxPos.y, pos.y);
+            maxPos.z = std::max(maxPos.z, pos.z);
         }
     }
     glm::vec3 bounds = maxPos - minPos;
     float greatestAxis = std::max(std::max(bounds.x, bounds.y), bounds.z);
-    modelActor->GetTransform().SetLocalScale(modelActor->GetTransform().GetLocalScale() * 1.0f / greatestAxis);
+    modelActor->GetTransform().SetLocalScale(glm::vec3(1.0f, 1.0f, 1.0f) / greatestAxis);
     //glm::vec3 meshCentre = ((maxPos + minPos) * 0.5f) / greatestAxis;
     //modelActor->GetTransform().SetLocalPosition(-meshCentre);
     
