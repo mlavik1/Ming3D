@@ -9,7 +9,7 @@ namespace Ming3D
     {
     public:
         PlatformWin32();
-        ~PlatformWin32();
+        virtual ~PlatformWin32();
         virtual void Initialise() override;
         virtual void Update() override;
         virtual RenderDevice* CreateRenderDevice() override;

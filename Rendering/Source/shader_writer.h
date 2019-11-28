@@ -40,6 +40,8 @@ namespace Ming3D
 
     class ShaderWriter
     {
+    public:
+        virtual ~ShaderWriter() = default;
     };
 }
 

@@ -14,6 +14,7 @@ namespace Ming3D
         unsigned int mNumIndices;
 
     public:
+        virtual ~IndexBuffer() = default;
         void SetNumIndices(unsigned int inNumIndices);
         unsigned int GetNumIndices();
     };

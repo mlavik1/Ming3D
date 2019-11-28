@@ -10,6 +10,8 @@ namespace Ming3D
 
     class RasteriserState
     {
+    public:
+        virtual ~RasteriserState() = default;
     };
 }
 

@@ -14,6 +14,8 @@ namespace Ming3D
     class Platform
     {
     public:
+        virtual ~Platform() = default;
+
         PlatformFile * mPlatformFile = nullptr;
 
         virtual void Initialise() = 0;

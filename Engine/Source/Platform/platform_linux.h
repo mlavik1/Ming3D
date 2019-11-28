@@ -9,7 +9,7 @@ namespace Ming3D
     {
     public:
         PlatformLinux();
-        ~PlatformLinux();
+        virtual ~PlatformLinux();
         virtual void Initialise() override;
         virtual void Update() override;
         virtual RenderDevice* CreateRenderDevice() override;

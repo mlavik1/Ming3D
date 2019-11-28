@@ -193,7 +193,6 @@ namespace Ming3D
         TextureBufferGL* textureBuffer = new TextureBufferGL();
 
         __Assert(inTextureData); // TODO: Clear if null
-
         
         char* buffer = new char[inTextureInfo.mWidth * inTextureInfo.mHeight * inTextureInfo.mBytesPerPixel];
         // Flip the texture
@@ -351,8 +350,6 @@ namespace Ming3D
 
     void RenderDeviceGL::RenderPrimitive(VertexBuffer* inVertexBuffer, IndexBuffer* inIndexBuffer)
     {
-        int oldVal = GET_FRAME_STAT_INT("RenderPrimitive");
-        int newVal = GET_FRAME_STAT_INT("RenderPrimitive") + 1;
         ADD_FRAME_STAT_INT("RenderPrimitive", 1);
 
         VertexBufferGL* vertexBufferGL = (VertexBufferGL*)inVertexBuffer;
@@ -404,7 +401,6 @@ namespace Ming3D
 
     void RenderDeviceGL::SetShaderUniformFloat(const std::string& inName, float inVal)
     {
-        // TODO: cache values - don't set again if already set
         ADD_FRAME_STAT_INT("SetConstantBufferData", 1);
 
         GLuint loc = mActiveShaderProgram->GetUniformLocation(inName);
@@ -413,7 +409,6 @@ namespace Ming3D
 
     void RenderDeviceGL::SetShaderUniformInt(const std::string& inName, int inVal)
     {
-        // TODO: cache values - don't set again if already set
         ADD_FRAME_STAT_INT("SetConstantBufferData", 1);
 
         GLuint loc = mActiveShaderProgram->GetUniformLocation(inName);
@@ -422,7 +417,6 @@ namespace Ming3D
 
     void RenderDeviceGL::SetShaderUniformMat4x4(const std::string& inName, const glm::mat4 inMat)
     {
-        // TODO: cache values - don't set again if already set
         ADD_FRAME_STAT_INT("SetConstantBufferData", 1);
 
         GLuint loc = mActiveShaderProgram->GetUniformLocation(inName);
@@ -431,7 +425,6 @@ namespace Ming3D
 
     void RenderDeviceGL::SetShaderUniformVec2(const std::string& inName, const glm::vec2 inVec)
     {
-        // TODO: cache values - don't set again if already set
         ADD_FRAME_STAT_INT("SetConstantBufferData", 1);
 
         GLuint loc = mActiveShaderProgram->GetUniformLocation(inName);
@@ -440,7 +433,6 @@ namespace Ming3D
 
     void RenderDeviceGL::SetShaderUniformVec3(const std::string& inName, const glm::vec3 inVec)
     {
-        // TODO: cache values - don't set again if already set
         ADD_FRAME_STAT_INT("SetConstantBufferData", 1);
 
         GLuint loc = mActiveShaderProgram->GetUniformLocation(inName);
@@ -449,8 +441,7 @@ namespace Ming3D
 
     void RenderDeviceGL::SetShaderUniformVec4(const std::string& inName, const glm::vec4 inVec)
     {
-        // TODO: cache values - don't set again if already set
-        ("SetConstantBufferData", 1);
+        ADD_FRAME_STAT_INT("SetConstantBufferData", 1);
 
         GLuint loc = mActiveShaderProgram->GetUniformLocation(inName);
         glUniform4fv(loc, 1, (float*)&inVec[0]);

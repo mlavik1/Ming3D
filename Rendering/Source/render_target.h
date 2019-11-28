@@ -15,6 +15,7 @@ namespace Ming3D
     {
     public:
         RenderTarget();
+        virtual ~RenderTarget() = default;
 
         virtual void BeginRendering() = 0;
         virtual void EndRendering() = 0;
