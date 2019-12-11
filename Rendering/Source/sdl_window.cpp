@@ -1,9 +1,16 @@
 #include "sdl_window.h"
 
+// TODO: change include path
+#ifdef _WIN32
+#include <windows.h>
+#include <SDL.h>
+#include <SDL_video.h>
+#include <SDL_syswm.h>
+#else
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_video.h>
-
 #include <SDL2/SDL_syswm.h>
+#endif
 
 #include "Debug/st_assert.h"
 

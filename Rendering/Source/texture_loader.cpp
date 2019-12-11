@@ -1,6 +1,10 @@
 #include "texture_loader.h"
 
-#include "SDL2/SDL_image.h"
+#ifdef _WIN32
+#include <SDL_image.h>
+#else
+#include <SDL2/SDL_image.h>
+#endif
 
 namespace Ming3D
 {
