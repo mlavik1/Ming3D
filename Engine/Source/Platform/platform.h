@@ -3,6 +3,7 @@
 
 #include "Input/input_handler.h"
 #include "platform_file.h"
+#include <string>
 
 namespace Ming3D
 {
@@ -26,6 +27,8 @@ namespace Ming3D
         virtual RenderWindow* CreateRenderWindow(WindowBase* inWindow, RenderDevice* inDevice) = 0;
         virtual NetSocket* CreateSocket() = 0;
         virtual InputHandler* CreateInputHandler() = 0;
+        virtual std::string ReadConsoleLine() = 0;
+        
     };
 }
 

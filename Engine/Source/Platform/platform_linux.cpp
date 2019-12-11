@@ -1,3 +1,4 @@
+#ifdef __linux__
 #include "platform_linux.h"
 
 #ifdef _WIN32
@@ -10,8 +11,9 @@
 #include "Input/input_handler_sdl.h"
 #include "Debug/debug.h"
 #include "GameEngine/game_engine.h"
-
 #include "platform_file_linux.h"
+#include <termios.h>
+#include <unistd.h>
 
 namespace Ming3D
 {
@@ -85,4 +87,15 @@ namespace Ming3D
     {
         return new InputHandlerSDL();
     }
+    
+    std::string PlatformLinux::ReadConsoleLine()
+    {
+        char input[256];
+        read(0, &input, 256);
+        size_t iEnd = 0;
+        while(input[iEnd] != '\n')
+            iEnd++;
+        return std::string(input, 0, iEnd);
+    }
 }
+#endif

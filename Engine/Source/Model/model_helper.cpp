@@ -18,8 +18,15 @@ namespace Ming3D
     {
         ModelData* modelData = new ModelData();
 
+        std::string modelPath(inModel);
+        for (size_t i = 0; i < modelPath.size(); i++)
+        {
+            if (modelPath[i] == '\\')
+                modelPath[i] = '/';
+        }
+
         Assimp::Importer importer;
-        const aiScene * scene = importer.ReadFile(inModel, aiProcess_Triangulate | aiProcess_OptimizeMeshes | aiProcess_OptimizeGraph | aiProcess_JoinIdenticalVertices | aiProcess_RemoveRedundantMaterials | aiProcess_GenSmoothNormals);
+        const aiScene * scene = importer.ReadFile(modelPath, aiProcess_Triangulate | aiProcess_OptimizeMeshes | aiProcess_OptimizeGraph | aiProcess_JoinIdenticalVertices | aiProcess_RemoveRedundantMaterials | aiProcess_GenSmoothNormals);
 
         __Assert(scene != nullptr);
 
@@ -30,18 +37,16 @@ namespace Ming3D
             aiString path;  // filename
             if (scene->mMaterials[m]->GetTexture(aiTextureType::aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
             {
-                std::string texturePath = inModel;
-                size_t iLastSlash = texturePath.find_last_of("//");
+                std::string texturePath = modelPath;
+                size_t iLastSlash = texturePath.find_last_of('/');
                 if (iLastSlash != std::string::npos)
                     texturePath = texturePath.substr(0, iLastSlash + 1) + std::string(path.C_Str());
                 else
-                    texturePath = std::string("Resources//") + std::string(path.C_Str());
+                    texturePath = std::string(path.C_Str());
                 matData->mTexture = TextureLoader::LoadTextureData(texturePath.c_str());
             }
             else
             {
-                // TODO: set default (white?) texture - OR USE COLOUR (no texture)
-                LOG_WARNING() << "Material has no valid texture";
                 matData->mTexture = nullptr;
             }
             aiColor4D diffCol;

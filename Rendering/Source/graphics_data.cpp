@@ -32,6 +32,21 @@ namespace Ming3D
         mVertexSize = other.mVertexSize;
     }
 
+    size_t VertexData::GetComponentOffset(EVertexComponent inComponent)
+    {
+        size_t offset = 0;
+        for (const EVertexComponent& comp : mVertexLayout.VertexComponents)
+        {
+            if (comp == inComponent)
+            {
+                return offset;
+            }
+            else
+                offset += GetVertexComponentSize(comp);
+        }
+        return -1;
+    }
+
     void VertexData::GetComponentOffsets(EVertexComponent inComponent, std::vector<size_t>& outOffsets)
     {
         size_t offset = 0;

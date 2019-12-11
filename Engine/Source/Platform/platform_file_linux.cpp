@@ -1,3 +1,4 @@
+#ifdef __linux__
 #include "platform_file_linux.h"
 
 
@@ -18,3 +19,4 @@ namespace Ming3D
         return false;
     }
 }
+#endif
