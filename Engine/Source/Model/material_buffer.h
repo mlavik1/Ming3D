@@ -23,6 +23,7 @@ namespace Ming3D
         ShaderProgram* mShaderProgram = nullptr;
         std::vector<TextureBuffer*> mTextureBuffers;
         std::unordered_map<std::string, ShaderUniformData*> mShaderUniformMap;
+        std::set<std::string> mConstantBuffers;
         std::set<std::string> mModifiedUniforms;
 
         void SetShaderUniformFloat(const std::string& inName, float inVal);

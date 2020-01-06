@@ -45,6 +45,7 @@ namespace Ming3D
         
         const char* tokenStart = mSourceStringPos;
 
+        bool isStringLiteral = false;
         bool isNumericLiteral = false;
         bool isFloatLiteral = false;
         bool isPunctuator = false;
@@ -52,7 +53,12 @@ namespace Ming3D
         const char* commentStartPos;
 
         // Evaluate the first character
-        if (isdigit(*mSourceStringPos))
+        if (*mSourceStringPos == '"')
+        {
+            isStringLiteral = true;
+            mSourceStringPos++;
+        }
+        else if (isdigit(*mSourceStringPos))
         {
             isNumericLiteral = true;
         }
@@ -78,6 +84,14 @@ namespace Ming3D
                 {
                     mSourceStringPos++;
                     mLineNumber++;
+                    break;
+                }
+            }
+            else if (isStringLiteral)
+            {
+                if (*mSourceStringPos == '"')
+                {
+                    mSourceStringPos++;
                     break;
                 }
             }
@@ -124,7 +138,11 @@ namespace Ming3D
 
         outToken.mTokenString = std::string(tokenStart, tokenEnd - tokenStart);
 
-        if (isNumericLiteral && isFloatLiteral)
+        if (isStringLiteral)
+        {
+            outToken.mTokenType = ETokenType::StringLiteral;
+        }
+        else if (isNumericLiteral && isFloatLiteral)
         {
             outToken.mTokenType = ETokenType::FloatLiteral;
             outToken.mFloatValue = strtof(outToken.mTokenString.c_str(), nullptr);

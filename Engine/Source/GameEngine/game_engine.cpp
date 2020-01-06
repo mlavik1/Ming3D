@@ -79,6 +79,7 @@ namespace Ming3D
         mRenderWindow = mPlatform->CreateRenderWindow(mWindow, mRenderDevice);
         mRenderTarget = mRenderDevice->CreateRenderTarget(mRenderWindow);
         mTimeManager->Initialise();
+        mSceneRenderer->Initialise();
 
         mPhysicsManager->CreatePhysicsScene();
 	}
@@ -88,6 +89,7 @@ namespace Ming3D
         mTimeManager->UpdateTime();
         float deltaTime = mTimeManager->GetDeltaTimeSeconds();
         mDeltaTime = deltaTime;
+        mTime += mDeltaTime;
 
         mPlatform->Update();
         mInputHandler->Update();

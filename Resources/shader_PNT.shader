@@ -1,10 +1,16 @@
-ShaderUniforms
-{
-	mat4 MVP;
-	vec4 test;
+uniform mat4 MVP;
+
 #ifdef use_mat_colour
-    vec4 colour;
+    uniform vec4 colour;
 #endif
+
+
+cbuffer _Globals
+{
+    vec3 _lightDir;
+    vec4 _lightCol;
+    vec3 _eyePos;
+    float _time;
 }
 
 ShaderTextures
@@ -44,11 +50,14 @@ shader FragmentShader
 {
 	void main(FSInput input)
 	{
+        vec4 col = vec4(0.0, 0.0, 0.0, 0.0);
     #ifdef use_mat_colour
-        SetFragmentColour(colour);
+        col = colour;
     #else
-		SetFragmentColour(ReadTexture(inTexture, input.TexCoord));
+		col = ReadTexture(inTexture, input.TexCoord);
     #endif
+
+    SetFragmentColour(col);
 	}
 }
 

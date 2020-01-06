@@ -6,6 +6,7 @@
 #include "render_target_gl.h"
 #include "shader_program_gl.h"
 #include "texture_buffer_gl.h"
+#include "constant_buffer_gl.h"
 
 #include "Debug/debug.h"
 #include "Debug/st_assert.h"
@@ -268,6 +269,22 @@ namespace Ming3D
         return depthStencilState;
     }
 
+    ConstantBuffer* RenderDeviceGL::CreateConstantBuffer(size_t inSize)
+    {
+        ConstantBufferGL* cb = new ConstantBufferGL();
+
+        GLuint ubo = 0;
+        char* initialData = new char[inSize];
+        glGenBuffers(1, &ubo);
+        glBindBuffer(GL_UNIFORM_BUFFER, ubo);
+        glBufferData(GL_UNIFORM_BUFFER, inSize, initialData, GL_DYNAMIC_DRAW);
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+        delete[] initialData;
+        cb->mGLBuffer = ubo;
+
+        return cb;
+    }
+
     void RenderDeviceGL::SetTexture(const TextureBuffer* inTexture, int inSlot)
     {
         ADD_FRAME_STAT_INT("SetTexture", 1);
@@ -397,6 +414,27 @@ namespace Ming3D
 
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(glStencilState->mDepthFunc);
+    }
+
+    void RenderDeviceGL::SetConstantBufferData(ConstantBuffer* inConstantBuffer, void* inData, size_t inSize)
+    {
+        ConstantBufferGL* cb = static_cast<ConstantBufferGL*>(inConstantBuffer);
+
+        glBindBuffer(GL_UNIFORM_BUFFER, cb->mGLBuffer);
+        GLvoid* ptr = glMapBuffer(GL_UNIFORM_BUFFER, GL_WRITE_ONLY);
+        memcpy(ptr, inData, inSize);
+        glUnmapBuffer(GL_UNIFORM_BUFFER);
+    }
+
+    void RenderDeviceGL::BindConstantBuffer(ConstantBuffer* inConstantBuffer, const char* inName, ShaderProgram* inProgram)
+    {
+        ConstantBufferGL* cb = static_cast<ConstantBufferGL*>(inConstantBuffer);
+        ShaderProgramGL* prog = static_cast<ShaderProgramGL*>(inProgram);
+
+        // get index
+        unsigned int block_index = glGetUniformBlockIndex(prog->GetGLProgram(), inName);
+        // bind UBO to shader program
+        glBindBufferBase(GL_UNIFORM_BUFFER, block_index, cb->mGLBuffer);
     }
 
     void RenderDeviceGL::SetShaderUniformFloat(const std::string& inName, float inVal)

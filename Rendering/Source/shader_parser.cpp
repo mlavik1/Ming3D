@@ -662,23 +662,27 @@ namespace Ming3D
         {
             const Token currToken = tokenParser.GetCurrentToken();
 
-            if (currToken.mTokenString == "ShaderUniforms")
+            if (currToken.mTokenString == "cbuffer")
             {
                 tokenParser.Advance();
-                tokenParser.Advance(); // TODO: check
+                std::string cbName = tokenParser.GetCurrentToken().mTokenString;
+                tokenParser.Advance();
+                __AssertComment(tokenParser.GetCurrentToken().mTokenString == "{", "Missing {"); // TODO: don't assert
+                tokenParser.Advance();
                 ShaderDatatypeInfo inputStruct;
                 EParseResult inputParseResult = ParseStructBody(tokenParser, &inputStruct);
                 if (inputParseResult == EParseResult::Parsed)
                 {
-                    ShaderUniformBlock uniformBlock;
+                    ConstantBufferInfo cbuffer;
+                    cbuffer.mName = cbName;
                     for (ShaderStructMember member : inputStruct.mMemberVariables)
                     {
                         ShaderVariableInfo uniformInfo;
                         uniformInfo.mName = member.mName;
                         uniformInfo.mDatatypeInfo = member.mDatatype;
-                        uniformBlock.mShaderUniforms.push_back(uniformInfo);
+                        cbuffer.mShaderUniforms.push_back(uniformInfo);
                     }
-                    parsedShaderProgram->mShaderUniformBlocks.push_back(uniformBlock);
+                    parsedShaderProgram->mConstantBufferInfos.push_back(cbuffer);
                     tokenParser.Advance();
                 }
                 else if (inputParseResult == EParseResult::Error)
@@ -686,6 +690,30 @@ namespace Ming3D
                     failed = true;
                     break;
                 }
+            }
+            else if (currToken.mTokenString == "uniform")
+            {
+                tokenParser.Advance();
+                std::string uniformType = tokenParser.GetCurrentToken().mTokenString;
+                tokenParser.Advance();
+                std::string uniformName = tokenParser.GetCurrentToken().mTokenString;
+                tokenParser.Advance();
+                tokenParser.Advance();
+
+
+                ShaderDatatypeInfo typeInfo;
+                if (!GetTypeInfo(uniformType, typeInfo))
+                {
+                    OnParseError(tokenParser, "Invalid funiform type");
+                    failed = true;
+                    break;
+                }
+                ShaderVariableInfo uniformInfo;
+                uniformInfo.mDatatypeInfo = typeInfo;
+                uniformInfo.mName = uniformName;
+                uniformInfo.mDatatypeInfo = typeInfo;
+
+                parsedShaderProgram->mUniforms.push_back(uniformInfo);
             }
             else if (currToken.mTokenString == "ShaderTextures")
             {

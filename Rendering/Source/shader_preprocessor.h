@@ -28,6 +28,7 @@ namespace Ming3D
         Ifndef,
         Else,
         Endif,
+        Include,
         Invalid
     };
 

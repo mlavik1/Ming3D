@@ -5,6 +5,7 @@
 #include "texture.h"
 #include "shader_info.h"
 #include "shader_uniform_data.h"
+#include "SceneRenderer/scene_renderer.h" // TODO
 
 namespace Ming3D
 {
@@ -23,12 +24,12 @@ namespace Ming3D
 
         int zeroValues[128] = { }; // zero-initialised
 
-        for (size_t iBlock = 0; iBlock < shaderProgram->mShaderUniformBlocks.size(); iBlock++)
+        for (size_t iCB = 0; iCB < shaderProgram->mConstantBufferInfos.size(); iCB++)
         {
-            const ShaderUniformBlock& uniformBlock = shaderProgram->mShaderUniformBlocks[iBlock];
-            for (size_t iUniform = 0; iUniform < uniformBlock.mShaderUniforms.size(); iUniform++)
+            const ConstantBufferInfo& constantBuffer = shaderProgram->mConstantBufferInfos[iCB];
+            for (size_t iUniform = 0; iUniform < constantBuffer.mShaderUniforms.size(); iUniform++)
             {
-                const ShaderVariableInfo& uniform = uniformBlock.mShaderUniforms[iUniform];
+                const ShaderVariableInfo& uniform = constantBuffer.mShaderUniforms[iUniform];
                 ShaderUniformData* uniformData = new ShaderUniformData(uniform.mDatatypeInfo, uniform.mDatatypeInfo.GetDataSize());
                 switch (uniform.mDatatypeInfo.mDatatype)
                 {
@@ -43,10 +44,12 @@ namespace Ming3D
                 }
                 mMaterialBuffer->mShaderUniformMap.emplace(uniform.mName, uniformData);
             }
+            mMaterialBuffer->mConstantBuffers.insert(constantBuffer.mName);
         }
 
         // TODO: Queue render thread command
         mMaterialBuffer->mShaderProgram = GGameEngine->GetRenderDevice()->CreateShaderProgram(shaderProgram);
+        GGameEngine->GetSceneRenderer()->RegisterMaterial(mMaterialBuffer); // TODO
     }
 
     Material::~Material()

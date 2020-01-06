@@ -1,5 +1,6 @@
 #include "shader_preprocessor.h"
 #include <ctype.h>
+#include <fstream>
 
 namespace Ming3D
 {
@@ -35,6 +36,10 @@ namespace Ming3D
         else if (inToken == "#endif")
         {
             return PreprocessorDirective::Endif;
+        }
+        else if (inToken == "#include")
+        {
+            return PreprocessorDirective::Include;
         }
         else
             return PreprocessorDirective::Invalid;
@@ -86,6 +91,38 @@ namespace Ming3D
             case PreprocessorDirective::Endif:
             {
                 mScopeStack.pop();
+                break;
+            }
+            case PreprocessorDirective::Include:
+            {
+                mTokenParser.Advance();
+                // Read included file
+                std::string includePath = mTokenParser.GetCurrentToken().mTokenString;
+                includePath = includePath.substr(1, includePath.size() - 2);
+                std::ifstream shaderFile(includePath);
+                std::string shaderString((std::istreambuf_iterator<char>(shaderFile)), std::istreambuf_iterator<char>());
+
+                // Parse included file
+                std::vector<Token> newTokens;
+                Tokeniser tokeniser(shaderString.c_str());
+                while (true)
+                {
+                    Token token = tokeniser.ParseToken();
+                    if (token.mTokenString != "")
+                    {
+                        newTokens.push_back(token);
+                    }
+                    else if (token.mTokenType == ETokenType::EndOfFile)
+                    {
+                        break;
+                    }
+                }
+
+                // Copy new tokens
+                std::vector<Token>& tokens = mTokenParser.GetTokens();
+                size_t numTokens = tokens.size();
+                size_t nextTokenIndex = mTokenParser.GetCurrentTokenIndex() + 1;
+                tokens.insert(tokens.begin() + nextTokenIndex, newTokens.begin(), newTokens.end());
                 break;
             }
             }

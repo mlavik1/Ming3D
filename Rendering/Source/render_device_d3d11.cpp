@@ -351,10 +351,10 @@ namespace Ming3D
         shaderProgram->mVS = pVS;
         shaderProgram->mPS = pPS;
 
-        const size_t numCBuffers = parsedProgram->mShaderUniformBlocks.size();
+        const size_t numCBuffers = parsedProgram->mConstantBufferInfos.size();
         for (size_t iCBuffer = 0; iCBuffer < numCBuffers; iCBuffer++)
         {
-            const ShaderUniformBlock& uniformBlock = parsedProgram->mShaderUniformBlocks[iCBuffer];
+            const ConstantBufferInfo& uniformBlock = parsedProgram->mConstantBufferInfos[iCBuffer];
             ConstantBufferD3D11* cBuffer = new ConstantBufferD3D11();
 
             size_t cBufferSize = 0;

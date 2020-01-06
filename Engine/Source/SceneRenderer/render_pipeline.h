@@ -42,6 +42,7 @@ namespace Ming3D
     class RenderPipeline
     {
     public:
+        virtual ~RenderPipeline() {}
         virtual void Render(RenderPipelineParams& params) = 0;
     };
 }
