@@ -30,9 +30,9 @@ namespace Ming3D
         RasteriserStateD3D11* mDefaultRasteriserState;
         DepthStencilStateD3D11* mDefaultDepthStencilState;
 
-        size_t GetShaderUniformSize(const ShaderUniformInfo& inShaderUniform);
+        void ApplyConstantPacking(const ShaderUniformInfo& inShaderUniform, size_t& outSize);
 
-        void SetConstantBufferData(const std::string& inName, const void* inData, size_t inSize);
+        void SetUniformCBufferData(const std::string& inName, const void* inData, size_t inSize);
 
     public:
         RenderDeviceD3D11();
@@ -47,6 +47,7 @@ namespace Ming3D
         virtual RenderWindow* CreateRenderWindow(WindowBase* inWindow) override;
         virtual RasteriserState* CreateRasteriserState(RasteriserStateCullMode inCullMode, bool inDepthClipEnabled) override;
         virtual DepthStencilState* CreateDepthStencilState(DepthStencilDepthFunc inDepthFunc, bool inDepthEnabled) override;
+        virtual ConstantBuffer* CreateConstantBuffer(size_t inSize) override;
 
         virtual void SetTexture(const TextureBuffer* inTexture, int inSlot) override;
         virtual void SetActiveShaderProgram(ShaderProgram* inProgram) override;
@@ -57,6 +58,8 @@ namespace Ming3D
         virtual void RenderPrimitive(VertexBuffer* inVertexBuffer, IndexBuffer* inIndexBuffer) override;
         virtual void SetRasteriserState(RasteriserState* inState) override;
         virtual void SetDepthStencilState(DepthStencilState* inState) override;
+        virtual void SetConstantBufferData(ConstantBuffer* inConstantBuffer, void* inData, size_t inSize) override;
+        virtual void BindConstantBuffer(ConstantBuffer* inConstantBuffer, const char* inName, ShaderProgram* inProgram) override;
 
         virtual void SetShaderUniformFloat(const std::string& inName, float inVal) override;
         virtual void SetShaderUniformInt(const std::string& inName, int inVal) override;

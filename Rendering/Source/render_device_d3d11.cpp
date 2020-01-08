@@ -87,31 +87,34 @@ namespace Ming3D
         mDeviceContext->Release();
     }
 
-    size_t RenderDeviceD3D11::GetShaderUniformSize(const ShaderUniformInfo& inShaderUniform)
+    void RenderDeviceD3D11::ApplyConstantPacking(const ShaderUniformInfo& inShaderUniform, size_t& outSize)
     {
         switch (inShaderUniform.mType.mDatatype)
         {
         case EShaderDatatype::Float:
-            return sizeof(float);
+            outSize += sizeof(float);
             break;
         case EShaderDatatype::Int:
-            return sizeof(int);
+            outSize +=  sizeof(int); // TODO
             break;
         case EShaderDatatype::Vec2:
-            return sizeof(DirectX::XMFLOAT2);
+            outSize += (16 - (outSize % 16) % 16);
+            outSize += sizeof(DirectX::XMFLOAT2);
             break;
         case EShaderDatatype::Vec3:
-            return sizeof(DirectX::XMFLOAT3);
+            outSize += (16 - (outSize % 16) % 16);
+            outSize += sizeof(DirectX::XMFLOAT3);
             break;
         case EShaderDatatype::Vec4:
-            return sizeof(DirectX::XMFLOAT4);
+            outSize += (16 - (outSize % 16) % 16);
+            outSize += sizeof(DirectX::XMFLOAT4);
             break;
         case EShaderDatatype::Mat4x4:
-            return sizeof(DirectX::XMFLOAT4X4);
+            outSize += (16 - (outSize % 16) % 16);
+            outSize += sizeof(DirectX::XMFLOAT4X4);
             break;
         default:
             __AssertComment(false, "Unhandled shader uniform type");
-            return 0;
         }
     }
 
@@ -351,54 +354,34 @@ namespace Ming3D
         shaderProgram->mVS = pVS;
         shaderProgram->mPS = pPS;
 
-        const size_t numCBuffers = parsedProgram->mConstantBufferInfos.size();
-        for (size_t iCBuffer = 0; iCBuffer < numCBuffers; iCBuffer++)
+        // Set up array of bound constant buffers
+        const size_t numcbuffers = parsedProgram->mConstantBufferInfos.size() + (parsedProgram->mUniforms.size() > 0 ? 1 : 0);
+        shaderProgram->mBoundConstantBuffers.resize(numcbuffers);
+
+        for (size_t iCB = 0; iCB < parsedProgram->mConstantBufferInfos.size(); iCB++)
         {
-            const ConstantBufferInfo& uniformBlock = parsedProgram->mConstantBufferInfos[iCBuffer];
-            ConstantBufferD3D11* cBuffer = new ConstantBufferD3D11();
+            shaderProgram->mConstantBufferLocations.emplace(parsedProgram->mConstantBufferInfos[iCB].mName, iCB);
+        }
 
+        // Crate a constant buffer for all uniforms
+        if (parsedProgram->mUniforms.size() > 0)
+        {
             size_t cBufferSize = 0;
-            for(size_t iVar = 0; iVar < uniformBlock.mShaderUniforms.size(); iVar++)
+            for (const ShaderVariableInfo& uniformInfo : parsedProgram->mUniforms)
             {
-                const ShaderVariableInfo& parserUniformInfo = uniformBlock.mShaderUniforms[iVar];
-                shaderProgram->mConstantNameMap.emplace(parserUniformInfo.mName, ShaderConstantRef{iCBuffer, iVar});
-
-                ShaderDatatypeInfo varType = parserUniformInfo.mDatatypeInfo;
-                ShaderUniformInfo uniformInfo(varType, parserUniformInfo.mName);
-                const size_t currentUniformSize = GetShaderUniformSize(uniformInfo);
-                ShaderConstantD3D11 scInfo(uniformInfo, cBufferSize, currentUniformSize);
-                cBuffer->mShaderConstants.push_back(scInfo);
-                cBufferSize += currentUniformSize;
+                size_t offset = cBufferSize;
+                ShaderDatatypeInfo varType = uniformInfo.mDatatypeInfo;
+                ShaderUniformInfo uniformInfo(varType, uniformInfo.mName);
+                ApplyConstantPacking(uniformInfo, cBufferSize);
+                ShaderConstantD3D11 scInfo(uniformInfo, offset, cBufferSize - offset);
+                shaderProgram->mUniforms.emplace(uniformInfo.mName, scInfo);
             }
-            ID3D11Buffer*   constantBuffer = NULL;
+            shaderProgram->mUniformsSize = cBufferSize;
 
-            char* cBufferData = new char[cBufferSize];
-
-            D3D11_BUFFER_DESC cbDesc;
-            cbDesc.ByteWidth = cBufferSize;
-            cbDesc.Usage = D3D11_USAGE_DYNAMIC;
-            cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-            cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-            cbDesc.MiscFlags = 0;
-            cbDesc.StructureByteStride = 0;
-
-            D3D11_SUBRESOURCE_DATA subresData;
-            subresData.pSysMem = cBufferData;
-            subresData.SysMemPitch = 0;
-            subresData.SysMemSlicePitch = 0;
-
-            HRESULT hr = mDevice->CreateBuffer(&cbDesc, &subresData, &constantBuffer);
-
-            if (FAILED(hr))
-            {
-                LOG_ERROR() << "Failed to create constant buffer";
-                return nullptr;
-            }
-
-            cBuffer->mConstantBuffer = constantBuffer;
-            cBuffer->mConstantData = cBufferData;
-            cBuffer->mShaderConstantsSize = cBufferSize;
-            shaderProgram->mConstantBuffers.push_back(cBuffer);
+            ConstantBufferD3D11* cBuffer = static_cast<ConstantBufferD3D11*>(CreateConstantBuffer(cBufferSize));
+            shaderProgram->mUniformCBuffer = cBuffer;
+            
+            shaderProgram->mBoundConstantBuffers[numcbuffers - 1] = cBuffer->mConstantBuffer;
         }
 
         return shaderProgram;
@@ -546,6 +529,42 @@ namespace Ming3D
         return rasteriserState;
     }
 
+    ConstantBuffer* RenderDeviceD3D11::CreateConstantBuffer(size_t inSize)
+    {
+        ConstantBufferD3D11* cBuffer = new ConstantBufferD3D11();
+
+        ID3D11Buffer*   constantBuffer = NULL;
+
+        char* cBufferData = new char[inSize];
+
+        D3D11_BUFFER_DESC cbDesc;
+        cbDesc.ByteWidth = inSize;
+        cbDesc.Usage = D3D11_USAGE_DYNAMIC;
+        cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+        cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+        cbDesc.MiscFlags = 0;
+        cbDesc.StructureByteStride = 0;
+
+        D3D11_SUBRESOURCE_DATA subresData;
+        subresData.pSysMem = cBufferData;
+        subresData.SysMemPitch = 0;
+        subresData.SysMemSlicePitch = 0;
+
+        HRESULT hr = mDevice->CreateBuffer(&cbDesc, &subresData, &constantBuffer);
+
+        if (FAILED(hr))
+        {
+            LOG_ERROR() << "Failed to create constant buffer";
+            return nullptr;
+        }
+
+        cBuffer->mConstantBuffer = constantBuffer;
+        cBuffer->mConstantData = cBufferData;
+        cBuffer->mSize = inSize;
+
+        return cBuffer;
+    }
+
     DepthStencilState* RenderDeviceD3D11::CreateDepthStencilState(DepthStencilDepthFunc inDepthFunc, bool inDepthEnabled)
     {
         DepthStencilStateD3D11* d3dDepthStencilState = new DepthStencilStateD3D11();
@@ -634,12 +653,16 @@ namespace Ming3D
         mDeviceContext->VSSetShader(dxShaderProgram->mVS, 0, 0);
         mDeviceContext->PSSetShader(dxShaderProgram->mPS, 0, 0);
 
-        for (const ConstantBufferD3D11* cBuffer : dxShaderProgram->mConstantBuffers)
+        // Bind constant buffers
+        mDeviceContext->VSSetConstantBuffers(0, dxShaderProgram->mBoundConstantBuffers.size(), dxShaderProgram->mBoundConstantBuffers.data());
+        mDeviceContext->PSSetConstantBuffers(0, dxShaderProgram->mBoundConstantBuffers.size(), dxShaderProgram->mBoundConstantBuffers.data());
+
+        /*for (const ConstantBufferD3D11* cBuffer : dxShaderProgram->mConstantBuffers)
         {
             // TODO: Check if cbuffer is used by each shader
             mDeviceContext->VSSetConstantBuffers(0, 1, &cBuffer->mConstantBuffer);
             mDeviceContext->PSSetConstantBuffers(0, 1, &cBuffer->mConstantBuffer);
-        }
+        }*/
     }
 
     void RenderDeviceD3D11::BeginRenderWindow(RenderWindow* inWindow)
@@ -717,7 +740,41 @@ namespace Ming3D
         GetDeviceContext()->OMSetDepthStencilState(depthStencilState->mDepthStencilState, 1);
     }
 
-    void RenderDeviceD3D11::SetConstantBufferData(const std::string& inName, const void* inData, size_t inSize)
+    void RenderDeviceD3D11::SetConstantBufferData(ConstantBuffer* inConstantBuffer, void* inData, size_t inSize)
+    {
+        ConstantBufferD3D11* cbuffer = static_cast<ConstantBufferD3D11*>(inConstantBuffer);
+
+        size_t size = inSize;
+        assert(size == size);
+
+        memcpy((char*)cbuffer->mConstantData, inData, inSize);
+
+        D3D11_MAPPED_SUBRESOURCE mappedResource;
+        mDeviceContext->Map(cbuffer->mConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+
+        memcpy(mappedResource.pData, cbuffer->mConstantData, size);
+
+        mDeviceContext->Unmap(cbuffer->mConstantBuffer, 0);
+    }
+
+    void RenderDeviceD3D11::BindConstantBuffer(ConstantBuffer* inConstantBuffer, const char* inName, ShaderProgram* inProgram)
+    {
+        ShaderProgramD3D11* shaderProgram = static_cast<ShaderProgramD3D11*>(inProgram);
+        ConstantBufferD3D11* cbuffer = static_cast<ConstantBufferD3D11*>(inConstantBuffer);
+
+        auto iter = shaderProgram->mConstantBufferLocations.find(inName);
+        if (iter != shaderProgram->mConstantBufferLocations.end())
+        {
+            shaderProgram->mBoundConstantBuffers[iter->second] = cbuffer->mConstantBuffer;
+        }
+        else
+        {
+            LOG_ERROR() << "Constant buffer does not exist: " << inName;
+        }
+    }
+
+
+    void RenderDeviceD3D11::SetUniformCBufferData(const std::string& inName, const void* inData, size_t inSize)
     {
         __Assert(mActiveShaderProgram != nullptr);
 
@@ -725,12 +782,11 @@ namespace Ming3D
 
         bool foundUniform = false;
 
-        auto scIter = mActiveShaderProgram->mConstantNameMap.find(inName);
-        if (scIter != mActiveShaderProgram->mConstantNameMap.end())
+        auto scIter = mActiveShaderProgram->mUniforms.find(inName);
+        if (scIter != mActiveShaderProgram->mUniforms.end())
         {
-            const ShaderConstantRef& scRef = scIter->second;
-            const ConstantBufferD3D11* cBuffer = mActiveShaderProgram->mConstantBuffers[scRef.mCBufferIndex];
-            const ShaderConstantD3D11& scInfo = cBuffer->mShaderConstants[scRef.mConstantIndex];
+            const ConstantBufferD3D11* cBuffer = mActiveShaderProgram->mUniformCBuffer;
+            const ShaderConstantD3D11& scInfo = scIter->second;
 
             void* shaderConstData = cBuffer->mConstantData;
 
@@ -739,7 +795,7 @@ namespace Ming3D
             D3D11_MAPPED_SUBRESOURCE mappedResource;
             mDeviceContext->Map(cBuffer->mConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 
-            memcpy(mappedResource.pData, shaderConstData, cBuffer->mShaderConstantsSize);
+            memcpy(mappedResource.pData, shaderConstData, cBuffer->mSize);
 
             mDeviceContext->Unmap(cBuffer->mConstantBuffer, 0);
         }
@@ -751,37 +807,37 @@ namespace Ming3D
 
     void RenderDeviceD3D11::SetShaderUniformFloat(const std::string& inName, float inVal)
     {
-        SetConstantBufferData(inName, &inVal, sizeof(inVal));
+        SetUniformCBufferData(inName, &inVal, sizeof(inVal));
     }
 
     void RenderDeviceD3D11::SetShaderUniformInt(const std::string& inName, int inVal)
     {
-        SetConstantBufferData(inName, &inVal, sizeof(inVal));
+        SetUniformCBufferData(inName, &inVal, sizeof(inVal));
     }
 
     void RenderDeviceD3D11::SetShaderUniformVec2(const std::string& inName, const glm::vec2 inVec)
     {
         DirectX::XMFLOAT2 value(&inVec[0]);
-        SetConstantBufferData(inName, &value, sizeof(value));
+        SetUniformCBufferData(inName, &value, sizeof(value));
     }
 
     void RenderDeviceD3D11::SetShaderUniformVec3(const std::string& inName, const glm::vec3 inVec)
     {
         DirectX::XMFLOAT3 value(&inVec[0]);
-        SetConstantBufferData(inName, &value, sizeof(value));
+        SetUniformCBufferData(inName, &value, sizeof(value));
     }
 
     void RenderDeviceD3D11::SetShaderUniformVec4(const std::string& inName, const glm::vec4 inVec)
     {
         DirectX::XMFLOAT4 value(&inVec[0]);
-        SetConstantBufferData(inName, &value, sizeof(value));
+        SetUniformCBufferData(inName, &value, sizeof(value));
     }
 
     void RenderDeviceD3D11::SetShaderUniformMat4x4(const std::string& inName, const glm::mat4 inMat)
     {
         glm::mat4 mat = glm::transpose(inMat);
         DirectX::XMFLOAT4X4 value(&mat[0][0]);
-        SetConstantBufferData(inName, &value, sizeof(value));
+        SetUniformCBufferData(inName, &value, sizeof(value));
     }
 
 }

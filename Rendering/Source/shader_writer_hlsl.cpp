@@ -303,6 +303,11 @@ namespace Ming3D
             }
         }
 
+        for (const ShaderVariableInfo& uniformInfo : inParsedShaderProgram->mUniforms)
+        {
+            mAvailableUniforms.emplace(uniformInfo.mName);
+        }
+
         for (ShaderTextureInfo textureInfo : inParsedShaderProgram->mShaderTextures)
         {
             mAvailableUniforms.emplace(textureInfo.mTextureName);
@@ -358,14 +363,31 @@ namespace Ming3D
 
             // Write constant buffers
             size_t numConstantBuffers = inParsedShaderProgram->mConstantBufferInfos.size();
-            for(size_t iBlock = 0; iBlock < numConstantBuffers; iBlock++)
+            size_t iBlock = 0;
+            for(iBlock = 0; iBlock < numConstantBuffers; iBlock++)
             {
                 const ConstantBufferInfo& cbuffer = inParsedShaderProgram->mConstantBufferInfos[iBlock];
 
-                shaderHeaderStream << "cbuffer SHADER_CONSTANT_BUFFER : register(b" << iBlock << ")\n";
+                shaderHeaderStream << "cbuffer " << cbuffer.mName << " : register(b" << iBlock << ")\n";
                 shaderHeaderStream << "{\n";
                 shaderHeaderStream.AddIndent();
                 for (const ShaderVariableInfo& uniformInfo : cbuffer.mShaderUniforms)
+                {
+                    shaderHeaderStream << GetConvertedType(uniformInfo.mDatatypeInfo.mName) << " " << uniformInfo.mName << ";\n";
+                    currShaderUniforms.push_back(uniformInfo);
+                }
+                shaderHeaderStream.RemoveIndent();
+                shaderHeaderStream << "}";
+                shaderHeaderStream << "\n";
+            }
+
+            // Write uniforms (one cbuffer)
+            if (inParsedShaderProgram->mUniforms.size() > 0)
+            {
+                shaderHeaderStream << "cbuffer UNIFORM_CONSTANT_BUFFER : register(b" << iBlock << ")\n";
+                shaderHeaderStream << "{\n";
+                shaderHeaderStream.AddIndent();
+                for (const ShaderVariableInfo& uniformInfo : inParsedShaderProgram->mUniforms)
                 {
                     //if (mReferencedUniforms.find(uniformInfo.mName) != mReferencedUniforms.end())
                     {

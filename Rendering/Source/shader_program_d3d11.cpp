@@ -3,14 +3,6 @@
 
 namespace Ming3D
 {
-    ConstantBufferD3D11::~ConstantBufferD3D11()
-    {
-        if (mConstantData != nullptr)
-        {
-            delete mConstantData;
-        }
-    }
-
     ShaderProgramD3D11::~ShaderProgramD3D11()
     {
         if (mVS != nullptr)
@@ -29,9 +21,8 @@ namespace Ming3D
             mInputLayout->Release();
             delete mInputLayout;
         }
-
-        for (ConstantBufferD3D11* cBuffer : mConstantBuffers)
-            delete cBuffer;
+        
+        delete mUniformCBuffer;
     }
 }
 #endif

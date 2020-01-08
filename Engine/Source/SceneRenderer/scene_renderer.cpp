@@ -13,7 +13,7 @@
 
 namespace Ming3D
 {
-    ConstantBufferDataGL<glm::vec3, glm::vec4, glm::vec3, float> cbDataGlobal; // TODO
+    ConstantBufferData<glm::vec3, glm::vec4, glm::vec3, float> cbDataGlobal; // TODO
 
     struct RenderNodeSorter
     {
