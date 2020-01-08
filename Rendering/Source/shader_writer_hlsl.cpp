@@ -295,12 +295,17 @@ namespace Ming3D
         if (inParsedShaderProgram->mFragmentShader)
             shaders.push_back(inParsedShaderProgram->mFragmentShader);
 
-        for (const ShaderUniformBlock& uniformBlock : inParsedShaderProgram->mShaderUniformBlocks)
+        for (const ConstantBufferInfo& cbuffer : inParsedShaderProgram->mConstantBufferInfos)
         {
-            for (const ShaderVariableInfo& uniformInfo : uniformBlock.mShaderUniforms)
+            for (const ShaderVariableInfo& uniformInfo : cbuffer.mShaderUniforms)
             {
                 mAvailableUniforms.emplace(uniformInfo.mName);
             }
+        }
+
+        for (const ShaderVariableInfo& uniformInfo : inParsedShaderProgram->mUniforms)
+        {
+            mAvailableUniforms.emplace(uniformInfo.mName);
         }
 
         for (ShaderTextureInfo textureInfo : inParsedShaderProgram->mShaderTextures)
@@ -357,15 +362,32 @@ namespace Ming3D
             shaderHeaderStream << "\n";
 
             // Write constant buffers
-            size_t numUniformBlocks = inParsedShaderProgram->mShaderUniformBlocks.size();
-            for(size_t iBlock = 0; iBlock < numUniformBlocks; iBlock++)
+            size_t numConstantBuffers = inParsedShaderProgram->mConstantBufferInfos.size();
+            size_t iBlock = 0;
+            for(iBlock = 0; iBlock < numConstantBuffers; iBlock++)
             {
-                const ShaderUniformBlock& uniformBlock = inParsedShaderProgram->mShaderUniformBlocks[iBlock];
+                const ConstantBufferInfo& cbuffer = inParsedShaderProgram->mConstantBufferInfos[iBlock];
 
-                shaderHeaderStream << "cbuffer SHADER_CONSTANT_BUFFER : register(b" << iBlock << ")\n";
+                shaderHeaderStream << "cbuffer " << cbuffer.mName << " : register(b" << iBlock << ")\n";
                 shaderHeaderStream << "{\n";
                 shaderHeaderStream.AddIndent();
-                for (const ShaderVariableInfo& uniformInfo : uniformBlock.mShaderUniforms)
+                for (const ShaderVariableInfo& uniformInfo : cbuffer.mShaderUniforms)
+                {
+                    shaderHeaderStream << GetConvertedType(uniformInfo.mDatatypeInfo.mName) << " " << uniformInfo.mName << ";\n";
+                    currShaderUniforms.push_back(uniformInfo);
+                }
+                shaderHeaderStream.RemoveIndent();
+                shaderHeaderStream << "}";
+                shaderHeaderStream << "\n";
+            }
+
+            // Write uniforms (one cbuffer)
+            if (inParsedShaderProgram->mUniforms.size() > 0)
+            {
+                shaderHeaderStream << "cbuffer UNIFORM_CONSTANT_BUFFER : register(b" << iBlock << ")\n";
+                shaderHeaderStream << "{\n";
+                shaderHeaderStream.AddIndent();
+                for (const ShaderVariableInfo& uniformInfo : inParsedShaderProgram->mUniforms)
                 {
                     //if (mReferencedUniforms.find(uniformInfo.mName) != mReferencedUniforms.end())
                     {

@@ -279,12 +279,16 @@ namespace Ming3D
         if (inParsedShaderProgram->mFragmentShader)
             shaders.push_back(inParsedShaderProgram->mFragmentShader);
 
-        for (const ShaderUniformBlock& uniformBlock : inParsedShaderProgram->mShaderUniformBlocks)
+        for (const ConstantBufferInfo& cbuffer : inParsedShaderProgram->mConstantBufferInfos)
         {
-            for (const ShaderVariableInfo& uniformInfo : uniformBlock.mShaderUniforms)
+            for (const ShaderVariableInfo& uniformInfo : cbuffer.mShaderUniforms)
             {
                 mAvailableUniforms.emplace(uniformInfo.mName);
             }
+        }
+        for (const ShaderVariableInfo& uniformInfo : inParsedShaderProgram->mUniforms)
+        {
+            mAvailableUniforms.emplace(uniformInfo.mName);
         }
 
         for (ShaderTextureInfo textureInfo : inParsedShaderProgram->mShaderTextures)
@@ -334,16 +338,25 @@ namespace Ming3D
             shaderHeaderStream << "\n";
 
             // Write uniforms
-            for (const ShaderUniformBlock& uniformBlock : inParsedShaderProgram->mShaderUniformBlocks)
+            for (const ShaderVariableInfo& uniformInfo : inParsedShaderProgram->mUniforms)
             {
-                for (const ShaderVariableInfo& uniformInfo : uniformBlock.mShaderUniforms)
+                if (mReferencedUniforms.find(uniformInfo.mName) != mReferencedUniforms.end())
                 {
-                    if (mReferencedUniforms.find(uniformInfo.mName) != mReferencedUniforms.end())
-                    {
-                        shaderHeaderStream << "uniform " << GetConvertedType(uniformInfo.mDatatypeInfo.mName) << " " << uniformInfo.mName << ";\n";
-                    }
+                    shaderHeaderStream << "uniform " << GetConvertedType(uniformInfo.mDatatypeInfo.mName) << " " << uniformInfo.mName << ";\n";
                 }
             }
+            // Write uniform groups
+            for (const ConstantBufferInfo& cbuffer : inParsedShaderProgram->mConstantBufferInfos)
+            {
+                shaderHeaderStream << "layout (std140) uniform " << cbuffer.mName << "\n{\n";
+
+                for (const ShaderVariableInfo& uniformInfo : cbuffer.mShaderUniforms)
+                {
+                    shaderHeaderStream << GetConvertedType(uniformInfo.mDatatypeInfo.mName) << " " << uniformInfo.mName << ";\n";
+                }
+                shaderHeaderStream << "};\n";
+            }
+
             shaderHeaderStream << "\n";
 
             // Write textures

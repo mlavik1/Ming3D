@@ -14,6 +14,7 @@
 #include "rasteriser_state.h"
 #include "depth_stencil_state.h"
 #include "shader_info.h"
+#include "constant_buffer.h"
 
 #include <string>
 
@@ -38,6 +39,7 @@ namespace Ming3D
         virtual RenderWindow* CreateRenderWindow(WindowBase* inWindow) = 0;
         virtual RasteriserState* CreateRasteriserState(RasteriserStateCullMode inCullMode, bool inDepthClipEnabled) = 0;
         virtual DepthStencilState* CreateDepthStencilState(DepthStencilDepthFunc inDepthFunc, bool inDepthEnabled) = 0;
+        virtual ConstantBuffer* CreateConstantBuffer(size_t inSize) = 0;
 
         virtual void SetTexture(const TextureBuffer* inTexture, int inSlot) = 0;
         virtual void SetActiveShaderProgram(ShaderProgram* inProgram) = 0;
@@ -48,7 +50,9 @@ namespace Ming3D
         virtual void RenderPrimitive(VertexBuffer* inVertexBuffer, IndexBuffer* inIndexBuffer) = 0;
         virtual void SetRasteriserState(RasteriserState* inState) = 0;
         virtual void SetDepthStencilState(DepthStencilState* inState) = 0;
-        
+        virtual void SetConstantBufferData(ConstantBuffer* inConstantBuffer, void* inData, size_t inSize) = 0;
+        virtual void BindConstantBuffer(ConstantBuffer* inConstantBuffer, const char* inName, ShaderProgram* inProgram) = 0;
+
         virtual void SetShaderUniformFloat(const std::string& inName, float inVal) = 0;
         virtual void SetShaderUniformInt(const std::string& inName, int inVal) = 0;
         virtual void SetShaderUniformMat4x4(const std::string& inName, const glm::mat4 inMat) = 0;

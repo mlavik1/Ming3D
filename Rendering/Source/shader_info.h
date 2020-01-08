@@ -177,9 +177,10 @@ namespace Ming3D
         ShaderStatementBlock* mStatementBlock;
     };
 
-    class ShaderUniformBlock
+    class ConstantBufferInfo
     {
     public:
+        std::string mName;
         std::vector<ShaderVariableInfo> mShaderUniforms;
     };
 
@@ -218,7 +219,8 @@ namespace Ming3D
 
         std::vector<ShaderDatatypeInfo> mStructDefinitions;
         std::vector<ShaderFunctionDefinition*> mFunctionDefinitions;
-        std::vector<ShaderUniformBlock> mShaderUniformBlocks;
+        std::vector<ConstantBufferInfo> mConstantBufferInfos;
+        std::vector<ShaderVariableInfo> mUniforms;
         std::vector<ShaderTextureInfo> mShaderTextures;
         ConvertedShaderProgram* mConvertedProgram = nullptr;
 

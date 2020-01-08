@@ -8,12 +8,15 @@
 
 namespace Ming3D
 {
+    class ConstantBuffer;
+
     class SceneRenderer
     {
     private:
         RenderScene* mRenderScene;
         std::list<Camera*> mCameras;
         RenderPipeline* mRenderPipeline;
+        ConstantBuffer* mGlobalCBuffer;
 
         void UpdateUniforms(MaterialBuffer* inMat);
 
@@ -21,9 +24,12 @@ namespace Ming3D
         SceneRenderer();
         ~SceneRenderer();
 
+        void Initialise();
+
         void AddCamera(Camera* inCamera);
         void RemoveCamera(Camera* inCamera);
         void AddSceneObject(RenderSceneObject* inObject);
+        void RegisterMaterial(MaterialBuffer* inMat);
 
         void Render();
         void CollectObjects(RenderPipelineParams& params);

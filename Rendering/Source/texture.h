@@ -2,6 +2,7 @@
 #define MING3D_TEXTURE_H
 
 #include <vector> // TODO: Use a smart pointer to a stream
+#include <cstring>
 
 namespace Ming3D
 {
