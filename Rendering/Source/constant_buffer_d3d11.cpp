@@ -1,3 +1,4 @@
+#ifdef MING3D_D3D11
 #include "constant_buffer_d3d11.h"
 
 namespace Ming3D
@@ -10,3 +11,4 @@ namespace Ming3D
         }
     }
 }
+#endif

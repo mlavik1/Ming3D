@@ -656,13 +656,6 @@ namespace Ming3D
         // Bind constant buffers
         mDeviceContext->VSSetConstantBuffers(0, dxShaderProgram->mBoundConstantBuffers.size(), dxShaderProgram->mBoundConstantBuffers.data());
         mDeviceContext->PSSetConstantBuffers(0, dxShaderProgram->mBoundConstantBuffers.size(), dxShaderProgram->mBoundConstantBuffers.data());
-
-        /*for (const ConstantBufferD3D11* cBuffer : dxShaderProgram->mConstantBuffers)
-        {
-            // TODO: Check if cbuffer is used by each shader
-            mDeviceContext->VSSetConstantBuffers(0, 1, &cBuffer->mConstantBuffer);
-            mDeviceContext->PSSetConstantBuffers(0, 1, &cBuffer->mConstantBuffer);
-        }*/
     }
 
     void RenderDeviceD3D11::BeginRenderWindow(RenderWindow* inWindow)
