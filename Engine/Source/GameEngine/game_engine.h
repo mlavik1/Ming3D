@@ -35,8 +35,8 @@ namespace Ming3D
         InputHandler* mInputHandler = nullptr;
         InputManager* mInputManager = nullptr;
 
-        float mTime;
-        float mDeltaTime;
+        float mTime = 0.0f;
+        float mDeltaTime = 0.0f;
 
         void HandleDebugStats();
 
