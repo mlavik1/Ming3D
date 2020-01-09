@@ -1,5 +1,6 @@
 #include "material_buffer.h"
 #include "shader_uniform_data.h"
+#include "Debug/debug.h"
 
 namespace Ming3D
 {
@@ -11,6 +12,8 @@ namespace Ming3D
             it->second->SetData(inData);
             mModifiedUniforms.insert(inName);
         }
+        else
+            LOG_ERROR() << "Failed to find uniform with name: " << inName;
     }
 
     void MaterialBuffer::SetShaderUniformFloat(const std::string& inName, float inVal)

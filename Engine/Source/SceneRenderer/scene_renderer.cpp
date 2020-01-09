@@ -76,7 +76,7 @@ namespace Ming3D
             CollectObjects(*params);
             SortObjects(*params);
 
-            cbDataGlobal.SetData(glm::vec3(), glm::vec4(), camera->mCameraMatrix * glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), GGameEngine->GetTime());
+            cbDataGlobal.SetData(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec4(0.8f, 0.8f, 0.8f, 1.0f), camera->mCameraMatrix * glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), GGameEngine->GetTime());
             GGameEngine->GetRenderDevice()->SetConstantBufferData(mGlobalCBuffer, cbDataGlobal.mDataPtr, cbDataGlobal.mSize);
 
             mRenderPipeline->Render(*params);

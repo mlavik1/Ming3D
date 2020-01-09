@@ -31,7 +31,7 @@ int main()
     skybox->GetTransform().SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
     skybox->GetTransform().SetLocalScale(glm::vec3(-50.0f, 50.0f, 50.0f));
     gameEngine->GetWorld()->AddActor(skybox);
-    ModelLoader::LoadModel("Resources//Skybox//Skybox.obj", skybox);
+    ModelLoader::LoadModel("Resources//Skybox//Skybox.obj", skybox, MODELLOADERFLAGS_UNLIT);
 
     Actor* actor1 = new Actor();
     actor1->GetTransform().SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));

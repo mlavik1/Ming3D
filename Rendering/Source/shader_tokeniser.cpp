@@ -51,6 +51,7 @@ namespace Ming3D
         bool isPunctuator = false;
         bool isComment = false;
         const char* commentStartPos;
+        int sign = 1;
 
         // Evaluate the first character
         if (*mSourceStringPos == '"')
@@ -61,6 +62,11 @@ namespace Ming3D
         else if (isdigit(*mSourceStringPos))
         {
             isNumericLiteral = true;
+        }
+        else if(*mSourceStringPos == '+' || *mSourceStringPos == '-')
+        {
+            isNumericLiteral = true;
+            sign = *mSourceStringPos == '+' ? 1 : -1;
         }
         else if (*mSourceStringPos == '/' && *(mSourceStringPos + 1) == '/')
         {
@@ -145,12 +151,12 @@ namespace Ming3D
         else if (isNumericLiteral && isFloatLiteral)
         {
             outToken.mTokenType = ETokenType::FloatLiteral;
-            outToken.mFloatValue = strtof(outToken.mTokenString.c_str(), nullptr);
+            outToken.mFloatValue = sign * strtof(outToken.mTokenString.c_str(), nullptr);
         }
         else if (isNumericLiteral)
         {
             outToken.mTokenType = ETokenType::IntegerLiteral;
-            outToken.mIntValue = strtol(outToken.mTokenString.c_str(), nullptr, 10);
+            outToken.mIntValue = sign * strtol(outToken.mTokenString.c_str(), nullptr, 10);
         }
         else if (outToken.mTokenString == "true")
         {
