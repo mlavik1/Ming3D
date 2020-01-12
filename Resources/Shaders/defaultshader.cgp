@@ -2,10 +2,13 @@ uniform mat4 MVP;
 uniform mat4 modelViewMat;
 
 #ifdef use_mat_colour
-    uniform vec4 colourDiffuse;
+    uniform vec4 _colourDiffuse;
 #endif
-    uniform vec4 colourSpecular;
-    uniform float shininess;
+
+#ifndef unlit_mode
+    uniform vec4 _colourSpecular;
+    uniform float _shininess;
+#endif
 
 
 cbuffer _Globals
@@ -53,26 +56,19 @@ shader VertexShader
 // Fragment shader
 shader FragmentShader
 {
+    #include "Resources/Shaders/lighting.cgh"
+
     void main(FSInput input)
     {
         vec4 col = vec4(0.0, 0.0, 0.0, 0.0);
     #ifdef use_mat_colour
-        col = colourDiffuse;
+        col = _colourDiffuse;
     #else
         col = ReadTexture(inTexture, input.TexCoord);
     #endif
         
     #ifndef unlit_mode
-        vec3 n = normalize(input.Normal.xyz);
-        float ndotl = max(dot(n, _lightDir * -1.0), 0.0);
-        vec3 diffuse =  ndotl * vec3(_lightCol.x * col.x, _lightCol.y * col.y, _lightCol.z * col.z);
-        vec3 ambient = col.xyz * 0.2; // TODO
-        vec3 v = normalize(_eyePos - input.WorldPosition.xyz);
-        vec3 r = normalize(reflect(_lightCol.xyz * -1.0, n));
-        float rdotv = max( dot( r, v ), 0.0 );
-        vec3 specular = pow(rdotv, shininess) * colourSpecular.xyz * col.xyz;
-
-        col = vec4(diffuse.x + ambient.x + specular.x, diffuse.y + ambient.y + specular.y, diffuse.z + ambient.z + specular.z, 1.0);
+        col = calcLightingPhong(input.Normal.xyz, input.WorldPosition.xyz, _eyePos, _lightDir, _lightCol.xyz, col, _colourSpecular.xyz, _shininess);
     #endif
 
         SetFragmentColour(col);

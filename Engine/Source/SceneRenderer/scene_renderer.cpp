@@ -61,6 +61,7 @@ namespace Ming3D
 
     void SceneRenderer::RegisterMaterial(MaterialBuffer* inMat)
     {
+        // Set _Globals, if present (shaders need not use this)
         if(inMat->mConstantBuffers.find("_Globals") != inMat->mConstantBuffers.end())
             GGameEngine->GetRenderDevice()->BindConstantBuffer(mGlobalCBuffer, "_Globals", inMat->mShaderProgram);
     }

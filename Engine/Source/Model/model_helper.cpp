@@ -137,7 +137,7 @@ namespace Ming3D
         for (MaterialData* matData : modelData->mMaterials)
         {
             MaterialParams matParams;
-            matParams.mShaderProgramPath = "Resources//shader_PNT.shader";
+            matParams.mShaderProgramPath = "Resources/Shaders/defaultshader.cgp";
             if (matData->mTexture == nullptr)
                 matParams.mPreprocessorDefinitions.emplace("use_mat_colour", "");
             
@@ -149,10 +149,10 @@ namespace Ming3D
             if (matData->mTexture != nullptr)
                 material->SetTexture(0, matData->mTexture);
             else
-                material->SetShaderUniformVec4("colourDiffuse", matData->mDiffuseColour);
+                material->SetShaderUniformVec4("_colourDiffuse", matData->mDiffuseColour);
             //material->SetShaderUniformVec4("colourAmbient", matData->mAmbientColour);
-            material->SetShaderUniformVec4("colourSpecular", matData->mSpecularColour);
-            material->SetShaderUniformFloat("shininess", matData->mShininess);
+            material->SetShaderUniformVec4("_colourSpecular", matData->mSpecularColour);
+            material->SetShaderUniformFloat("_shininess", matData->mShininess);
             materials.push_back(material);
         }
 
