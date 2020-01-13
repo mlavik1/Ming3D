@@ -92,7 +92,7 @@ namespace Ming3D
         {
             inStream << "return _PSReturnValue;\n"; // TODO
         }
-        else
+        else if(isMainFunction)
         {
             inStream << "return " << inFunctionDef->mFunctionInfo.mParameters[1].mName << ";\n";
         }

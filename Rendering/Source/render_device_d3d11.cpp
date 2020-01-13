@@ -98,19 +98,19 @@ namespace Ming3D
             outSize +=  sizeof(int); // TODO
             break;
         case EShaderDatatype::Vec2:
-            outSize += (16 - (outSize % 16) % 16);
+            outSize += (16 - (outSize % 16)) % 16;
             outSize += sizeof(DirectX::XMFLOAT2);
             break;
         case EShaderDatatype::Vec3:
-            outSize += (16 - (outSize % 16) % 16);
+            outSize += (16 - (outSize % 16)) % 16;
             outSize += sizeof(DirectX::XMFLOAT3);
             break;
         case EShaderDatatype::Vec4:
-            outSize += (16 - (outSize % 16) % 16);
+            outSize += (16 - (outSize % 16)) % 16;
             outSize += sizeof(DirectX::XMFLOAT4);
             break;
         case EShaderDatatype::Mat4x4:
-            outSize += (16 - (outSize % 16) % 16);
+            outSize += (16 - (outSize % 16)) % 16;
             outSize += sizeof(DirectX::XMFLOAT4X4);
             break;
         default:
@@ -376,6 +376,9 @@ namespace Ming3D
                 ShaderConstantD3D11 scInfo(uniformInfo, offset, cBufferSize - offset);
                 shaderProgram->mUniforms.emplace(uniformInfo.mName, scInfo);
             }
+            // Add final padding (size must be a multiple of 16)
+            cBufferSize += (16 - (cBufferSize % 16) % 16);
+
             shaderProgram->mUniformsSize = cBufferSize;
 
             ConstantBufferD3D11* cBuffer = static_cast<ConstantBufferD3D11*>(CreateConstantBuffer(cBufferSize));
