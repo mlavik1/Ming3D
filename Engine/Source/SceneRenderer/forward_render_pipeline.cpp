@@ -107,8 +107,10 @@ namespace Ming3D
             glm::mat4 model = node->mModelMatrix;
 
             glm::mat4 mvp = Projection * view * model;
+            glm::mat4 mv = view * model;
 
             renderDevice->SetShaderUniformMat4x4("MVP", mvp);
+            renderDevice->SetShaderUniformMat4x4("modelViewMat", mv);
 
             // TODO: Don't bind vertex/index buffer if same mesh as last frame
 

@@ -51,7 +51,19 @@ namespace Ming3D
             }
             aiColor4D diffCol;
             if (aiGetMaterialColor(scene->mMaterials[m], AI_MATKEY_COLOR_DIFFUSE, &diffCol) == AI_SUCCESS)
-                matData->mColour = glm::vec4(diffCol.r, diffCol.g, diffCol.b, diffCol.a);
+                matData->mDiffuseColour = glm::vec4(diffCol.r, diffCol.g, diffCol.b, diffCol.a);
+
+            aiColor4D specCol;
+            if (aiGetMaterialColor(scene->mMaterials[m], AI_MATKEY_COLOR_DIFFUSE, &specCol) == AI_SUCCESS)
+                matData->mSpecularColour = glm::vec4(specCol.r, specCol.g, specCol.b, specCol.a);
+
+            aiColor4D ambCol;
+            if (aiGetMaterialColor(scene->mMaterials[m], AI_MATKEY_COLOR_AMBIENT, &ambCol) == AI_SUCCESS)
+                matData->mAmbientColour = glm::vec4(ambCol.r, ambCol.g, ambCol.b, ambCol.a);
+
+            float shininess;
+            if (aiGetMaterialFloat(scene->mMaterials[m], AI_MATKEY_SHININESS, &shininess) == AI_SUCCESS)
+                matData->mShininess = shininess;
         }
 
         for (unsigned int m = 0; m < scene->mNumMeshes; m++)
@@ -113,7 +125,7 @@ namespace Ming3D
         return modelData;
     }
 
-    bool ModelLoader::LoadModel(const char* inModel, Actor* inActor)
+    bool ModelLoader::LoadModel(const char* inModel, Actor* inActor, int inFlags)
     {
         ModelData* modelData = ModelDataImporter::ImportModelData(inModel);
 
@@ -125,16 +137,22 @@ namespace Ming3D
         for (MaterialData* matData : modelData->mMaterials)
         {
             MaterialParams matParams;
-            matParams.mShaderProgramPath = "Resources//shader_PNT.shader";
+            matParams.mShaderProgramPath = "Resources/Shaders/defaultshader.cgp";
             if (matData->mTexture == nullptr)
                 matParams.mPreprocessorDefinitions.emplace("use_mat_colour", "");
             
+            if(inFlags & MODELLOADERFLAGS_UNLIT)
+                matParams.mPreprocessorDefinitions.emplace("unlit_mode", "");
+
             Material* material = MaterialFactory::CreateMaterial(matParams); // TODO: Generate shader based on vertex layout
             
             if (matData->mTexture != nullptr)
                 material->SetTexture(0, matData->mTexture);
             else
-                material->SetShaderUniformVec4("colour", matData->mColour);
+                material->SetShaderUniformVec4("_colourDiffuse", matData->mDiffuseColour);
+            //material->SetShaderUniformVec4("colourAmbient", matData->mAmbientColour);
+            material->SetShaderUniformVec4("_colourSpecular", matData->mSpecularColour);
+            material->SetShaderUniformFloat("_shininess", matData->mShininess);
             materials.push_back(material);
         }
 

@@ -28,7 +28,10 @@ namespace Ming3D
     {
     public:
         Texture * mTexture;
-        glm::vec4 mColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+        glm::vec4 mDiffuseColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+        glm::vec4 mSpecularColour = glm::vec4(0.3f, 0.3f, 0.3f, 1.0f);
+        glm::vec4 mAmbientColour = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f);
+        float mShininess = 32.0f;
     };
 
     class ModelData
@@ -45,10 +48,12 @@ namespace Ming3D
         static ModelData* ImportModelData(const char* inModel);
     };
 
+#define MODELLOADERFLAGS_UNLIT 1
+
     class ModelLoader
     {
     public:
-        static bool LoadModel(const char* inModel, Actor* inActor);
+        static bool LoadModel(const char* inModel, Actor* inActor, int inFlags = 0);
     };
 }
 #endif

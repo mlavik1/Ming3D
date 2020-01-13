@@ -27,24 +27,25 @@ namespace Ming3D
         for (size_t iCB = 0; iCB < shaderProgram->mConstantBufferInfos.size(); iCB++)
         {
             const ConstantBufferInfo& constantBuffer = shaderProgram->mConstantBufferInfos[iCB];
-            for (size_t iUniform = 0; iUniform < constantBuffer.mShaderUniforms.size(); iUniform++)
-            {
-                const ShaderVariableInfo& uniform = constantBuffer.mShaderUniforms[iUniform];
-                ShaderUniformData* uniformData = new ShaderUniformData(uniform.mDatatypeInfo, uniform.mDatatypeInfo.GetDataSize());
-                switch (uniform.mDatatypeInfo.mDatatype)
-                {
-                case EShaderDatatype::Mat4x4:
-                {
-                    glm::mat4 identMat(1.0f);
-                    uniformData->SetData(&identMat);
-                    break;
-                }
-                default:
-                    uniformData->SetData(&zeroValues);
-                }
-                mMaterialBuffer->mShaderUniformMap.emplace(uniform.mName, uniformData);
-            }
             mMaterialBuffer->mConstantBuffers.insert(constantBuffer.mName);
+        }
+
+        for (size_t iUniform = 0; iUniform < shaderProgram->mUniforms.size(); iUniform++)
+        {
+            const ShaderVariableInfo& uniform = shaderProgram->mUniforms[iUniform];
+            ShaderUniformData* uniformData = new ShaderUniformData(uniform.mDatatypeInfo, uniform.mDatatypeInfo.GetDataSize());
+            switch (uniform.mDatatypeInfo.mDatatype)
+            {
+            case EShaderDatatype::Mat4x4:
+            {
+                glm::mat4 identMat(1.0f);
+                uniformData->SetData(&identMat);
+                break;
+            }
+            default:
+                uniformData->SetData(&zeroValues);
+            }
+            mMaterialBuffer->mShaderUniformMap.emplace(uniform.mName, uniformData);
         }
 
         // TODO: Queue render thread command
