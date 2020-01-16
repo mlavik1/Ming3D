@@ -13,6 +13,7 @@
 #include "shader_constant_d3d11.h"
 #include "Debug/debug_stats.h"
 #include "shader_info_hlsl.h"
+#include "depth_stencil_view_d3d11.h"
 
 namespace Ming3D
 {
@@ -23,7 +24,13 @@ namespace Ming3D
         __AssertComment(GRenderDeviceD3D11 == nullptr, "Can only have one GRenderDeviceD3D11");
         GRenderDeviceD3D11 = this;
 
-        D3D11CreateDevice(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, 0, NULL, 0, D3D11_SDK_VERSION, &mDevice, NULL, &mDeviceContext);
+#ifdef _DEBUG
+        UINT flags = D3D11_CREATE_DEVICE_DEBUG;
+#else
+        UINT flags = 0;
+#endif
+
+        D3D11CreateDevice(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, flags, NULL, 0, D3D11_SDK_VERSION, &mDevice, NULL, &mDeviceContext);
 
         IDXGIDevice * dxgiDevice = 0;
         HRESULT hr = mDevice->QueryInterface(__uuidof(IDXGIDevice), (void **)& dxgiDevice);
@@ -68,7 +75,10 @@ namespace Ming3D
         mDefaultRasteriserState = (RasteriserStateD3D11*)CreateRasteriserState(RasteriserStateCullMode::Front, true);
         SetRasteriserState(mDefaultRasteriserState);
 
-        mDefaultDepthStencilState = (DepthStencilStateD3D11*)CreateDepthStencilState(DepthStencilDepthFunc::LEqual, true);
+        DepthStencilStateDesc dssDesc;
+        dssDesc.mDepthEnabled = true;
+        dssDesc.mDepthFunc = DepthStencilDepthFunc::LEqual;
+        mDefaultDepthStencilState = (DepthStencilStateD3D11*)CreateDepthStencilState(dssDesc);
         SetDepthStencilState(mDefaultDepthStencilState);
     }
 
@@ -77,8 +87,6 @@ namespace Ming3D
         if (mDefaultDepthStencilState != nullptr)
         {
             DepthStencilStateD3D11* d3dDepthStencilState = (DepthStencilStateD3D11*)mDefaultDepthStencilState;
-            d3dDepthStencilState->mDepthStencilTexture->Release();
-            d3dDepthStencilState->mDepthStencilView->Release();
             d3dDepthStencilState->mDepthStencilState->Release();
             delete mDefaultDepthStencilState;
         }
@@ -126,8 +134,10 @@ namespace Ming3D
         
         RenderWindowD3D11* renderWindow = (RenderWindowD3D11*)inWindow;
 
+        ID3D11Texture2D* backBufferTex = renderWindow->GetBackBuffer();
+
         // create render target from back buffer address
-        GRenderDeviceD3D11->GetDevice()->CreateRenderTargetView(renderWindow->GetBackBuffer(), NULL, &renderTarget->mBackBuffer);
+        GRenderDeviceD3D11->GetDevice()->CreateRenderTargetView(backBufferTex, NULL, &renderTarget->mBackBuffer);
 
         // set the render target as the back buffer
         GRenderDeviceD3D11->GetDeviceContext()->OMSetRenderTargets(1, &renderTarget->mBackBuffer, NULL);
@@ -145,6 +155,25 @@ namespace Ming3D
         viewport.Height = (float)inWindow->GetWindow()->GetHeight();
 
         GRenderDeviceD3D11->GetDeviceContext()->RSSetViewports(1, &viewport);
+
+        // create backbuffer resource view
+        ID3D11ShaderResourceView* backBufferSRV;
+        D3D11_SHADER_RESOURCE_VIEW_DESC backBufferSRVDesc;
+        ZeroMemory(&backBufferSRVDesc, sizeof(backBufferSRVDesc));
+        backBufferSRVDesc.Format = DXGI_FORMAT_R32_FLOAT;
+        backBufferSRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+        backBufferSRVDesc.Texture2D.MipLevels = 1;
+        backBufferSRVDesc.Texture2D.MostDetailedMip = -1;
+        mDevice->CreateShaderResourceView(backBufferTex, &backBufferSRVDesc, &backBufferSRV);
+
+        TextureBufferD3D11* backBufferTexBuf = new TextureBufferD3D11();
+        backBufferTexBuf->mTexture = backBufferTex;
+        backBufferTexBuf->mTextureResourceView = backBufferSRV;
+
+        renderTarget->mColourBuffers.push_back(backBufferTexBuf);
+
+        DepthStencilViewD3D11* depthStencilView = CreateDepthStencilView(inWindow->GetWindow()->GetWidth(), inWindow->GetWindow()->GetHeight());
+        renderTarget->mDepthStencilView = depthStencilView;
 
         return renderTarget;
     }
@@ -174,6 +203,7 @@ namespace Ming3D
             textureDesc.ArraySize = 1;
             textureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
             textureDesc.SampleDesc.Count = 1;
+            textureDesc.SampleDesc.Quality = 0;
             textureDesc.Usage = D3D11_USAGE_DEFAULT;
             textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
             textureDesc.CPUAccessFlags = 0;
@@ -195,10 +225,14 @@ namespace Ming3D
 
             mDevice->CreateShaderResourceView(renderTargetTextureMap, &shaderResourceViewDesc, &shaderResourceViewMap);
 
+            textureBuffer->mTexture = renderTargetTextureMap;
             textureBuffer->mTextureResourceView = shaderResourceViewMap;
             renderTarget->mColourBuffers.push_back(textureBuffer);
             renderTarget->mBackBuffer = renderTargetViewMap; // TEMP TEST
         }
+
+        DepthStencilViewD3D11* depthStencilView = CreateDepthStencilView(inTextureInfo.mWidth, inTextureInfo.mHeight);
+        renderTarget->mDepthStencilView = depthStencilView;
 
         return renderTarget;
     }
@@ -401,8 +435,6 @@ namespace Ming3D
         const unsigned int w = inTextureInfo.mWidth;
         const unsigned int h = inTextureInfo.mHeight;
 
-        ID3D11Texture2D *boxTex = 0;
-
         char* buffer = new char[inTextureInfo.mWidth * inTextureInfo.mHeight * inTextureInfo.mBytesPerPixel];
         memcpy(buffer, inTextureData, inTextureInfo.mWidth * inTextureInfo.mHeight * inTextureInfo.mBytesPerPixel);
         textureBuffer->mData = buffer;
@@ -473,8 +505,8 @@ namespace Ming3D
         desc.Usage = D3D11_USAGE_IMMUTABLE;
         desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 
-        GRenderDeviceD3D11->GetDevice()->CreateTexture2D(&desc, &initData, &boxTex);
-        GRenderDeviceD3D11->GetDevice()->CreateShaderResourceView(boxTex, NULL, &textureBuffer->mTextureResourceView);
+        GRenderDeviceD3D11->GetDevice()->CreateTexture2D(&desc, &initData, &textureBuffer->mTexture);
+        GRenderDeviceD3D11->GetDevice()->CreateShaderResourceView(textureBuffer->mTexture, NULL, &textureBuffer->mTextureResourceView);
 
         return textureBuffer;
     }
@@ -493,7 +525,7 @@ namespace Ming3D
         scd.BufferDesc.Height = inWindow->GetHeight();
         scd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
         scd.OutputWindow = (HWND)inWindow->GetOSWindowHandle();
-        scd.SampleDesc.Count = 4;
+        scd.SampleDesc.Count = 1;
         scd.Windowed = TRUE;
         scd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
@@ -568,18 +600,18 @@ namespace Ming3D
         return cBuffer;
     }
 
-    DepthStencilState* RenderDeviceD3D11::CreateDepthStencilState(DepthStencilDepthFunc inDepthFunc, bool inDepthEnabled)
+    DepthStencilState* RenderDeviceD3D11::CreateDepthStencilState(DepthStencilStateDesc inDesc)
     {
         DepthStencilStateD3D11* d3dDepthStencilState = new DepthStencilStateD3D11();
 
-        std::unordered_map<DepthStencilDepthFunc, D3D11_COMPARISON_FUNC> depthFuncMap = { {DepthStencilDepthFunc::Less, D3D11_COMPARISON_LESS },{ DepthStencilDepthFunc::LEqual, D3D11_COMPARISON_LESS_EQUAL },
+        static std::unordered_map<DepthStencilDepthFunc, D3D11_COMPARISON_FUNC> depthFuncMap = { {DepthStencilDepthFunc::Less, D3D11_COMPARISON_LESS },{ DepthStencilDepthFunc::LEqual, D3D11_COMPARISON_LESS_EQUAL },
             { DepthStencilDepthFunc::Equal, D3D11_COMPARISON_EQUAL },{ DepthStencilDepthFunc::GEqual, D3D11_COMPARISON_GREATER_EQUAL },{ DepthStencilDepthFunc::Greater, D3D11_COMPARISON_GREATER } };
-        
+
         D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
         ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
-        depthStencilDesc.DepthEnable = inDepthEnabled;
+        depthStencilDesc.DepthEnable = inDesc.mDepthEnabled;
         depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-        depthStencilDesc.DepthFunc = depthFuncMap[inDepthFunc];
+        depthStencilDesc.DepthFunc = depthFuncMap[inDesc.mDepthFunc];
         depthStencilDesc.StencilEnable = true;
         depthStencilDesc.StencilReadMask = 0xFF;
         depthStencilDesc.StencilWriteMask = 0xFF;
@@ -600,22 +632,41 @@ namespace Ming3D
             return nullptr;
         }
 
+        return d3dDepthStencilState;
+    }
+
+    DepthStencilViewD3D11* RenderDeviceD3D11::CreateDepthStencilView(int inWidth, int inHeight)
+    {
+        DepthStencilViewD3D11* d3dDepthStencilView = new DepthStencilViewD3D11();
+
+        ID3D11Texture2D* texture = nullptr;
+        ID3D11ShaderResourceView* shaderResourceView = nullptr;
+        ID3D11DepthStencilView* depthStencilView;
+
         // Create depth stencil texture
         D3D11_TEXTURE2D_DESC descDepth;
         ZeroMemory(&descDepth, sizeof(descDepth));
-        descDepth.Width = 1280; // TODO: I guess this should match the render target?
-        descDepth.Height = 960; // TODO: I guess this should match the render target?   
+        descDepth.Width = inWidth;
+        descDepth.Height = inHeight;
         descDepth.MipLevels = 1;
         descDepth.ArraySize = 1;
         descDepth.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-        descDepth.SampleDesc.Count = 4;
+        descDepth.SampleDesc.Count = 1;
         descDepth.SampleDesc.Quality = 0;
         descDepth.Usage = D3D11_USAGE_DEFAULT;
         descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
         descDepth.CPUAccessFlags = 0;
         descDepth.MiscFlags = 0;
 
-        mDevice->CreateTexture2D(&descDepth, nullptr, &d3dDepthStencilState->mDepthStencilTexture);
+        mDevice->CreateTexture2D(&descDepth, nullptr, &texture);
+
+        D3D11_SHADER_RESOURCE_VIEW_DESC depthSRVDesc;
+        ZeroMemory(&depthSRVDesc, sizeof(depthSRVDesc));
+        depthSRVDesc.Format = DXGI_FORMAT_R32_FLOAT;
+        depthSRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+        depthSRVDesc.Texture2D.MipLevels = 1;
+        depthSRVDesc.Texture2D.MostDetailedMip = -1;
+        mDevice->CreateShaderResourceView(texture, &depthSRVDesc, &shaderResourceView);
 
         // Create depth stencil view
         D3D11_DEPTH_STENCIL_VIEW_DESC descDSV;
@@ -625,15 +676,20 @@ namespace Ming3D
         descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
         descDSV.Texture2D.MipSlice = 0;;
 
-        result = GetDevice()->CreateDepthStencilView(d3dDepthStencilState->mDepthStencilTexture, &descDSV, &d3dDepthStencilState->mDepthStencilView);
+        HRESULT result = GetDevice()->CreateDepthStencilView(texture, &descDSV, &depthStencilView);
         if (FAILED(result))
         {
             LOG_ERROR() << "Faield to create depth stencil view";
-            delete d3dDepthStencilState;
+            delete d3dDepthStencilView;
             return nullptr;
         }
 
-        return d3dDepthStencilState;
+        d3dDepthStencilView->mDepthStencilTexture = new TextureBufferD3D11();
+        d3dDepthStencilView->mDepthStencilTexture->mTexture = texture;
+        d3dDepthStencilView->mDepthStencilTexture->mTextureResourceView = shaderResourceView;
+        d3dDepthStencilView->mDepthStencilView = depthStencilView;
+
+        return d3dDepthStencilView;
     }
 
     void RenderDeviceD3D11::SetTexture(const TextureBuffer* inTexture, int inSlot)
@@ -683,11 +739,11 @@ namespace Ming3D
 
         mRenderTarget->BeginRendering();
 
-        GRenderDeviceD3D11->GetDeviceContext()->OMSetRenderTargets(1, &mRenderTarget->mBackBuffer, mDefaultDepthStencilState->mDepthStencilView);
+        GRenderDeviceD3D11->GetDeviceContext()->OMSetRenderTargets(1, &mRenderTarget->mBackBuffer, mRenderTarget->mDepthStencilView->mDepthStencilView);
 
         const float clearCol[4] = { 0.0f, 0.2f, 0.4f, 1.0f };
         mDeviceContext->ClearRenderTargetView(mRenderTarget->GetBackBuffer(), clearCol);
-        mDeviceContext->ClearDepthStencilView(mDefaultDepthStencilState->mDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+        mDeviceContext->ClearDepthStencilView(mRenderTarget->mDepthStencilView->mDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
     }
 

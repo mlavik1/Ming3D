@@ -34,6 +34,11 @@ namespace Ming3D
         return mColourBuffers[inSlot];
     }
 
+    TextureBuffer* RenderTargetD3D11::GetDepthTextureBuffer()
+    {
+        return mDepthStencilView->mDepthStencilTexture;
+    }
+
 }
 #endif
 

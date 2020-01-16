@@ -14,6 +14,7 @@ namespace Ming3D
         {
             delete colBuffer;
         }
+        delete mDepthRenderBuffer;
     }
 
     void RenderTargetGL::BeginRendering()
@@ -27,6 +28,11 @@ namespace Ming3D
     TextureBuffer* RenderTargetGL::GetColourTextureBuffer(int inSlot)
     {
         return mColourBuffers[inSlot];
+    }
+
+    TextureBuffer* RenderTargetGL::GetDepthTextureBuffer()
+    {
+        return mDepthRenderBuffer;
     }
 }
 #endif

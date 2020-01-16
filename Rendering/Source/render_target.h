@@ -26,6 +26,8 @@ namespace Ming3D
         * @params inSlot  Colour texture buffer index (0, if single-target rendering)
         */
         virtual TextureBuffer* GetColourTextureBuffer(int inSlot) = 0;
+
+        virtual TextureBuffer* GetDepthTextureBuffer() = 0;
     };
 }
 #endif

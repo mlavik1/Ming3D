@@ -150,7 +150,6 @@ namespace Ming3D
                 material->SetTexture(0, matData->mTexture);
             else
                 material->SetShaderUniformVec4("_colourDiffuse", matData->mDiffuseColour);
-            //material->SetShaderUniformVec4("colourAmbient", matData->mAmbientColour);
             material->SetShaderUniformVec4("_colourSpecular", matData->mSpecularColour);
             material->SetShaderUniformFloat("_shininess", matData->mShininess);
             materials.push_back(material);

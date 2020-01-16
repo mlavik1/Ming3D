@@ -13,6 +13,7 @@
 #include "render_window.h"
 #include "rasteriser_state.h"
 #include "depth_stencil_state.h"
+#include "depth_stencil_view.h"
 #include "shader_info.h"
 #include "constant_buffer.h"
 
@@ -38,7 +39,7 @@ namespace Ming3D
         virtual TextureBuffer* CreateTextureBuffer(TextureInfo inTextureInfo, void* inTextureData) = 0;
         virtual RenderWindow* CreateRenderWindow(WindowBase* inWindow) = 0;
         virtual RasteriserState* CreateRasteriserState(RasteriserStateCullMode inCullMode, bool inDepthClipEnabled) = 0;
-        virtual DepthStencilState* CreateDepthStencilState(DepthStencilDepthFunc inDepthFunc, bool inDepthEnabled) = 0;
+        virtual DepthStencilState* CreateDepthStencilState(DepthStencilStateDesc inDesc) = 0;
         virtual ConstantBuffer* CreateConstantBuffer(size_t inSize) = 0;
 
         virtual void SetTexture(const TextureBuffer* inTexture, int inSlot) = 0;

@@ -28,7 +28,11 @@ namespace Ming3D
         }
 
         mDefaultRasteriserState = (RasteriserStateGL*)CreateRasteriserState(RasteriserStateCullMode::Back, true);
-        mDefaultDepthStencilState = (DepthStencilStateGL*)CreateDepthStencilState(DepthStencilDepthFunc::Less, true);
+        
+        DepthStencilStateDesc dssDesc;
+        dssDesc.mDepthFunc = DepthStencilDepthFunc::Less;
+        dssDesc.mDepthEnabled = true;
+        mDefaultDepthStencilState = (DepthStencilStateGL*)CreateDepthStencilState(dssDesc);
 
         SetRasteriserState(mDefaultRasteriserState);
         SetDepthStencilState(mDefaultDepthStencilState);
@@ -245,10 +249,10 @@ namespace Ming3D
         return rasteriserState;
     }
 
-    DepthStencilState* RenderDeviceGL::CreateDepthStencilState(DepthStencilDepthFunc inDepthFunc, bool inDepthEnabled)
+    DepthStencilState* RenderDeviceGL::CreateDepthStencilState(DepthStencilStateDesc inDesc)
     {
         DepthStencilStateGL* depthStencilState = new DepthStencilStateGL();
-        switch (inDepthFunc)
+        switch (inDesc.mDepthFunc)
         {
         case DepthStencilDepthFunc::Less:
             depthStencilState->mDepthFunc = GL_LESS;
@@ -266,6 +270,7 @@ namespace Ming3D
             depthStencilState->mDepthFunc = GL_GREATER;
             break;
         }
+        // TODO: enable/disable depth?
         return depthStencilState;
     }
 
