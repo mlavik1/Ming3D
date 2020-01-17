@@ -650,13 +650,14 @@ namespace Ming3D
         descDepth.Height = inHeight;
         descDepth.MipLevels = 1;
         descDepth.ArraySize = 1;
-        descDepth.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+        descDepth.Format = DXGI_FORMAT_R32_TYPELESS;
         descDepth.SampleDesc.Count = 1;
         descDepth.SampleDesc.Quality = 0;
         descDepth.Usage = D3D11_USAGE_DEFAULT;
         descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
         descDepth.CPUAccessFlags = 0;
         descDepth.MiscFlags = 0;
+        descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
 
         mDevice->CreateTexture2D(&descDepth, nullptr, &texture);
 
@@ -665,14 +666,14 @@ namespace Ming3D
         depthSRVDesc.Format = DXGI_FORMAT_R32_FLOAT;
         depthSRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
         depthSRVDesc.Texture2D.MipLevels = 1;
-        depthSRVDesc.Texture2D.MostDetailedMip = -1;
+        depthSRVDesc.Texture2D.MostDetailedMip = 0;
         mDevice->CreateShaderResourceView(texture, &depthSRVDesc, &shaderResourceView);
 
         // Create depth stencil view
         D3D11_DEPTH_STENCIL_VIEW_DESC descDSV;
         ZeroMemory(&descDSV, sizeof(descDSV));
 
-        descDSV.Format = descDepth.Format;
+        descDSV.Format = DXGI_FORMAT_D32_FLOAT;
         descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
         descDSV.Texture2D.MipSlice = 0;;
 
