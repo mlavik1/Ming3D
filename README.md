@@ -3,6 +3,8 @@ Game engine, for Windows and Linux.
 
 Supports rendering with OpenGL and DirectX11.
 
+![alt text](GitHubMedia/Ming3D.jpg)
+
 # How to clone and build
 
 __WINDOWS__
