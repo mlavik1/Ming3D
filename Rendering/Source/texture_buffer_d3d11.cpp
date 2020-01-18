@@ -8,6 +8,10 @@ namespace Ming3D
 {
     TextureBufferD3D11::~TextureBufferD3D11()
     {
+        if (mTexture != nullptr)
+        {
+            mTexture->Release();
+        }
         if (mTextureResourceView != nullptr)
         {
             mTextureResourceView->Release();

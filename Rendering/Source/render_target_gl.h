@@ -28,6 +28,7 @@ namespace Ming3D
         virtual void EndRendering() override;
 
         virtual TextureBuffer* GetColourTextureBuffer(int inSlot) override;
+        virtual TextureBuffer* GetDepthTextureBuffer() override;
     };
 }
 

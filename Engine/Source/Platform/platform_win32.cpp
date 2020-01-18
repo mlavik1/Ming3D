@@ -6,7 +6,7 @@
 #include <ws2tcpip.h>
 
 #ifdef MING3D_OPENGL
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include "sdl_window.h"
 #include "render_device_gl.h"
 #include "Input/input_handler_sdl.h"

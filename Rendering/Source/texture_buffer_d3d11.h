@@ -16,6 +16,7 @@ namespace Ming3D
     public:
         virtual ~TextureBufferD3D11();
 
+        ID3D11Texture2D* mTexture = nullptr;
         ID3D11ShaderResourceView* mTextureResourceView = nullptr;
 
     };

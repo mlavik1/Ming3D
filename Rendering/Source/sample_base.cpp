@@ -11,7 +11,11 @@
 #include "Debug/debug.h"
 
 #ifdef MING3D_OPENGL
+#ifdef _WIN32
+#include <SDL.h>
+#else
 #include <SDL2/SDL.h>
+#endif
 #include "sdl_window.h"
 #include "render_device_gl.h"
 #else

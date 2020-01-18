@@ -28,7 +28,11 @@ namespace Ming3D
         }
 
         mDefaultRasteriserState = (RasteriserStateGL*)CreateRasteriserState(RasteriserStateCullMode::Back, true);
-        mDefaultDepthStencilState = (DepthStencilStateGL*)CreateDepthStencilState(DepthStencilDepthFunc::Less, true);
+        
+        DepthStencilStateDesc dssDesc;
+        dssDesc.mDepthFunc = DepthStencilDepthFunc::Less;
+        dssDesc.mDepthEnabled = true;
+        mDefaultDepthStencilState = (DepthStencilStateGL*)CreateDepthStencilState(dssDesc);
 
         SetRasteriserState(mDefaultRasteriserState);
         SetDepthStencilState(mDefaultDepthStencilState);
@@ -74,9 +78,13 @@ namespace Ming3D
 
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, renderTexture, 0);
 
+            renderTarget->mAttachments.push_back(GL_COLOR_ATTACHMENT0 + i);
+
             colourBuffer->SetGLTexture(renderTexture);
             renderTarget->mColourBuffers.push_back(colourBuffer);
         }
+
+        renderTarget->mFrameBufferID = FramebufferName;
 
         GLuint depthrenderbuffer;
         glGenRenderbuffers(1, &depthrenderbuffer);
@@ -84,12 +92,8 @@ namespace Ming3D
         glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, inTextureInfo.mWidth, inTextureInfo.mHeight);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthrenderbuffer);
 
-        //glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, renderTexture, 0);
-
-        renderTarget->mFrameBufferID = FramebufferName;
         TextureBufferGL* depthBuffer = new TextureBufferGL();
         depthBuffer->SetGLTexture(depthrenderbuffer);
-        renderTarget->mAttachments.push_back(GL_COLOR_ATTACHMENT0);
         renderTarget->mDepthRenderBuffer = depthBuffer;
 
         return renderTarget;
@@ -245,10 +249,10 @@ namespace Ming3D
         return rasteriserState;
     }
 
-    DepthStencilState* RenderDeviceGL::CreateDepthStencilState(DepthStencilDepthFunc inDepthFunc, bool inDepthEnabled)
+    DepthStencilState* RenderDeviceGL::CreateDepthStencilState(DepthStencilStateDesc inDesc)
     {
         DepthStencilStateGL* depthStencilState = new DepthStencilStateGL();
-        switch (inDepthFunc)
+        switch (inDesc.mDepthFunc)
         {
         case DepthStencilDepthFunc::Less:
             depthStencilState->mDepthFunc = GL_LESS;
@@ -266,6 +270,7 @@ namespace Ming3D
             depthStencilState->mDepthFunc = GL_GREATER;
             break;
         }
+        // TODO: enable/disable depth?
         return depthStencilState;
     }
 

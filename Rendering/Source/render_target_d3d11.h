@@ -3,6 +3,7 @@
 
 #include "render_target.h"
 #include "window_base.h"
+#include "depth_stencil_view_d3d11.h"
 
 #include <Windows.h>
 #include <windowsx.h>
@@ -19,6 +20,7 @@ namespace Ming3D
     private:
         ID3D11RenderTargetView* mBackBuffer;
         std::vector<TextureBuffer*> mColourBuffers;
+        DepthStencilViewD3D11* mDepthStencilView;
 
     public:
         RenderTargetD3D11();
@@ -30,6 +32,7 @@ namespace Ming3D
         virtual void EndRendering() override;
 
         virtual TextureBuffer* GetColourTextureBuffer(int inSlot) override;
+        virtual TextureBuffer* GetDepthTextureBuffer() override;
     };
 }
 

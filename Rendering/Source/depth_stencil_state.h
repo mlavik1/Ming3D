@@ -8,6 +8,12 @@ namespace Ming3D
         Less, Equal, Greater, LEqual, GEqual
     };
 
+    struct DepthStencilStateDesc
+    {
+        bool mDepthEnabled = true;
+        DepthStencilDepthFunc mDepthFunc = DepthStencilDepthFunc::LEqual;
+    };
+
     class DepthStencilState
     {
     };

@@ -34,6 +34,8 @@ namespace Ming3D
 
         void SetUniformCBufferData(const std::string& inName, const void* inData, size_t inSize);
 
+        DepthStencilViewD3D11* CreateDepthStencilView(int inWidth, int inHeight);
+
     public:
         RenderDeviceD3D11();
         virtual ~RenderDeviceD3D11();
@@ -46,7 +48,7 @@ namespace Ming3D
         virtual TextureBuffer* CreateTextureBuffer(TextureInfo inTextureInfo, void* inTextureData) override;
         virtual RenderWindow* CreateRenderWindow(WindowBase* inWindow) override;
         virtual RasteriserState* CreateRasteriserState(RasteriserStateCullMode inCullMode, bool inDepthClipEnabled) override;
-        virtual DepthStencilState* CreateDepthStencilState(DepthStencilDepthFunc inDepthFunc, bool inDepthEnabled) override;
+        virtual DepthStencilState* CreateDepthStencilState(DepthStencilStateDesc inDesc) override;
         virtual ConstantBuffer* CreateConstantBuffer(size_t inSize) override;
 
         virtual void SetTexture(const TextureBuffer* inTexture, int inSlot) override;
