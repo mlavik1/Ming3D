@@ -11,6 +11,7 @@ namespace Ming3D
     {
     public:
         static Mesh* CreateBox(const glm::vec3& boxSize);
+        static Mesh* CreatePlane(const glm::vec2& planeSize, unsigned int dimX = 1, unsigned int dimY = 1);
     };
 }
 

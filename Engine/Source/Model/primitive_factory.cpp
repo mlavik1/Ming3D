@@ -2,6 +2,7 @@
 #include "mesh.h"
 #include "glm/gtx/rotate_vector.hpp"
 #include <cstring>
+#include "Debug/debug.h"
 
 namespace Ming3D
 {
@@ -63,6 +64,59 @@ namespace Ming3D
         Mesh* mesh = new Mesh();
         // TODO: Add support for different vertex layouts (with/without normals and texcoords)
         mesh->mVertexData = new VertexData({ EVertexComponent::Position, EVertexComponent::Normal, EVertexComponent::TexCoord }, indices.size());
+        mesh->mIndexData = new IndexData(indices.size());
+
+        memcpy(mesh->mVertexData->GetDataPtr(), vertices.data(), vertices.size() * sizeof(Vertex));
+        memcpy(mesh->mIndexData->GetData(), indices.data(), indices.size() * sizeof(unsigned int));
+
+        return mesh;
+    }
+
+    Mesh* PrimitiveFactory::CreatePlane(const glm::vec2& planeSize, unsigned int dimX, unsigned int dimY)
+    {
+        if(dimX < 1 || dimY < 1)
+        {
+            LOG_ERROR() << "PrimitiveFactory::CreatePlane: Dimension must be at least 1";
+            return nullptr;
+        }
+
+        std::vector<Vertex> vertices;
+        std::vector<unsigned int> indices;
+
+        for(unsigned int iy = 0; iy <= dimY; iy++)
+        {
+            float ty = iy / (float)dimY;
+            for(unsigned int ix = 0; ix <= dimX; ix++)
+            {
+                float tx = ix / (float)dimX;
+                Vertex vert;
+                vert.mPosition = glm::vec3((tx  - 0.5f) * planeSize.x, 0.0f, (ty  - 0.5f) * planeSize.y);
+                vert.mTexCoords = glm::vec3(tx, 0.0f, ty);
+                vert.mNormal = glm::vec3(0.0f, 1.0f, 0.0f);
+                vertices.push_back(vert);
+            }
+        }
+
+        for(unsigned int iy = 1; iy <= dimY; iy++)
+        {
+            for(unsigned int ix = 1; ix <= dimX; ix++)
+            {
+                unsigned int i0 = (iy - 1) * (dimX + 1) + (ix - 1);
+                unsigned int i1 = (iy - 1) * (dimX + 1) + (ix);
+                unsigned int i2 = (iy) * (dimX + 1) + (ix - 1);
+                unsigned int i3 = (iy) * (dimX + 1) + (ix);
+                indices.push_back(i0);
+                indices.push_back(i2);
+                indices.push_back(i3);
+                indices.push_back(i0);
+                indices.push_back(i3);
+                indices.push_back(i1);
+            }
+        }
+
+        Mesh* mesh = new Mesh();
+        // TODO: Add support for different vertex layouts (with/without normals and texcoords)
+        mesh->mVertexData = new VertexData({ EVertexComponent::Position, EVertexComponent::Normal, EVertexComponent::TexCoord }, vertices.size());
         mesh->mIndexData = new IndexData(indices.size());
 
         memcpy(mesh->mVertexData->GetDataPtr(), vertices.data(), vertices.size() * sizeof(Vertex));

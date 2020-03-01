@@ -80,6 +80,8 @@ namespace Ming3D
         {
             RenderPipelineNode* node = *nodeIter;
 
+            assert(node->mMaterial != nullptr);
+
             // if new material, update per-material data
             if (node->mMaterial != currMaterial)
             {

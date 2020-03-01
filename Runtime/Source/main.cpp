@@ -13,6 +13,8 @@
 #include "Components/camera_component.h"
 #include "glm/gtx//rotate_vector.hpp"
 #include "Input/input_manager.h"
+#include "Model/primitive_factory.h"
+#include "Model/material_factory.h"
 
 using namespace Ming3D;
 
@@ -39,6 +41,16 @@ int main()
     actor1->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
     gameEngine->GetWorld()->AddActor(actor1);
     ModelLoader::LoadModel("Resources//Mvr_PetCow_walk.dae", actor1);
+
+    Mesh* box = PrimitiveFactory::CreatePlane(glm::vec2(5.0f, 5.0f), 4, 4);
+    Actor* boxActor = new Actor();
+    boxActor->GetTransform().SetLocalPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+    MeshComponent* boxMeshComp = boxActor->AddComponent<MeshComponent>();
+    boxMeshComp->SetMesh(box);
+    Material* boxmat = MaterialFactory::CreateMaterial("Resources/Shaders/debuggraphics.cgp");
+    boxmat->SetShaderUniformVec4("colour", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+    boxMeshComp->SetMaterial(boxmat);
+    gameEngine->GetWorld()->AddActor(boxActor);
 
     const float camSpeed = 3.0f;
     const float camRotSpeed = 1.0f;
