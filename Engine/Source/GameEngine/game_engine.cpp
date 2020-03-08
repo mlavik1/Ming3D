@@ -131,6 +131,14 @@ namespace Ming3D
         mSceneRenderer->RemoveCamera(inCamera->GetCamera());
     }
 
+    void GameEngine::SetWindowSize(unsigned int width, unsigned int height)
+    {
+        if(mRenderTarget != nullptr)
+            delete mRenderTarget;
+        mRenderWindow->GetWindow()->SetSize(width, height);
+        mRenderTarget = mRenderDevice->CreateRenderTarget(mRenderWindow);
+    }
+
     void GameEngine::Start()
     {
 

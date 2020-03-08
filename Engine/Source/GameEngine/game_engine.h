@@ -54,6 +54,8 @@ namespace Ming3D
         void AddCamera(CameraComponent* inCamera);
         void RemoveCamera(CameraComponent* inCamera);
 
+        void SetWindowSize(unsigned int width, unsigned int height);
+
         inline Rendering::RenderDevice* GetRenderDevice() { return mRenderDevice; }
         inline SceneRenderer* GetSceneRenderer() { return mSceneRenderer; }
         inline Rendering::WindowBase* GetMainWindow() { return mWindow; }

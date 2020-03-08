@@ -41,8 +41,11 @@ namespace Ming3D::Rendering
 
     void SDLWindow::SetSize(unsigned int inWidth, unsigned int inHeight)
     {
-        mWindowHeight = inWidth;
+        mWindowWidth = inWidth;
         mWindowHeight = inHeight;
+
+        if(mSDLWindow != nullptr)
+            SDL_SetWindowSize(mSDLWindow, mWindowWidth, mWindowHeight);
     }
 
     void SDLWindow::BeginRender()
