@@ -31,6 +31,8 @@ namespace Ming3D
         void SetShaderUniformVec3(const std::string& inName, const glm::vec3& inVal);
         void SetShaderUniformVec4(const std::string& inName, const glm::vec4& inVal);
         void SetShaderUniformMat4x4(const std::string& inName, const glm::mat4& inVal);
+
+        bool HasShaderUniform(const std::string& inName);
     };
 }
 

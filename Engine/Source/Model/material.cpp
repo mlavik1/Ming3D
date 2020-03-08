@@ -99,4 +99,9 @@ namespace Ming3D
     {
         mMaterialBuffer->SetShaderUniformMat4x4(inName, inVal);
     }
+
+    bool Material::HasShaderUniform(const std::string& inName)
+    {
+        return mMaterialBuffer->mShaderUniformMap.find(inName) != mMaterialBuffer->mShaderUniformMap.end();
+    }
 }

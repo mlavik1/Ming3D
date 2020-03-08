@@ -27,6 +27,11 @@ namespace Ming3D
         if (parsedProgram != nullptr)
         {
             Material* mat = new Material(parsedProgram);
+            // Set default uniform values
+            if(mat->HasShaderUniform("_textureTiling"))
+            {
+                mat->SetShaderUniformVec2("_textureTiling", glm::vec2(1.0f, 1.0f));
+            }
             return mat;
         }
         else

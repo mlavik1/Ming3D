@@ -3,6 +3,8 @@ uniform mat4 modelViewMat;
 
 #ifdef use_mat_colour
     uniform vec4 _colourDiffuse;
+#else
+    uniform vec2 _textureTiling;
 #endif
 
 #ifndef unlit_mode
@@ -48,7 +50,7 @@ shader VertexShader
     {
         output.Position = MVP * input.Position;
         output.Normal = modelViewMat * vec4(input.Normal.x, input.Normal.y, input.Normal.z, 0.0);
-        output.TexCoord = input.TexCoord;
+        output.TexCoord = vec2(input.TexCoord.x * _textureTiling.x, input.TexCoord.y * _textureTiling.y);
         output.WorldPosition = modelViewMat * input.Position; 
     }
 }
