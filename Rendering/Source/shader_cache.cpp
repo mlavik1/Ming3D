@@ -1,7 +1,7 @@
 #include "shader_cache.h"
 #include <sstream>
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     std::unordered_map<std::string, ParsedShaderProgram*> ShaderCache::mCachedProgramInfos;
 

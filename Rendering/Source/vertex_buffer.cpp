@@ -1,6 +1,6 @@
 #include "vertex_buffer.h"
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     void VertexBuffer::SetVertexLayout(const VertexLayout& inLayout)
     {

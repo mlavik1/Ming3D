@@ -1,7 +1,7 @@
 #ifdef _WIN32
 #include "winapi_window.h"
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     bool WinAPIWindow::ClassInitialised = false;
     std::unordered_map<HWND, WinAPIWindow*> WinAPIWindow::WindowInstances;

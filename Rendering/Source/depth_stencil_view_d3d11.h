@@ -4,7 +4,7 @@
 #include <d3d11.h>
 #include "texture_buffer_d3d11.h"
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     class DepthStencilViewD3D11
     {

@@ -14,15 +14,15 @@ namespace Ming3D
 
     Material* MaterialFactory::CreateMaterial(const MaterialParams& inParams)
     {
-        ShaderParserParams params;
+        Rendering::ShaderParserParams params;
         params.mShaderProgramPath = inParams.mShaderProgramPath;
         params.mPreprocessorDefinitions = inParams.mPreprocessorDefinitions;
-        ParsedShaderProgram* parsedProgram = nullptr;
-        if (!ShaderCache::GetCachedProgramInfo(params, parsedProgram))
+        Rendering::ParsedShaderProgram* parsedProgram = nullptr;
+        if (!Rendering::ShaderCache::GetCachedProgramInfo(params, parsedProgram))
         {
-            ShaderParser parser;
+            Rendering::ShaderParser parser;
             parsedProgram = parser.ParseShaderProgram(params);
-            ShaderCache::CacheProgramInfo(params, parsedProgram);
+            Rendering::ShaderCache::CacheProgramInfo(params, parsedProgram);
         }
         if (parsedProgram != nullptr)
         {

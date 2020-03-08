@@ -1,7 +1,7 @@
 #ifndef MING3D_SHADERCONSTANT_H
 #define MING3D_SHADERCONSTANT_H
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     class ShaderUniformInfo
     {

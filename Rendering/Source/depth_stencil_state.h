@@ -1,7 +1,7 @@
 #ifndef MING3D_DEPTHSTENCILSTATE_H
 #define MING3D_DEPTHSTENCILSTATE_H
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     enum class DepthStencilDepthFunc
     {

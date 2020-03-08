@@ -1,7 +1,7 @@
 #ifndef MING3D_INDEX_BUFFER_H
 #define MING3D_INDEX_BUFFER_H
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     /**
     * Index buffer base class.

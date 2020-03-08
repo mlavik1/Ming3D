@@ -3,7 +3,7 @@
 
 #include "graphics_data.h"
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     /**
     * Vertex buffer base class.

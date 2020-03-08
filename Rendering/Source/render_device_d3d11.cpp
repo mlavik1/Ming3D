@@ -15,7 +15,7 @@
 #include "shader_info_hlsl.h"
 #include "depth_stencil_view_d3d11.h"
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     RenderDeviceD3D11* GRenderDeviceD3D11 = nullptr;
 

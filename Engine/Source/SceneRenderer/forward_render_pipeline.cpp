@@ -8,6 +8,8 @@
 
 namespace Ming3D
 {
+    using namespace Rendering;
+
     void ForwardRenderPipeline::UpdateUniforms(MaterialBuffer* inMat)
     {
         RenderDevice* renderDevice = GGameEngine->GetRenderDevice();

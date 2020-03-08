@@ -7,6 +7,7 @@
 #include "SceneRenderer/scene_renderer.h"
 #include "Actors/actor.h"
 #include "Model/material_factory.h"
+#include "render_device.h"
 
 IMPLEMENT_CLASS(Ming3D::MeshComponent)
 
@@ -31,12 +32,12 @@ namespace Ming3D
     {
         mMesh = inMesh;
 
-        RenderDevice* renderDevice = GGameEngine->GetRenderDevice();
+        Rendering::RenderDevice* renderDevice = GGameEngine->GetRenderDevice();
         MeshBuffer* meshBuffer = new MeshBuffer();
 
         // TODO: Store vertex layout in mesh
-        VertexData* vertexData = inMesh->mVertexData;
-        IndexData* indexData(inMesh->mIndexData);
+        Rendering::VertexData* vertexData = inMesh->mVertexData;
+        Rendering::IndexData* indexData(inMesh->mIndexData);
 
         meshBuffer->mVertexBuffer = renderDevice->CreateVertexBuffer(vertexData);
         meshBuffer->mIndexBuffer = renderDevice->CreateIndexBuffer(indexData);

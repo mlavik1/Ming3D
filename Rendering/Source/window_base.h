@@ -1,7 +1,7 @@
 #ifndef MING3D_WINDOW_BASE_H
 #define MING3D_WINDOW_BASE_H
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     class WindowBase
     {

@@ -7,8 +7,12 @@
 
 namespace Ming3D
 {
-    class ParsedShaderProgram;
     class Texture;
+
+    namespace Rendering
+    {
+        class ParsedShaderProgram;
+    }
 
     class Material
     {
@@ -16,7 +20,7 @@ namespace Ming3D
         MaterialBuffer* mMaterialBuffer;
         std::vector<Texture*> mTextures;
 
-        Material(ParsedShaderProgram* shaderProgram);
+        Material(Rendering::ParsedShaderProgram* shaderProgram);
         ~Material();
 
         void SetTexture(size_t textureIndex, Texture* texture);

@@ -1,6 +1,6 @@
 #include "index_buffer.h"
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     void IndexBuffer::SetNumIndices(unsigned int inNumIndices)
     {

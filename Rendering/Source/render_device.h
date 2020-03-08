@@ -8,7 +8,6 @@
 #include "graphics_data.h"
 #include "shader_program.h"
 #include "graphics_data.h"
-#include "texture.h"
 #include "texture_buffer.h"
 #include "render_window.h"
 #include "rasteriser_state.h"
@@ -16,10 +15,11 @@
 #include "depth_stencil_view.h"
 #include "shader_info.h"
 #include "constant_buffer.h"
+#include "texture_info.h"
 
 #include <string>
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     /**
     * RenderDevice base class.

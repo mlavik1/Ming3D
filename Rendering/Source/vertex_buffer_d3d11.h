@@ -5,7 +5,7 @@
 
 #include <d3d11.h>
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     class VertexBufferD3D11 : public VertexBuffer
     {

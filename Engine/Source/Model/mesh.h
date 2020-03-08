@@ -9,8 +9,8 @@ namespace Ming3D
     class Mesh
     {
     public:
-        VertexData* mVertexData = nullptr;
-        IndexData* mIndexData = nullptr;
+        Rendering::VertexData* mVertexData = nullptr;
+        Rendering::IndexData* mIndexData = nullptr;
 
         ~Mesh();
     };

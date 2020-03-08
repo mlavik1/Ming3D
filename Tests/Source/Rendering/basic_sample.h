@@ -17,7 +17,7 @@ namespace Ming3D
     private:
         std::vector<ModelData*> mModels;
 
-        RenderTarget* mRenderTarget;
+        Rendering::RenderTarget* mRenderTarget;
 
     protected:
         virtual void init() override;

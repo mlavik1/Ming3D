@@ -9,7 +9,7 @@
 #include "shader_constant_d3d11.h"
 #include "constant_buffer_d3d11.h"
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     class ShaderProgramD3D11 : public ShaderProgram
     {

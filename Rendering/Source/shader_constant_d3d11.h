@@ -3,7 +3,7 @@
 
 #include "shader_constant.h"
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     class ShaderConstantD3D11 : public ShaderConstant
     {

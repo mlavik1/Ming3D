@@ -6,7 +6,7 @@
 #include "Debug/debug.h"
 #include "Debug/st_assert.h"
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     Tokeniser::Tokeniser(const char* inSourceText)
     {

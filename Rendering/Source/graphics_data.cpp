@@ -1,7 +1,7 @@
 #include "graphics_data.h"
 #include <cstring>
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     VertexData::VertexData()
     {

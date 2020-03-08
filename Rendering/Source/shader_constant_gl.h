@@ -5,7 +5,7 @@
 #include "GL/glew.h"
 #include <limits>
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     class ShaderConstantGL : public ShaderConstant
     {

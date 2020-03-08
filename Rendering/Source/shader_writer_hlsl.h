@@ -7,7 +7,7 @@
 #include <set>
 #include <string>
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     struct ShaderProgramDataHLSL
     {

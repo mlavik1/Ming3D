@@ -14,7 +14,7 @@
 
 #include "Debug/st_assert.h"
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     SDLWindow::SDLWindow()
     {

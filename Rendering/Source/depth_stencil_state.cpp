@@ -1,6 +1,6 @@
 #include "depth_stencil_state.h"
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
 
 }

@@ -3,7 +3,7 @@
 
 #include <sstream>
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     // TODO: move to a separate file
     class ShaderStream

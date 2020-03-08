@@ -7,7 +7,7 @@
 #include <unordered_map>
 #include "shader_tokeniser.h"
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     enum class ShaderPreprocessorScopeType
     {

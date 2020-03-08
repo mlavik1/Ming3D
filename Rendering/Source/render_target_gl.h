@@ -7,7 +7,7 @@
 #include <vector>
 #include "texture_buffer_gl.h"
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     class RenderTargetGL : public RenderTarget
     {

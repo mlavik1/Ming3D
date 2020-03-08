@@ -5,7 +5,7 @@
 
 #include <GL/glew.h>
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     class VertexBufferGL : public VertexBuffer
     {

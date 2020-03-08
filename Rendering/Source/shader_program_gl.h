@@ -6,7 +6,7 @@
 #include <string>
 #include <unordered_map>
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     class ShaderProgramGL : public ShaderProgram
     {

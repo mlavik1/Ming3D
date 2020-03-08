@@ -8,7 +8,10 @@
 
 namespace Ming3D
 {
-    class ConstantBuffer;
+    namespace Rendering
+    {
+        class ConstantBuffer;
+    }
 
     class SceneRenderer
     {
@@ -16,7 +19,7 @@ namespace Ming3D
         RenderScene* mRenderScene;
         std::list<Camera*> mCameras;
         RenderPipeline* mRenderPipeline;
-        ConstantBuffer* mGlobalCBuffer;
+        Rendering::ConstantBuffer* mGlobalCBuffer;
 
         void UpdateUniforms(MaterialBuffer* inMat);
 

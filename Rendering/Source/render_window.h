@@ -3,7 +3,7 @@
 
 #include "window_base.h"
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     class RenderWindow
     {

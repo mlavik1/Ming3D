@@ -16,7 +16,7 @@ namespace Ming3D
     // TODO: add rotation parameter
     void DebugGraphics::DrawBox(const glm::vec3& boxPos, const glm::vec3& boxSize, const glm::vec4& boxColour)
     {
-        RenderDevice* renderDevice = GGameEngine->GetRenderDevice();
+        Rendering::RenderDevice* renderDevice = GGameEngine->GetRenderDevice();
         MeshBuffer* meshBuffer = new MeshBuffer();
 
         Mesh* mesh = PrimitiveFactory::CreateBox(boxSize);

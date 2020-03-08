@@ -7,7 +7,7 @@
 #include <glm/glm.hpp>
 #include <type_traits>
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     class ConstantBufferDataBase
     {

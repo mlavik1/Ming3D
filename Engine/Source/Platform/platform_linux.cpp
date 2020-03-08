@@ -59,21 +59,21 @@ namespace Ming3D
 
     }
 
-    RenderDevice* PlatformLinux::CreateRenderDevice()
+    Rendering::RenderDevice* PlatformLinux::CreateRenderDevice()
     {
         LOG_INFO() << "Using OpenGL, version " << glGetString(GL_VERSION);
-        return new RenderDeviceGL();
+        return new Rendering::RenderDeviceGL();
     }
 
-    WindowBase* PlatformLinux::CreateOSWindow()
+    Rendering::WindowBase* PlatformLinux::CreateOSWindow()
     {
-        WindowBase* window;
-        window = new SDLWindow();
+        Rendering::WindowBase* window;
+        window = new Rendering::SDLWindow();
         window->Initialise();
         return window;
     }
 
-    RenderWindow* PlatformLinux::CreateRenderWindow(WindowBase* inWindow, RenderDevice* inDevice)
+    Rendering::RenderWindow* PlatformLinux::CreateRenderWindow(Rendering::WindowBase* inWindow, Rendering::RenderDevice* inDevice)
     {
         return inDevice->CreateRenderWindow(inWindow);
     }

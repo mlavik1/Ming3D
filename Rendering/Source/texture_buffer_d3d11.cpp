@@ -4,7 +4,7 @@
 #include "render_device_d3d11.h"
 #include "Debug/st_assert.h"
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     TextureBufferD3D11::~TextureBufferD3D11()
     {

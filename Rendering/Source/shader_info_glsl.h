@@ -4,7 +4,7 @@
 #include "shader_info.h"
 #include <string>
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     struct ShaderDataGLSL
     {

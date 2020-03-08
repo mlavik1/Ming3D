@@ -3,7 +3,7 @@
 
 #include "Debug/st_assert.h"
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     TextureBufferGL::~TextureBufferGL()
     {

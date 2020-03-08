@@ -4,7 +4,7 @@
 #include "texture_buffer.h"
 #include <GL/glew.h>
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     class TextureBufferGL : public TextureBuffer
     {

@@ -13,9 +13,9 @@ namespace Ming3D
         size_t mSize;
 
     public:
-        ShaderDatatypeInfo mTypeInfo;
+        Rendering::ShaderDatatypeInfo mTypeInfo;
 
-        ShaderUniformData(ShaderDatatypeInfo datatype, size_t size)
+        ShaderUniformData(Rendering::ShaderDatatypeInfo datatype, size_t size)
         {
             mTypeInfo = datatype;
             mData = new char[size];

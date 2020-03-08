@@ -11,7 +11,7 @@
 #include <DXGI.h>
 #include <vector>
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     class RenderTargetD3D11 : public RenderTarget
     {

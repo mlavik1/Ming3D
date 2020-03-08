@@ -1,8 +1,6 @@
 #include "game_engine.h"
 
 #include "ClassManager/class_manager.h"
-#include "basic_sample.h"
-#include "rendertotexture_sample.h"
 #include "World/world.h"
 #include "Actors/actor.h"
 #include "Components/component.h"

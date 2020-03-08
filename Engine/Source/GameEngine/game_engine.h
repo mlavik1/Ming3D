@@ -7,16 +7,19 @@ namespace Ming3D
     class World;
     class TimeManager;
     class Platform;
-    class RenderDevice;
-    class WindowBase;
-    class RenderWindow;
     class SceneRenderer;
-    class RenderTarget;
     class NetworkManager;
     class PhysicsManager;
     class CameraComponent;
     class InputHandler;
     class InputManager;
+    namespace Rendering
+    {
+        class RenderDevice;
+        class WindowBase;
+        class RenderWindow;
+        class RenderTarget;
+    }
 
 	class GameEngine
 	{
@@ -25,11 +28,11 @@ namespace Ming3D
         Platform* mPlatform = nullptr;
         World* mWorld = nullptr;
         TimeManager* mTimeManager = nullptr;
-        RenderDevice* mRenderDevice = nullptr;
-        WindowBase* mWindow = nullptr;
-        RenderWindow* mRenderWindow = nullptr;
+        Rendering::RenderDevice* mRenderDevice = nullptr;
+        Rendering::WindowBase* mWindow = nullptr;
+        Rendering::RenderWindow* mRenderWindow = nullptr;
         SceneRenderer* mSceneRenderer = nullptr;
-        RenderTarget* mRenderTarget = nullptr;
+        Rendering::RenderTarget* mRenderTarget = nullptr;
         NetworkManager* mNetworkManager = nullptr;
         PhysicsManager* mPhysicsManager = nullptr;
         InputHandler* mInputHandler = nullptr;
@@ -51,15 +54,15 @@ namespace Ming3D
         void AddCamera(CameraComponent* inCamera);
         void RemoveCamera(CameraComponent* inCamera);
 
-        inline RenderDevice* GetRenderDevice() { return mRenderDevice; }
+        inline Rendering::RenderDevice* GetRenderDevice() { return mRenderDevice; }
         inline SceneRenderer* GetSceneRenderer() { return mSceneRenderer; }
-        inline WindowBase* GetMainWindow() { return mWindow; }
-        inline RenderWindow* GetMainRenderWindow() { return mRenderWindow; }
+        inline Rendering::WindowBase* GetMainWindow() { return mWindow; }
+        inline Rendering::RenderWindow* GetMainRenderWindow() { return mRenderWindow; }
         inline World* GetWorld() { return mWorld; }
         inline Platform* GetPlatform() { return mPlatform; }
         inline NetworkManager* GetNetworkManager() { return mNetworkManager; }
         inline PhysicsManager* GetPhysicsManager() { return mPhysicsManager; }
-        inline RenderTarget* GetMainRenderTarget() { return mRenderTarget; }
+        inline Rendering::RenderTarget* GetMainRenderTarget() { return mRenderTarget; }
         inline InputHandler* GetInputHandler() { return mInputHandler; }
         inline InputManager* GetInputManager() { return mInputManager; }
         

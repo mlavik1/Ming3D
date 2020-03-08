@@ -14,7 +14,7 @@
 #include <d3d11.h>
 
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     class RenderDeviceD3D11 : public RenderDevice
     {
@@ -76,7 +76,7 @@ namespace Ming3D
     };
 }
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     extern RenderDeviceD3D11* GRenderDeviceD3D11;
 }

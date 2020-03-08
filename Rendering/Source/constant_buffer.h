@@ -2,7 +2,7 @@
 #define MING3D_CONSTANTBUFFER_H
 
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     class ConstantBuffer
     {
