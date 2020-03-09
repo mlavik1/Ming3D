@@ -404,6 +404,7 @@ namespace Ming3D::Rendering
             for (const ShaderVariableInfo& uniformInfo : parsedProgram->mUniforms)
             {
                 size_t offset = cBufferSize;
+                offset += (16 - (offset % 16)) % 16; // ensure 16 byte boundary
                 ShaderDatatypeInfo varType = uniformInfo.mDatatypeInfo;
                 ShaderUniformInfo uniformInfo(varType, uniformInfo.mName);
                 ApplyConstantPacking(uniformInfo, cBufferSize);

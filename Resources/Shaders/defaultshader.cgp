@@ -70,7 +70,7 @@ shader FragmentShader
     #endif
         
     #ifndef unlit_mode
-        col = calcLightingPhong(input.Normal.xyz, input.WorldPosition.xyz, _eyePos, _lightDir, _lightCol.xyz, col, _colourSpecular.xyz, _shininess);
+        col = calcLightingPhong(input.Normal.xyz, input.WorldPosition.xyz, _eyePos, _lightDir, _lightCol.xyz, col, _colourSpecular, _shininess);
     #endif
 
         SetFragmentColour(col);

@@ -91,19 +91,19 @@ namespace Ming3D
         }
     }
 
-    RenderDevice* PlatformWin32::CreateRenderDevice()
+    Rendering::RenderDevice* PlatformWin32::CreateRenderDevice()
     {
 #ifdef MING3D_OPENGL
         LOG_INFO() << "Using OpenGL, version " << glGetString(GL_VERSION);
         return new RenderDeviceGL();
 #else
-        return new RenderDeviceD3D11();
+        return new Rendering::RenderDeviceD3D11();
 #endif
     }
 
-    WindowBase* PlatformWin32::CreateOSWindow()
+    Rendering::WindowBase* PlatformWin32::CreateOSWindow()
     {
-        WindowBase* window;
+        Rendering::WindowBase* window;
 #ifdef MING3D_OPENGL
         window = new SDLWindow();
 #else
@@ -113,14 +113,14 @@ namespace Ming3D
             return inputHandler->HandleWindowProc(hWnd, message, wParam, lParam);
         };
 
-        window = new WinAPIWindow();
-        ((WinAPIWindow*)window)->mWndProcCallback = wndProcCallback;
+        window = new Rendering::WinAPIWindow();
+        ((Rendering::WinAPIWindow*)window)->mWndProcCallback = wndProcCallback;
 #endif
         window->Initialise();
         return window;
     }
 
-    RenderWindow* PlatformWin32::CreateRenderWindow(WindowBase* inWindow, RenderDevice* inDevice)
+    Rendering::RenderWindow* PlatformWin32::CreateRenderWindow(Rendering::WindowBase* inWindow, Rendering::RenderDevice* inDevice)
     {
         return inDevice->CreateRenderWindow(inWindow);
     }
