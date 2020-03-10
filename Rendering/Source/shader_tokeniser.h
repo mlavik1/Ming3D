@@ -6,7 +6,7 @@
 #include <unordered_map>
 #include <stack>
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     enum class ETokenType
     {

@@ -3,22 +3,10 @@
 
 #include <vector> // TODO: Use a smart pointer to a stream
 #include <cstring>
+#include "texture_info.h"
 
 namespace Ming3D
 {
-    enum PixelFormat
-    {
-        RGBA, BGRA, RGB
-    };
-
-    struct TextureInfo
-    {
-        unsigned int mWidth = 0;
-        unsigned int mHeight = 0;
-        unsigned int mBytesPerPixel;
-        PixelFormat mPixelFormat;
-    };
-
     /**
     * Base class for  Textures.
     * There will exist a subclass for each rendering API.

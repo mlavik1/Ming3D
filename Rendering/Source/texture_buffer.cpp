@@ -1,6 +1,6 @@
 #include "texture_buffer.h"
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
 
 }

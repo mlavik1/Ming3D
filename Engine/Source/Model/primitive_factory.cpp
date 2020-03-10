@@ -63,8 +63,8 @@ namespace Ming3D
 
         Mesh* mesh = new Mesh();
         // TODO: Add support for different vertex layouts (with/without normals and texcoords)
-        mesh->mVertexData = new VertexData({ EVertexComponent::Position, EVertexComponent::Normal, EVertexComponent::TexCoord }, indices.size());
-        mesh->mIndexData = new IndexData(indices.size());
+        mesh->mVertexData = new Rendering::VertexData({ Rendering::EVertexComponent::Position, Rendering::EVertexComponent::Normal, Rendering::EVertexComponent::TexCoord }, indices.size());
+        mesh->mIndexData = new Rendering::IndexData(indices.size());
 
         memcpy(mesh->mVertexData->GetDataPtr(), vertices.data(), vertices.size() * sizeof(Vertex));
         memcpy(mesh->mIndexData->GetData(), indices.data(), indices.size() * sizeof(unsigned int));
@@ -91,7 +91,7 @@ namespace Ming3D
                 float tx = ix / (float)dimX;
                 Vertex vert;
                 vert.mPosition = glm::vec3((tx  - 0.5f) * planeSize.x, 0.0f, (ty  - 0.5f) * planeSize.y);
-                vert.mTexCoords = glm::vec3(tx, 0.0f, ty);
+                vert.mTexCoords = glm::vec2(tx, ty);
                 vert.mNormal = glm::vec3(0.0f, 1.0f, 0.0f);
                 vertices.push_back(vert);
             }
@@ -116,8 +116,8 @@ namespace Ming3D
 
         Mesh* mesh = new Mesh();
         // TODO: Add support for different vertex layouts (with/without normals and texcoords)
-        mesh->mVertexData = new VertexData({ EVertexComponent::Position, EVertexComponent::Normal, EVertexComponent::TexCoord }, vertices.size());
-        mesh->mIndexData = new IndexData(indices.size());
+        mesh->mVertexData = new Rendering::VertexData({ Rendering::EVertexComponent::Position, Rendering::EVertexComponent::Normal, Rendering::EVertexComponent::TexCoord }, vertices.size());
+        mesh->mIndexData = new Rendering::IndexData(indices.size());
 
         memcpy(mesh->mVertexData->GetDataPtr(), vertices.data(), vertices.size() * sizeof(Vertex));
         memcpy(mesh->mIndexData->GetData(), indices.data(), indices.size() * sizeof(unsigned int));

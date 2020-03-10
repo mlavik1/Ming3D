@@ -8,9 +8,13 @@
 namespace Ming3D
 {
     class NetSocket;
-    class RenderDevice;
-    class WindowBase;
-    class RenderWindow;
+
+    namespace Rendering
+    {
+        class RenderDevice;
+        class WindowBase;
+        class RenderWindow;
+    }
 
     class Platform
     {
@@ -22,9 +26,9 @@ namespace Ming3D
         virtual void Initialise() = 0;
         virtual void Update() = 0;
 
-        virtual RenderDevice* CreateRenderDevice() = 0;
-        virtual WindowBase* CreateOSWindow() = 0;
-        virtual RenderWindow* CreateRenderWindow(WindowBase* inWindow, RenderDevice* inDevice) = 0;
+        virtual Rendering::RenderDevice* CreateRenderDevice() = 0;
+        virtual Rendering::WindowBase* CreateOSWindow() = 0;
+        virtual Rendering::RenderWindow* CreateRenderWindow(Rendering::WindowBase* inWindow, Rendering::RenderDevice* inDevice) = 0;
         virtual NetSocket* CreateSocket() = 0;
         virtual InputHandler* CreateInputHandler() = 0;
         virtual std::string ReadConsoleLine() = 0;

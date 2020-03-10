@@ -2,7 +2,7 @@
 #include <ctype.h>
 #include <fstream>
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     ShaderPreprocessor::ShaderPreprocessor(TokenParser& inTokenParser)
         : mTokenParser(inTokenParser)

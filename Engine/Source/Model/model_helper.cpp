@@ -3,14 +3,14 @@
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
 #include "assimp/Importer.hpp"
-#include "texture_loader.h"
+#include "Texture/texture.h"
+#include "Texture/texture_loader.h"
 #include "Debug/debug.h"
 #include "Debug/st_assert.h"
 #include "Components/mesh_component.h"
 #include "mesh.h"
 #include "material_factory.h"
 #include "shader_program.h"
-#include "texture.h"
 
 namespace Ming3D
 {
@@ -72,14 +72,14 @@ namespace Ming3D
 
             modelData->mMeshes.push_back(meshData);
 
-            VertexLayout vertLayout;
-            vertLayout.VertexComponents.push_back(EVertexComponent::Position);
+            Rendering::VertexLayout vertLayout;
+            vertLayout.VertexComponents.push_back(Rendering::EVertexComponent::Position);
             if (scene->mMeshes[m]->HasNormals())
-                vertLayout.VertexComponents.push_back(EVertexComponent::Normal);
+                vertLayout.VertexComponents.push_back(Rendering::EVertexComponent::Normal);
             if (scene->mMeshes[m]->HasTextureCoords(0))
-                vertLayout.VertexComponents.push_back(EVertexComponent::TexCoord);
+                vertLayout.VertexComponents.push_back(Rendering::EVertexComponent::TexCoord);
             
-            VertexData* vertData = new VertexData(vertLayout, scene->mMeshes[m]->mNumVertices);
+            Rendering::VertexData* vertData = new Rendering::VertexData(vertLayout, scene->mMeshes[m]->mNumVertices);
             size_t vertSize = vertData->GetVertexSize();
             char* currVert = (char*)vertData->GetDataPtr();
 
@@ -162,7 +162,7 @@ namespace Ming3D
 
             Mesh* mesh = new Mesh();
             mesh->mVertexData = meshData->mVertexData;
-            mesh->mIndexData = new IndexData(meshData->mIndices.size());
+            mesh->mIndexData = new Rendering::IndexData(meshData->mIndices.size());
             if (meshData->mIndices.size() > 0)
                 memcpy(mesh->mIndexData->GetData(), &meshData->mIndices[0], meshData->mIndices.size() * sizeof(meshData->mIndices[0]));
 

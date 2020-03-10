@@ -8,12 +8,11 @@ Supports rendering with OpenGL and DirectX11.
 # How to clone and build
 
 __WINDOWS__
-- Download and install Windows 10 SDK (or Windows 8 SDK on Windows 8 - not tested yet): https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk
-- Clone (recursively, since it contains modules)
+- Requirements: Visual studio 2017 or newer. C++17 or newer. CMake 3.3 or newer (ideally 3.10).
+- Clone (recursively, since it contains modules): git clone --recursive https://github.com/mlavik1/Ming3D
 - If you have Python 2: Run DownloadLibs.py (or DownloadLibs.bat if on Windows)
 - (Alternatively: Download these files and put them in a folder called "ExternalLibraries": https://drive.google.com/file/d/1p4GA1lcoKZZcPsGSPOZ6ZWb85yyvmm2b/view?usp=sharing)
-- Open CMake
-- Set source code directory ("Where is the source code: " in CMake GUI) to the repository root directory
+- Open CMake, and set source code directory ("Where is the source code: " in CMake GUI) to the repository root directory
 - Configure and Generate
 - For the test project, modify the "TestType" variable to select the type of test you want to use.
 

@@ -5,6 +5,7 @@
 #include "vertex_buffer.h"
 #include "index_buffer.h"
 #include "shader_program.h"
+#include "Texture/texture.h"
 
 namespace Ming3D
 {
@@ -28,17 +29,17 @@ namespace Ming3D
             bool mHasNormals = false;
             bool mHasTexCoords = false;
 
-            VertexBuffer* mVertexBuffer;
-            IndexBuffer* mIndexBuffer;
+            Rendering::VertexBuffer* mVertexBuffer;
+            Rendering::IndexBuffer* mIndexBuffer;
+            Rendering::TextureBuffer* mTextureBuffer;
             Texture* mTexture;
-            TextureBuffer* mTextureBuffer;
         };
 
         class ModelData
         {
         public:
             std::vector<MeshData*> mMeshes;
-            ShaderProgram* mShaderProgram = nullptr;
+            Rendering::ShaderProgram* mShaderProgram = nullptr;
             glm::vec3 mPosition;
         };
 
@@ -46,9 +47,9 @@ namespace Ming3D
         void RunSample();
 
     protected:
-        WindowBase* mMainWindow;
-        RenderDevice* mRenderDevice;
-        RenderWindow* mRenderWindow;
+        Rendering::WindowBase* mMainWindow;
+        Rendering::RenderDevice* mRenderDevice;
+        Rendering::RenderWindow* mRenderWindow;
 
         virtual void init();
         virtual void tick();

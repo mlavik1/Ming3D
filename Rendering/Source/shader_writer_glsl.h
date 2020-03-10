@@ -8,7 +8,7 @@
 
 #include "shader_info_glsl.h"
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     class ShaderWriterGLSL : public ShaderWriter
     {

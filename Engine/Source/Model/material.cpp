@@ -2,14 +2,14 @@
 #include "GameEngine/game_engine.h"
 #include "render_device.h"
 #include "shader_parser.h"
-#include "texture.h"
+#include "Texture/texture.h"
 #include "shader_info.h"
 #include "shader_uniform_data.h"
 #include "SceneRenderer/scene_renderer.h" // TODO
 
 namespace Ming3D
 {
-    Material::Material(ParsedShaderProgram* shaderProgram)
+    Material::Material(Rendering::ParsedShaderProgram* shaderProgram)
     {
         size_t numTextures = shaderProgram->mShaderTextures.size();
         mMaterialBuffer = new MaterialBuffer();
@@ -26,17 +26,17 @@ namespace Ming3D
 
         for (size_t iCB = 0; iCB < shaderProgram->mConstantBufferInfos.size(); iCB++)
         {
-            const ConstantBufferInfo& constantBuffer = shaderProgram->mConstantBufferInfos[iCB];
+            const Rendering::ConstantBufferInfo& constantBuffer = shaderProgram->mConstantBufferInfos[iCB];
             mMaterialBuffer->mConstantBuffers.insert(constantBuffer.mName);
         }
 
         for (size_t iUniform = 0; iUniform < shaderProgram->mUniforms.size(); iUniform++)
         {
-            const ShaderVariableInfo& uniform = shaderProgram->mUniforms[iUniform];
+            const Rendering::ShaderVariableInfo& uniform = shaderProgram->mUniforms[iUniform];
             ShaderUniformData* uniformData = new ShaderUniformData(uniform.mDatatypeInfo, uniform.mDatatypeInfo.GetDataSize());
             switch (uniform.mDatatypeInfo.mDatatype)
             {
-            case EShaderDatatype::Mat4x4:
+            case Rendering::EShaderDatatype::Mat4x4:
             {
                 glm::mat4 identMat(1.0f);
                 uniformData->SetData(&identMat);
@@ -98,5 +98,10 @@ namespace Ming3D
     void Material::SetShaderUniformMat4x4(const std::string& inName, const glm::mat4& inVal)
     {
         mMaterialBuffer->SetShaderUniformMat4x4(inName, inVal);
+    }
+
+    bool Material::HasShaderUniform(const std::string& inName)
+    {
+        return mMaterialBuffer->mShaderUniformMap.find(inName) != mMaterialBuffer->mShaderUniformMap.end();
     }
 }

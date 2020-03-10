@@ -65,8 +65,8 @@ int main()
     {
         // TODO: Create vertex iterator class
         Mesh* mesh = meshComp->GetMesh();
-        VertexData* vertData = mesh->mVertexData;
-        VertexDataIterator<glm::vec3> vertIterator(vertData, EVertexComponent::Position);
+        Rendering::VertexData* vertData = mesh->mVertexData;
+        Rendering::VertexDataIterator<glm::vec3> vertIterator(vertData, Rendering::EVertexComponent::Position);
         size_t vertCount = vertIterator.GetCount();
         for (size_t iVert = 0; iVert < vertCount; iVert++)
         {

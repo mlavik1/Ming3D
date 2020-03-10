@@ -10,9 +10,12 @@
 namespace Ming3D
 {
     // forward declarations
-    class ShaderProgram;
-    class TextureBuffer;
     class ShaderUniformData;
+    namespace Rendering
+    {
+        class ShaderProgram;
+        class TextureBuffer;
+    }
 
     class MaterialBuffer
     {
@@ -20,8 +23,8 @@ namespace Ming3D
         void UpdateUniformData(const std::string& inName, const void* inData);
 
     public:
-        ShaderProgram* mShaderProgram = nullptr;
-        std::vector<TextureBuffer*> mTextureBuffers;
+        Rendering::ShaderProgram* mShaderProgram = nullptr;
+        std::vector<Rendering::TextureBuffer*> mTextureBuffers;
         std::unordered_map<std::string, ShaderUniformData*> mShaderUniformMap;
         std::set<std::string> mConstantBuffers;
         std::set<std::string> mModifiedUniforms;

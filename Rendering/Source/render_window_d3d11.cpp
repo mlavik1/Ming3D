@@ -1,7 +1,7 @@
 #ifdef MING3D_D3D11
 #include "render_window_d3d11.h"
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     RenderWindowD3D11::RenderWindowD3D11(WindowBase* inWindow)
         : RenderWindow(inWindow)

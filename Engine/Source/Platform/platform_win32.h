@@ -12,9 +12,9 @@ namespace Ming3D
         virtual ~PlatformWin32();
         virtual void Initialise() override;
         virtual void Update() override;
-        virtual RenderDevice* CreateRenderDevice() override;
-        virtual WindowBase* CreateOSWindow() override;
-        virtual RenderWindow* CreateRenderWindow(WindowBase* inWindow, RenderDevice* inDevice) override;
+        virtual Rendering::RenderDevice* CreateRenderDevice() override;
+        virtual Rendering::WindowBase* CreateOSWindow() override;
+        virtual Rendering::RenderWindow* CreateRenderWindow(Rendering::WindowBase* inWindow, Rendering::RenderDevice* inDevice) override;
         virtual NetSocket* CreateSocket() override;
         virtual InputHandler* CreateInputHandler() override;
         virtual std::string ReadConsoleLine() override;

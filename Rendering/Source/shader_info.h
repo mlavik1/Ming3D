@@ -7,7 +7,7 @@
 #include "glm/glm.hpp"
 #include <map>
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     enum class EShaderDatatype
     {

@@ -7,8 +7,12 @@
 
 namespace Ming3D
 {
-    class ParsedShaderProgram;
     class Texture;
+
+    namespace Rendering
+    {
+        class ParsedShaderProgram;
+    }
 
     class Material
     {
@@ -16,7 +20,7 @@ namespace Ming3D
         MaterialBuffer* mMaterialBuffer;
         std::vector<Texture*> mTextures;
 
-        Material(ParsedShaderProgram* shaderProgram);
+        Material(Rendering::ParsedShaderProgram* shaderProgram);
         ~Material();
 
         void SetTexture(size_t textureIndex, Texture* texture);
@@ -27,6 +31,8 @@ namespace Ming3D
         void SetShaderUniformVec3(const std::string& inName, const glm::vec3& inVal);
         void SetShaderUniformVec4(const std::string& inName, const glm::vec4& inVal);
         void SetShaderUniformMat4x4(const std::string& inName, const glm::mat4& inVal);
+
+        bool HasShaderUniform(const std::string& inName);
     };
 }
 

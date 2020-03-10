@@ -16,7 +16,7 @@ namespace Ming3D
     class MeshData
     {
     public:
-        VertexData* mVertexData = nullptr;
+        Rendering::VertexData* mVertexData = nullptr;
         std::vector<unsigned int> mIndices;
 
         // TODO: bones

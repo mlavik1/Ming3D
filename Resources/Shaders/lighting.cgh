@@ -1,5 +1,7 @@
 vec4 calcLightingPhong(vec3 normal, vec3 worldPos, vec3 eyePos, vec3 lightDir, vec3 lightCol, vec4 baseCol, vec3 specularCol, float shininess)
 {
+    shininess = max(shininess, 0.0001f);
+
     vec3 n = normalize(normal);
     float ndotl = max(dot(n, lightDir * -1.0), 0.0);
     vec3 diffuse =  ndotl * (lightCol * baseCol.xyz);

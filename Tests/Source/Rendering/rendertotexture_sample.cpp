@@ -1,4 +1,4 @@
-#include "basic_sample.h"
+#include "rendertotexture_sample.h"
 #include "Debug/debug.h"
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -6,28 +6,38 @@
 
 namespace Ming3D
 {
-    void BasicSample::init()
+    void RenderToTextureSample::init()
     {
         SampleBase::init();
 
         mRenderTarget = mRenderDevice->CreateRenderTarget(mRenderWindow);
 
-        TextureInfo texInfo;
-        texInfo.mWidth = mMainWindow->GetWidth();
-        texInfo.mHeight = mMainWindow->GetHeight();
+        mOrthoRasterState = mRenderDevice->CreateRasteriserState(Rendering::RasteriserStateCullMode::Front, false);
+
+        TextureInfo rtargetTexInfo;
+        rtargetTexInfo.mWidth = mMainWindow->GetWidth();
+        rtargetTexInfo.mHeight = mMainWindow->GetHeight();
+        mTextureRenderTarget = mRenderDevice->CreateRenderTarget(rtargetTexInfo, 1);
 
         mModels.push_back(LoadModel("Resources//Mvr_PetCow_walk.dae"));
         mModels.push_back(LoadModel("Resources//test.dae"));
 
+        MeshData* screenRectMesh = CreateRectangleMesh(2.0f, 2.0f);
+        screenRectMesh->mTexture = mModels[1]->mMeshes[0]->mTexture;
+        ModelData* rectModel = new ModelData();
+        rectModel->mMeshes.push_back(screenRectMesh);
+        mModels.push_back(rectModel);
+
         mModels[0]->mPosition = glm::vec3(2.0f, 0.0f, 0.0f);
         mModels[1]->mPosition = glm::vec3(-2.0f, 0.0f, 0.0f);
+        mModels[2]->mPosition = glm::vec3(0.0f, 0.0f, 0.0f);
 
         for (ModelData* modelData : mModels)
         {
             for (MeshData* meshData : modelData->mMeshes)
             {
-                VertexData vertexData({ EVertexComponent::Position, EVertexComponent::Normal, EVertexComponent::TexCoord }, meshData->mVertices.size());
-                IndexData indexData(meshData->mIndices.size());
+                Rendering::VertexData vertexData({ Rendering::EVertexComponent::Position, Rendering::EVertexComponent::Normal, Rendering::EVertexComponent::TexCoord }, meshData->mVertices.size());
+                Rendering::IndexData indexData(meshData->mIndices.size());
 
                 memcpy(vertexData.GetDataPtr(), meshData->mVertices.data(), meshData->mVertices.size() * sizeof(Vertex));
                 memcpy(indexData.GetData(), meshData->mIndices.data(), meshData->mIndices.size() * sizeof(unsigned int));
@@ -36,20 +46,22 @@ namespace Ming3D
                 meshData->mIndexBuffer = mRenderDevice->CreateIndexBuffer(&indexData);
 
                 if (meshData->mTexture != nullptr)
+                {
                     meshData->mTextureBuffer = mRenderDevice->CreateTextureBuffer(meshData->mTexture->GetTextureInfo(), meshData->mTexture->GetTextureData());
+                }
             }
 
             // TODO: Use different shaders, based on vertex layout?
-            ShaderParser parser;
-            ShaderParserParams params;
+            Rendering::ShaderParser parser;
+            Rendering::ShaderParserParams params;
             params.mShaderProgramPath = "Resources/Shaders/defaultshader.cgp";
-            ParsedShaderProgram* prog = parser.ParseShaderProgram(params);
+            Rendering::ParsedShaderProgram* prog = parser.ParseShaderProgram(params);
             modelData->mShaderProgram = mRenderDevice->CreateShaderProgram(prog);
         }
 
     }
 
-    void BasicSample::tick()
+    void RenderToTextureSample::tick()
     {
         SampleBase::tick();
 
@@ -58,10 +70,20 @@ namespace Ming3D
         float height = 600.0f;
 
         mRenderDevice->BeginRenderWindow(mRenderWindow);
-        mRenderDevice->BeginRenderTarget(mRenderTarget);
+        mRenderDevice->BeginRenderTarget(mTextureRenderTarget);
+        //mRenderDevice->BeginRenderTarget(mRenderTarget);
+
+        mRenderDevice->SetRasteriserState(nullptr); // TODO: default
 
         for (ModelData* modelData : mModels)
         {
+            if (modelData == mModels[2]) // TODO
+            {
+                mRenderDevice->EndRenderTarget(mTextureRenderTarget);
+                mRenderDevice->BeginRenderTarget(mRenderTarget);
+                mRenderDevice->SetRasteriserState(mOrthoRasterState);
+            }
+
             glm::mat4 Projection = glm::perspective<float>(glm::radians(45.0f), width / height, 0.1f, 100.0f);
 
             // Camera matrix
@@ -76,20 +98,34 @@ namespace Ming3D
 
             glm::mat4 mvp = Projection * View * Model;
 
+            if (modelData == mModels[2])
+            {
+                Projection = glm::ortho<float>(-1.0f, 1.0f, -1.0f, 1.0f, 0.0f, 10.0f);
+                mvp = Projection;
+            }
+
             mRenderDevice->SetActiveShaderProgram(modelData->mShaderProgram);
 
             mRenderDevice->SetShaderUniformMat4x4("MVP", mvp);
-            mRenderDevice->SetShaderUniformVec4("test", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+            mRenderDevice->SetShaderUniformVec4("test", glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
 
             for (MeshData* meshData : modelData->mMeshes)
             {
-                mRenderDevice->SetTexture(meshData->mTextureBuffer, 0); // temp
+                if (modelData == mModels[2]) // TODO
+                {
+                    //mRenderDevice->SetTexture(meshData->mTextureBuffer, 0); // temp
+                    mRenderDevice->SetTexture(mTextureRenderTarget->GetColourTextureBuffer(0), 0); // temp
+                }
+                else
+                {
+                    mRenderDevice->SetTexture(meshData->mTextureBuffer, 0); // temp
+                }
                 mRenderDevice->RenderPrimitive(meshData->mVertexBuffer, meshData->mIndexBuffer);
             }
         }
 
         mRenderDevice->EndRenderTarget(mRenderTarget);
         mRenderDevice->EndRenderWindow(mRenderWindow);
-    
+
     }
 }

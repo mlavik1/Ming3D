@@ -6,7 +6,7 @@
 #include <unordered_map>
 #include <functional>
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     class WinAPIWindow : public WindowBase
     {

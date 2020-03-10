@@ -1,7 +1,7 @@
 #ifdef MING3D_D3D11
 #include "shader_program_d3d11.h"
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     ShaderProgramD3D11::~ShaderProgramD3D11()
     {

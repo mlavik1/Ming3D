@@ -13,7 +13,7 @@
 #include "shader_writer_glsl.h"
 #include "Debug/debug_stats.h"
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     RenderDeviceGL::RenderDeviceGL()
     {

@@ -1,6 +1,6 @@
 #include "shader_writer.h"
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     void ShaderStream::ClearStream()
     {

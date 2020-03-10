@@ -1,7 +1,7 @@
 #ifdef MING3D_OPENGL
 #include "shader_program_gl.h"
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     ShaderProgramGL::~ShaderProgramGL()
     {

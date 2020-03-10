@@ -5,7 +5,7 @@
 
 #include <glm/glm.hpp>
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     enum EVertexComponent
     {

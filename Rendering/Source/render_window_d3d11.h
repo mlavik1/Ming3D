@@ -6,7 +6,7 @@
 #include <DXGI.h>
 #include <d3d11.h>
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     class RenderWindowD3D11 : public RenderWindow
     {

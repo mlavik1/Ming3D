@@ -11,7 +11,7 @@
 
 #define MING3D_BreakOnShaderParserError
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     ShaderParser::ShaderParser()
     {

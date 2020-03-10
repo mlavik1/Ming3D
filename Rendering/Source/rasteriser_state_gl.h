@@ -3,7 +3,7 @@
 
 #include "rasteriser_state.h"
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     class RasteriserStateGL : public RasteriserState
     {

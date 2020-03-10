@@ -6,7 +6,7 @@
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
 #include "assimp/Importer.hpp"
-#include "texture_loader.h"
+#include "Texture/texture_loader.h"
 
 #include "Debug/debug.h"
 
@@ -66,17 +66,17 @@ namespace Ming3D
 #endif
 
 #ifdef MING3D_OPENGL
-        mMainWindow = new SDLWindow();
+        mMainWindow = new Rendering::SDLWindow();
 #else
-        mMainWindow = new WinAPIWindow();
+        mMainWindow = new Rendering::WinAPIWindow();
 #endif
         mMainWindow->Initialise();
 
 #ifdef MING3D_OPENGL
         LOG_INFO() << "Using OpenGL, version " << glGetString(GL_VERSION);
-        mRenderDevice = new RenderDeviceGL();
+        mRenderDevice = new Rendering::RenderDeviceGL();
 #else
-        mRenderDevice = new RenderDeviceD3D11();
+        mRenderDevice = new Rendering::RenderDeviceD3D11();
 #endif
 
         mRenderWindow = mRenderDevice->CreateRenderWindow(mMainWindow);

@@ -1,8 +1,6 @@
 #include "game_engine.h"
 
 #include "ClassManager/class_manager.h"
-#include "basic_sample.h"
-#include "rendertotexture_sample.h"
 #include "World/world.h"
 #include "Actors/actor.h"
 #include "Components/component.h"
@@ -131,6 +129,14 @@ namespace Ming3D
     void GameEngine::RemoveCamera(CameraComponent* inCamera)
     {
         mSceneRenderer->RemoveCamera(inCamera->GetCamera());
+    }
+
+    void GameEngine::SetWindowSize(unsigned int width, unsigned int height)
+    {
+        if(mRenderTarget != nullptr)
+            delete mRenderTarget;
+        mRenderWindow->GetWindow()->SetSize(width, height);
+        mRenderTarget = mRenderDevice->CreateRenderTarget(mRenderWindow);
     }
 
     void GameEngine::Start()

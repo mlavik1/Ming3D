@@ -6,7 +6,7 @@
 struct SDL_Window;
 typedef void *SDL_GLContext;
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     class SDLWindow : public WindowBase
     {

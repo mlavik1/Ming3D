@@ -4,7 +4,7 @@
 #include "constant_buffer.h"
 #include <GL/glew.h>
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     class ConstantBufferGL : public ConstantBuffer
     {

@@ -4,7 +4,7 @@
 #include "rasteriser_state.h"
 #include <d3d11.h>
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     class RasteriserStateD3D11 : public RasteriserState
     {

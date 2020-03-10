@@ -4,7 +4,7 @@
 #include <fstream>
 #include "Debug/debug.h"
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     std::string ShaderWriterHLSL::GetVariableIdentifierString(const std::string inName)
     {

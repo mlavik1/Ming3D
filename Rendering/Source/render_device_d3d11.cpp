@@ -15,7 +15,7 @@
 #include "shader_info_hlsl.h"
 #include "depth_stencil_view_d3d11.h"
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     RenderDeviceD3D11* GRenderDeviceD3D11 = nullptr;
 
@@ -404,6 +404,7 @@ namespace Ming3D
             for (const ShaderVariableInfo& uniformInfo : parsedProgram->mUniforms)
             {
                 size_t offset = cBufferSize;
+                offset += (16 - (offset % 16)) % 16; // ensure 16 byte boundary
                 ShaderDatatypeInfo varType = uniformInfo.mDatatypeInfo;
                 ShaderUniformInfo uniformInfo(varType, uniformInfo.mName);
                 ApplyConstantPacking(uniformInfo, cBufferSize);

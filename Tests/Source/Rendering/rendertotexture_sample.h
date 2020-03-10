@@ -18,9 +18,9 @@ namespace Ming3D
     private:
         std::vector<ModelData*> mModels;
 
-        RenderTarget* mRenderTarget;
-        RenderTarget* mTextureRenderTarget;
-        RasteriserState* mOrthoRasterState;
+        Rendering::RenderTarget* mRenderTarget;
+        Rendering::RenderTarget* mTextureRenderTarget;
+        Rendering::RasteriserState* mOrthoRasterState;
 
     protected:
         virtual void init() override;

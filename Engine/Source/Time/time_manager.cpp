@@ -4,17 +4,20 @@ namespace Ming3D
 {
     void TimeManager::Initialise()
     {
-        mStartClock = clock();
+        mStartTimePoint = std::chrono::steady_clock::now();
+        mCurrentTimePoint = mStartTimePoint;
         UpdateTime();
     }
 
     void TimeManager::UpdateTime()
     {
-        std::clock_t endClock = clock();
-        double elapsedSeconds = double(endClock - mCurrentClock) / CLOCKS_PER_SEC;
-        mDeltaTime = elapsedSeconds;
+
+
+        auto newTimePoint = std::chrono::steady_clock::now();
+        std::chrono::duration<double> duration = newTimePoint - mCurrentTimePoint;
+        mDeltaTime = duration.count();
         mTime += mDeltaTime;
-        mCurrentClock = endClock;
+        mCurrentTimePoint = newTimePoint;
     }
 
     float TimeManager::GetTimeSeconds()

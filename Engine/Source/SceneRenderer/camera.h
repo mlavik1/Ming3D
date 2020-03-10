@@ -5,8 +5,12 @@
 
 namespace Ming3D
 {
-    class RenderTarget;
     class RenderPipelineParams;
+
+    namespace Rendering
+    {
+        class RenderTarget;
+    }
 
     class Camera
     {
@@ -15,7 +19,7 @@ namespace Ming3D
         ~Camera();
 
         glm::mat4 mCameraMatrix;
-        RenderTarget* mRenderTarget = nullptr;
+        Rendering::RenderTarget* mRenderTarget = nullptr;
         RenderPipelineParams* mRenderPipelineParams = nullptr;
     };
 }

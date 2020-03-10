@@ -10,7 +10,7 @@
 #include "rasteriser_state_gl.h"
 #include "depth_stencil_state_gl.h"
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     class RenderDeviceGL : public RenderDevice
     {

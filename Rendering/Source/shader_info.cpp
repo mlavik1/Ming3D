@@ -1,6 +1,6 @@
 #include "shader_info.h"
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     ShaderDatatypeInfo::ShaderDatatypeInfo()
     {

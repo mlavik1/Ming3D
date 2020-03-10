@@ -6,7 +6,7 @@
 #include "shader_info.h"
 #include "shader_constant.h"
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     class ShaderProgram
     {

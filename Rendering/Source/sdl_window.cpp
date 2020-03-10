@@ -14,7 +14,7 @@
 
 #include "Debug/st_assert.h"
 
-namespace Ming3D
+namespace Ming3D::Rendering
 {
     SDLWindow::SDLWindow()
     {
@@ -41,8 +41,11 @@ namespace Ming3D
 
     void SDLWindow::SetSize(unsigned int inWidth, unsigned int inHeight)
     {
-        mWindowHeight = inWidth;
+        mWindowWidth = inWidth;
         mWindowHeight = inHeight;
+
+        if(mSDLWindow != nullptr)
+            SDL_SetWindowSize(mSDLWindow, mWindowWidth, mWindowHeight);
     }
 
     void SDLWindow::BeginRender()

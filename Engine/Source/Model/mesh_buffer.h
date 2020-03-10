@@ -3,15 +3,18 @@
 
 namespace Ming3D
 {
-    class VertexBuffer;
-    class IndexBuffer;
-    class TextureBuffer;
+    namespace Rendering
+    {
+        class VertexBuffer;
+        class IndexBuffer;
+        class TextureBuffer;
+    }
 
     class MeshBuffer
     {
     public:
-        VertexBuffer* mVertexBuffer = nullptr;
-        IndexBuffer* mIndexBuffer = nullptr;
+        Rendering::VertexBuffer* mVertexBuffer = nullptr;
+        Rendering::IndexBuffer* mIndexBuffer = nullptr;
     };
 }
 
