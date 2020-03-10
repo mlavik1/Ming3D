@@ -9,6 +9,7 @@
 #include "PxPhysics.h"
 #include "PxShape.h"
 #include "PxMaterial.h"
+#include "extensions/PxRigidActorExt.h"
 #include "Physics/API/PhysX/physics_manager_physx.h"
 #include "Physics/API/PhysX/iphysx_actor.h"
 #endif
@@ -58,7 +59,7 @@ namespace Ming3D
         const glm::vec3 size = mSize * mParent->GetTransform().GetWorldScale();
 
         physx::PxRigidActor* pxActor = dynamic_cast<IPhysXActor*>(rigidBodyComp->GetPhysicsActor())->GetRigidActor();
-        mPxShape = pxActor->createShape(physx::PxBoxGeometry(size.x, size.y, size.z), *mPxMaterial);
+        mPxShape = physx::PxRigidActorExt::createExclusiveShape(*pxActor, physx::PxBoxGeometry(size.x, size.y, size.z), *mPxMaterial);
 #endif
     }
 

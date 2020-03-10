@@ -7,7 +7,7 @@ file(GLOB_RECURSE SRC_FILES
 	Source/*.h
 )
 
-set(TestType "sockets" CACHE STRING "Type of test")
+set(TestType "physics" CACHE STRING "Type of test")
 set_property(CACHE TestType PROPERTY STRINGS sockets core rendering gamenetwork rpc replication physics)
 
 if(TestType STREQUAL "core")
@@ -31,6 +31,8 @@ include_directories ("../Engine/Source")
 include_directories ("../Networking/Source")
 include_directories ("../Rendering/Source")
 include_directories ("../Include/glm")
+include_directories ("../3rdParty/assimp/include")
+include_directories ("${BUILD_ROOT}/3rdParty/assimp/include")
 
 add_executable(Tests ${SRC_FILES})
 

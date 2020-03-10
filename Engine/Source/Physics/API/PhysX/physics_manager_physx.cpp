@@ -11,7 +11,7 @@ namespace Ming3D
         mDefaultAllocatorCallback = new physx::PxDefaultAllocator();
         mDefaultErrorCallback = new physx::PxDefaultErrorCallback();
 
-        mPxFoundation = PxCreateFoundation(PX_FOUNDATION_VERSION, *mDefaultAllocatorCallback, *mDefaultErrorCallback);
+        mPxFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, *mDefaultAllocatorCallback, *mDefaultErrorCallback);
         mPxPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *mPxFoundation, physx::PxTolerancesScale());
         if (mPxPhysics == nullptr)
             LOG_ERROR() << "Error creating PhysX device";
