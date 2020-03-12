@@ -7,8 +7,8 @@ file(GLOB_RECURSE SRC_FILES
 	Source/*.h
 )
 
-set(TestType "physics" CACHE STRING "Type of test")
-set_property(CACHE TestType PROPERTY STRINGS sockets core rendering gamenetwork rpc replication physics)
+set(TestType "game" CACHE STRING "Type of test")
+set_property(CACHE TestType PROPERTY STRINGS game sockets core rendering gamenetwork rpc replication physics)
 
 if(TestType STREQUAL "core")
 	add_definitions(-DMING3D_TESTTYPE=1)
@@ -24,6 +24,8 @@ elseif(TestType STREQUAL "replication")
 	add_definitions(-DMING3D_TESTTYPE=6)
 elseif(TestType STREQUAL "physics")
 	add_definitions(-DMING3D_TESTTYPE=7)
+elseif(TestType STREQUAL "game")
+	add_definitions(-DMING3D_TESTTYPE=8)
 endif()
 
 include_directories ("../Core/Source")
