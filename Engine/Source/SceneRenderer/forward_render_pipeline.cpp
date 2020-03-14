@@ -104,7 +104,7 @@ namespace Ming3D
                 UpdateUniforms(currMaterial);
             }
 
-            glm::mat4 Projection = glm::perspective<float>(glm::radians(45.0f), (float)window->GetWidth() / (float)window->GetHeight(), 0.1f, 100.0f);
+            glm::mat4 Projection = glm::perspective<float>(glm::radians(45.0f), (float)window->GetWidth() / (float)window->GetHeight(), 0.1f, 1000.0f);
 
             // matrices
             glm::mat4 view = params.mCamera->mCameraMatrix;
