@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.3)
-project(Tests)
+project(Samples)
 
 # Gather c++ files
 file(GLOB_RECURSE SRC_FILES 
@@ -7,8 +7,8 @@ file(GLOB_RECURSE SRC_FILES
 	Source/*.h
 )
 
-set(TestType "game" CACHE STRING "Type of test")
-set_property(CACHE TestType PROPERTY STRINGS game sockets core rendering gamenetwork rpc replication physics)
+set(SampleProject "game" CACHE STRING "Type of samples")
+set_property(CACHE SampleProject PROPERTY STRINGS game sockets core rendering gamenetwork rpc replication physics)
 
 if(TestType STREQUAL "core")
 	add_definitions(-DMING3D_TESTTYPE=1)
@@ -36,12 +36,12 @@ include_directories ("../Include/glm")
 include_directories ("../3rdParty/assimp/include")
 include_directories ("${BUILD_ROOT}/3rdParty/assimp/include")
 
-add_executable(Tests ${SRC_FILES})
+add_executable(Samples ${SRC_FILES})
 
-target_link_libraries(Tests Core)
-target_link_libraries(Tests Engine)
-target_link_libraries(Tests Networking)
-target_link_libraries(Tests Rendering)
+target_link_libraries(Samples Core)
+target_link_libraries(Samples Engine)
+target_link_libraries(Samples Networking)
+target_link_libraries(Samples Rendering)
 
 #Set working directory to the directory where "Resources" folder is located
-set_target_properties(Tests PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
+set_target_properties(Samples PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")

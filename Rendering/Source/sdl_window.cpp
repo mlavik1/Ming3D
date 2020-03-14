@@ -37,6 +37,7 @@ namespace Ming3D::Rendering
         mGLContext = SDL_GL_CreateContext(mSDLWindow);
 
         //SDL_GL_MakeCurrent(mSDLWindow, mGLContext);
+        SDL_GL_SetSwapInterval(1); // vsync
     }
 
     void SDLWindow::SetSize(unsigned int inWidth, unsigned int inHeight)

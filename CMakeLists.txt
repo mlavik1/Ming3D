@@ -32,7 +32,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build")
 set(ROOT_DIR "${CMAKE_SOURCE_DIR}")
 
 # Cache variables
-set(MING3D_BUILD_TESTS ON CACHE BOOL "Build test project")
+set(MING3D_BUILD_SAMPLES ON CACHE BOOL "Build sample project")
 set(MING3D_DEBUG_STATS OFF CACHE BOOL "Enable debug stats")
 if(WIN32)
     set(MING3D_BUILD_EDITOR ON CACHE BOOL "Build editor project")
@@ -90,6 +90,6 @@ if(MING3D_BUILD_EDITOR)
 	add_subdirectory(Editor)
 endif()
 
-if(MING3D_BUILD_TESTS)
-	add_subdirectory(Tests)
+if(MING3D_BUILD_SAMPLES)
+	add_subdirectory(Samples)
 endif()
