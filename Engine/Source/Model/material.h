@@ -14,16 +14,23 @@ namespace Ming3D
         class ParsedShaderProgram;
     }
 
+    /**
+     * @brief Material class.
+     * Engine-side wrapper for a shader program and all textures and uniforms (and their data).
+     */
     class Material
     {
+    private:
+        std::vector<Texture*> mTextures;
+
     public:
         MaterialBuffer* mMaterialBuffer;
-        std::vector<Texture*> mTextures;
 
         Material(Rendering::ParsedShaderProgram* shaderProgram);
         ~Material();
 
         void SetTexture(size_t textureIndex, Texture* texture);
+        void SetTexture(const std::string& textureName, Texture* texture);
 
         void SetShaderUniformFloat(const std::string& inName, float inVal);
         void SetShaderUniformInt(const std::string& inName, int inVal);
@@ -33,6 +40,13 @@ namespace Ming3D
         void SetShaderUniformMat4x4(const std::string& inName, const glm::mat4& inVal);
 
         bool HasShaderUniform(const std::string& inName);
+
+        /**
+         * @brief Gets the ID (binding) of a texture
+         * @param textureName name of the texture (in shader)
+         * @return Texture ID (OpenGL: binding). Use this when setting the texture through the RenderDevice.
+         */
+        size_t GetTextureID(const std::string& textureName);
     };
 }
 

@@ -58,9 +58,9 @@ namespace Ming3D::Rendering
     {
         RenderTargetGL* renderTarget = new RenderTargetGL();
 
-        GLuint FramebufferName = 0;
-        glGenFramebuffers(1, &FramebufferName);
-        glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
+        GLuint frameBuffer = 0;
+        glGenFramebuffers(1, &frameBuffer);
+        glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
 
         TextureBufferGL* colourBuffer = new TextureBufferGL();
 
@@ -72,6 +72,7 @@ namespace Ming3D::Rendering
             glBindTexture(GL_TEXTURE_2D, renderTexture);
 
             glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, inTextureInfo.mWidth, inTextureInfo.mHeight);
+            //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, inTextureInfo.mWidth, inTextureInfo.mHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -84,16 +85,31 @@ namespace Ming3D::Rendering
             renderTarget->mColourBuffers.push_back(colourBuffer);
         }
 
-        renderTarget->mFrameBufferID = FramebufferName;
+        renderTarget->mFrameBufferID = frameBuffer;
 
-        GLuint depthrenderbuffer;
+        GLuint depthTexture;
+        glGenTextures(1, &depthTexture);
+        glBindTexture(GL_TEXTURE_2D, depthTexture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, inTextureInfo.mWidth, inTextureInfo.mHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture, 0);
+
+        /*GLuint depthrenderbuffer;
         glGenRenderbuffers(1, &depthrenderbuffer);
         glBindRenderbuffer(GL_RENDERBUFFER, depthrenderbuffer);
         glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, inTextureInfo.mWidth, inTextureInfo.mHeight);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthrenderbuffer);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthrenderbuffer);*/
+
+        //glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthrenderbuffer, 0);
+
+        CheckGLErrors();
 
         TextureBufferGL* depthBuffer = new TextureBufferGL();
-        depthBuffer->SetGLTexture(depthrenderbuffer);
+        depthBuffer->SetGLTexture(depthTexture);
         renderTarget->mDepthRenderBuffer = depthBuffer;
 
         return renderTarget;
@@ -108,6 +124,7 @@ namespace Ming3D::Rendering
         glBufferData(GL_ARRAY_BUFFER, inVertexData->GetNumVertices() * inVertexData->GetVertexSize(), inVertexData->GetDataPtr(), GL_STATIC_DRAW);
         vertexBuffer->SetGLBuffer(vbo);
         vertexBuffer->SetVertexLayout(inVertexData->GetVertexLayout());
+        CheckGLErrors();
         return vertexBuffer;
     }
 
@@ -183,6 +200,8 @@ namespace Ming3D::Rendering
             LOG_ERROR() << "Error linking shader program: " << std::string(infoLog);
         }
 
+        CheckGLErrors();
+
         ShaderProgramGL* shaderProgram = new ShaderProgramGL();
         shaderProgram->SetGLProgram(program);
         shaderProgram->SetGLVertexShader(vs);
@@ -226,6 +245,8 @@ namespace Ming3D::Rendering
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        CheckGLErrors();
 
         textureBuffer->SetGLTexture(glTexture);
 
@@ -287,6 +308,8 @@ namespace Ming3D::Rendering
         delete[] initialData;
         cb->mGLBuffer = ubo;
 
+        CheckGLErrors();
+
         return cb;
     }
 
@@ -298,6 +321,8 @@ namespace Ming3D::Rendering
         TextureBufferGL* glTexture = (TextureBufferGL*)inTexture;
         glActiveTexture(GL_TEXTURE0 + inSlot);
         glBindTexture(GL_TEXTURE_2D, glTexture->GetGLTexture());
+
+        CheckGLErrors();
     }
 
     void RenderDeviceGL::SetActiveShaderProgram(ShaderProgram* inProgram)
@@ -333,6 +358,10 @@ namespace Ming3D::Rendering
         glBindFramebuffer(GL_FRAMEBUFFER, mRenderTarget->mFrameBufferID);
         glDrawBuffers(1, mRenderTarget->mAttachments.data());
 
+        const int w = mRenderWindow->GetWindow()->GetWidth();
+        const int h = mRenderWindow->GetWindow()->GetHeight();
+        glViewport(0, 0, w, h);
+
         glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         glClear(GL_DEPTH_BUFFER_BIT);
@@ -341,6 +370,10 @@ namespace Ming3D::Rendering
         //glDepthFunc(GL_LEQUAL);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        glDepthMask(GL_TRUE); // TODO: Make this adjustable
+
+        SetDepthStencilState(mDefaultDepthStencilState); // TODO
     }
 
     void RenderDeviceGL::EndRenderTarget(RenderTarget* inTarget)
@@ -368,6 +401,16 @@ namespace Ming3D::Rendering
         glDrawBuffer(GL_COLOR_ATTACHMENT0);
         glViewport(0, 0, w, h);
         glBlitFramebuffer(0, 0, w, h, 0, 0, w, h, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+    }
+
+    void RenderDeviceGL::CheckGLErrors()
+    {
+        GLenum errCode;
+        while((errCode = glGetError()) != GL_NO_ERROR)
+        {
+            std::string errString = (char*)glewGetErrorString(errCode);
+            LOG_ERROR() << errString;
+        }
     }
 
     void RenderDeviceGL::RenderPrimitive(VertexBuffer* inVertexBuffer, IndexBuffer* inIndexBuffer)
@@ -399,7 +442,7 @@ namespace Ming3D::Rendering
             inState = mDefaultRasteriserState;
 
         RasteriserStateGL* glRasterState = (RasteriserStateGL*)inState;
-        
+
         if (!glRasterState->mDepthClipEnabled || glRasterState->mCullMode == RasteriserStateCullMode::None)
         {
             glDisable(GL_CULL_FACE);
@@ -419,6 +462,7 @@ namespace Ming3D::Rendering
 
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(glStencilState->mDepthFunc);
+        glDepthRange(0.0f, 1.0f);
     }
 
     void RenderDeviceGL::SetConstantBufferData(ConstantBuffer* inConstantBuffer, void* inData, size_t inSize)

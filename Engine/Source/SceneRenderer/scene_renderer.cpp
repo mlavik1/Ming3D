@@ -44,6 +44,7 @@ namespace Ming3D
     {
         cbDataGlobal.SetData(glm::vec3(), glm::vec4(), glm::vec3(), 0.0f);
         mGlobalCBuffer = GGameEngine->GetRenderDevice()->CreateConstantBuffer(cbDataGlobal.mSize);
+        mRenderPipeline->Initialise();
     }
 
     void SceneRenderer::AddCamera(Camera* inCamera)

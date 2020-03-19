@@ -21,6 +21,7 @@ namespace Ming3D::Rendering
         ShaderProgramGL* mActiveShaderProgram = nullptr;
 
         void BlitRenderTarget(RenderTargetGL* inSourceTarget, RenderWindow* inTargetWindow);
+        void CheckGLErrors();
 
         RasteriserStateGL* mDefaultRasteriserState;
         DepthStencilStateGL* mDefaultDepthStencilState;

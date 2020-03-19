@@ -1,5 +1,6 @@
 uniform mat4 MVP;
-uniform mat4 modelViewMat;
+uniform mat4 modelMat;
+uniform mat4 lightMat;
 
 #ifdef use_mat_colour
     uniform vec4 _colourDiffuse;
@@ -24,6 +25,7 @@ cbuffer _Globals
 ShaderTextures
 {
     Texture2D inTexture;
+    Texture2D inDepthTexture;
 }
 
 // Vertex shader input
@@ -41,6 +43,7 @@ struct FSInput
     vec4 Normal : NORMAL;
     vec2 TexCoord : TEXCOORD;
     vec4 WorldPosition : POSITION;
+    vec4 ShadowCoord : POSITION; // TODO: semantic name???
 }
 
 // Vertex shader
@@ -49,9 +52,10 @@ shader VertexShader
     void main(VSInput input, FSInput output)
     {
         output.Position = MVP * input.Position;
-        output.Normal = modelViewMat * vec4(input.Normal.x, input.Normal.y, input.Normal.z, 0.0);
+        output.Normal = modelMat * vec4(input.Normal.x, input.Normal.y, input.Normal.z, 0.0);
         output.TexCoord = vec2(input.TexCoord.x * _textureTiling.x, input.TexCoord.y * _textureTiling.y);
-        output.WorldPosition = modelViewMat * input.Position; 
+        output.WorldPosition = modelMat * input.Position;
+        output.ShadowCoord = lightMat * vec4(input.Position.x, input.Position.y, input.Position.z, 1.0);
     }
 }
 
@@ -72,6 +76,16 @@ shader FragmentShader
     #ifndef unlit_mode
         col = calcLightingPhong(input.Normal.xyz, input.WorldPosition.xyz, _eyePos, _lightDir, _lightCol.xyz, col, _colourSpecular.xyz, _shininess);
     #endif
+        
+        vec4 depthVal = ReadTexture(inDepthTexture, input.ShadowCoord.xy);
+        float closestDepth = depthVal.x;
+        float currentDepth = input.ShadowCoord.z;
+        //float bias = 0.005;
+        float bias = max(0.05 * (1.0 - dot(input.Normal.xyz, _lightDir * -1.0)), 0.005);  
+        if(currentDepth - bias > closestDepth)
+        {
+            col.xyz = vec3(0.0, 0.0, 0.0);
+        }
 
         SetFragmentColour(col);
     }

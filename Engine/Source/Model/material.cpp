@@ -5,6 +5,7 @@
 #include "Texture/texture.h"
 #include "shader_info.h"
 #include "shader_uniform_data.h"
+#include "Debug/st_assert.h"
 #include "SceneRenderer/scene_renderer.h" // TODO
 
 namespace Ming3D
@@ -20,6 +21,7 @@ namespace Ming3D
         {
             mTextures[iTexture] = nullptr;
             mMaterialBuffer->mTextureBuffers[iTexture] = nullptr;
+            mMaterialBuffer->mTextureIDs[shaderProgram->mShaderTextures[iTexture].mTextureName] = iTexture;
         }
 
         int zeroValues[128] = { }; // zero-initialised
@@ -70,6 +72,11 @@ namespace Ming3D
         mMaterialBuffer->mTextureBuffers[textureIndex] = GGameEngine->GetRenderDevice()->CreateTextureBuffer(texture->GetTextureInfo(), texture->GetTextureData());
     }
 
+    void Material::SetTexture(const std::string& textureName, Texture* texture)
+    {
+        SetTexture(mMaterialBuffer->GetTextureID(textureName), texture);
+    }
+
     void Material::SetShaderUniformFloat(const std::string& inName, float inVal)
     {
         mMaterialBuffer->SetShaderUniformFloat(inName, inVal);
@@ -103,5 +110,10 @@ namespace Ming3D
     bool Material::HasShaderUniform(const std::string& inName)
     {
         return mMaterialBuffer->mShaderUniformMap.find(inName) != mMaterialBuffer->mShaderUniformMap.end();
+    }
+
+    size_t Material::GetTextureID(const std::string& textureName)
+    {
+        return mMaterialBuffer->GetTextureID(textureName);
     }
 }

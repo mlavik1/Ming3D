@@ -1,6 +1,7 @@
 #include "material_buffer.h"
 #include "shader_uniform_data.h"
 #include "Debug/debug.h"
+#include "Debug/st_assert.h"
 
 namespace Ming3D
 {
@@ -44,5 +45,12 @@ namespace Ming3D
     void MaterialBuffer::SetShaderUniformMat4x4(const std::string& inName, const glm::mat4& inVal)
     {
         UpdateUniformData(inName, &inVal);
+    }
+
+    size_t MaterialBuffer::GetTextureID(const std::string& textureName)
+    {
+        auto it = mTextureIDs.find(textureName);
+        __Assert(it != mTextureIDs.end());
+        return it->second;
     }
 }

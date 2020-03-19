@@ -39,6 +39,13 @@ int main()
     gameEngine->GetWorld()->AddActor(actor1);
     ModelLoader::LoadModel("Resources//Mvr_PetCow_walk.dae", actor1);
 
+    Actor* actor2 = new Actor();
+    actor2->GetTransform().SetLocalPosition(glm::vec3(-1.5f, 0.0f, 0.0f));
+    actor2->GetTransform().SetLocalScale(glm::vec3(2.0f, 2.0f, 2.0f));
+    actor2->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
+    gameEngine->GetWorld()->AddActor(actor2);
+    ModelLoader::LoadModel("Resources//Mvr_PetCow_walk.dae", actor2);
+
     Actor* planeObj = new Actor();
     planeObj->GetTransform().SetLocalPosition(glm::vec3(0.0f, 0.0f, 0.0f));
     Mesh* planeMesh = PrimitiveFactory::CreatePlane(glm::vec2(100.0f, 100.0f), 2, 2);

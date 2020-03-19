@@ -360,12 +360,11 @@ namespace Ming3D::Rendering
             shaderHeaderStream << "\n";
 
             // Write textures
+            unsigned int texBinding = 0;
             for (const ShaderTextureInfo textureInfo : inParsedShaderProgram->mShaderTextures)
             {
-                if (mReferencedUniforms.find(textureInfo.mTextureName) != mReferencedUniforms.end())
-                {
-                    shaderHeaderStream << "uniform " << GetConvertedType(textureInfo.mTextureType) << " " << textureInfo.mTextureName << ";\n";
-                }
+                shaderHeaderStream << "layout(binding = " << texBinding << ") " << "uniform " << GetConvertedType(textureInfo.mTextureType) << " " << textureInfo.mTextureName << ";\n";
+                texBinding++;
             }
             shaderHeaderStream << "\n";
 
