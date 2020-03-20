@@ -187,7 +187,7 @@ namespace Ming3D
             glm::mat4 Projection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 20.0f);
 
             // matrices
-            glm::vec3 lookTarget = params.mCamera->mCameraMatrix * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+            glm::vec3 lookTarget = glm::inverse(params.mCamera->mCameraMatrix) * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
             glm::vec3 lightpos = lookTarget - params.mMainLightDir * 15.0f;
             glm::mat4 view = glm::lookAt(lightpos, lookTarget, glm::vec3(0.0f, 0.0f, 1.0f));
             glm::mat4 model = node->mModelMatrix;
