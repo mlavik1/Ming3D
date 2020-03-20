@@ -3,6 +3,7 @@
 
 #include "render_scene.h"
 #include "camera.h"
+#include "Light/light_source.h"
 #include <list>
 #include "render_pipeline.h"
 
@@ -18,6 +19,7 @@ namespace Ming3D
     private:
         RenderScene* mRenderScene;
         std::list<Camera*> mCameras;
+        std::list<LightSource*> mLightSources;
         RenderPipeline* mRenderPipeline;
         Rendering::ConstantBuffer* mGlobalCBuffer;
 
@@ -31,6 +33,8 @@ namespace Ming3D
 
         void AddCamera(Camera* inCamera);
         void RemoveCamera(Camera* inCamera);
+        void AddLightSource(LightSource* light);
+        void RemoveLightSource(LightSource* light);
         void AddSceneObject(RenderSceneObject* inObject);
         void RegisterMaterial(MaterialBuffer* inMat);
 

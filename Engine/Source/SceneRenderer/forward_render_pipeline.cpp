@@ -129,7 +129,6 @@ namespace Ming3D
             glm::mat4 model = node->mModelMatrix;
 
             glm::mat4 mvp = Projection * view * model;
-            glm::mat4 mv = view * model;
 
             glm::mat4 lightMVP = lightPorjMat * model;
             glm::mat4 biasMatrix(
@@ -185,13 +184,11 @@ namespace Ming3D
                 UpdateUniforms(currMaterial);
             }
 
-            //glm::mat4 Projection = glm::perspective<float>(glm::radians(45.0f), (float)MING3D_SHADOWRT_W / (float)MING3D_SHADOWRT_H, 1.1f, 100.0f);
             glm::mat4 Projection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 20.0f);
 
             // matrices
-            glm::vec3 lightDir(0.0f, -1.0f, 0.0f);
             glm::vec3 lookTarget = params.mCamera->mCameraMatrix * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-            glm::vec3 lightpos = lookTarget - lightDir * 15.0f;
+            glm::vec3 lightpos = lookTarget - params.mMainLightDir * 15.0f;
             glm::mat4 view = glm::lookAt(lightpos, lookTarget, glm::vec3(0.0f, 0.0f, 1.0f));
             glm::mat4 model = node->mModelMatrix;
 

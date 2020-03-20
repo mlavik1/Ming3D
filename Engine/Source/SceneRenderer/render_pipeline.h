@@ -36,6 +36,7 @@ namespace Ming3D
     struct RenderPipelineParams
     {
         Camera* mCamera = nullptr;
+        glm::vec3 mMainLightDir;
         RenderPipelineNodeCollection mNodes;
     };
 

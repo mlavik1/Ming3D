@@ -6,6 +6,7 @@
 #include "Components/mesh_component.h"
 #include "Model/model_helper.h"
 #include "Components/camera_component.h"
+#include "Components/light_component.h"
 #include "glm/gtx//rotate_vector.hpp"
 #include "Input/input_manager.h"
 #include "Model/primitive_factory.h"
@@ -23,6 +24,7 @@ int main()
 
     Actor* camActor = new Actor();
     camActor->AddComponent<CameraComponent>();
+    //camActor->AddComponent<LightComponent>();
     camActor->GetTransform().SetWorldPosition(glm::vec3(0.0f, 2.0f, 6.0f));
     gameEngine->GetWorld()->AddActor(camActor);
 
@@ -71,17 +73,17 @@ int main()
 
         glm::vec3 camPos = camTrans.GetWorldPosition();
         if (GGameEngine->GetInputManager()->GetKey(KeyCode::Key_W))
-            camPos += camTrans.GetUp() * speed;
+            camPos += camTrans.GetForward() * speed;
         else if (GGameEngine->GetInputManager()->GetKey(KeyCode::Key_S))
-            camPos += camTrans.GetUp() * -speed;
+            camPos += camTrans.GetForward() * -speed;
         else if (GGameEngine->GetInputManager()->GetKey(KeyCode::Key_D))
             camPos += camTrans.GetRight() * speed;
         else if (GGameEngine->GetInputManager()->GetKey(KeyCode::Key_A))
             camPos += camTrans.GetRight() * -speed;
-        else if (GGameEngine->GetInputManager()->GetKey(KeyCode::Key_Up))
-            camPos += camTrans.GetForward() * speed;
-        else if (GGameEngine->GetInputManager()->GetKey(KeyCode::Key_Down))
-            camPos += camTrans.GetForward() * -speed;
+        else if (GGameEngine->GetInputManager()->GetKey(KeyCode::Key_E))
+            camPos += camTrans.GetUp() * speed;
+        else if (GGameEngine->GetInputManager()->GetKey(KeyCode::Key_Q))
+            camPos -= camTrans.GetUp() * speed;
 
         camTrans.SetWorldPosition(camPos);
 
@@ -89,6 +91,10 @@ int main()
             camTrans.Rotate(-rotSpeed, glm::vec3(0.0f, 1.0f, 0.0f));
         else if (GGameEngine->GetInputManager()->GetKey(KeyCode::Key_Left))
             camTrans.Rotate(rotSpeed, glm::vec3(0.0f, 1.0f, 0.0f));
+        else if (GGameEngine->GetInputManager()->GetKey(KeyCode::Key_Up))
+            camTrans.Rotate(-rotSpeed, glm::vec3(1.0f, 0.0f, 0.0f));
+        else if (GGameEngine->GetInputManager()->GetKey(KeyCode::Key_Down))
+            camTrans.Rotate(rotSpeed, glm::vec3(1.0f, 0.0f, 0.0f));
     }
     return 0;
 }

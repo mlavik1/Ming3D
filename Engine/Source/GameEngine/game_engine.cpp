@@ -131,6 +131,16 @@ namespace Ming3D
         mSceneRenderer->RemoveCamera(inCamera->GetCamera());
     }
 
+    void GameEngine::AddLightSource(LightSource* light)
+    {
+        mSceneRenderer->AddLightSource(light);
+    }
+
+    void GameEngine::RemoveLightSource(LightSource* light)
+    {
+        mSceneRenderer->RemoveLightSource(light);
+    }
+
     void GameEngine::SetWindowSize(unsigned int width, unsigned int height)
     {
         if(mRenderTarget != nullptr)

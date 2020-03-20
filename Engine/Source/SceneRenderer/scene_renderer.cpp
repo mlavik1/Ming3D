@@ -57,6 +57,16 @@ namespace Ming3D
         mCameras.remove(inCamera);
     }
 
+    void SceneRenderer::AddLightSource(LightSource* light)
+    {
+        mLightSources.push_back(light);
+    }
+
+    void SceneRenderer::RemoveLightSource(LightSource* light)
+    {
+        mLightSources.remove(light);
+    }
+
     void SceneRenderer::AddSceneObject(RenderSceneObject* inObject)
     {
         mRenderScene->mSceneObjects.push_back(inObject);
@@ -71,16 +81,23 @@ namespace Ming3D
 
     void SceneRenderer::Render()
     {
+        glm::vec3 mainLightDir;
+        if(!mLightSources.empty())
+            mainLightDir = mLightSources.back()->mLightMat * glm::vec4(0.0f, 0.0f, -1.0f, 0.0f); // TODO: support multiple light sources
+        else
+            mainLightDir = glm::vec3(0.0f, -1.0f, 0.0f);
+
         for (Camera* camera : mCameras)
         {
             RenderPipelineParams* params = camera->mRenderPipelineParams;
             params->mCamera = camera;
             params->mNodes.clear();
+            params->mMainLightDir = mainLightDir;
 
             CollectObjects(*params);
             SortObjects(*params);
 
-            cbDataGlobal.SetData(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec4(0.8f, 0.8f, 0.8f, 1.0f), camera->mCameraMatrix * glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), GGameEngine->GetTime());
+            cbDataGlobal.SetData(glm::vec3(params->mMainLightDir), glm::vec4(0.8f, 0.8f, 0.8f, 1.0f), camera->mCameraMatrix * glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), GGameEngine->GetTime());
             GGameEngine->GetRenderDevice()->SetConstantBufferData(mGlobalCBuffer, cbDataGlobal.mDataPtr, cbDataGlobal.mSize);
 
             mRenderPipeline->Render(*params);
