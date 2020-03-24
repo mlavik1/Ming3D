@@ -32,6 +32,8 @@ namespace Ming3D
         void SetTexture(size_t textureIndex, Texture* texture);
         void SetTexture(const std::string& textureName, Texture* texture);
 
+        void SetCastShadows(bool castShadows);
+
         void SetShaderUniformFloat(const std::string& inName, float inVal);
         void SetShaderUniformInt(const std::string& inName, int inVal);
         void SetShaderUniformVec2(const std::string& inName, const glm::vec2& inVal);

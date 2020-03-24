@@ -19,7 +19,7 @@ namespace Ming3D
         LightComponent();
         virtual ~LightComponent() override;
 
-        void SetLightType(LightType type);
+        void SetLightType(ELightType type);
         const LightSource* GetLightSource();
     };
 }

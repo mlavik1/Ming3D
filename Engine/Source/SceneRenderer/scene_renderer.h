@@ -20,7 +20,6 @@ namespace Ming3D
         RenderScene* mRenderScene;
         std::list<Camera*> mCameras;
         std::list<LightSource*> mLightSources;
-        RenderPipeline* mRenderPipeline;
         Rendering::ConstantBuffer* mGlobalCBuffer;
 
         void UpdateUniforms(MaterialBuffer* inMat);
@@ -39,8 +38,6 @@ namespace Ming3D
         void RegisterMaterial(MaterialBuffer* inMat);
 
         void Render();
-        void CollectObjects(RenderPipelineParams& params);
-        void SortObjects(RenderPipelineParams& params);
         void RenderCameras();
         void RenderObjects(Camera* camera);
     };

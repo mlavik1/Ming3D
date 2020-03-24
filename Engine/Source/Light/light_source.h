@@ -6,11 +6,14 @@
 
 namespace Ming3D
 {
+    class Camera;
+
     class LightSource
     {
     public:
-        LightType mType = LightType::DirectionalLight;
+        ELightType mType = ELightType::DirectionalLight;
         glm::mat4 mLightMat;
+        Camera* mLightCamera = nullptr;
     };
 }
 

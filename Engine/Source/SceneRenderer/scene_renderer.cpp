@@ -17,26 +17,13 @@ namespace Ming3D
 
     ConstantBufferData<glm::vec3, glm::vec4, glm::vec3, float> cbDataGlobal; // TODO
 
-    struct RenderNodeSorter
-    {
-        inline bool operator() (const RenderPipelineNode* left, const RenderPipelineNode* right)
-        {
-            if (left->mMaterial != right->mMaterial)
-                return (left->mMaterial < right->mMaterial); // TODO: use material ID?
-            else if (left->mMesh != right->mMesh)
-                return (left->mMesh < right->mMesh); // TODO: use mesh ID?
-        }
-    };
-
     SceneRenderer::SceneRenderer()
     {
         mRenderScene = new RenderScene();
-        mRenderPipeline = new ForwardRenderPipeline();
     }
 
     SceneRenderer::~SceneRenderer()
     {
-        delete mRenderPipeline;
         delete mRenderScene;
     }
 
@@ -44,7 +31,6 @@ namespace Ming3D
     {
         cbDataGlobal.SetData(glm::vec3(), glm::vec4(), glm::vec3(), 0.0f);
         mGlobalCBuffer = GGameEngine->GetRenderDevice()->CreateConstantBuffer(cbDataGlobal.mSize);
-        mRenderPipeline->Initialise();
     }
 
     void SceneRenderer::AddCamera(Camera* inCamera)
@@ -81,43 +67,28 @@ namespace Ming3D
 
     void SceneRenderer::Render()
     {
-        glm::vec3 mainLightDir;
+        LightSource* mainLight = nullptr;
         if(!mLightSources.empty())
-            mainLightDir = mLightSources.back()->mLightMat * glm::vec4(0.0f, 0.0f, -1.0f, 0.0f); // TODO: support multiple light sources
-        else
-            mainLightDir = glm::vec3(0.0f, -1.0f, 0.0f);
+            mainLight = mLightSources.back(); // TODO: support multiple light sources
 
         for (Camera* camera : mCameras)
         {
+            RenderPipelineContext context;
+            context.mScene = mRenderScene;
+            context.mMainCamera = camera;
+            context.mMainLight = mainLight;
+
             RenderPipelineParams* params = camera->mRenderPipelineParams;
             params->mCamera = camera;
-            params->mNodes.clear();
-            params->mMainLightDir = mainLightDir;
+            params->mVisibleNodes.clear();
 
-            CollectObjects(*params);
-            SortObjects(*params);
+            //CollectObjects(*params);
+            //SortObjects(*params);
 
-            cbDataGlobal.SetData(glm::vec3(params->mMainLightDir), glm::vec4(0.8f, 0.8f, 0.8f, 1.0f), camera->mCameraMatrix * glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), GGameEngine->GetTime());
+            cbDataGlobal.SetData(glm::vec3(0.0f, -1.0f, 0.0f)/* TODO */, glm::vec4(0.8f, 0.8f, 0.8f, 1.0f), camera->mCameraMatrix * glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), GGameEngine->GetTime());
             GGameEngine->GetRenderDevice()->SetConstantBufferData(mGlobalCBuffer, cbDataGlobal.mDataPtr, cbDataGlobal.mSize);
 
-            mRenderPipeline->Render(*params);
+            camera->mRenderPipeline->Render(context, *params);
         }
-    }
-
-    void SceneRenderer::CollectObjects(RenderPipelineParams& params)
-    {
-        for (RenderSceneObject* obj : mRenderScene->mSceneObjects)
-        {
-            RenderPipelineNode* node = params.mNodes.push_back();
-            node->mMaterial = obj->mMaterial;
-            node->mMesh = obj->mMesh;
-            node->mModelMatrix = obj->mModelMatrix;
-        }
-    }
-
-    void SceneRenderer::SortObjects(RenderPipelineParams& params)
-    {
-        RenderNodeSorter sorter;
-        std::sort(params.mNodes.begin(), params.mNodes.end(), sorter);
     }
 }

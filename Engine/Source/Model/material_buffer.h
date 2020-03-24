@@ -37,6 +37,8 @@ namespace Ming3D
         std::set<std::string> mModifiedUniforms;
         /* Maps texture name to ID (OpenGL: binding). */
         std::unordered_map<std::string, size_t> mTextureIDs;
+        /* Defines whether the object will cast shadows. */
+        bool mCastShadows = true;
 
         void SetShaderUniformFloat(const std::string& inName, float inVal);
         void SetShaderUniformInt(const std::string& inName, int inVal);

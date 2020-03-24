@@ -14,16 +14,15 @@ namespace Ming3D
     class ForwardRenderPipeline : public RenderPipeline
     {
     private:
-        Rendering::RenderTarget* mShadowsRT = nullptr;
-        glm::mat4 lightPorjMat; // TODO
+        void SetupMainLight(const RenderPipelineContext& context);
+        void CollectVisibleObjects(const RenderPipelineContext& context, RenderPipelineParams& params);
+        void SetupNodeIndices(RenderPipelineParams& params);
 
         void UpdateUniforms(MaterialBuffer* inMat);
-        void RenderObjects(RenderPipelineParams& params);
-        void RenderShadowCasters(RenderPipelineParams& params);
+        void RenderObjects(RenderPipelineParams& params, ERenderType renderType, LightSource* mainLightSource);
 
     public:
-        virtual void Initialise() override;
-        virtual void Render(RenderPipelineParams& params) override;
+        virtual void Render(const RenderPipelineContext& context, RenderPipelineParams& params) override;
     };
 }
 

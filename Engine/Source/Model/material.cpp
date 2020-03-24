@@ -77,6 +77,12 @@ namespace Ming3D
         SetTexture(mMaterialBuffer->GetTextureID(textureName), texture);
     }
 
+    void Material::SetCastShadows(bool castShadows)
+    {
+        // TODO: Wueue render trhead command
+        mMaterialBuffer->mCastShadows = castShadows;
+    }
+
     void Material::SetShaderUniformFloat(const std::string& inName, float inVal)
     {
         mMaterialBuffer->SetShaderUniformFloat(inName, inVal);

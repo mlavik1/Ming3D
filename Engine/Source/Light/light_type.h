@@ -3,7 +3,7 @@
 
 namespace Ming3D
 {
-    enum class LightType
+    enum class ELightType
     {
         DirectionalLight
         // TODO: point light

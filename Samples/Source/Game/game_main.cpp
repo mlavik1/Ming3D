@@ -28,6 +28,12 @@ int main()
     camActor->GetTransform().SetWorldPosition(glm::vec3(0.0f, 2.0f, 6.0f));
     gameEngine->GetWorld()->AddActor(camActor);
 
+    Actor* lightActor = new Actor();
+    lightActor->AddComponent<LightComponent>();
+    lightActor->GetTransform().SetWorldPosition(glm::vec3(0.0f, 10.0f, 6.0f));
+    lightActor->GetTransform().SetWorldRotation(glm::angleAxis(glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
+    gameEngine->GetWorld()->AddActor(lightActor);
+
     Actor* skybox = new Actor();
     skybox->GetTransform().SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
     skybox->GetTransform().SetLocalScale(glm::vec3(-50.0f, 50.0f, 50.0f));
@@ -40,6 +46,10 @@ int main()
     actor1->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
     gameEngine->GetWorld()->AddActor(actor1);
     ModelLoader::LoadModel("Resources//Mvr_PetCow_walk.dae", actor1);
+    for (MeshComponent* currMeshComp : actor1->GetComponentsInChildren<MeshComponent>())
+    {
+        currMeshComp->GetMaterial()->SetCastShadows(true);
+    }
 
     Actor* actor2 = new Actor();
     actor2->GetTransform().SetLocalPosition(glm::vec3(-1.5f, 0.0f, 0.0f));
@@ -47,6 +57,10 @@ int main()
     actor2->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
     gameEngine->GetWorld()->AddActor(actor2);
     ModelLoader::LoadModel("Resources//Mvr_PetCow_walk.dae", actor2);
+    for (MeshComponent* currMeshComp : actor1->GetComponentsInChildren<MeshComponent>())
+    {
+        currMeshComp->GetMaterial()->SetCastShadows(true);
+    }
 
     Actor* planeObj = new Actor();
     planeObj->GetTransform().SetLocalPosition(glm::vec3(0.0f, 0.0f, 0.0f));

@@ -15,7 +15,7 @@ namespace Ming3D
     CameraComponent::CameraComponent()
     {
         mCamera = new Camera();
-        mCamera->mRenderTarget = GGameEngine->GetMainRenderTarget();
+        mCamera->mRenderTarget = GGameEngine->GetMainRenderTarget(); // TODO
     }
 
     CameraComponent::~CameraComponent()

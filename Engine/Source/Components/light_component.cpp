@@ -14,7 +14,7 @@ namespace Ming3D
         delete mLightSource;
     }
 
-    void LightComponent::SetLightType(LightType type)
+    void LightComponent::SetLightType(ELightType type)
     {
         mLightSource->mType = type;
     }
@@ -31,6 +31,12 @@ namespace Ming3D
 
     void LightComponent::Tick(float inDeltaTime)
     {
-        mLightSource->mLightMat = mParent->GetTransform().GetWorldTransformMatrix();
+        switch (mLightSource->mType)
+        {
+            case ELightType::DirectionalLight:
+            mLightSource->mLightMat = glm::mat4(mParent->GetTransform().GetWorldRotation());
+            break;
+        }
+        //mLightSource->mLightMat = mParent->GetTransform().GetWorldTransformMatrix();
     }
 }
