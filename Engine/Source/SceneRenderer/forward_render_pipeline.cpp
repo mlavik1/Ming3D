@@ -212,18 +212,18 @@ namespace Ming3D
 
         MaterialBuffer* currMaterial = nullptr;
 
-        std::vector<unsigned int> nodeIndices;
+        std::vector<unsigned int>* nodeIndices;
         switch (renderType)
         {
         case ERenderType::Opaque:
-            nodeIndices = params.mOpaqueNodeIndices;
+            nodeIndices = &params.mOpaqueNodeIndices;
             break;
         case ERenderType::Transparent:
-            nodeIndices = params.mTransparentNodeIndices;
+            nodeIndices = &params.mTransparentNodeIndices;
             break;
         }
 
-        for (unsigned int nodeIndex : nodeIndices)
+        for (unsigned int nodeIndex : *nodeIndices)
         {
             RenderPipelineNode* node = params.mVisibleNodes.at(nodeIndex);
 
