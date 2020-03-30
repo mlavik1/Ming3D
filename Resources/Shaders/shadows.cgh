@@ -1,0 +1,19 @@
+#ifndef MING3D_SHADOWS_CGH
+#define MING3D_SHADOWS_CGH
+
+#include "Resources/Shaders/lighting.cgh"
+
+vec4 applyShadows(vec4 colour, vec4 shadowCoords, vec3 normal)
+{
+    vec4 depthVal = ReadTexture(depthTexture, shadowCoords.xy);
+    float closestDepth = depthVal.x;
+    float currentDepth = shadowCoords.z;
+    float bias = max(0.05 * (1.0 - dot(normal, _lightDir * -1.0)), 0.005);  
+    if(currentDepth - bias > closestDepth)
+    {
+        return vec4(0.0, 0.0, 0.0, colour.a);
+    }
+    return colour;
+}
+
+#endif

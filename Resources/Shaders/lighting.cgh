@@ -1,3 +1,6 @@
+#ifndef MING3D_LIGHTING_CGH
+#define MING3D_LIGHTING_CGH
+
 vec4 calcLightingPhong(vec3 normal, vec3 worldPos, vec3 eyePos, vec3 lightDir, vec3 lightCol, vec4 baseCol, vec3 specularCol, float shininess)
 {
     shininess = max(shininess, 0.0001f);
@@ -17,3 +20,5 @@ vec4 calcLightingPhong(vec3 normal, vec3 worldPos, vec3 eyePos, vec3 lightDir, v
     return vec4(diffuse.x + ambient.x + specular.x, diffuse.y + ambient.y + specular.y, diffuse.z + ambient.z + specular.z, baseCol.a);
 #endif
 }
+
+#endif

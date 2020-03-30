@@ -247,7 +247,7 @@ namespace Ming3D
                 // set shadowmap depth texture
                 if (mainLightSource != nullptr)
                 {
-                    size_t depthTexSlotID = currMaterial->GetTextureID("inDepthTexture");
+                    size_t depthTexSlotID = currMaterial->GetTextureID("depthTexture");
                     renderDevice->SetTexture(mainLightSource->mLightCamera->mRenderTarget->GetDepthTextureBuffer(), depthTexSlotID);
                 }
 

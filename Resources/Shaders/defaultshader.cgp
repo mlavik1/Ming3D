@@ -22,11 +22,8 @@ cbuffer _Globals
     float _time;
 }
 
-ShaderTextures
-{
-    Texture2D inTexture;
-    Texture2D inDepthTexture;
-}
+Texture2D mainTexture;
+Texture2D depthTexture;
 
 // Vertex shader input
 struct VSInput
@@ -63,6 +60,7 @@ shader VertexShader
 shader FragmentShader
 {
     #include "Resources/Shaders/lighting.cgh"
+    #include "Resources/Shaders/shadows.cgh"
 
     void main(FSInput input)
     {
@@ -70,22 +68,14 @@ shader FragmentShader
     #ifdef use_mat_colour
         col = _colourDiffuse;
     #else
-        col = ReadTexture(inTexture, input.TexCoord);
+        col = ReadTexture(mainTexture, input.TexCoord);
     #endif
         
     #ifndef unlit_mode
         col = calcLightingPhong(input.Normal.xyz, input.WorldPosition.xyz, _eyePos, _lightDir, _lightCol.xyz, col, _colourSpecular.xyz, _shininess);
     #endif
         
-        vec4 depthVal = ReadTexture(inDepthTexture, input.ShadowCoord.xy);
-        float closestDepth = depthVal.x;
-        float currentDepth = input.ShadowCoord.z;
-        //float bias = 0.005;
-        float bias = max(0.05 * (1.0 - dot(input.Normal.xyz, _lightDir * -1.0)), 0.005);  
-        if(currentDepth - bias > closestDepth)
-        {
-            col.xyz = vec3(0.0, 0.0, 0.0);
-        }
+        col = applyShadows(col, input.ShadowCoord, input.Normal.xyz);        
 
         SetFragmentColour(col);
     }

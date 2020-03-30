@@ -147,7 +147,7 @@ namespace Ming3D
             Material* material = MaterialFactory::CreateMaterial(matParams); // TODO: Generate shader based on vertex layout
             
             if (matData->mTexture != nullptr)
-                material->SetTexture(0, matData->mTexture);
+                material->SetTexture("mainTexture", matData->mTexture);
             else
                 material->SetShaderUniformVec4("_colourDiffuse", matData->mDiffuseColour);
             material->SetShaderUniformVec4("_colourSpecular", matData->mSpecularColour);

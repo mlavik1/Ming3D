@@ -715,28 +715,17 @@ namespace Ming3D::Rendering
 
                 parsedShaderProgram->mUniforms.push_back(uniformInfo);
             }
-            else if (currToken.mTokenString == "ShaderTextures")
+            else if (currToken.mTokenString == "Texture2D")
             {
                 tokenParser.Advance();
+                std::string textureName = tokenParser.GetCurrentToken().mTokenString;
                 tokenParser.Advance();
-                ShaderDatatypeInfo inputStruct;
-                EParseResult inputParseResult = ParseStructBody(tokenParser, &inputStruct);
-                if (inputParseResult == EParseResult::Parsed)
-                {
-                    for (ShaderStructMember member : inputStruct.mMemberVariables)
-                    {
-                        ShaderTextureInfo textureInfo;
-                        textureInfo.mTextureName = member.mName;
-                        textureInfo.mTextureType = member.mDatatype.mName; // TODO: use enum
-                        parsedShaderProgram->mShaderTextures.push_back(textureInfo);
-                    }
-                    tokenParser.Advance();
-                }
-                else if (inputParseResult == EParseResult::Error)
-                {
-                    failed = true;
-                    break;
-                }
+                tokenParser.Advance();
+
+                ShaderTextureInfo textureInfo;
+                textureInfo.mTextureName = textureName;
+                textureInfo.mTextureType = "Texture2D"; // TODO: use enum
+                parsedShaderProgram->mShaderTextures.push_back(textureInfo);
             }
             else if (currToken.mTokenString == "struct")
             {
