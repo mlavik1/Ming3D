@@ -273,7 +273,7 @@ namespace Ming3D
                 glm::mat4 lightMVP = lightVPMat * model;
 #ifdef MING3D_D3D11
 				glm::mat4 biasMatrix(0.5, 0.0, 0.0, 0.0,
-					0.0, -0.5, 0.0, 0.0,
+					0.0, 0.5, 0.0, 0.0,
 					0.0, 0.0, 1.0, 0.0,
 					0.5, 0.5, 0.0, 1.0);
 #else
