@@ -29,9 +29,13 @@ namespace Ming3D
             Material* mat = new Material(parsedProgram);
             // Set default uniform values
             if(mat->HasShaderUniform("_textureTiling"))
-            {
                 mat->SetShaderUniformVec2("_textureTiling", glm::vec2(1.0f, 1.0f));
-            }
+			if (mat->HasShaderUniform("_colourDiffuse"))
+				mat->SetShaderUniformVec4("_colourDiffuse", glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
+			if (mat->HasShaderUniform("_colourSpecular"))
+				mat->SetShaderUniformVec4("_colourSpecular", glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
+			if (mat->HasShaderUniform("_shininess"))
+				mat->SetShaderUniformFloat("_shininess", 1.0f);
             return mat;
         }
         else
