@@ -71,7 +71,7 @@ namespace Ming3D
         {
             Camera* lightCam = new Camera();
             lightCam->mCameraMatrix = context.mMainLight->mLightMat;
-            lightCam->mProjectionMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 20.0f);
+            lightCam->mProjectionMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, -10.0f, 20.0f);
             lightCam->mRenderPipelineParams = new RenderPipelineParams();
             lightCam->mRenderPipelineParams->mCamera = lightCam;
             lightCam->mRenderPipelineParams->mIsShadowPass = true;
@@ -302,12 +302,12 @@ namespace Ming3D
         if(context.mMainLight != nullptr)
         {
             // set light projection matrix
-            context.mMainLight->mLightCamera->mProjectionMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 20.0f);
+            context.mMainLight->mLightCamera->mProjectionMatrix = glm::ortho(-15.0f, 15.0f, -15.0f, 15.0f, -50.1f, 50.0f);
 
             // set light view matrix
-            glm::vec3 lightDir = context.mMainLight->mLightMat * glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
-            glm::vec3 lookTarget = glm::inverse(context.mMainLight->mLightMat) * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-            glm::vec3 lightpos = lookTarget - lightDir * 15.0f; // TODO
+            glm::vec3 lightDir = glm::normalize(context.mMainLight->mLightMat * glm::vec4(0.0f, 0.0f, -1.0f, 0.0f));
+            glm::vec3 lookTarget = glm::inverse(context.mMainCamera->mCameraMatrix) * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+            glm::vec3 lightpos = lookTarget - lightDir; // TODO
             context.mMainLight->mLightCamera->mCameraMatrix = glm::lookAt(lightpos, lookTarget, glm::vec3(0.0f, 0.0f, 1.0f));
 
             CollectVisibleObjects(context, *context.mMainLight->mLightCamera->mRenderPipelineParams);
