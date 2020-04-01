@@ -31,7 +31,6 @@ namespace Ming3D::Rendering
         DepthStencilStateD3D11* mDefaultDepthStencilState;
 
         void ApplyConstantPacking(const ShaderUniformInfo& inShaderUniform, size_t& outSize);
-
         void SetUniformCBufferData(const std::string& inName, const void* inData, size_t inSize);
 
         DepthStencilViewD3D11* CreateDepthStencilView(int inWidth, int inHeight);

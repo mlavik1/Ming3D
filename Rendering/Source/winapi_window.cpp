@@ -79,8 +79,10 @@ namespace Ming3D::Rendering
 
     void WinAPIWindow::SetSize(unsigned int inWidth, unsigned int inHeight)
     {
-        mWindowHeight = inWidth;
+        mWindowWidth = inWidth;
         mWindowHeight = inHeight;
+
+		SetWindowPos(mHWND, NULL, 0, 0, mWindowWidth, mWindowHeight, 0);
     }
 
     void WinAPIWindow::BeginRender()

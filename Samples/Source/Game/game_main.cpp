@@ -24,7 +24,6 @@ int main()
 
     Actor* camActor = new Actor();
     camActor->AddComponent<CameraComponent>();
-    //camActor->AddComponent<LightComponent>();
     camActor->GetTransform().SetWorldPosition(glm::vec3(0.0f, 2.0f, 6.0f));
     gameEngine->GetWorld()->AddActor(camActor);
 

@@ -40,7 +40,7 @@ struct FSInput
     vec4 Normal : NORMAL;
     vec2 TexCoord : TEXCOORD;
     vec4 WorldPosition : POSITION;
-    vec4 ShadowCoord : POSITION; // TODO: semantic name???
+    vec4 ShadowCoord : POSITION1;
 }
 
 // Vertex shader

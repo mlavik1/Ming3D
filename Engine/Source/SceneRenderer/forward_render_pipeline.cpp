@@ -271,10 +271,17 @@ namespace Ming3D
             {
                 glm::mat4 lightVPMat = mainLightSource->mLightCamera->mProjectionMatrix * mainLightSource->mLightCamera->mCameraMatrix;
                 glm::mat4 lightMVP = lightVPMat * model;
+#ifdef MING3D_D3D11
+				glm::mat4 biasMatrix(0.5, 0.0, 0.0, 0.0,
+					0.0, -0.5, 0.0, 0.0,
+					0.0, 0.0, 1.0, 0.0,
+					0.5, 0.5, 0.0, 1.0);
+#else
                 glm::mat4 biasMatrix(   0.5, 0.0, 0.0, 0.0,
                                         0.0, 0.5, 0.0, 0.0,
                                         0.0, 0.0, 0.5, 0.0,
                                         0.5, 0.5, 0.5, 1.0);
+#endif
                 glm::mat4 lightMat = biasMatrix * lightMVP;
                 renderDevice->SetShaderUniformMat4x4("lightMat", lightMat);
             }

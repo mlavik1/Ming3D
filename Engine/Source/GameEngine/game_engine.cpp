@@ -143,10 +143,17 @@ namespace Ming3D
 
     void GameEngine::SetWindowSize(unsigned int width, unsigned int height)
     {
-        if(mRenderTarget != nullptr)
-            delete mRenderTarget;
-        mRenderWindow->GetWindow()->SetSize(width, height);
-        mRenderTarget = mRenderDevice->CreateRenderTarget(mRenderWindow);
+		Rendering::WindowBase* window = mRenderWindow->GetWindow();
+
+		// destroy render target and window (since resolution changed)
+		if (mRenderTarget != nullptr)
+			delete mRenderTarget;
+		if (mRenderWindow != nullptr)
+			delete mRenderWindow;
+
+		window->SetSize(width, height);
+		mRenderWindow = mRenderDevice->CreateRenderWindow(window);
+		mRenderTarget = mRenderDevice->CreateRenderTarget(mRenderWindow);
     }
 
     void GameEngine::Start()
