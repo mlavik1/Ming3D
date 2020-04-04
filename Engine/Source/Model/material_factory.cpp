@@ -14,19 +14,11 @@ namespace Ming3D
 
     Material* MaterialFactory::CreateMaterial(const MaterialParams& inParams)
     {
-        Rendering::ShaderParserParams params;
-        params.mShaderProgramPath = inParams.mShaderProgramPath;
-        params.mPreprocessorDefinitions = inParams.mPreprocessorDefinitions;
-        Rendering::ParsedShaderProgram* parsedProgram = nullptr;
-        if (!Rendering::ShaderCache::GetCachedProgramInfo(params, parsedProgram))
-        {
-            Rendering::ShaderParser parser;
-            parsedProgram = parser.ParseShaderProgram(params);
-            Rendering::ShaderCache::CacheProgramInfo(params, parsedProgram);
-        }
+		Rendering::ParsedShaderProgram* parsedProgram = GetParsedShaderProgram(inParams);
         if (parsedProgram != nullptr)
         {
             Material* mat = new Material(parsedProgram);
+			mat->mMaterialParams = inParams;
             // Set default uniform values
             if(mat->HasShaderUniform("_textureTiling"))
                 mat->SetShaderUniformVec2("_textureTiling", glm::vec2(1.0f, 1.0f));
@@ -43,4 +35,20 @@ namespace Ming3D
             return nullptr;
         }
     }
+
+	Rendering::ParsedShaderProgram* MaterialFactory::GetParsedShaderProgram(const MaterialParams& inParams)
+	{
+		Rendering::ShaderParserParams params;
+		params.mShaderProgramPath = inParams.mShaderProgramPath;
+		params.mPreprocessorDefinitions = inParams.mPreprocessorDefinitions;
+
+		Rendering::ParsedShaderProgram* parsedProgram = nullptr;
+		if (!Rendering::ShaderCache::GetCachedProgramInfo(params, parsedProgram))
+		{
+			Rendering::ShaderParser parser;
+			parsedProgram = parser.ParseShaderProgram(params);
+			Rendering::ShaderCache::CacheProgramInfo(params, parsedProgram);
+		}
+		return parsedProgram;
+	}
 }

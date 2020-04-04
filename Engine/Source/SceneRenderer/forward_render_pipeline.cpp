@@ -64,7 +64,7 @@ namespace Ming3D
 
     void ForwardRenderPipeline::SetupMainLight(const RenderPipelineContext& context)
     {
-        if (context.mMainLight == nullptr)
+        if (context.mMainLight == nullptr || context.mMainLight->mShadowType == EShadowType::None)
             return;
 
         if (context.mMainLight->mLightCamera == nullptr)
@@ -245,7 +245,7 @@ namespace Ming3D
                         renderDevice->SetTexture(texture, iTexture); // temp
                 }
                 // set shadowmap depth texture
-                if (mainLightSource != nullptr)
+                if (mainLightSource != nullptr && mainLightSource->mLightCamera != nullptr)
                 {
                     size_t depthTexSlotID = currMaterial->GetTextureID("depthTexture");
                     renderDevice->SetTexture(mainLightSource->mLightCamera->mRenderTarget->GetDepthTextureBuffer(), depthTexSlotID);
@@ -267,7 +267,7 @@ namespace Ming3D
             renderDevice->SetShaderUniformMat4x4("modelMat", model);
 
             // set light matrix
-            if (mainLightSource != nullptr)
+            if (mainLightSource != nullptr && mainLightSource->mLightCamera != nullptr)
             {
                 glm::mat4 lightVPMat = mainLightSource->mLightCamera->mProjectionMatrix * mainLightSource->mLightCamera->mCameraMatrix;
                 glm::mat4 lightMVP = lightVPMat * model;
@@ -299,7 +299,7 @@ namespace Ming3D
 
         SetupMainLight(context);
 
-        if(context.mMainLight != nullptr)
+        if(context.mMainLight != nullptr && context.mMainLight->mShadowType != EShadowType::None)
         {
             // set light projection matrix
             context.mMainLight->mLightCamera->mProjectionMatrix = glm::ortho(-15.0f, 15.0f, -15.0f, 15.0f, -50.1f, 50.0f);

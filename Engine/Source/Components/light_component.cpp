@@ -19,6 +19,11 @@ namespace Ming3D
         mLightSource->mType = type;
     }
 
+	void LightComponent::SetShadowType(EShadowType type)
+	{
+		mLightSource->mShadowType = type;
+	}
+
     const LightSource* LightComponent::GetLightSource()
     {
         return mLightSource;

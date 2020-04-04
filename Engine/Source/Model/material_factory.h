@@ -7,17 +7,17 @@
 
 namespace Ming3D
 {
-    struct MaterialParams
-    {
-        std::string mShaderProgramPath;
-        std::unordered_map<std::string, std::string> mPreprocessorDefinitions;
-    };
+	namespace Rendering
+	{
+		class ParsedShaderProgram;
+	}
 
     class MaterialFactory
     {
     public:
         static Material* CreateMaterial(const std::string& inShaderProgram);
         static Material* CreateMaterial(const MaterialParams& inParams);
+		static Rendering::ParsedShaderProgram* GetParsedShaderProgram(const MaterialParams& inParams);
     };
 }
 

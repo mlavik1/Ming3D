@@ -39,6 +39,10 @@ namespace Ming3D
         std::unordered_map<std::string, size_t> mTextureIDs;
         /* Defines whether the object will cast shadows. */
         bool mCastShadows = true;
+		/* Defines whether the object will receive shadows. */
+		bool mReceiveShadows = true;
+
+		void CopyFrom(MaterialBuffer* otherMat);
 
         void SetShaderUniformFloat(const std::string& inName, float inVal);
         void SetShaderUniformInt(const std::string& inName, int inVal);

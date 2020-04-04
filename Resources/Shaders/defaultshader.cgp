@@ -75,7 +75,7 @@ shader FragmentShader
         col = calcLightingPhong(input.Normal.xyz, input.WorldPosition.xyz, _eyePos, _lightDir, _lightCol.xyz, col, _colourSpecular.xyz, _shininess);
     #endif
         
-        col = applyShadows(col, input.ShadowCoord, input.Normal.xyz);        
+		col = applyShadows(col, input.ShadowCoord, input.Normal.xyz);  
 
         SetFragmentColour(col);
     }

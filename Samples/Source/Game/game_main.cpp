@@ -28,7 +28,8 @@ int main()
     gameEngine->GetWorld()->AddActor(camActor);
 
     Actor* lightActor = new Actor();
-    lightActor->AddComponent<LightComponent>();
+	LightComponent* lightComp = lightActor->AddComponent<LightComponent>();
+	lightComp->SetShadowType(EShadowType::HardShadows);
     lightActor->GetTransform().SetWorldPosition(glm::vec3(0.0f, 10.0f, 6.0f));
     lightActor->GetTransform().SetWorldRotation(glm::angleAxis(glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
     gameEngine->GetWorld()->AddActor(lightActor);
@@ -69,6 +70,7 @@ int main()
     Material* planeMat = MaterialFactory::CreateMaterial("Resources/Shaders/defaultshader.cgp");
     planeMat->SetTexture(0, TextureLoader::LoadTextureData("Resources/grass.png")); // TODO: create override with only one parameter
     planeMat->SetShaderUniformVec2("_textureTiling", glm::vec2(10.0f, 10.0f));
+	planeMat->SetReceiveShadows(true);
     planeMeshComp->SetMaterial(planeMat);
     gameEngine->GetWorld()->AddActor(planeObj);
 
