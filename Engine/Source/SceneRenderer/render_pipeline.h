@@ -5,16 +5,11 @@
 #include "render_scene_object.h"
 #include "camera.h"
 #include "Light/light_source.h"
+#include "render_type.h"
 
 namespace Ming3D
 {
     class RenderScene;
-
-    enum class ERenderType
-    {
-        Opaque = 0,
-        Transparent = 1
-    };
 
     class RenderPipelineNode
     {

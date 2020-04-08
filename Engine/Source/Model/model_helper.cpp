@@ -149,10 +149,16 @@ namespace Ming3D
             if (matData->mTexture != nullptr)
                 material->SetTexture("mainTexture", matData->mTexture);
             else
-                material->SetShaderUniformVec4("_colourDiffuse", matData->mDiffuseColour);
+                material->SetColour(matData->mDiffuseColour);
             material->SetShaderUniformVec4("_colourSpecular", matData->mSpecularColour);
             material->SetShaderUniformFloat("_shininess", matData->mShininess);
-            materials.push_back(material);
+            
+			if (matData->mTexture != nullptr || matData->mDiffuseColour.a < 1.0f)
+				material->SetRenderType(ERenderType::Transparent);
+			else
+				material->SetRenderType(ERenderType::Opaque);
+
+			materials.push_back(material);
         }
 
         for (MeshData* meshData : modelData->mMeshes)

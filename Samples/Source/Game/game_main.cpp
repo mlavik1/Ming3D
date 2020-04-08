@@ -57,7 +57,7 @@ int main()
     actor2->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
     gameEngine->GetWorld()->AddActor(actor2);
     ModelLoader::LoadModel("Resources//Mvr_PetCow_walk.dae", actor2);
-    for (MeshComponent* currMeshComp : actor1->GetComponentsInChildren<MeshComponent>())
+    for (MeshComponent* currMeshComp : actor2->GetComponentsInChildren<MeshComponent>())
     {
         currMeshComp->GetMaterial()->SetCastShadows(true);
     }

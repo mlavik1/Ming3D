@@ -21,6 +21,7 @@ namespace Ming3D
 	{
 		this->mCastShadows = otherMat->mCastShadows;
 		this->mReceiveShadows = otherMat->mReceiveShadows;
+		this->mRenderType = otherMat->mRenderType;
 
 		// copy uniform data
 		for (auto otherUniformIt : otherMat->mShaderUniformMap)

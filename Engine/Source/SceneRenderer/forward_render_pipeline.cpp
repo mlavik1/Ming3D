@@ -94,21 +94,20 @@ namespace Ming3D
 
         for (RenderSceneObject* obj : context.mScene->mSceneObjects)
         {
-            RenderPipelineNode* node = params.mVisibleNodes.push_back();
-
-            ERenderType nodeRenderType = ERenderType::Opaque; // TODO: support transparent
-
-            if (params.mIsShadowPass && nodeRenderType == ERenderType::Transparent)
+			ERenderType nodeRenderType = obj->mMaterial->mRenderType;
+			
+			if (params.mIsShadowPass && nodeRenderType == ERenderType::Transparent)
                 continue;
             if (params.mIsShadowPass && !obj->mMaterial->mCastShadows)
                 continue;
 
-            // TODO: view frustum culling
+			// TODO: view frustum culling
 
+			RenderPipelineNode* node = params.mVisibleNodes.push_back();
             node->mMaterial = obj->mMaterial;
             node->mMesh = obj->mMesh;
             node->mModelMatrix = obj->mModelMatrix;
-            node->mRenderType = nodeRenderType;
+            node->mRenderType = obj->mMaterial->mRenderType;
             node->mSquareDistance = glm::length2(glm::vec3(obj->mModelMatrix * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)) - camPos);
         }
     }

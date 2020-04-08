@@ -122,21 +122,38 @@ namespace Ming3D
         SetTexture(mMaterialBuffer->GetTextureID(textureName), texture);
     }
 
+	void Material::SetColour(glm::vec4 colour)
+	{
+		SetShaderUniformVec4("_colourDiffuse", colour);
+	}
+
     void Material::SetCastShadows(bool castShadows)
     {
-        // TODO: Wueue render trhead command
+        // TODO: Queue render trhead command
         mMaterialBuffer->mCastShadows = castShadows;
+
+		if (mMaterialBuffer->mRenderType == ERenderType::Transparent)
+		{
+			SetRenderType(ERenderType::Opaque);
+			LOG_WARNING() << "Material::SetCastShadows called on transparent material. Automatically setting render type to Opaque.";
+		}
     }
 
 	void Material::SetReceiveShadows(bool receiveShadows)
 	{
-		// TODO: Wueue render trhead command
+		// TODO: Queue render trhead command
 		mMaterialBuffer->mReceiveShadows = receiveShadows;
 
 		if (receiveShadows)
 			EnablePreprocessorDefinition("receive_shadows");
 		else
 			DisablePreprocessorDefinition("receive_shadows");
+	}
+
+	void Material::SetRenderType(ERenderType renderType)
+	{
+		// TODO: Queue render trhead command
+		mMaterialBuffer->mRenderType = renderType;
 	}
 
     void Material::SetShaderUniformFloat(const std::string& inName, float inVal)

@@ -4,6 +4,7 @@
 #include "material_buffer.h"
 #include <vector>
 #include "glm/glm.hpp"
+#include "SceneRenderer/render_type.h"
 
 namespace Ming3D
 {
@@ -51,9 +52,11 @@ namespace Ming3D
 
         void SetTexture(size_t textureIndex, Texture* texture);
         void SetTexture(const std::string& textureName, Texture* texture);
+		void SetColour(glm::vec4 colour);
 
         void SetCastShadows(bool castShadows);
 		void SetReceiveShadows(bool receiveShadows);
+		void SetRenderType(ERenderType renderType);
 
         void SetShaderUniformFloat(const std::string& inName, float inVal);
         void SetShaderUniformInt(const std::string& inName, int inVal);

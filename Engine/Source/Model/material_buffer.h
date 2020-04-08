@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include "glm/glm.hpp"
 #include <set>
+#include "SceneRenderer/render_type.h"
 
 namespace Ming3D
 {
@@ -41,6 +42,8 @@ namespace Ming3D
         bool mCastShadows = true;
 		/* Defines whether the object will receive shadows. */
 		bool mReceiveShadows = true;
+		/* Defines the visible type of object this is (transparent or opaque). This is used for sorting nodes in the render pipeline. */
+		ERenderType mRenderType = ERenderType::Opaque;
 
 		void CopyFrom(MaterialBuffer* otherMat);
 
