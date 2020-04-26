@@ -151,8 +151,8 @@ namespace Ming3D::Rendering
         viewport.TopLeftY = 0;
         viewport.MinDepth = 0;
         viewport.MaxDepth = 1;
-        viewport.Width = (float)inWindow->GetWindow()->GetWidth();
-        viewport.Height = (float)inWindow->GetWindow()->GetHeight();
+		viewport.Width = (float)inWindow->GetWindow()->GetWidth();
+		viewport.Height = (float)inWindow->GetWindow()->GetHeight();
 
         GRenderDeviceD3D11->GetDeviceContext()->RSSetViewports(1, &viewport);
 
@@ -700,7 +700,7 @@ namespace Ming3D::Rendering
 
         TextureBufferD3D11* d3dTexture = (TextureBufferD3D11*)inTexture;
         GetDeviceContext()->PSSetSamplers(inSlot, 1, &mDefaultSamplerState);
-        GetDeviceContext()->PSSetShaderResources(0, 1, &d3dTexture->mTextureResourceView);
+        GetDeviceContext()->PSSetShaderResources(inSlot, 1, &d3dTexture->mTextureResourceView);
     }
 
     void RenderDeviceD3D11::SetActiveShaderProgram(ShaderProgram* inProgram)
@@ -754,6 +754,9 @@ namespace Ming3D::Rendering
         __Assert(mRenderTarget == inTarget);
 
         mRenderTarget->EndRendering();
+
+		ID3D11RenderTargetView* nullRTV = nullptr;
+		GRenderDeviceD3D11->GetDeviceContext()->OMSetRenderTargets(1, &nullRTV, nullptr);
 
         mRenderTarget = nullptr;
     }
@@ -826,7 +829,6 @@ namespace Ming3D::Rendering
             LOG_ERROR() << "Constant buffer does not exist: " << inName;
         }
     }
-
 
     void RenderDeviceD3D11::SetUniformCBufferData(const std::string& inName, const void* inData, size_t inSize)
     {

@@ -1,19 +1,24 @@
+#ifndef MING3D_LIGHTING_CGH
+#define MING3D_LIGHTING_CGH
+
 vec4 calcLightingPhong(vec3 normal, vec3 worldPos, vec3 eyePos, vec3 lightDir, vec3 lightCol, vec4 baseCol, vec3 specularCol, float shininess)
 {
     shininess = max(shininess, 0.0001f);
 
     vec3 n = normalize(normal);
     float ndotl = max(dot(n, lightDir * -1.0), 0.0);
-    vec3 diffuse =  ndotl * (lightCol * baseCol.xyz);
+    vec3 diffuse =  ndotl * vec3(lightCol.x * baseCol.x, lightCol.y * baseCol.y, lightCol.z * baseCol.z);
     vec3 ambient = baseCol.xyz * 0.2; // TODO
     vec3 v = normalize(eyePos - worldPos);
     vec3 r = normalize(reflect(lightCol.xyz * -1.0, n));
     float rdotv = max( dot( r, v ), 0.0 );
-    vec3 specular = pow(rdotv, shininess) * specularCol.xyz * baseCol.xyz;
-    
+    vec3 specular = pow(rdotv, shininess) * vec3(specularCol.x * baseCol.x, specularCol.y * baseCol.y, specularCol.z * baseCol.z);
+	
 #ifdef DEBUG_SPECULAR
     return vec4(specular.x, specular.y, specular.z, baseCol.a);
 #else
     return vec4(diffuse.x + ambient.x + specular.x, diffuse.y + ambient.y + specular.y, diffuse.z + ambient.z + specular.z, baseCol.a);
 #endif
 }
+
+#endif

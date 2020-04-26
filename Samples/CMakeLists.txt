@@ -34,6 +34,7 @@ include_directories ("../Networking/Source")
 include_directories ("../Rendering/Source")
 include_directories ("../Include/glm")
 include_directories ("../3rdParty/assimp/include")
+include_directories (${SDL2_INCLUDE_DIR})
 include_directories ("${BUILD_ROOT}/3rdParty/assimp/include")
 
 add_executable(Samples ${SRC_FILES})

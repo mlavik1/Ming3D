@@ -8,7 +8,8 @@ namespace Ming3D::Rendering
 {
     RenderTargetD3D11::RenderTargetD3D11()
     {
-
+		mBackBuffer = nullptr;
+		mDepthStencilView = nullptr;
     }
 
     RenderTargetD3D11::~RenderTargetD3D11()

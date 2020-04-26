@@ -407,11 +407,13 @@ namespace Ming3D::Rendering
             }
 
             // Write textures
+			int iRegister = 0;
             for (const ShaderTextureInfo textureInfo : inParsedShaderProgram->mShaderTextures)
             {
                 if (mReferencedUniforms.find(textureInfo.mTextureName) != mReferencedUniforms.end())
                 {
-                    shaderHeaderStream << GetConvertedType(textureInfo.mTextureType) << " " << textureInfo.mTextureName << ";\n";
+                    shaderHeaderStream << GetConvertedType(textureInfo.mTextureType) << " " << textureInfo.mTextureName << " : register(t" << iRegister << ");\n";
+					iRegister++;
                 }
             }
 

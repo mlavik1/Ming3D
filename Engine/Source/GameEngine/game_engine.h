@@ -13,6 +13,7 @@ namespace Ming3D
     class CameraComponent;
     class InputHandler;
     class InputManager;
+    class LightSource;
     namespace Rendering
     {
         class RenderDevice;
@@ -53,6 +54,9 @@ namespace Ming3D
 
         void AddCamera(CameraComponent* inCamera);
         void RemoveCamera(CameraComponent* inCamera);
+
+        void AddLightSource(LightSource* light);
+        void RemoveLightSource(LightSource* light);
 
         void SetWindowSize(unsigned int width, unsigned int height);
 

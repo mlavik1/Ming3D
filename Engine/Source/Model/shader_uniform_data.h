@@ -2,6 +2,7 @@
 #define MING3D_SHADERUNIFORMDATA_H
 
 #include "shader_info.h"
+#include "Debug/st_assert.h"
 #include <cstring>
 
 namespace Ming3D
@@ -36,6 +37,12 @@ namespace Ming3D
         {
             memcpy(outValue, mData, mSize);
         }
+
+		void CopyData(ShaderUniformData* other)
+		{
+			__Assert(mSize == other->mSize);
+			memcpy(mData, other->mData, mSize);
+		}
     };
 }
 

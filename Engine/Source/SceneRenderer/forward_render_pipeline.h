@@ -6,15 +6,23 @@
 namespace Ming3D
 {
     class MaterialBuffer;
+    namespace Rendering
+    {
+        class RenderTarget;
+    }
 
     class ForwardRenderPipeline : public RenderPipeline
     {
     private:
+        void SetupMainLight(const RenderPipelineContext& context);
+        void CollectVisibleObjects(const RenderPipelineContext& context, RenderPipelineParams& params);
+        void SetupNodeIndices(RenderPipelineParams& params);
+
         void UpdateUniforms(MaterialBuffer* inMat);
-        void RenderObjects(RenderPipelineParams& params);
+        void RenderObjects(RenderPipelineParams& params, ERenderType renderType, LightSource* mainLightSource);
 
     public:
-        virtual void Render(RenderPipelineParams& params) override;
+        virtual void Render(const RenderPipelineContext& context, RenderPipelineParams& params) override;
     };
 }
 

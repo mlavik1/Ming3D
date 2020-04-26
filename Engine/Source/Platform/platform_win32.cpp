@@ -95,7 +95,7 @@ namespace Ming3D
     {
 #ifdef MING3D_OPENGL
         LOG_INFO() << "Using OpenGL, version " << glGetString(GL_VERSION);
-        return new RenderDeviceGL();
+        return new Rendering::RenderDeviceGL();
 #else
         return new Rendering::RenderDeviceD3D11();
 #endif
@@ -105,7 +105,7 @@ namespace Ming3D
     {
         Rendering::WindowBase* window;
 #ifdef MING3D_OPENGL
-        window = new SDLWindow();
+        window = new Rendering::SDLWindow();
 #else
         auto wndProcCallback = [](HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) -> LRESULT
         {
