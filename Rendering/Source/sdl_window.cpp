@@ -16,6 +16,8 @@
 
 namespace Ming3D::Rendering
 {
+    SDL_GLContext SDLWindow::GSharedGLContext = nullptr;
+
     SDLWindow::SDLWindow()
     {
 
@@ -32,11 +34,21 @@ namespace Ming3D::Rendering
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
         if(mSDLWindow == nullptr)
-            mSDLWindow = SDL_CreateWindow("Ming3D", 0, 0, mWindowWidth, mWindowHeight, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
+            mSDLWindow = SDL_CreateWindow("Ming3D", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, mWindowWidth, mWindowHeight, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
 
-        mGLContext = SDL_GL_CreateContext(mSDLWindow);
+        // Re-use shared GL context (from previously created windows)
+        // We only want to use one context for all windows, since we can't share data between contexts.
+        if (GSharedGLContext == nullptr)
+        {
+            mGLContext = SDL_GL_CreateContext(mSDLWindow);
+            GSharedGLContext = mGLContext;
+        }
+        else
+        {
+            mGLContext = GSharedGLContext;
+            SDL_GL_MakeCurrent(mSDLWindow, mGLContext);
+        }
 
-        //SDL_GL_MakeCurrent(mSDLWindow, mGLContext);
         SDL_GL_SetSwapInterval(1); // vsync
     }
 
@@ -51,7 +63,8 @@ namespace Ming3D::Rendering
 
     void SDLWindow::BeginRender()
     {
-
+        SDL_UpdateWindowSurface(mSDLWindow);
+        SDL_GL_MakeCurrent(mSDLWindow, mGLContext);
     }
 
     void SDLWindow::EndRender()

@@ -16,6 +16,8 @@ namespace Ming3D::Rendering
         unsigned int mWindowWidth = 800;
         unsigned int mWindowHeight = 600;
 
+        static SDL_GLContext GSharedGLContext; // Shared GL context between all windows (TODO: remove this hack!)
+
     public:
         SDLWindow();
         SDLWindow(const void* inNativewindow);

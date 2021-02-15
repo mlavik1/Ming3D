@@ -1,4 +1,4 @@
-#if MING3D_TESTTYPE == 8
+#if MING3D_TESTTYPE == 9
 
 #include "GameEngine/game_engine.h"
 #include "World/world.h"
@@ -27,6 +27,14 @@ int main()
     camActor->GetTransform().SetWorldPosition(glm::vec3(0.0f, 2.0f, 6.0f));
     gameEngine->GetWorld()->AddActor(camActor);
 
+    RenderWindowHandle* window2 = gameEngine->CreateRenderWindow(800, 600);
+    Actor* camActor2 = new Actor();
+    CameraComponent* camComp = camActor2->AddComponent<CameraComponent>();
+    camComp->SetRenderTarget(window2);
+    camActor2->GetTransform().SetWorldPosition(glm::vec3(6.0f, 2.0f, 0.0f));
+    camActor2->GetTransform().Rotate(glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    gameEngine->GetWorld()->AddActor(camActor2);
+    
     Actor* lightActor = new Actor();
 	LightComponent* lightComp = lightActor->AddComponent<LightComponent>();
 	lightComp->SetShadowType(EShadowType::HardShadows);

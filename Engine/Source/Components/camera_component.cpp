@@ -2,6 +2,7 @@
 #include "GameEngine/game_engine.h"
 #include "glm/gtx/rotate_vector.hpp"
 #include "Actors/actor.h"
+#include "Window/render_window_handle.h"
 
 IMPLEMENT_CLASS(Ming3D::CameraComponent)
 
@@ -15,13 +16,25 @@ namespace Ming3D
     CameraComponent::CameraComponent()
     {
         mCamera = new Camera();
-        mCamera->mRenderTarget = GGameEngine->GetMainRenderTarget(); // TODO
+        mRenderWindow = GGameEngine->GetMainRenderWindow(); // TODO
     }
 
     CameraComponent::~CameraComponent()
     {
         GGameEngine->RemoveCamera(this);
         delete mCamera;
+    }
+
+    void CameraComponent::SetRenderTarget(Rendering::RenderTarget* target)
+    {
+        mRenderWindow = nullptr;
+        mCamera->mRenderTarget = target;
+    }
+
+    void CameraComponent::SetRenderTarget(RenderWindowHandle* wndHandle)
+    {
+        mRenderWindow = wndHandle;
+        mCamera->mRenderTarget = wndHandle->mRenderTarget;
     }
 
     void CameraComponent::InitialTick()
@@ -31,15 +44,11 @@ namespace Ming3D
 
     void CameraComponent::Tick(float inDeltaTime)
     {
-        /*
-        // TODO
-        glm::mat4 mat = mParent->GetTransform().GetWorldTransformMatrix();
-        glm::vec3 pos = mParent->GetTransform().GetWorldPosition();
-        glm::vec3 forward = mParent->GetTransform().GetForward();
-        glm::vec3 up = mParent->GetTransform().GetUp();
-        mCamera->mCameraMatrix = glm::lookAt(pos, pos + forward, up);
-        */
-
         mCamera->mCameraMatrix = glm::inverse(mParent->GetTransform().GetWorldTransformMatrix());
+
+        // Update Camera's render target if we're rendering to a window, in case the render target was re-created
+        // TODO: Maybe we should instead use a RenderTargetHandle, instead of storing the RenderTarget directly in the Camera?
+        if (mRenderWindow != nullptr)
+            mCamera->mRenderTarget = mRenderWindow->mRenderTarget;
     }
 }

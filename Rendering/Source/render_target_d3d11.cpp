@@ -40,6 +40,11 @@ namespace Ming3D::Rendering
         return mDepthStencilView->mDepthStencilTexture;
     }
 
+    RenderWindow* RenderTargetD3D11::GetRenderWindow()
+    {
+        return mRenderWindow;
+    }
+
 }
 #endif
 

@@ -34,5 +34,10 @@ namespace Ming3D::Rendering
     {
         return mDepthRenderBuffer;
     }
+
+    RenderWindow* RenderTargetGL::GetRenderWindow()
+    {
+        return mRenderWindow;
+    }
 }
 #endif

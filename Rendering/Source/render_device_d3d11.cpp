@@ -131,7 +131,8 @@ namespace Ming3D::Rendering
         //__Assert(inWindow->GetOSWindowHandle());
         //__Assert(GRenderDeviceD3D11->GetDXGIFactory());
         RenderTargetD3D11* renderTarget = new RenderTargetD3D11();
-        
+        renderTarget->mRenderWindow = inWindow;
+
         RenderWindowD3D11* renderWindow = (RenderWindowD3D11*)inWindow;
 
         ID3D11Texture2D* backBufferTex = renderWindow->GetBackBuffer();
@@ -142,19 +143,8 @@ namespace Ming3D::Rendering
         // set the render target as the back buffer
         GRenderDeviceD3D11->GetDeviceContext()->OMSetRenderTargets(1, &renderTarget->mBackBuffer, NULL);
 
-
-        // Set the viewport
-        D3D11_VIEWPORT viewport;
-        ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
-
-        viewport.TopLeftX = 0;
-        viewport.TopLeftY = 0;
-        viewport.MinDepth = 0;
-        viewport.MaxDepth = 1;
-		viewport.Width = (float)inWindow->GetWindow()->GetWidth();
-		viewport.Height = (float)inWindow->GetWindow()->GetHeight();
-
-        GRenderDeviceD3D11->GetDeviceContext()->RSSetViewports(1, &viewport);
+        renderTarget->mWidth = inWindow->GetWindow()->GetWidth();
+        renderTarget->mHeight = inWindow->GetWindow()->GetHeight();
 
         // create backbuffer resource view
         ID3D11ShaderResourceView* backBufferSRV;
@@ -181,6 +171,9 @@ namespace Ming3D::Rendering
     RenderTarget* RenderDeviceD3D11::CreateRenderTarget(TextureInfo inTextureInfo, int numTextures)
     {
         RenderTargetD3D11* renderTarget = new RenderTargetD3D11();
+
+        renderTarget->mWidth = inTextureInfo.mWidth;
+        renderTarget->mHeight = inTextureInfo.mHeight;
 
         for (int i = 0; i < numTextures; i++)
         {
@@ -743,10 +736,20 @@ namespace Ming3D::Rendering
 
         GRenderDeviceD3D11->GetDeviceContext()->OMSetRenderTargets(1, &mRenderTarget->mBackBuffer, mRenderTarget->mDepthStencilView->mDepthStencilView);
 
+        // Set the viewport
+        D3D11_VIEWPORT viewport;
+        ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
+        viewport.TopLeftX = 0;
+        viewport.TopLeftY = 0;
+        viewport.MinDepth = 0;
+        viewport.MaxDepth = 1;
+        viewport.Width = (float)mRenderTarget->mWidth;
+        viewport.Height = (float)mRenderTarget->mHeight;
+        GRenderDeviceD3D11->GetDeviceContext()->RSSetViewports(1, &viewport);
+
         const float clearCol[4] = { 0.0f, 0.2f, 0.4f, 1.0f };
         mDeviceContext->ClearRenderTargetView(mRenderTarget->GetBackBuffer(), clearCol);
         mDeviceContext->ClearDepthStencilView(mRenderTarget->mDepthStencilView->mDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-
     }
 
     void RenderDeviceD3D11::EndRenderTarget(RenderTarget* inTarget)

@@ -47,7 +47,7 @@ namespace Ming3D
 
                 if (meshData->mTexture != nullptr)
                 {
-                    meshData->mTextureBuffer = mRenderDevice->CreateTextureBuffer(meshData->mTexture->GetTextureInfo(), meshData->mTexture->GetTextureData());
+                    meshData->mTextureBuffer = mRenderDevice->CreateTextureBuffer(meshData->mTexture->GetTextureInfo(), meshData->mTexture->GetTextureData());  
                 }
             }
 

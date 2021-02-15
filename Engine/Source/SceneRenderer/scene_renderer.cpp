@@ -67,12 +67,23 @@ namespace Ming3D
 
     void SceneRenderer::Render()
     {
+        RenderDevice* renderDevice = GGameEngine->GetRenderDevice();
+
         LightSource* mainLight = nullptr;
         if(!mLightSources.empty())
             mainLight = mLightSources.back(); // TODO: support multiple light sources
 
         for (Camera* camera : mCameras)
         {
+            if (camera->mRenderTarget == nullptr)
+                continue;
+
+            RenderWindow* renderWindow = camera->mRenderTarget->GetRenderWindow();
+
+            // Is render target a window? => begin window rendering
+            if(renderWindow != nullptr)
+                renderDevice->BeginRenderWindow(renderWindow);
+
             RenderPipelineContext context;
             context.mScene = mRenderScene;
             context.mMainCamera = camera;
@@ -82,13 +93,17 @@ namespace Ming3D
             params->mCamera = camera;
             params->mVisibleNodes.clear();
 
-            //CollectObjects(*params);
-            //SortObjects(*params);
-
+            // Set per-camera constant buffer data
             cbDataGlobal.SetData(glm::vec3(0.0f, -1.0f, 0.0f)/* TODO */, glm::vec4(0.8f, 0.8f, 0.8f, 1.0f), camera->mCameraMatrix * glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), GGameEngine->GetTime());
             GGameEngine->GetRenderDevice()->SetConstantBufferData(mGlobalCBuffer, cbDataGlobal.mDataPtr, cbDataGlobal.mSize);
 
+            // Render using specified render pipeline
+            // TODO: To support deferred rendering, we need to allow multiple pipelines (fallback to forward pipeline for transparent geometry and GUI),
+            //  so we should instead collect renderable nodes here, and queue them for rendering with their supported pipeline.
             camera->mRenderPipeline->Render(context, *params);
+
+            if (renderWindow != nullptr)
+                renderDevice->EndRenderWindow(renderWindow);
         }
     }
 }

@@ -6,7 +6,6 @@
 
 #include "Object/function.h"
 #include "GameEngine/game_engine.h"
-
 #include "World/world.h"
 #include "Actors/actor.h"
 #include "Components/mesh_component.h"
@@ -21,10 +20,9 @@
 
 using namespace Ming3D;
 
-
 int main()
 {
-	GameEngine* gameEngine = new GameEngine();
+    GameEngine* gameEngine = new GameEngine();
 	gameEngine->Initialise();
 
     Actor* camActor = new Actor();
