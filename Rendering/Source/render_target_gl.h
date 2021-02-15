@@ -18,7 +18,7 @@ namespace Ming3D::Rendering
         std::vector<TextureBufferGL*> mColourBuffers;
         std::vector<GLenum> mAttachments;
         TextureBufferGL* mDepthRenderBuffer;
-        bool mWindowTarget = false;
+        RenderWindow* mRenderWindow = nullptr;
 
     public:
         RenderTargetGL();
@@ -29,6 +29,8 @@ namespace Ming3D::Rendering
 
         virtual TextureBuffer* GetColourTextureBuffer(int inSlot) override;
         virtual TextureBuffer* GetDepthTextureBuffer() override;
+
+        virtual RenderWindow* GetRenderWindow() override;
     };
 }
 

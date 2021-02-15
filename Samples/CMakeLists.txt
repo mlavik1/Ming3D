@@ -8,7 +8,7 @@ file(GLOB_RECURSE SRC_FILES
 )
 
 set(SampleProject "game" CACHE STRING "Type of samples")
-set_property(CACHE SampleProject PROPERTY STRINGS game sockets core rendering gamenetwork rpc replication physics)
+set_property(CACHE SampleProject PROPERTY STRINGS game sockets core rendering gamenetwork rpc replication physics multiwindow)
 
 if(SampleProject STREQUAL "core")
 	add_definitions(-DMING3D_TESTTYPE=1)
@@ -26,6 +26,8 @@ elseif(SampleProject STREQUAL "physics")
 	add_definitions(-DMING3D_TESTTYPE=7)
 elseif(SampleProject STREQUAL "game")
 	add_definitions(-DMING3D_TESTTYPE=8)
+elseif(SampleProject STREQUAL "multiwindow")
+	add_definitions(-DMING3D_TESTTYPE=9)
 endif()
 
 include_directories ("../Core/Source")

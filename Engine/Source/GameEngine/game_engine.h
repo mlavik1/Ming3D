@@ -1,6 +1,8 @@
 #ifndef MING3D_GAMEENGINE_H
 #define MING3D_GAMEENGINE_H
 
+#include <vector>
+
 namespace Ming3D
 {
 	class ClassManager;
@@ -14,6 +16,7 @@ namespace Ming3D
     class InputHandler;
     class InputManager;
     class LightSource;
+    class RenderWindowHandle;
     namespace Rendering
     {
         class RenderDevice;
@@ -23,17 +26,18 @@ namespace Ming3D
     }
 
 	class GameEngine
-	{
+    {
 	private:
 		ClassManager* mClassManager = nullptr;
         Platform* mPlatform = nullptr;
         World* mWorld = nullptr;
         TimeManager* mTimeManager = nullptr;
         Rendering::RenderDevice* mRenderDevice = nullptr;
-        Rendering::WindowBase* mWindow = nullptr;
-        Rendering::RenderWindow* mRenderWindow = nullptr;
+        Rendering::WindowBase* mMainWindow = nullptr;
+        RenderWindowHandle* mMainRenderWindow = nullptr;
+        std::vector<Rendering::WindowBase*> mWindows;
+        std::vector<RenderWindowHandle*> mRenderWindows;
         SceneRenderer* mSceneRenderer = nullptr;
-        Rendering::RenderTarget* mRenderTarget = nullptr;
         NetworkManager* mNetworkManager = nullptr;
         PhysicsManager* mPhysicsManager = nullptr;
         InputHandler* mInputHandler = nullptr;
@@ -49,7 +53,6 @@ namespace Ming3D
 		~GameEngine();
 
 		void Initialise();
-        void Start();
         void Update();
 
         void AddCamera(CameraComponent* inCamera);
@@ -58,17 +61,25 @@ namespace Ming3D
         void AddLightSource(LightSource* light);
         void RemoveLightSource(LightSource* light);
 
-        void SetWindowSize(unsigned int width, unsigned int height);
+        /* Create a new RenderWindow. */
+        RenderWindowHandle* CreateRenderWindow(unsigned int width, unsigned int height);
+
+        /* Create a RenderWindow from a window. */
+        RenderWindowHandle* CreateRenderWindow(Rendering::WindowBase* window);
+
+        /* Recreate a RenderWindow. This will not recreate the actual Window, but only the render target and swap chain. */
+        void RecreateRenderWindow(RenderWindowHandle* wndHandle);
+
+        void SetMainWindowSize(unsigned int width, unsigned int height);
 
         inline Rendering::RenderDevice* GetRenderDevice() { return mRenderDevice; }
         inline SceneRenderer* GetSceneRenderer() { return mSceneRenderer; }
-        inline Rendering::WindowBase* GetMainWindow() { return mWindow; }
-        inline Rendering::RenderWindow* GetMainRenderWindow() { return mRenderWindow; }
+        inline Rendering::WindowBase* GetMainWindow() { return mMainWindow; }
+        inline RenderWindowHandle* GetMainRenderWindow() { return mMainRenderWindow; }
         inline World* GetWorld() { return mWorld; }
         inline Platform* GetPlatform() { return mPlatform; }
         inline NetworkManager* GetNetworkManager() { return mNetworkManager; }
         inline PhysicsManager* GetPhysicsManager() { return mPhysicsManager; }
-        inline Rendering::RenderTarget* GetMainRenderTarget() { return mRenderTarget; }
         inline InputHandler* GetInputHandler() { return mInputHandler; }
         inline InputManager* GetInputManager() { return mInputManager; }
         

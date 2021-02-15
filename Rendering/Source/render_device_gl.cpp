@@ -50,7 +50,7 @@ namespace Ming3D::Rendering
         textureInfo.mHeight = inWindow->GetWindow()->GetHeight();
 
         RenderTargetGL* renderTarget = (RenderTargetGL*)CreateRenderTarget(textureInfo, 1);
-        renderTarget->mWindowTarget = true;
+        renderTarget->mRenderWindow = inWindow;
         return renderTarget;
     }
 
@@ -100,7 +100,7 @@ namespace Ming3D::Rendering
         glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture, 0);
 
-        CheckGLErrors();
+        CheckGLErrors("CreateRenderTarget");
 
         TextureBufferGL* depthBuffer = new TextureBufferGL();
         depthBuffer->SetGLTexture(depthTexture);
@@ -118,7 +118,8 @@ namespace Ming3D::Rendering
         glBufferData(GL_ARRAY_BUFFER, inVertexData->GetNumVertices() * inVertexData->GetVertexSize(), inVertexData->GetDataPtr(), GL_STATIC_DRAW);
         vertexBuffer->SetGLBuffer(vbo);
         vertexBuffer->SetVertexLayout(inVertexData->GetVertexLayout());
-        CheckGLErrors();
+
+        CheckGLErrors("CreateVertexBuffer");
         return vertexBuffer;
     }
 
@@ -131,6 +132,8 @@ namespace Ming3D::Rendering
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, inIndexData->GetNumIndices() * sizeof(unsigned int), inIndexData->GetData(), GL_STATIC_DRAW);
         indexBuffer->SetGLBuffer(ibo);
         indexBuffer->SetNumIndices(inIndexData->GetNumIndices());
+
+        CheckGLErrors("CreateIndexBuffer");
         return indexBuffer;
     }
 
@@ -194,7 +197,7 @@ namespace Ming3D::Rendering
             LOG_ERROR() << "Error linking shader program: " << std::string(infoLog);
         }
 
-        CheckGLErrors();
+        CheckGLErrors("CreateShaderProgram");
 
         ShaderProgramGL* shaderProgram = new ShaderProgramGL();
         shaderProgram->SetGLProgram(program);
@@ -240,7 +243,7 @@ namespace Ming3D::Rendering
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-        CheckGLErrors();
+        CheckGLErrors("CreateTextureBuffer");
 
         textureBuffer->SetGLTexture(glTexture);
 
@@ -302,7 +305,7 @@ namespace Ming3D::Rendering
         delete[] initialData;
         cb->mGLBuffer = ubo;
 
-        CheckGLErrors();
+        CheckGLErrors("CreateConstantBuffer");
 
         return cb;
     }
@@ -316,18 +319,23 @@ namespace Ming3D::Rendering
         glActiveTexture(GL_TEXTURE0 + inSlot);
         glBindTexture(GL_TEXTURE_2D, glTexture->GetGLTexture());
 
-        CheckGLErrors();
+        CheckGLErrors("SetTexture");
     }
 
     void RenderDeviceGL::SetActiveShaderProgram(ShaderProgram* inProgram)
     {
         ADD_FRAME_STAT_INT("SetActiveShaderProgram", 1);
 
+        if (mActiveShaderProgram == inProgram)
+            return;
+
         mActiveShaderProgram = (ShaderProgramGL*)inProgram;
         if (mActiveShaderProgram != nullptr)
         {
             glUseProgram(mActiveShaderProgram->GetGLProgram());
         }
+
+        CheckGLErrors("SetActiveShaderProgram");
     }
 
     void RenderDeviceGL::BeginRenderWindow(RenderWindow* inWindow)
@@ -367,6 +375,8 @@ namespace Ming3D::Rendering
 
         glDepthMask(GL_TRUE); // TODO: Make this adjustable
 
+        CheckGLErrors("BeginRenderTarget");
+
         SetDepthStencilState(mDefaultDepthStencilState); // TODO
     }
 
@@ -377,7 +387,7 @@ namespace Ming3D::Rendering
         RenderTargetGL* glTarget = (RenderTargetGL*)inTarget;
 
         // If rendering to window render target, blit framebuffers (from render target FBO to Window's default FBO)
-        if (glTarget->mWindowTarget)
+        if (glTarget->mRenderWindow != nullptr)
         {
             BlitRenderTarget(glTarget, mRenderWindow);
         }
@@ -395,15 +405,17 @@ namespace Ming3D::Rendering
         glDrawBuffer(GL_COLOR_ATTACHMENT0);
         glViewport(0, 0, w, h);
         glBlitFramebuffer(0, 0, w, h, 0, 0, w, h, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+        CheckGLErrors("BlitRenderTarget");
     }
 
-    void RenderDeviceGL::CheckGLErrors()
+    void RenderDeviceGL::CheckGLErrors(const char* callerName)
     {
         GLenum errCode;
         while((errCode = glGetError()) != GL_NO_ERROR)
         {
             std::string errString = (char*)glewGetErrorString(errCode);
-            LOG_ERROR() << errString;
+            LOG_ERROR() << errString << ", error code: " << errCode << ", in: " << callerName;
         }
     }
 
@@ -428,6 +440,8 @@ namespace Ming3D::Rendering
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferGL->GetGLBuffer());
         glDrawElements(GL_TRIANGLES, indexBufferGL->GetNumIndices(), GL_UNSIGNED_INT, 0);
+
+        CheckGLErrors("RenderPrimitive");
     }
 
     void RenderDeviceGL::SetRasteriserState(RasteriserState* inState)
@@ -447,6 +461,8 @@ namespace Ming3D::Rendering
             glCullFace(glRasterState->mCullMode == RasteriserStateCullMode::Front ? GL_FRONT : GL_BACK);
             glFrontFace(GL_CCW);
         }
+
+        CheckGLErrors("SetRasteriserState");
     }
 
     void RenderDeviceGL::SetDepthStencilState(DepthStencilState* inState)
@@ -457,6 +473,8 @@ namespace Ming3D::Rendering
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(glStencilState->mDepthFunc);
         glDepthRange(0.0f, 1.0f);
+
+        CheckGLErrors("SetDepthStencilState");
     }
 
     void RenderDeviceGL::SetConstantBufferData(ConstantBuffer* inConstantBuffer, void* inData, size_t inSize)
@@ -467,6 +485,8 @@ namespace Ming3D::Rendering
         GLvoid* ptr = glMapBuffer(GL_UNIFORM_BUFFER, GL_WRITE_ONLY);
         memcpy(ptr, inData, inSize);
         glUnmapBuffer(GL_UNIFORM_BUFFER);
+        
+        CheckGLErrors("SetConstantBufferData");
     }
 
     void RenderDeviceGL::BindConstantBuffer(ConstantBuffer* inConstantBuffer, const char* inName, ShaderProgram* inProgram)
@@ -478,6 +498,8 @@ namespace Ming3D::Rendering
         unsigned int block_index = glGetUniformBlockIndex(prog->GetGLProgram(), inName);
         // bind UBO to shader program
         glBindBufferBase(GL_UNIFORM_BUFFER, block_index, cb->mGLBuffer);
+
+        CheckGLErrors("BindConstantBuffer");
     }
 
     void RenderDeviceGL::SetShaderUniformFloat(const std::string& inName, float inVal)
@@ -486,6 +508,8 @@ namespace Ming3D::Rendering
 
         GLuint loc = mActiveShaderProgram->GetUniformLocation(inName);
         glUniform1f(loc, inVal);
+
+        CheckGLErrors("SetShaderUniformFloat");
     }
 
     void RenderDeviceGL::SetShaderUniformInt(const std::string& inName, int inVal)
@@ -494,6 +518,8 @@ namespace Ming3D::Rendering
 
         GLuint loc = mActiveShaderProgram->GetUniformLocation(inName);
         glUniform1i(loc, inVal);
+
+        CheckGLErrors("SetShaderUniformInt");
     }
 
     void RenderDeviceGL::SetShaderUniformMat4x4(const std::string& inName, const glm::mat4 inMat)
@@ -502,6 +528,8 @@ namespace Ming3D::Rendering
 
         GLuint loc = mActiveShaderProgram->GetUniformLocation(inName);
         glUniformMatrix4fv(loc, 1, GL_FALSE, &inMat[0][0]);
+
+        CheckGLErrors("SetShaderUniformMat4x4");
     }
 
     void RenderDeviceGL::SetShaderUniformVec2(const std::string& inName, const glm::vec2 inVec)
@@ -510,6 +538,8 @@ namespace Ming3D::Rendering
 
         GLuint loc = mActiveShaderProgram->GetUniformLocation(inName);
         glUniform2fv(loc, 1, (float*)&inVec[0]);
+
+        CheckGLErrors("SetShaderUniformVec2");
     }
 
     void RenderDeviceGL::SetShaderUniformVec3(const std::string& inName, const glm::vec3 inVec)
@@ -518,6 +548,8 @@ namespace Ming3D::Rendering
 
         GLuint loc = mActiveShaderProgram->GetUniformLocation(inName);
         glUniform3fv(loc, 1, (float*)&inVec[0]);
+
+        CheckGLErrors("SetShaderUniformVec3");
     }
 
     void RenderDeviceGL::SetShaderUniformVec4(const std::string& inName, const glm::vec4 inVec)
@@ -526,6 +558,8 @@ namespace Ming3D::Rendering
 
         GLuint loc = mActiveShaderProgram->GetUniformLocation(inName);
         glUniform4fv(loc, 1, (float*)&inVec[0]);
+
+        CheckGLErrors("SetShaderUniformVec4");
     }
 }
 #endif

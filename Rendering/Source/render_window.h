@@ -5,6 +5,8 @@
 
 namespace Ming3D::Rendering
 {
+    class RenderTarget;
+
     class RenderWindow
     {
     private:
@@ -12,7 +14,7 @@ namespace Ming3D::Rendering
 
     public:
         RenderWindow(WindowBase* inWindow);
-        virtual ~RenderWindow() {}
+        virtual ~RenderWindow();
 
         WindowBase* GetWindow() { return mWindow; }
     };

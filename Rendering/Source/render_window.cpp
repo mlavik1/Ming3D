@@ -6,4 +6,8 @@ namespace Ming3D::Rendering
     {
         mWindow = inWindow;
     }
+
+    RenderWindow::~RenderWindow()
+    {
+    }
 }

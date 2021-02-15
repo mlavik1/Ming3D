@@ -21,6 +21,9 @@ namespace Ming3D::Rendering
         ID3D11RenderTargetView* mBackBuffer;
         std::vector<TextureBuffer*> mColourBuffers;
         DepthStencilViewD3D11* mDepthStencilView;
+        RenderWindow* mRenderWindow = nullptr;
+        unsigned int mWidth;
+        unsigned int mHeight;
 
     public:
         RenderTargetD3D11();
@@ -33,6 +36,8 @@ namespace Ming3D::Rendering
 
         virtual TextureBuffer* GetColourTextureBuffer(int inSlot) override;
         virtual TextureBuffer* GetDepthTextureBuffer() override;
+
+        virtual RenderWindow* GetRenderWindow() override;
     };
 }
 

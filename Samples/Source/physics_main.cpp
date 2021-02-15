@@ -22,7 +22,6 @@ int main()
     GameEngine* gameEngine = new GameEngine();
     
     gameEngine->Initialise();
-    gameEngine->Start();
     
     Actor* camActor = new Actor();
     camActor->AddComponent<CameraComponent>();

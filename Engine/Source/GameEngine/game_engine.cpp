@@ -15,6 +15,7 @@
 #include "Input/input_handler.h"
 #include "Input/input_manager.h"
 #include "Debug/debug_stats.h"
+#include "Window/render_window_handle.h"
 
 #ifdef MING3D_PHYSX
 #include "Physics/API/PhysX/physics_manager_physx.h"
@@ -58,8 +59,8 @@ namespace Ming3D
 		delete mClassManager;
         delete mWorld;
         delete mTimeManager;
-        delete mRenderWindow;
-        delete mWindow;
+        delete mMainRenderWindow;
+        delete mMainWindow;
         delete mSceneRenderer;
         delete mNetworkManager;
         delete mPhysicsManager;
@@ -70,12 +71,11 @@ namespace Ming3D
 	{
         mClassManager->InitialiseClasses();
         mPlatform->Initialise();
-        mWindow = mPlatform->CreateOSWindow();
+        mMainWindow = mPlatform->CreateOSWindow();
         mInputHandler = mPlatform->CreateInputHandler();
         mInputManager = new InputManager();
         mRenderDevice = mPlatform->CreateRenderDevice();
-        mRenderWindow = mPlatform->CreateRenderWindow(mWindow, mRenderDevice);
-        mRenderTarget = mRenderDevice->CreateRenderTarget(mRenderWindow);
+        mMainRenderWindow = CreateRenderWindow(mMainWindow);
         mTimeManager->Initialise();
         mSceneRenderer->Initialise();
 
@@ -102,9 +102,7 @@ namespace Ming3D
 
         mNetworkManager->UpdateNetworks();
 
-        mRenderDevice->BeginRenderWindow(mRenderWindow);
         mSceneRenderer->Render();
-        mRenderDevice->EndRenderWindow(mRenderWindow);
 
         HandleDebugStats();
     }
@@ -141,23 +139,34 @@ namespace Ming3D
         mSceneRenderer->RemoveLightSource(light);
     }
 
-    void GameEngine::SetWindowSize(unsigned int width, unsigned int height)
+    RenderWindowHandle* GameEngine::CreateRenderWindow(unsigned int width, unsigned int height)
     {
-		Rendering::WindowBase* window = mRenderWindow->GetWindow();
-
-		// destroy render target and window (since resolution changed)
-		if (mRenderTarget != nullptr)
-			delete mRenderTarget;
-		if (mRenderWindow != nullptr)
-			delete mRenderWindow;
-
-		window->SetSize(width, height);
-		mRenderWindow = mRenderDevice->CreateRenderWindow(window);
-		mRenderTarget = mRenderDevice->CreateRenderTarget(mRenderWindow);
+        Rendering::WindowBase* window = mPlatform->CreateOSWindow();
+        mWindows.push_back(window);
+        return CreateRenderWindow(window);
     }
 
-    void GameEngine::Start()
+    RenderWindowHandle* GameEngine::CreateRenderWindow(Rendering::WindowBase* window)
     {
+        RenderWindowHandle* windowHandle = new RenderWindowHandle();
+        windowHandle->mRenderWindow = mPlatform->CreateRenderWindow(window, mRenderDevice);
+        windowHandle->mRenderTarget = mRenderDevice->CreateRenderTarget(windowHandle->mRenderWindow);
+        mRenderWindows.push_back(windowHandle);
+        return windowHandle;
+    }
 
+    void GameEngine::RecreateRenderWindow(RenderWindowHandle* wndHandle)
+    {
+        Rendering::WindowBase* window = wndHandle->mRenderWindow->GetWindow();
+        delete wndHandle->mRenderWindow;
+        wndHandle->mRenderWindow = mRenderDevice->CreateRenderWindow(window);
+        wndHandle->mRenderTarget = mRenderDevice->CreateRenderTarget(wndHandle->mRenderWindow);
+    }
+
+    void GameEngine::SetMainWindowSize(unsigned int width, unsigned int height)
+    {
+        Rendering::WindowBase* window = mMainRenderWindow->mRenderWindow->GetWindow();
+        window->SetSize(width, height);
+        RecreateRenderWindow(mMainRenderWindow);
     }
 }

@@ -7,6 +7,8 @@
 
 namespace Ming3D::Rendering
 {
+    class RenderWindow;
+
     /**
     * RenderTarget base class.
     * The RenderDevice will render to this.
@@ -28,6 +30,8 @@ namespace Ming3D::Rendering
         virtual TextureBuffer* GetColourTextureBuffer(int inSlot) = 0;
 
         virtual TextureBuffer* GetDepthTextureBuffer() = 0;
+
+        virtual RenderWindow* GetRenderWindow() = 0;
     };
 }
 #endif
