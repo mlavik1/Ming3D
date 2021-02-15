@@ -6,7 +6,6 @@
 namespace Ming3D
 {
     class Actor;
-    class Component;
 
     class World
     {

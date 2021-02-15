@@ -31,7 +31,6 @@ namespace Ming3D
     class GameNetwork
     {
     private:
-#define MING3D_DEFAULT_BUFLEN 512
         char mDataBuffer[MING3D_DEFAULT_BUFLEN];
 
         std::vector<IncomingMessage> mIncomingMessages;

@@ -6,11 +6,10 @@
 #include "transform.h"
 #include "Components/component_callback_types.h"
 #include <unordered_map>
+#include "Components/component.h"
 
 namespace Ming3D
 {
-    class Component;
-
     class Actor : public GameObject
     {
         DEFINE_CLASS(Ming3D::Actor, Ming3D::GameObject)
