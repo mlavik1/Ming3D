@@ -2,8 +2,9 @@
 
 namespace Ming3D::Rendering
 {
-    void VertexBuffer::SetVertexLayout(const VertexLayout& inLayout)
+    VertexBuffer::VertexBuffer(const VertexLayout& inLayout, EVertexBufferUsage usage)
     {
+        mUsage = usage;
         mVertexLayout = inLayout;
         for (const EVertexComponent& comp : mVertexLayout.VertexComponents)
         {

@@ -232,7 +232,7 @@ namespace Ming3D::Rendering
 
     VertexBuffer* RenderDeviceD3D11::CreateVertexBuffer(VertexData* inVertexData)
     {
-        VertexBufferD3D11* vertexBuffer = new VertexBufferD3D11();
+        VertexBufferD3D11* vertexBuffer = new VertexBufferD3D11(inVertexData->GetVertexLayout(), EVertexBufferUsage::DynamicDraw);
         ID3D11Buffer* vBuffer;
 
         D3D11_BUFFER_DESC vertexBufferDesc;
@@ -251,7 +251,6 @@ namespace Ming3D::Rendering
         mDeviceContext->Unmap(vBuffer, NULL);
 
         vertexBuffer->SetD3DBuffer(vBuffer);
-        vertexBuffer->SetVertexLayout(inVertexData->GetVertexLayout());
         return vertexBuffer;
     }
 

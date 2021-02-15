@@ -21,7 +21,7 @@ namespace Ming3D
 
         Mesh* mesh = PrimitiveFactory::CreateBox(boxSize);
 
-        meshBuffer->mVertexBuffer = renderDevice->CreateVertexBuffer(mesh->mVertexData);
+        meshBuffer->mVertexBuffer = renderDevice->CreateVertexBuffer(mesh->mVertexData, Rendering::EVertexBufferUsage::StaticDraw);
         meshBuffer->mIndexBuffer = renderDevice->CreateIndexBuffer(mesh->mIndexData);
 
         RenderSceneObject* renderSceneObject = new RenderSceneObject();

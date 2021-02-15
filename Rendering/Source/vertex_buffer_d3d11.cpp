@@ -3,6 +3,12 @@
 
 namespace Ming3D::Rendering
 {
+    VertexBufferD3D11::VertexBufferD3D11(const VertexLayout& inLayout, EVertexBufferUsage usage)
+    : VertexBuffer(inLayout, usage)
+    {
+
+    }
+
     VertexBufferD3D11::~VertexBufferD3D11()
     {
         if (mD3DBuffer != nullptr)
