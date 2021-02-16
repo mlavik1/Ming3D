@@ -3,6 +3,12 @@
 
 namespace Ming3D::Rendering
 {
+    VertexBufferGL::VertexBufferGL(const VertexLayout& inLayout, EVertexBufferUsage usage)
+    : VertexBuffer(inLayout, usage)
+    {
+
+    }
+
     VertexBufferGL::~VertexBufferGL()
     {
         if (mGLBuffer != -1)

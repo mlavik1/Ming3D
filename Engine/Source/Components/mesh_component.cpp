@@ -39,7 +39,7 @@ namespace Ming3D
         Rendering::VertexData* vertexData = inMesh->mVertexData;
         Rendering::IndexData* indexData(inMesh->mIndexData);
 
-        meshBuffer->mVertexBuffer = renderDevice->CreateVertexBuffer(vertexData);
+        meshBuffer->mVertexBuffer = renderDevice->CreateVertexBuffer(vertexData, Rendering::EVertexBufferUsage::StaticDraw);
         meshBuffer->mIndexBuffer = renderDevice->CreateIndexBuffer(indexData);
 
         mRenderSceneObject->mModelMatrix = mParent->GetTransform().GetWorldTransformMatrix();

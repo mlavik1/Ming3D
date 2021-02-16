@@ -230,29 +230,88 @@ namespace Ming3D::Rendering
         return renderTarget;
     }
 
-    VertexBuffer* RenderDeviceD3D11::CreateVertexBuffer(VertexData* inVertexData)
+    VertexBuffer* RenderDeviceD3D11::CreateVertexBuffer(VertexData* inVertexData, EVertexBufferUsage usage)
     {
-        VertexBufferD3D11* vertexBuffer = new VertexBufferD3D11();
+        VertexBufferD3D11* vertexBuffer = new VertexBufferD3D11(inVertexData->GetVertexLayout(), usage);
+        vertexBuffer->mDataSize = inVertexData->GetVertexSize() * inVertexData->GetNumVertices();
         ID3D11Buffer* vBuffer;
+
+        D3D11_USAGE vbUsage = usage == EVertexBufferUsage::StaticDraw ? D3D11_USAGE_DEFAULT : D3D11_USAGE_DYNAMIC;
+        UINT vbAccess = usage == EVertexBufferUsage::StaticDraw ? 0 : D3D11_CPU_ACCESS_WRITE;
 
         D3D11_BUFFER_DESC vertexBufferDesc;
         ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
-        vertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-        vertexBufferDesc.ByteWidth = inVertexData->GetVertexSize() * inVertexData->GetNumVertices();                                                                        
+        vertexBufferDesc.Usage = vbUsage;
+        vertexBufferDesc.ByteWidth = vertexBuffer->mDataSize;
         vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-        vertexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+        vertexBufferDesc.CPUAccessFlags = vbAccess;
         mDevice->CreateBuffer(&vertexBufferDesc, NULL, &vBuffer);
 
-        D3D11_MAPPED_SUBRESOURCE ms;
-        mDeviceContext->Map(vBuffer, NULL, D3D11_MAP_WRITE_DISCARD, NULL, &ms);
+        // Fill in the subresource data.
+        D3D11_SUBRESOURCE_DATA initData;
+        initData.pSysMem = inVertexData->GetDataPtr();
+        initData.SysMemPitch = 0;
+        initData.SysMemSlicePitch = 0;
 
-        memcpy(ms.pData, inVertexData->GetDataPtr(), inVertexData->GetVertexSize() * inVertexData->GetNumVertices());
-        
-        mDeviceContext->Unmap(vBuffer, NULL);
+        // Create the vertex buffer.
+        HRESULT hr = mDevice->CreateBuffer(&vertexBufferDesc, &initData, &vBuffer);
+        if (hr != S_OK)
+        {
+            LOG_ERROR() << "Failed to create vertex buffer";
+            delete vertexBuffer;
+            return nullptr;
+        }
 
         vertexBuffer->SetD3DBuffer(vBuffer);
-        vertexBuffer->SetVertexLayout(inVertexData->GetVertexLayout());
         return vertexBuffer;
+    }
+
+    void RenderDeviceD3D11::UpdateVertexBuffer(VertexBuffer* inVertexBuffer, VertexData* inVertexData)
+    {
+        VertexBufferD3D11* vertexBuffer = static_cast<VertexBufferD3D11*>(inVertexBuffer);
+        size_t newSize = inVertexData->GetVertexSize() * inVertexData->GetNumVertices();
+
+        // Dynamic vertex buffer with same size => update buffer data
+        if (inVertexBuffer->GetUsage() == EVertexBufferUsage::DynamicDraw && newSize == vertexBuffer->mDataSize)
+        {
+            ID3D11Buffer* vBuffer = vertexBuffer->GetD3DBuffer();
+
+            D3D11_MAPPED_SUBRESOURCE ms;
+            mDeviceContext->Map(vBuffer, NULL, D3D11_MAP_WRITE_DISCARD, NULL, &ms);
+            memcpy(ms.pData, inVertexData->GetDataPtr(), vertexBuffer->mDataSize);
+            mDeviceContext->Unmap(vBuffer, NULL);
+        }
+        else
+        {
+            // Delete old buffer
+            ID3D11Buffer* oldBuffer = vertexBuffer->GetD3DBuffer();
+            oldBuffer->Release();
+
+            // Create new vertex buffer
+            D3D11_USAGE vbUsage = vertexBuffer->GetUsage() == EVertexBufferUsage::StaticDraw ? D3D11_USAGE_DEFAULT : D3D11_USAGE_DYNAMIC;
+            UINT vbAccess = vertexBuffer->GetUsage() == EVertexBufferUsage::StaticDraw ? 0 : D3D11_CPU_ACCESS_WRITE;
+            ID3D11Buffer* vBuffer;
+            D3D11_BUFFER_DESC vertexBufferDesc;
+            ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
+            vertexBufferDesc.Usage = vbUsage;
+            vertexBufferDesc.ByteWidth = vertexBuffer->mDataSize;
+            vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+            vertexBufferDesc.CPUAccessFlags = vbAccess;
+            mDevice->CreateBuffer(&vertexBufferDesc, NULL, &vBuffer);
+
+            D3D11_SUBRESOURCE_DATA initData;
+            initData.pSysMem = inVertexData->GetDataPtr();
+            initData.SysMemPitch = 0;
+            initData.SysMemSlicePitch = 0;
+
+            HRESULT hr = mDevice->CreateBuffer(&vertexBufferDesc, &initData, &vBuffer);
+            if (hr != S_OK)
+            {
+                LOG_ERROR() << "Failed to create vertex buffer";
+            }
+
+            vertexBuffer->SetD3DBuffer(vBuffer);
+        }
     }
 
     IndexBuffer* RenderDeviceD3D11::CreateIndexBuffer(IndexData* inIndexData)

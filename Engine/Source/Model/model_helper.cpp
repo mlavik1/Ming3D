@@ -177,5 +177,7 @@ namespace Ming3D
             Material* material = meshData->mMaterialIndex >= 0 ? materials[meshData->mMaterialIndex] : nullptr;
             meshComp->SetMaterial(material);
         }
+
+        return true;
     }
 }

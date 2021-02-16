@@ -13,10 +13,13 @@ namespace Ming3D::Rendering
         GLuint mGLBuffer = -1;
 
     public:
+        VertexBufferGL(const VertexLayout& inLayout, EVertexBufferUsage usage);
         virtual ~VertexBufferGL();
 
         void SetGLBuffer(GLuint inBuffer);
         GLuint GetGLBuffer();
+
+        size_t mDataSize = 0;
     };
 }
 
