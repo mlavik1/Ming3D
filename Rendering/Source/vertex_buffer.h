@@ -25,8 +25,8 @@ namespace Ming3D::Rendering
     {
     private:
         VertexLayout mVertexLayout;
-        size_t mVertexSize;
-        EVertexBufferUsage mUsage;
+        size_t mVertexSize = 0;
+        EVertexBufferUsage mUsage = EVertexBufferUsage::StaticDraw;
 
     public:
         VertexBuffer(const VertexLayout& inLayout, EVertexBufferUsage usage);

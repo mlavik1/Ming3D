@@ -426,8 +426,6 @@ namespace Ming3D::Rendering
         const int h = inTargetWindow->GetWindow()->GetHeight();
         glBindFramebuffer(GL_READ_FRAMEBUFFER, inSourceTarget->mFrameBufferID);
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-        glReadBuffer(GL_COLOR_ATTACHMENT0);
-        glDrawBuffer(GL_COLOR_ATTACHMENT0);
         glViewport(0, 0, w, h);
         glBlitFramebuffer(0, 0, w, h, 0, 0, w, h, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 

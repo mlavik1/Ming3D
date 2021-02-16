@@ -14,7 +14,6 @@ namespace Ming3D::Rendering
         if (mD3DBuffer != nullptr)
         {
             mD3DBuffer->Release();
-            delete mD3DBuffer;
         }
     }
 

@@ -18,6 +18,8 @@ namespace Ming3D::Rendering
         
         void SetD3DBuffer(ID3D11Buffer* inBuffer);
         ID3D11Buffer* GetD3DBuffer();
+
+        size_t mDataSize = 0;
     };
 }
 
