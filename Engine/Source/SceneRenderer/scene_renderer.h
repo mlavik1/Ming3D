@@ -14,6 +14,8 @@ namespace Ming3D
         class ConstantBuffer;
     }
 
+    class MaterialBuffer;
+
     class SceneRenderer
     {
     private:
@@ -21,8 +23,8 @@ namespace Ming3D
         std::list<Camera*> mCameras;
         std::list<LightSource*> mLightSources;
         Rendering::ConstantBuffer* mGlobalCBuffer;
-
-        void UpdateUniforms(MaterialBuffer* inMat);
+        RenderPipeline* mFallbackPipeline;
+        RenderPipelineParams mPipelineParams;
 
     public:
         SceneRenderer();
@@ -34,12 +36,12 @@ namespace Ming3D
         void RemoveCamera(Camera* inCamera);
         void AddLightSource(LightSource* light);
         void RemoveLightSource(LightSource* light);
-        void AddSceneObject(RenderSceneObject* inObject);
+        void AddSceneObject(RenderObject* inObject);
         void RegisterMaterial(MaterialBuffer* inMat);
 
+        void CollectVisibleObjects(const RenderPipelineContext& context, RenderPipeline* renderPipeline, RenderPipelineParams& params);
+
         void Render();
-        void RenderCameras();
-        void RenderObjects(Camera* camera);
     };
 }
 

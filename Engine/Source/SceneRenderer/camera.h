@@ -23,7 +23,6 @@ namespace Ming3D
         glm::mat4 mProjectionMatrix;
         Rendering::RenderTarget* mRenderTarget = nullptr;
         RenderPipeline* mRenderPipeline;
-        RenderPipelineParams* mRenderPipelineParams = nullptr;
     };
 }
 

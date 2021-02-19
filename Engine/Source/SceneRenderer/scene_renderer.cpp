@@ -1,6 +1,7 @@
 #include "scene_renderer.h"
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtx/norm.hpp"
 #include "window_base.h"
 #include "GameEngine/game_engine.h"
 #include "render_device.h"
@@ -10,6 +11,7 @@
 #include "forward_render_pipeline.h"
 #include <algorithm>
 #include "constant_buffer_data.h"
+#include "Model/material_buffer.h"
 
 namespace Ming3D
 {
@@ -20,6 +22,7 @@ namespace Ming3D
     SceneRenderer::SceneRenderer()
     {
         mRenderScene = new RenderScene();
+        mFallbackPipeline = new ForwardRenderPipeline();
     }
 
     SceneRenderer::~SceneRenderer()
@@ -53,7 +56,7 @@ namespace Ming3D
         mLightSources.remove(light);
     }
 
-    void SceneRenderer::AddSceneObject(RenderSceneObject* inObject)
+    void SceneRenderer::AddSceneObject(RenderObject* inObject)
     {
         mRenderScene->mSceneObjects.push_back(inObject);
     }
@@ -63,6 +66,41 @@ namespace Ming3D
         // Set _Globals, if present (shaders need not use this)
         if(inMat->mConstantBuffers.find("_Globals") != inMat->mConstantBuffers.end())
             GGameEngine->GetRenderDevice()->BindConstantBuffer(mGlobalCBuffer, "_Globals", inMat->mShaderProgram);
+    }
+
+    void SceneRenderer::CollectVisibleObjects(const RenderPipelineContext& context, RenderPipeline* renderPipeline, RenderPipelineParams& params)
+    {
+        glm::vec3 camPos = glm::inverse(context.mMainCamera->mCameraMatrix) * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+
+        int iMainNode = 0;
+        int iFallbackNode = 0;
+
+        // Add batches from RenderObjects
+        for (RenderObject* obj : context.mScene->mSceneObjects)
+        {
+            int numBatches = obj->GetNumBatches();
+
+            // Bet batches of RenderObject
+            for (int iBatch = 0; iBatch < numBatches; iBatch++)
+            {
+                // TODO: view frustum culling
+
+                RenderPipelineNode* node = nullptr;
+
+                node = params.mVisibleNodes.push_back();
+                if (obj->GetRenderType() == ERenderType::Opaque)
+                    params.mOpaqueNodeIndices.push_back(iMainNode++);
+                else
+                    params.mTransparentNodeIndices.push_back(iMainNode++);
+
+                // Get batch
+                obj->GetRenderBatch(iBatch, &node->mRenderBatch);
+                node->mRenderOrderOffset = iBatch; // will ensure that transparent batches are rendered in order
+
+                node->mRenderType = obj->GetRenderType();
+                node->mSquareDistance = glm::length2(glm::vec3(obj->GetWorldPosition()) - camPos);
+            }
+        }
     }
 
     void SceneRenderer::Render()
@@ -89,18 +127,20 @@ namespace Ming3D
             context.mMainCamera = camera;
             context.mMainLight = mainLight;
 
-            RenderPipelineParams* params = camera->mRenderPipelineParams;
-            params->mCamera = camera;
-            params->mVisibleNodes.clear();
+            // Setup parameters for render pipeline
+            mPipelineParams.mVisibleNodes.clear();
+            mPipelineParams.mOpaqueNodeIndices.clear();
+            mPipelineParams.mTransparentNodeIndices.clear();
+
+            // Collect renderable objects in the scene
+            CollectVisibleObjects(context, camera->mRenderPipeline, mPipelineParams);
 
             // Set per-camera constant buffer data
             cbDataGlobal.SetData(glm::vec3(0.0f, -1.0f, 0.0f)/* TODO */, glm::vec4(0.8f, 0.8f, 0.8f, 1.0f), camera->mCameraMatrix * glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), GGameEngine->GetTime());
             GGameEngine->GetRenderDevice()->SetConstantBufferData(mGlobalCBuffer, cbDataGlobal.mDataPtr, cbDataGlobal.mSize);
 
             // Render using specified render pipeline
-            // TODO: To support deferred rendering, we need to allow multiple pipelines (fallback to forward pipeline for transparent geometry and GUI),
-            //  so we should instead collect renderable nodes here, and queue them for rendering with their supported pipeline.
-            camera->mRenderPipeline->Render(context, *params);
+            camera->mRenderPipeline->Render(context, mPipelineParams);
 
             if (renderWindow != nullptr)
                 renderDevice->EndRenderWindow(renderWindow);

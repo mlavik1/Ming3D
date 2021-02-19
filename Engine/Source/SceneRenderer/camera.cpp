@@ -10,13 +10,11 @@ namespace Ming3D
 {
     Camera::Camera()
     {
-        mRenderPipelineParams = new RenderPipelineParams();
         mRenderPipeline = new ForwardRenderPipeline(); // TODO: make adjustable
     }
 
     Camera::~Camera()
     {
-        delete mRenderPipelineParams;
         delete mRenderPipeline;
     }
 }

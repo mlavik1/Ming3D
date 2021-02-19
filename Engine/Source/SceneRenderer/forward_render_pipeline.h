@@ -14,12 +14,13 @@ namespace Ming3D
     class ForwardRenderPipeline : public RenderPipeline
     {
     private:
+        // TODO: Move to base class
         void SetupMainLight(const RenderPipelineContext& context);
-        void CollectVisibleObjects(const RenderPipelineContext& context, RenderPipelineParams& params);
-        void SetupNodeIndices(RenderPipelineParams& params);
+        void SortNodeIndices(RenderPipelineParams& params);
 
+        // TODO: Move to base class
         void UpdateUniforms(MaterialBuffer* inMat);
-        void RenderObjects(RenderPipelineParams& params, ERenderType renderType, LightSource* mainLightSource);
+        void RenderObjects(RenderPipelineParams& params, ERenderType renderType, Camera* camera, LightSource* mainLightSource, bool shadowPass = false);
 
     public:
         virtual void Render(const RenderPipelineContext& context, RenderPipelineParams& params) override;

@@ -4,7 +4,7 @@
 #include "component.h"
 #include "Model/material.h"
 #include "Model/mesh.h"
-#include "SceneRenderer/render_scene_object.h"
+#include "SceneRenderer/mesh_render_object.h"
 
 namespace Ming3D
 {
@@ -17,7 +17,7 @@ namespace Ming3D
 
         Mesh* mMesh = nullptr;
         Material* mMaterial = nullptr;
-        RenderSceneObject* mRenderSceneObject = nullptr;
+        MeshRenderObject* mRenderObject = nullptr;
 
     public:
         MeshComponent();

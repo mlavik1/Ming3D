@@ -152,7 +152,7 @@ namespace Ming3D
 
 	void Material::SetRenderType(ERenderType renderType)
 	{
-		// TODO: Queue render trhead command
+		// TODO: Queue render thread command
 		mMaterialBuffer->mRenderType = renderType;
 	}
 
