@@ -1,0 +1,43 @@
+uniform mat4 MVP;
+
+Texture2D mainTexture;
+
+// Vertex shader input
+struct VSInput
+{
+    vec4 Position : POSITION;
+    vec4 Colour : COLOR;
+    vec2 TexCoord : TEXCOORD;
+}
+
+// Fragment shader input
+struct FSInput
+{
+    vec4 Position : SV_POSITION;
+    vec4 Colour : COLOR;
+    vec2 TexCoord : TEXCOORD;
+}
+
+// Vertex shader
+shader VertexShader
+{
+    void main(VSInput input, FSInput output)
+    {
+        output.Position = MVP * input.Position;
+        output.Colour = input.Colour;
+        output.TexCoord = input.TexCoord;
+    }
+}
+
+// Fragment shader
+shader FragmentShader
+{
+    void main(FSInput input)
+    {
+        vec4 col = input.Colour;
+
+        //sVec4 col = ReadTexture(mainTexture, input.TexCoord) * input.Colour;
+
+        SetFragmentColour(col);
+    }
+}

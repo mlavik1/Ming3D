@@ -12,5 +12,7 @@ namespace Ming3D
         MeshBuffer* mMeshBuffer;
         glm::mat4 mModelMatrix;
         MaterialBuffer* mMaterial = nullptr;
+        unsigned int mStartIndex;
+        unsigned int mNumIndices;
     };
 }

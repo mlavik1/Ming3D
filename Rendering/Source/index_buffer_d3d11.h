@@ -13,6 +13,8 @@ namespace Ming3D::Rendering
         ID3D11Buffer *mD3DBuffer;
 
     public:
+        IndexBufferD3D11(EBufferUsage usage);
+        virtual ~IndexBufferD3D11();
         void SetD3DBuffer(ID3D11Buffer* inBuffer);
         ID3D11Buffer* GetD3DBuffer();
     };

@@ -1,0 +1,21 @@
+#include "image_widget.h"
+#include "image_visual.h"
+
+namespace Ming3D
+{
+    ImageWidget::ImageWidget()
+    {
+        mImageVisual = new ImageVisual();
+        mVisuals.push_back(mImageVisual);
+    }
+
+    ImageWidget::~ImageWidget()
+    {
+
+    }
+
+    void ImageWidget::SetColour(glm::vec4 colour)
+    {
+        mImageVisual->SetColour(colour);
+    }
+}

@@ -230,14 +230,14 @@ namespace Ming3D::Rendering
         return renderTarget;
     }
 
-    VertexBuffer* RenderDeviceD3D11::CreateVertexBuffer(VertexData* inVertexData, EVertexBufferUsage usage)
+    VertexBuffer* RenderDeviceD3D11::CreateVertexBuffer(VertexData* inVertexData, EBufferUsage usage)
     {
         VertexBufferD3D11* vertexBuffer = new VertexBufferD3D11(inVertexData->GetVertexLayout(), usage);
         vertexBuffer->mDataSize = inVertexData->GetVertexSize() * inVertexData->GetNumVertices();
         ID3D11Buffer* vBuffer;
 
-        D3D11_USAGE vbUsage = usage == EVertexBufferUsage::StaticDraw ? D3D11_USAGE_DEFAULT : D3D11_USAGE_DYNAMIC;
-        UINT vbAccess = usage == EVertexBufferUsage::StaticDraw ? 0 : D3D11_CPU_ACCESS_WRITE;
+        D3D11_USAGE vbUsage = usage == EBufferUsage::StaticDraw ? D3D11_USAGE_DEFAULT : D3D11_USAGE_DYNAMIC;
+        UINT vbAccess = usage == EBufferUsage::StaticDraw ? 0 : D3D11_CPU_ACCESS_WRITE;
 
         D3D11_BUFFER_DESC vertexBufferDesc;
         ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
@@ -272,7 +272,7 @@ namespace Ming3D::Rendering
         size_t newSize = inVertexData->GetVertexSize() * inVertexData->GetNumVertices();
 
         // Dynamic vertex buffer with same size => update buffer data
-        if (inVertexBuffer->GetUsage() == EVertexBufferUsage::DynamicDraw && newSize == vertexBuffer->mDataSize)
+        if (inVertexBuffer->GetUsage() == EBufferUsage::DynamicDraw && newSize == vertexBuffer->mDataSize)
         {
             ID3D11Buffer* vBuffer = vertexBuffer->GetD3DBuffer();
 
@@ -288,8 +288,8 @@ namespace Ming3D::Rendering
             oldBuffer->Release();
 
             // Create new vertex buffer
-            D3D11_USAGE vbUsage = vertexBuffer->GetUsage() == EVertexBufferUsage::StaticDraw ? D3D11_USAGE_DEFAULT : D3D11_USAGE_DYNAMIC;
-            UINT vbAccess = vertexBuffer->GetUsage() == EVertexBufferUsage::StaticDraw ? 0 : D3D11_CPU_ACCESS_WRITE;
+            D3D11_USAGE vbUsage = vertexBuffer->GetUsage() == EBufferUsage::StaticDraw ? D3D11_USAGE_DEFAULT : D3D11_USAGE_DYNAMIC;
+            UINT vbAccess = vertexBuffer->GetUsage() == EBufferUsage::StaticDraw ? 0 : D3D11_CPU_ACCESS_WRITE;
             ID3D11Buffer* vBuffer;
             D3D11_BUFFER_DESC vertexBufferDesc;
             ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
@@ -314,17 +314,20 @@ namespace Ming3D::Rendering
         }
     }
 
-    IndexBuffer* RenderDeviceD3D11::CreateIndexBuffer(IndexData* inIndexData)
+    IndexBuffer* RenderDeviceD3D11::CreateIndexBuffer(IndexData* inIndexData, EBufferUsage usage)
     {
-        IndexBufferD3D11* indexBuffer = new IndexBufferD3D11();
+        IndexBufferD3D11* indexBuffer = new IndexBufferD3D11(usage);
         ID3D11Buffer* iBuffer;
+
+        D3D11_USAGE ibUsage = usage == EBufferUsage::StaticDraw ? D3D11_USAGE_DEFAULT : D3D11_USAGE_DYNAMIC;
+        UINT ibAccess = usage == EBufferUsage::StaticDraw ? 0 : D3D11_CPU_ACCESS_WRITE;
 
         D3D11_BUFFER_DESC indexBufferDesc;
         
-        indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+        indexBufferDesc.Usage = ibUsage;
         indexBufferDesc.ByteWidth = sizeof(unsigned long) * inIndexData->GetNumIndices();
         indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-        indexBufferDesc.CPUAccessFlags = 0;
+        indexBufferDesc.CPUAccessFlags = ibAccess;
         indexBufferDesc.MiscFlags = 0;
         indexBufferDesc.StructureByteStride = 0;
 
@@ -343,6 +346,56 @@ namespace Ming3D::Rendering
         indexBuffer->SetD3DBuffer(iBuffer);
         indexBuffer->SetNumIndices(inIndexData->GetNumIndices());
         return indexBuffer;
+    }
+
+    void RenderDeviceD3D11::UpdateIndexBuffer(IndexBuffer* inIndexBuffer, IndexData* inIndexData)
+    {
+        IndexBufferD3D11* indexBuffer = static_cast<IndexBufferD3D11*>(inIndexBuffer);
+        size_t oldSize = sizeof(unsigned long) * inIndexBuffer->GetNumIndices();
+        size_t newSize = sizeof(unsigned long) * inIndexData->GetNumIndices();
+
+        // Dynamic vertex buffer with same size => update buffer data
+        if (inIndexBuffer->GetUsage() == EBufferUsage::DynamicDraw && newSize == oldSize)
+        {
+            ID3D11Buffer* buffer = indexBuffer->GetD3DBuffer();
+
+            D3D11_MAPPED_SUBRESOURCE ms;
+            mDeviceContext->Map(buffer, NULL, D3D11_MAP_WRITE_DISCARD, NULL, &ms);
+            memcpy(ms.pData, inIndexData->GetData(), newSize);
+            mDeviceContext->Unmap(buffer, NULL);
+        }
+        else
+        {
+            // Delete old buffer
+            ID3D11Buffer* oldBuffer = indexBuffer->GetD3DBuffer();
+            oldBuffer->Release();
+
+            // Create new index buffer
+            D3D11_USAGE ibUsage = inIndexBuffer->GetUsage() == EBufferUsage::StaticDraw ? D3D11_USAGE_DEFAULT : D3D11_USAGE_DYNAMIC;
+            UINT ibAccess = inIndexBuffer->GetUsage() == EBufferUsage::StaticDraw ? 0 : D3D11_CPU_ACCESS_WRITE;
+            ID3D11Buffer* buffer;
+            D3D11_BUFFER_DESC indexBufferDesc;
+            ZeroMemory(&indexBufferDesc, sizeof(indexBufferDesc));
+            indexBufferDesc.Usage = ibUsage;
+            indexBufferDesc.ByteWidth = newSize;
+            indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+            indexBufferDesc.CPUAccessFlags = ibAccess;
+            mDevice->CreateBuffer(&indexBufferDesc, NULL, &buffer);
+
+            D3D11_SUBRESOURCE_DATA initData;
+            initData.pSysMem = inIndexData->GetData();
+            initData.SysMemPitch = 0;
+            initData.SysMemSlicePitch = 0;
+
+            HRESULT hr = mDevice->CreateBuffer(&indexBufferDesc, &initData, &buffer);
+            if (hr != S_OK)
+            {
+                LOG_ERROR() << "Failed to create index buffer";
+            }
+
+            indexBuffer->SetNumIndices(inIndexData->GetNumIndices());
+            indexBuffer->SetD3DBuffer(buffer);
+        }
     }
 
     ShaderProgram* RenderDeviceD3D11::CreateShaderProgram(ParsedShaderProgram* parsedProgram)
@@ -823,7 +876,7 @@ namespace Ming3D::Rendering
         mRenderTarget = nullptr;
     }
 
-    void RenderDeviceD3D11::RenderPrimitive(VertexBuffer* inVertexBuffer, IndexBuffer* inIndexBuffer)
+    void RenderDeviceD3D11::RenderPrimitive(VertexBuffer* inVertexBuffer, IndexBuffer* inIndexBuffer, unsigned int startIndex, unsigned int indexCount)
     {
         ADD_FRAME_STAT_INT("RenderPrimitive", 1);
         
@@ -841,7 +894,7 @@ namespace Ming3D::Rendering
         
         mDeviceContext->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
         
-        mDeviceContext->DrawIndexed(inIndexBuffer->GetNumIndices(), 0, 0);
+        mDeviceContext->DrawIndexed(indexCount, startIndex, 0);
     }
 
     void RenderDeviceD3D11::SetRasteriserState(RasteriserState* inState)

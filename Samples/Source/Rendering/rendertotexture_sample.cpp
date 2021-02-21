@@ -42,7 +42,7 @@ namespace Ming3D
                 memcpy(vertexData.GetDataPtr(), meshData->mVertices.data(), meshData->mVertices.size() * sizeof(Vertex));
                 memcpy(indexData.GetData(), meshData->mIndices.data(), meshData->mIndices.size() * sizeof(unsigned int));
 
-                meshData->mVertexBuffer = mRenderDevice->CreateVertexBuffer(&vertexData, Rendering::EVertexBufferUsage::StaticDraw);
+                meshData->mVertexBuffer = mRenderDevice->CreateVertexBuffer(&vertexData, Rendering::EBufferUsage::StaticDraw);
                 meshData->mIndexBuffer = mRenderDevice->CreateIndexBuffer(&indexData);
 
                 if (meshData->mTexture != nullptr)

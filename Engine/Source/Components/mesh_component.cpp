@@ -19,6 +19,11 @@ namespace Ming3D
         GGameEngine->GetSceneRenderer()->AddSceneObject(mRenderObject);
     }
 
+    MeshComponent::~MeshComponent()
+    {
+        delete mRenderObject;
+    }
+
     void MeshComponent::InitialiseClass()
     {
 

@@ -2,20 +2,10 @@
 #define MING3D_VERTEX_BUFFER_H
 
 #include "graphics_data.h"
+#include "buffer_common.h"
 
 namespace Ming3D::Rendering
 {
-    /**
-     * Enum specifying how a vertex buffer will be used.
-     */
-    enum class EVertexBufferUsage
-    {
-        /* Static: Cannot be updated after initialisation. */
-        StaticDraw,
-        /* Dynamic: Can be updated at runtime. */
-        DynamicDraw
-    };
-
     /**
     * Vertex buffer base class.
     * There will be one sub-class for each rendering API.
@@ -26,15 +16,15 @@ namespace Ming3D::Rendering
     private:
         VertexLayout mVertexLayout;
         size_t mVertexSize = 0;
-        EVertexBufferUsage mUsage = EVertexBufferUsage::StaticDraw;
+        EBufferUsage mUsage = EBufferUsage::StaticDraw;
 
     public:
-        VertexBuffer(const VertexLayout& inLayout, EVertexBufferUsage usage);
+        VertexBuffer(const VertexLayout& inLayout, EBufferUsage usage);
         virtual ~VertexBuffer() {}
 
         const VertexLayout& GetVertexLayout() { return mVertexLayout; }
         size_t GetVertexSize() { return mVertexSize; }
-        EVertexBufferUsage GetUsage() { return mUsage; }
+        EBufferUsage GetUsage() { return mUsage; }
     };
 }
 

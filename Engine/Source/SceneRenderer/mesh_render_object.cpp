@@ -22,8 +22,8 @@ namespace Ming3D
         if (mMeshBuffer->mIndexBuffer != nullptr)
             delete mMeshBuffer->mIndexBuffer;
 
-        mMeshBuffer->mVertexBuffer = renderDevice->CreateVertexBuffer(mesh->mVertexData, Rendering::EVertexBufferUsage::StaticDraw);
-        mMeshBuffer->mIndexBuffer = renderDevice->CreateIndexBuffer(mesh->mIndexData);
+        mMeshBuffer->mVertexBuffer = renderDevice->CreateVertexBuffer(mesh->mVertexData, Rendering::EBufferUsage::StaticDraw);
+        mMeshBuffer->mIndexBuffer = renderDevice->CreateIndexBuffer(mesh->mIndexData, Rendering::EBufferUsage::StaticDraw);
     }
 
     void MeshRenderObject::SetMaterial(Material* material)
@@ -46,6 +46,8 @@ namespace Ming3D
         outBatch->mMeshBuffer = mMeshBuffer;
         outBatch->mMaterial = mMaterialBuffer;
         outBatch->mModelMatrix = mModelMatrix;
+        outBatch->mStartIndex = 0;
+        outBatch->mNumIndices = mMeshBuffer->mIndexBuffer->GetNumIndices();
     }
 
     ERenderType MeshRenderObject::GetRenderType()

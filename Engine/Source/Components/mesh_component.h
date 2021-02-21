@@ -21,6 +21,7 @@ namespace Ming3D
 
     public:
         MeshComponent();
+        ~MeshComponent();
         virtual void InitialiseComponent();
         void SetMesh(Mesh* inMesh);
         void SetMaterial(Material* inMat);

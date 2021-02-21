@@ -11,8 +11,11 @@ namespace Ming3D::Rendering
     {
     private:
         GLuint mGLBuffer;
+        bool mAssigned = false;
 
     public:
+        IndexBufferGL(EBufferUsage usage);
+        ~IndexBufferGL();
         void SetGLBuffer(GLuint inBuffer);
         GLuint GetGLBuffer();
     };

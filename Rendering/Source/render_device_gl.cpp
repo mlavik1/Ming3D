@@ -109,11 +109,11 @@ namespace Ming3D::Rendering
         return renderTarget;
     }
 
-    VertexBuffer* RenderDeviceGL::CreateVertexBuffer(VertexData* inVertexData, EVertexBufferUsage usage)
+    VertexBuffer* RenderDeviceGL::CreateVertexBuffer(VertexData* inVertexData, EBufferUsage usage)
     {
         VertexBufferGL* vertexBuffer = new VertexBufferGL(inVertexData->GetVertexLayout(), usage);
         vertexBuffer->mDataSize = inVertexData->GetNumVertices() * inVertexData->GetVertexSize();
-        GLenum usageGL = usage == EVertexBufferUsage::StaticDraw ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW;
+        GLenum usageGL = usage == EBufferUsage::StaticDraw ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW;
         GLuint vbo;
         glGenBuffers(1, &vbo);
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -129,7 +129,7 @@ namespace Ming3D::Rendering
         VertexBufferGL* vertexBuffer = static_cast<VertexBufferGL*>(inVertexBuffer);
         size_t newSize = inVertexData->GetNumVertices() * inVertexData->GetVertexSize();
         // Same size + dynamic buffer => update buffer data
-        if(vertexBuffer->GetUsage() == EVertexBufferUsage::DynamicDraw && newSize == vertexBuffer->mDataSize)
+        if(vertexBuffer->GetUsage() == EBufferUsage::DynamicDraw && newSize == vertexBuffer->mDataSize)
         {
             glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer->GetGLBuffer());
             void* dataPtr = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
@@ -142,24 +142,56 @@ namespace Ming3D::Rendering
             LOG_WARNING() << "Recreating vertex buffer. This can be expesnive."
                 << "Please consider setting it to dynamic, and call UpdateVertexBuffer with vertex data of same size";
             vertexBuffer->mDataSize = newSize;
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vertexBuffer->GetGLBuffer());
             glBufferData(GL_ARRAY_BUFFER, vertexBuffer->mDataSize, inVertexData->GetDataPtr(), GL_DYNAMIC_DRAW);
         }
 
         CheckGLErrors("UpdateVertexBuffer");
     }
 
-    IndexBuffer* RenderDeviceGL::CreateIndexBuffer(IndexData* inIndexData)
+    IndexBuffer* RenderDeviceGL::CreateIndexBuffer(IndexData* inIndexData, EBufferUsage usage)
     {
-        IndexBufferGL* indexBuffer = new IndexBufferGL();
+        IndexBufferGL* indexBuffer = new IndexBufferGL(usage);
+        GLenum usageGL = usage == EBufferUsage::StaticDraw ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW;
         GLuint ibo;
         glGenBuffers(1, &ibo);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, inIndexData->GetNumIndices() * sizeof(unsigned int), inIndexData->GetData(), GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, inIndexData->GetNumIndices() * sizeof(unsigned int), inIndexData->GetData(), usageGL);
         indexBuffer->SetGLBuffer(ibo);
         indexBuffer->SetNumIndices(inIndexData->GetNumIndices());
 
         CheckGLErrors("CreateIndexBuffer");
         return indexBuffer;
+    }
+
+    void RenderDeviceGL::UpdateIndexBuffer(IndexBuffer* inIndexBuffer, IndexData* inIndexData)
+    {
+        IndexBufferGL* indexBuffer = static_cast<IndexBufferGL*>(inIndexBuffer);
+        size_t oldSize = indexBuffer->GetNumIndices() * sizeof(unsigned int);
+        size_t newSize = inIndexData->GetNumIndices() * sizeof(unsigned int);
+        // Same size + dynamic buffer => update buffer data
+        if (inIndexBuffer->GetUsage() == EBufferUsage::DynamicDraw && newSize == oldSize)
+        {
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer->GetGLBuffer());
+            void* dataPtr = glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY);
+            memcpy(dataPtr, inIndexData->GetData(), newSize);
+            glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
+        }
+        // Else => recreate buffer (expensive!)
+        else
+        {
+            if(inIndexBuffer->GetUsage() != EBufferUsage::DynamicDraw)
+            {
+                LOG_WARNING() << "Recreating index buffer. This can be expesnive."
+                    << "Please consider setting it to dynamic, and call UpdateVertexBuffer with vertex data of same size";
+            }
+
+            indexBuffer->SetNumIndices(inIndexData->GetNumIndices());
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer->GetGLBuffer());
+            glBufferData(GL_ARRAY_BUFFER, newSize, inIndexData->GetData(), GL_DYNAMIC_DRAW);
+        }
+
+        CheckGLErrors("UpdateVertexBuffer");
     }
 
     ShaderProgram* RenderDeviceGL::CreateShaderProgram(ParsedShaderProgram* parsedProgram)
@@ -442,7 +474,7 @@ namespace Ming3D::Rendering
         }
     }
 
-    void RenderDeviceGL::RenderPrimitive(VertexBuffer* inVertexBuffer, IndexBuffer* inIndexBuffer)
+    void RenderDeviceGL::RenderPrimitive(VertexBuffer* inVertexBuffer, IndexBuffer* inIndexBuffer, unsigned int startIndex, unsigned int indexCount)
     {
         ADD_FRAME_STAT_INT("RenderPrimitive", 1);
 
@@ -462,7 +494,7 @@ namespace Ming3D::Rendering
         }
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferGL->GetGLBuffer());
-        glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indexBufferGL->GetNumIndices()), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, (char*)nullptr + startIndex * sizeof(unsigned int) /* HANDLE 16 bit index buffer */);
 
         CheckGLErrors("RenderPrimitive");
     }

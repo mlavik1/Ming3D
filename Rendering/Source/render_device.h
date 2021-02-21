@@ -33,9 +33,10 @@ namespace Ming3D::Rendering
 
         virtual RenderTarget* CreateRenderTarget(RenderWindow* inWindow) = 0;
         virtual RenderTarget* CreateRenderTarget(TextureInfo inTextureInfo, int numTextures) = 0;
-        virtual VertexBuffer* CreateVertexBuffer(VertexData* inVertexData, EVertexBufferUsage usage) = 0;
+        virtual VertexBuffer* CreateVertexBuffer(VertexData* inVertexData, EBufferUsage usage) = 0;
         virtual void UpdateVertexBuffer(VertexBuffer* inVertexBuffer, VertexData* inVertexData) = 0;
-        virtual IndexBuffer* CreateIndexBuffer(IndexData* inIndexData) = 0;
+        virtual IndexBuffer* CreateIndexBuffer(IndexData* inIndexData, EBufferUsage usage) = 0;
+        virtual void UpdateIndexBuffer(IndexBuffer* inIndexBuffer, IndexData* inIndexData) = 0;
         virtual ShaderProgram* CreateShaderProgram(ParsedShaderProgram* inShaderProgramPath) = 0;
         virtual TextureBuffer* CreateTextureBuffer(TextureInfo inTextureInfo, void* inTextureData) = 0;
         virtual RenderWindow* CreateRenderWindow(WindowBase* inWindow) = 0;
@@ -49,7 +50,7 @@ namespace Ming3D::Rendering
         virtual void EndRenderWindow(RenderWindow* inWindow) = 0;
         virtual void BeginRenderTarget(RenderTarget* inTarget) = 0;
         virtual void EndRenderTarget(RenderTarget* inTarget) = 0;
-        virtual void RenderPrimitive(VertexBuffer* inVertexBuffer, IndexBuffer* inIndexBuffer) = 0;
+        virtual void RenderPrimitive(VertexBuffer* inVertexBuffer, IndexBuffer* inIndexBuffer, unsigned int startIndex, unsigned int indexCount) = 0;
         virtual void SetRasteriserState(RasteriserState* inState) = 0;
         virtual void SetDepthStencilState(DepthStencilState* inState) = 0;
         virtual void SetConstantBufferData(ConstantBuffer* inConstantBuffer, void* inData, size_t inSize) = 0;

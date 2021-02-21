@@ -3,7 +3,7 @@
 
 namespace Ming3D::Rendering
 {
-    VertexBufferGL::VertexBufferGL(const VertexLayout& inLayout, EVertexBufferUsage usage)
+    VertexBufferGL::VertexBufferGL(const VertexLayout& inLayout, EBufferUsage usage)
     : VertexBuffer(inLayout, usage)
     {
 
@@ -11,7 +11,7 @@ namespace Ming3D::Rendering
 
     VertexBufferGL::~VertexBufferGL()
     {
-        if (mGLBuffer != -1)
+        if (mAssigned)
         {
             glDeleteBuffers(1, &mGLBuffer);
         }
@@ -20,6 +20,7 @@ namespace Ming3D::Rendering
     void VertexBufferGL::SetGLBuffer(GLuint inBuffer)
     {
         mGLBuffer = inBuffer;
+        mAssigned = true;
     }
 
     GLuint VertexBufferGL::GetGLBuffer()

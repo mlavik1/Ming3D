@@ -13,7 +13,7 @@ namespace Ming3D::Rendering
         ID3D11Buffer* mD3DBuffer = nullptr;
 
     public:
-        VertexBufferD3D11(const VertexLayout& inLayout, EVertexBufferUsage usage);
+        VertexBufferD3D11(const VertexLayout& inLayout, EBufferUsage usage);
         virtual ~VertexBufferD3D11();
         
         void SetD3DBuffer(ID3D11Buffer* inBuffer);
