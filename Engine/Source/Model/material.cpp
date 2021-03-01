@@ -16,6 +16,14 @@ namespace Ming3D
 		InitMaterial(shaderProgram);
     }
 
+    Material::Material(Material* otherMat)
+    {
+        mMaterialParams = otherMat->mMaterialParams;
+        Rendering::ParsedShaderProgram* newShaderProg = MaterialFactory::GetParsedShaderProgram(mMaterialParams);
+        InitMaterial(newShaderProg);
+        mMaterialBuffer->CopyFrom(otherMat->mMaterialBuffer);
+    }
+
     Material::~Material()
     {
     }

@@ -65,6 +65,10 @@ int main()
     widgetComp->SetWidget(rootWidget);
     gameEngine->GetWorld()->AddActor(guiActor);
 
+    Texture* texxx = TextureLoader::LoadTextureData("Resources/texture.jpg");
+    img2->SetTexture(texxx);
+    img2->SetColour(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+
     const float camSpeed = 3.0f;
     const float camRotSpeed = 1.0f;
 

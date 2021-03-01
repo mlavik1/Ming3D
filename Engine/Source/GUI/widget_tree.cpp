@@ -17,7 +17,7 @@ namespace Ming3D
         mRootSubmeshNode = nullptr;
         mRootWidget = new Widget();
 
-        mMaterial = MaterialFactory::CreateMaterial("Resources/Shaders/gui.cgp");
+        mMaterial = MaterialFactory::GetDefaultGUIMaterial();
         mMeshBuffer = new MeshBuffer();
 
         Rendering::VertexLayout vertexLayout;
@@ -79,14 +79,14 @@ namespace Ming3D
 
                 const unsigned int indexOffset = visual->mSubmeshData->mVertexStartIndex;
                 for (int iIndex = 0; iIndex < visual->mSubmeshData->mNumIndices; iIndex++)
-                    indData[iIndex] += indexOffset;
+                    indData[visual->mSubmeshData->mTriangleStartIndex + iIndex] += indexOffset;
 
                 visual->mVisualInvalidated = false;
             }
 
             // Add render batch
             RenderBatch batch;
-            batch.mMaterial = mMaterial->mMaterialBuffer;
+            batch.mMaterial = visual->GetMaterial()->mMaterialBuffer;
             batch.mMeshBuffer = mMeshBuffer;
             batch.mModelMatrix = mTransformMatrix;
             batch.mStartIndex = visual->mSubmeshData->mTriangleStartIndex;

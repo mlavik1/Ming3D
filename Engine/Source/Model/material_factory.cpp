@@ -2,9 +2,12 @@
 
 #include "shader_parser.h"
 #include "shader_cache.h"
+#include "Texture/texture_loader.h"
 
 namespace Ming3D
 {
+    Material* MaterialFactory::mDefaultGUIMaterial = nullptr;
+
     Material* MaterialFactory::CreateMaterial(const std::string& inShaderProgram)
     {
         MaterialParams params;
@@ -51,4 +54,15 @@ namespace Ming3D
 		}
 		return parsedProgram;
 	}
+
+    Material* MaterialFactory::GetDefaultGUIMaterial()
+    {
+        if (mDefaultGUIMaterial == nullptr)
+        {
+            mDefaultGUIMaterial = CreateMaterial("Resources/Shaders/gui.cgp");
+            Texture* whiteTex = TextureLoader::LoadTextureData("Resources/default-white.png");
+            mDefaultGUIMaterial->SetTexture(0, whiteTex);
+        }
+        return mDefaultGUIMaterial;
+    }
 }

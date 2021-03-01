@@ -1,11 +1,16 @@
 #include "image_visual.h"
 #include <memory>
+#include "Texture/texture.h"
+#include "Model/material.h"
+#include "Model/material_factory.h"
 
 namespace Ming3D
 {
     ImageVisual::ImageVisual()
     {
         mColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+        mMaterial = MaterialFactory::GetDefaultGUIMaterial();
+        mHasCustomMat = false;
     }
 
     ImageVisual::~ImageVisual()
@@ -44,9 +49,34 @@ namespace Ming3D
         memcpy(outIndexData, mIndexData.data(), mIndexData.size() * sizeof(unsigned int));
     }
 
+    Material* ImageVisual::GetMaterial()
+    {
+        return mMaterial;
+    }
+
     void ImageVisual::SetColour(glm::vec4 colour)
     {
         mColour = colour;
+        mVisualInvalidated = true;
+    }
+
+    void ImageVisual::SetTexture(Texture* texture)
+    {
+        if (!mHasCustomMat)
+        {
+            // Create new material
+            // TODO: Add support for using different textures in the same default GUI material
+            mHasCustomMat = true;
+            mMaterial = new Material(mMaterial);
+        }
+
+        mMaterial->SetTexture(0, texture);
+        mVisualInvalidated = true;
+    }
+
+    void ImageVisual::SetCustomMaterial(Material* material)
+    {
+        mMaterial = material;
         mVisualInvalidated = true;
     }
 }

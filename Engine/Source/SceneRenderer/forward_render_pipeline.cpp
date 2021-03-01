@@ -93,6 +93,9 @@ namespace Ming3D
     {
         OpaqueNodeSorter opaqueSorter(&params.mVisibleNodes);
         std::sort(params.mOpaqueNodeIndices.begin(), params.mOpaqueNodeIndices.end(), opaqueSorter);
+
+        TransparentNodeSorter transparentSorter(&params.mVisibleNodes);
+        std::sort(params.mTransparentNodeIndices.begin(), params.mTransparentNodeIndices.end(), transparentSorter);
     }
 
     void ForwardRenderPipeline::UpdateUniforms(MaterialBuffer* inMat)

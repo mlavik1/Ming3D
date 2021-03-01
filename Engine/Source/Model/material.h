@@ -48,6 +48,7 @@ namespace Ming3D
 		MaterialParams mMaterialParams;
 
         Material(Rendering::ParsedShaderProgram* shaderProgram);
+        Material(Material* otherMat);
         ~Material();
 
         void SetTexture(size_t textureIndex, Texture* texture);

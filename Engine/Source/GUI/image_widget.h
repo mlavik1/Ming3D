@@ -4,6 +4,7 @@
 namespace Ming3D
 {
     class ImageVisual;
+    class Texture;
 
     class ImageWidget : public Widget
     {
@@ -15,5 +16,6 @@ namespace Ming3D
         ~ImageWidget();
 
         void SetColour(glm::vec4 colour);
+        void SetTexture(Texture* texture);
     };
 }

@@ -72,15 +72,14 @@ namespace Ming3D
     {
         glm::vec3 camPos = glm::inverse(context.mMainCamera->mCameraMatrix) * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
-        int iMainNode = 0;
-        int iFallbackNode = 0;
+        int iNode = 0;
 
         // Add batches from RenderObjects
         for (RenderObject* obj : context.mScene->mSceneObjects)
         {
             int numBatches = obj->GetNumBatches();
 
-            // Bet batches of RenderObject
+            // Get batches of RenderObject
             for (int iBatch = 0; iBatch < numBatches; iBatch++)
             {
                 // TODO: view frustum culling
@@ -89,9 +88,9 @@ namespace Ming3D
 
                 node = params.mVisibleNodes.push_back();
                 if (obj->GetRenderType() == ERenderType::Opaque)
-                    params.mOpaqueNodeIndices.push_back(iMainNode++);
+                    params.mOpaqueNodeIndices.push_back(iNode++);
                 else
-                    params.mTransparentNodeIndices.push_back(iMainNode++);
+                    params.mTransparentNodeIndices.push_back(iNode++);
 
                 // Get batch
                 obj->GetRenderBatch(iBatch, &node->mRenderBatch);
