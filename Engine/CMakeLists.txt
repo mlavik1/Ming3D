@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.3)
 project(Engine)
 
+find_package(assimp REQUIRED)
+
 # Copy DLL from the given path to the EXE binary immediate directory (will be copied to output dir in the end)
 function(copy_dlls bindir outdir dllnames)
     FOREACH(dllname ${dllnames})
@@ -64,8 +66,7 @@ include_directories ("../Rendering/Source")
 include_directories ("../Networking/Source")
 include_directories ("../Include/glm")
 include_directories (${SDL2_INCLUDE_DIR})
-include_directories ("../3rdParty/assimp/include")
-include_directories ("${BUILD_ROOT}/3rdParty/assimp/include")
+include_directories (${assimp_INCLUDE_DIR})
 
 add_library(Engine STATIC ${SRC_FILES})
 
@@ -73,8 +74,7 @@ target_link_libraries(Engine Rendering)
 target_link_libraries(Engine Core)
 target_link_libraries(Engine Networking)
 target_link_libraries(Engine ${SDL2_LIBRARIES})
-target_link_libraries(Engine assimp)
-target_link_libraries(Engine assimp)
+target_link_libraries(Engine ${assimp_LIBRARIES})
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     if(MING3D_PHYSICS_API STREQUAL "PhysX")

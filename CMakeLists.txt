@@ -17,6 +17,8 @@ if(WIN32)
     set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/CMake/SDL2")
 endif()
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_BINARY_DIR}")
+
 set(BUILD_ROOT "${CMAKE_CURRENT_BINARY_DIR}")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
 
@@ -76,8 +78,16 @@ IF(WIN32)
     add_definitions(-DUNICODE)
 endif()
 
+# Copy conan.cmake
+if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
+   file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/CMake/conan.cmake" DESTINATION "${CMAKE_BINARY_DIR}")
+endif()
+
+include(${CMAKE_BINARY_DIR}/conan.cmake)
+conan_cmake_run(CONANFILE conanfile.txt BASIC_SETUP CMAKE_TARGETS BUILD missing)
+#conan_basic_setup()
+
 # project
-add_subdirectory(3rdParty)
 add_subdirectory(Core)
 add_subdirectory(Runtime)
 add_subdirectory(Networking)

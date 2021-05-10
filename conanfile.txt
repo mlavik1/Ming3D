@@ -1,0 +1,8 @@
+[requires]
+opengl/system
+glew/2.2.0
+glm/0.9.9.8
+assimp/5.0.1
+
+[generators]
+cmake_find_package

@@ -6,7 +6,7 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "render_scene.h"
-#include "glm/ext.hpp"
+#include "glm/gtx/norm.hpp"
 #include <algorithm>
 
 #define MING3D_SHADOWRT_W 1366
