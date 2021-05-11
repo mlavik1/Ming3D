@@ -61,12 +61,12 @@ endif()
 
 include_directories ("Source")
 include_directories (${PHYSX_INC_DIR})
+include_directories (${SDL2_INCLUDE_DIRS})
+include_directories (${assimp_INCLUDE_DIRS})
 include_directories ("../Core/Source")
 include_directories ("../Rendering/Source")
 include_directories ("../Networking/Source")
 include_directories ("../Include/glm")
-include_directories (${SDL2_INCLUDE_DIR})
-include_directories (${assimp_INCLUDE_DIR})
 
 add_library(Engine STATIC ${SRC_FILES})
 

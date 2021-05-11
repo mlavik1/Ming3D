@@ -1,8 +1,13 @@
 [requires]
 opengl/system
 glew/2.2.0
-glm/0.9.9.8
 assimp/5.0.1
+sdl2/2.0.14@bincrafters/stable
+sdl2_image/2.0.5@bincrafters/stable
 
 [generators]
 cmake_find_package
+
+[imports]
+bin, *.dll -> ./bin
+lib, *.so* -> ./lib
