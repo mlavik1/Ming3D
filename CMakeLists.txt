@@ -48,7 +48,7 @@ else()
     set_property(CACHE MING3D_RENDERING_API PROPERTY STRINGS OpenGL)
     # Physics API
     set(MING3D_PHYSICS_API "Null" CACHE STRING "Physics API")
-    set_property(CACHE MING3D_PHYSICS_API PROPERTY STRINGS Null)
+    set_property(CACHE MING3D_PHYSICS_API PROPERTY STRINGS PhysX Null)
 endif()
 
 # Set rendering API
@@ -80,10 +80,6 @@ include(${CMAKE_BINARY_DIR}/conan.cmake)
 
 conan_add_remote(NAME bincrafters INDEX 1 URL https://bincrafters.jfrog.io/artifactory/api/conan/conan-legacy-inexorgame VERIFY_SSL True)
 conan_cmake_run(CONANFILE conanfile.txt BASIC_SETUP CMAKE_TARGETS BUILD missing)
-#conan_basic_setup()
-#conan_cmake_configure(CONANFILE conanfile.txt)
-#conan_cmake_autodetect(settings)
-#conan_cmake_install(PATH_OR_REFERENCE . BUILD missing REMOTE conan-center SETTINGS ${settings})
 
 # project
 add_subdirectory(Core)
