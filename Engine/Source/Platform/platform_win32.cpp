@@ -5,13 +5,13 @@
 #include <windows.h>
 #include <ws2tcpip.h>
 
+#include "render_device_factory.h"
+
 #ifdef MING3D_OPENGL
 #include <SDL.h>
 #include "sdl_window.h"
-#include "render_device_gl.h"
 #include "Input/input_handler_sdl.h"
 #else
-#include "render_device_d3d11.h"
 #include "winapi_window.h"
 #endif
 #include "Input/input_handler_win32.h"
@@ -93,12 +93,7 @@ namespace Ming3D
 
     Rendering::RenderDevice* PlatformWin32::CreateRenderDevice()
     {
-#ifdef MING3D_OPENGL
-        LOG_INFO() << "Using OpenGL, version " << glGetString(GL_VERSION);
-        return new Rendering::RenderDeviceGL();
-#else
-        return new Rendering::RenderDeviceD3D11();
-#endif
+        return Rendering::RenderDeviceFactory::CreateRenderDevice();
     }
 
     Rendering::WindowBase* PlatformWin32::CreateOSWindow()

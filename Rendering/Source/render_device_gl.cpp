@@ -1,17 +1,16 @@
 #ifdef MING3D_OPENGL
 #include "render_device_gl.h"
-
 #include "vertex_buffer_gl.h"
 #include "index_buffer_gl.h"
 #include "render_target_gl.h"
 #include "shader_program_gl.h"
 #include "texture_buffer_gl.h"
 #include "constant_buffer_gl.h"
-
 #include "Debug/debug.h"
 #include "Debug/st_assert.h"
 #include "shader_writer_glsl.h"
 #include "Debug/debug_stats.h"
+#include <GL/glew.h>
 
 namespace Ming3D::Rendering
 {

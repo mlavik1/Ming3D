@@ -18,6 +18,6 @@ jobs:
 
     - name: Build
       run: |
-        export CONAN_SYSREQUIRES_MODE=disabled
+        export CONAN_SYSREQUIRES_MODE=enabled
         cmake .
         make Runtime

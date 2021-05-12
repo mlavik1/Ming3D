@@ -7,7 +7,7 @@
 #include <SDL2/SDL.h>
 #endif
 #include "sdl_window.h"
-#include "render_device_gl.h"
+#include "render_device_factory.h"
 #include "Input/input_handler_sdl.h"
 #include "Debug/debug.h"
 #include "GameEngine/game_engine.h"
@@ -61,8 +61,7 @@ namespace Ming3D
 
     Rendering::RenderDevice* PlatformLinux::CreateRenderDevice()
     {
-        LOG_INFO() << "Using OpenGL, version " << glGetString(GL_VERSION);
-        return new Rendering::RenderDeviceGL();
+        return Rendering::RenderDeviceFactory::CreateRenderDevice();
     }
 
     Rendering::WindowBase* PlatformLinux::CreateOSWindow()
