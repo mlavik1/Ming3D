@@ -11,8 +11,6 @@ set(SourceDir Source)
 
 add_library(Rendering STATIC ${SRC_FILES})
 
-set(SDL2_DIR "${EXTERNAL_LIB_DIR}/SDL2-devel-all" CACHE PATH "Directory to search for SDL2 in")
-
 # Find packages
 find_package(SDL2 REQUIRED)
 find_package(sdl2_image REQUIRED)

@@ -9,6 +9,9 @@ sdl2_image/2.0.5@bincrafters/stable
 [generators]
 cmake_find_package
 
+[options]
+physx:shared=True
+
 [imports]
 bin, *.dll -> ./bin
 lib, *.so* -> ./lib
