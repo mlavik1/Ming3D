@@ -6,7 +6,8 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    env:
+      CONAN_SYSREQUIRES_MODE: disabled
     steps:
     - uses: actions/checkout@v1
       with: 
