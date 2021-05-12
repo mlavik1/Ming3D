@@ -5,12 +5,15 @@
 *.cbp
 *.layout
 *.sdf
+converted_shader_.*
+DebugLog.txt
 
 # folders
 build
 CMakeFiles
 .vs
 ExternalLibraries
+.vscode
 
 # files
 DebugLog.txt

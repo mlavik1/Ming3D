@@ -6,19 +6,18 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    
     steps:
     - uses: actions/checkout@v1
       with: 
         submodules: true
     - name: Get dependencies
       run: |
-        sudo apt-get update
-        sudo apt-get install libsdl2-2.0
-        sudo apt-get install libsdl2-dev
-        sudo apt-get install libsdl2-image-dev
-        sudo apt-get install libglew-dev
+        pip3 install conan
+        conan --version
+
     - name: Build
       run: |
+        export CONAN_SYSREQUIRES_MODE=disabled
         cmake .
         make Runtime

@@ -7,19 +7,21 @@ Supports rendering with OpenGL and DirectX11.
 
 # How to clone and build
 
+__Requirements__
+- CMake: https://cmake.org/download/
+- Conan package manager: https://conan.io/downloads.html
+- A C++ compiler (tested with g++ and Visual Studio 2017 and 2019)
+
 __WINDOWS__
-- Requirements: Visual studio 2017 or newer. C++17 or newer. CMake 3.3 or newer (ideally 3.10).
 - Clone (recursively, since it contains modules): git clone --recursive https://github.com/mlavik1/Ming3D
-- If you have Python 2: Run DownloadLibs.py (or DownloadLibs.bat if on Windows)
-- (Alternatively: Download these files and put them in a folder called "ExternalLibraries": https://drive.google.com/file/d/1p4GA1lcoKZZcPsGSPOZ6ZWb85yyvmm2b/view?usp=sharing)
 - Open CMake, and set source code directory ("Where is the source code: " in CMake GUI) to the repository root directory
 - Configure and Generate
 - Optionally: For the sample projects, modify the "SampleProject" variable to select the type of sample you want to use.
 
 __LINUX__
 - Clone the repository (recursively!): git clone --recursive https://github.com/mlavik1/Ming3D
-- Run aptget.sh (or manually do apt-get on the dependencies). Note: if you get "permission denied", execute "chmod +x aptget.sh" in the terminal first.
-- Run CMake: cmake .
+- Terminal: sudo -v  (Only first time. This is needed because of the SDL2 conan package)
+- Terminal: cmake -G "Unix Makefiles" (alternatively, you can configure from VSCode, QtCreator or another IDE)
 - Build a project (such as Runtime): make Runtime
 - Run the executables (in the "build" folder). Make sure the "Resources" folder is in the same as the executable (just copy it over).
 

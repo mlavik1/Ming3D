@@ -12,17 +12,12 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(CMAKE_BUILD_TYPE Debug)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/CMake/SDL2_image")
-if(WIN32)
-    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/CMake/SDL2")
-endif()
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_BINARY_DIR}")
 
 set(BUILD_ROOT "${CMAKE_CURRENT_BINARY_DIR}")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
 
 set(EXTERNAL_LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/ExternalLibraries" CACHE PATH "External library directory")
-
-set(SDL_SEARCH_PATH ${EXTERNAL_LIB_DIR})
 
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -44,17 +39,15 @@ if(WIN32)
     # Graphics API
     set(MING3D_RENDERING_API "D3D11" CACHE STRING "Rendering API")
     set_property(CACHE MING3D_RENDERING_API PROPERTY STRINGS D3D11 OpenGL)
-    # Physics API
-    set(MING3D_PHYSICS_API "PhysX" CACHE STRING "Physics API")
-    set_property(CACHE MING3D_PHYSICS_API PROPERTY STRINGS PhysX Null)
 else()
     # Graphics API
     set(MING3D_RENDERING_API "OpenGL" CACHE STRING "Rendering API")
     set_property(CACHE MING3D_RENDERING_API PROPERTY STRINGS OpenGL)
-    # Physics API
-    set(MING3D_PHYSICS_API "Null" CACHE STRING "Physics API")
-    set_property(CACHE MING3D_PHYSICS_API PROPERTY STRINGS Null)
 endif()
+
+# Physics API
+set(MING3D_PHYSICS_API "PhysX" CACHE STRING "Physics API")
+set_property(CACHE MING3D_PHYSICS_API PROPERTY STRINGS PhysX Null)
 
 # Set rendering API
 if(MING3D_RENDERING_API STREQUAL "OpenGL")
@@ -76,8 +69,23 @@ IF(WIN32)
     add_definitions(-DUNICODE)
 endif()
 
+# Copy conan.cmake
+if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
+   file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/CMake/conan.cmake" DESTINATION "${CMAKE_BINARY_DIR}")
+endif()
+
+include(${CMAKE_BINARY_DIR}/conan.cmake)
+
+if(WIN32)
+    set(CONANFILE_PATH conanfile-win.txt)
+else()
+    set(CONANFILE_PATH conanfile.txt)
+endif()
+
+conan_add_remote(NAME bincrafters INDEX 1 URL https://bincrafters.jfrog.io/artifactory/api/conan/conan-legacy-inexorgame VERIFY_SSL True)
+conan_cmake_run(CONANFILE ${CONANFILE_PATH} BASIC_SETUP CMAKE_TARGETS BUILD missing)
+
 # project
-add_subdirectory(3rdParty)
 add_subdirectory(Core)
 add_subdirectory(Runtime)
 add_subdirectory(Networking)
