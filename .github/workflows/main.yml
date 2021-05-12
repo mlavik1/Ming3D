@@ -15,8 +15,7 @@ jobs:
       run: |
         pip3 install conan
         conan --version
-        sudo apt update
-        sudo apt install libgl-dev
+
     - name: Build
       run: |
         cmake .
