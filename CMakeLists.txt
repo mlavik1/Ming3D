@@ -39,17 +39,15 @@ if(WIN32)
     # Graphics API
     set(MING3D_RENDERING_API "D3D11" CACHE STRING "Rendering API")
     set_property(CACHE MING3D_RENDERING_API PROPERTY STRINGS D3D11 OpenGL)
-    # Physics API
-    set(MING3D_PHYSICS_API "PhysX" CACHE STRING "Physics API")
-    set_property(CACHE MING3D_PHYSICS_API PROPERTY STRINGS PhysX Null)
 else()
     # Graphics API
     set(MING3D_RENDERING_API "OpenGL" CACHE STRING "Rendering API")
     set_property(CACHE MING3D_RENDERING_API PROPERTY STRINGS OpenGL)
-    # Physics API
-    set(MING3D_PHYSICS_API "Null" CACHE STRING "Physics API")
-    set_property(CACHE MING3D_PHYSICS_API PROPERTY STRINGS PhysX Null)
 endif()
+
+# Physics API
+set(MING3D_PHYSICS_API "PhysX" CACHE STRING "Physics API")
+set_property(CACHE MING3D_PHYSICS_API PROPERTY STRINGS PhysX Null)
 
 # Set rendering API
 if(MING3D_RENDERING_API STREQUAL "OpenGL")
@@ -78,8 +76,14 @@ endif()
 
 include(${CMAKE_BINARY_DIR}/conan.cmake)
 
+if(WIN32)
+    set(CONANFILE_PATH conanfile-win.txt)
+else()
+    set(CONANFILE_PATH conanfile.txt)
+endif()
+
 conan_add_remote(NAME bincrafters INDEX 1 URL https://bincrafters.jfrog.io/artifactory/api/conan/conan-legacy-inexorgame VERIFY_SSL True)
-conan_cmake_run(CONANFILE conanfile.txt BASIC_SETUP CMAKE_TARGETS BUILD missing)
+conan_cmake_run(CONANFILE ${CONANFILE_PATH} BASIC_SETUP CMAKE_TARGETS BUILD missing)
 
 # project
 add_subdirectory(Core)
