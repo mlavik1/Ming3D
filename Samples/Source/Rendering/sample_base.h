@@ -54,7 +54,7 @@ namespace Ming3D
         virtual void init();
         virtual void tick();
 
-        ModelData* LoadModel(const char* inModel);
+        ModelData* LoadModel(const std::string modelPath);
         MeshData* CreateRectangleMesh(float inWidth, float inHeight);
     };
 }

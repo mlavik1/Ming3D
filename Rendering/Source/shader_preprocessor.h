@@ -39,13 +39,14 @@ namespace Ming3D::Rendering
         std::stack<ShaderPreprocessorScope> mScopeStack;
         std::unordered_map<std::string, std::string> mDefinitions;
         std::vector<Token> mPreprocessedTokens;
+        std::string mShaderPath;
 
-        PreprocessorDirective GetPreprocessorDirective(const std::string& inToken);
+        PreprocessorDirective GetPreprocessorDirective(const std::string inToken);
         void ProcessToken(Token inToken);
         bool IsCurrentScopeIgnored();
 
     public:
-        ShaderPreprocessor(TokenParser& inTokenParser);
+        ShaderPreprocessor(TokenParser& inTokenParser, const std::string shaderPath);
         
         void AddDefinition(const std::string name, const std::string value);
         void PreprocessShader();

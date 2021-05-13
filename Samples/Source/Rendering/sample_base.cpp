@@ -7,6 +7,7 @@
 #include "assimp/postprocess.h"
 #include "assimp/Importer.hpp"
 #include "Texture/texture_loader.h"
+#include "GameEngine/game_engine.h"
 
 #include "Debug/debug.h"
 
@@ -87,12 +88,12 @@ namespace Ming3D
 
     }
 
-    SampleBase::ModelData* SampleBase::SampleBase::LoadModel(const char* inModel)
+    SampleBase::ModelData* SampleBase::SampleBase::LoadModel(const std::string modelPath)
     {
         ModelData* modelData = new ModelData();
 
         Assimp::Importer importer;
-        const aiScene * scene = importer.ReadFile(inModel, aiProcess_Triangulate | aiProcess_OptimizeMeshes | aiProcess_JoinIdenticalVertices | aiProcess_RemoveRedundantMaterials | aiProcess_GenSmoothNormals);
+        const aiScene * scene = importer.ReadFile(modelPath, aiProcess_Triangulate | aiProcess_OptimizeMeshes | aiProcess_JoinIdenticalVertices | aiProcess_RemoveRedundantMaterials | aiProcess_GenSmoothNormals);
 
         for (unsigned int m = 0; m < scene->mNumMeshes; m++)
         {
@@ -142,7 +143,7 @@ namespace Ming3D
             aiString path;  // filename
             if (scene->mMaterials[matIndex]->GetTexture(aiTextureType::aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
             {
-                std::string texturePath = std::string("Resources//") + std::string(path.C_Str());
+                std::string texturePath = GGameEngine->GetResourceDirectory() + std::string("/") + std::string(path.C_Str());
                 meshData->mTexture = TextureLoader::LoadTextureData(texturePath.c_str());
             }
             else

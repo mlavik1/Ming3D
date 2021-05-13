@@ -33,7 +33,7 @@ int main()
     actor1->GetTransform().SetLocalPosition(glm::vec3(-1.0f, -2.0f, 1.0f));
     actor1->GetTransform().SetLocalScale(glm::vec3(2.0f, 2.0f, 2.0f));
     actor1->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
-    ModelLoader::LoadModel("Resources//Mvr_PetCow_walk.dae", actor1);
+    ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Mvr_PetCow_walk.dae"), actor1);
     RigidBodyComponent* rigidComp1 = actor1->AddComponent<RigidBodyComponent>();
     rigidComp1->SetKinematic(true);
     BoxColliderComponent* boxComp1 = actor1->AddComponent<BoxColliderComponent>();
@@ -44,7 +44,7 @@ int main()
     actor2->GetTransform().SetLocalPosition(glm::vec3(0.0f, 1.0f, 0.0f));
     actor2->GetTransform().SetLocalScale(glm::vec3(2.0f, 2.0f, 2.0f));
     actor2->GetTransform().SetLocalRotation(glm::angleAxis(30.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f)));
-    ModelLoader::LoadModel("Resources//Mvr_PetCow_walk.dae", actor2);
+    ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Mvr_PetCow_walk.dae"), actor2);
     RigidBodyComponent* rigidComp2 = actor2->AddComponent<RigidBodyComponent>();
     BoxColliderComponent* boxComp2 = actor2->AddComponent<BoxColliderComponent>();
     boxComp2->SetSize(glm::vec3(0.25f, 0.25f, 0.25f));

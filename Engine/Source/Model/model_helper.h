@@ -45,7 +45,7 @@ namespace Ming3D
     class ModelDataImporter
     {
     public:
-        static ModelData* ImportModelData(const char* inModel);
+        static ModelData* ImportModelData(std::string modelPath);
     };
 
 #define MODELLOADERFLAGS_UNLIT 1
@@ -53,7 +53,7 @@ namespace Ming3D
     class ModelLoader
     {
     public:
-        static bool LoadModel(const char* inModel, Actor* inActor, int inFlags = 0);
+        static bool LoadModel(std::string modelPath, Actor* inActor, int inFlags = 0);
     };
 }
 #endif

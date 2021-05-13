@@ -8,9 +8,9 @@
 
 namespace Ming3D
 {
-    Texture* TextureLoader::LoadTextureData(const char* inFilePath)
+    Texture* TextureLoader::LoadTextureData(const std::string inFilePath)
     {
-        SDL_Surface * surface = IMG_Load(inFilePath);
+        SDL_Surface * surface = IMG_Load(inFilePath.c_str());
 
         if (surface == nullptr)
             return nullptr;

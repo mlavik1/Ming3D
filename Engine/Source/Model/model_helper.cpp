@@ -1,5 +1,6 @@
 #include "model_helper.h"
 
+#include "GameEngine/game_engine.h"
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
 #include "assimp/Importer.hpp"
@@ -14,11 +15,10 @@
 
 namespace Ming3D
 {
-    ModelData* ModelDataImporter::ImportModelData(const char* inModel)
+    ModelData* ModelDataImporter::ImportModelData(std::string modelPath)
     {
         ModelData* modelData = new ModelData();
 
-        std::string modelPath(inModel);
         for (size_t i = 0; i < modelPath.size(); i++)
         {
             if (modelPath[i] == '\\')
@@ -125,9 +125,9 @@ namespace Ming3D
         return modelData;
     }
 
-    bool ModelLoader::LoadModel(const char* inModel, Actor* inActor, int inFlags)
+    bool ModelLoader::LoadModel(std::string modelPath, Actor* inActor, int inFlags)
     {
-        ModelData* modelData = ModelDataImporter::ImportModelData(inModel);
+        ModelData* modelData = ModelDataImporter::ImportModelData(modelPath);
 
         if (modelData == nullptr)
             return false;
@@ -137,7 +137,7 @@ namespace Ming3D
         for (MaterialData* matData : modelData->mMaterials)
         {
             MaterialParams matParams;
-            matParams.mShaderProgramPath = "Resources/Shaders/defaultshader.cgp";
+            matParams.mShaderProgramPath = GGameEngine->GetResourceDirectory() + std::string("/Shaders/defaultshader.cgp");
             if (matData->mTexture == nullptr)
                 matParams.mPreprocessorDefinitions.emplace("use_mat_colour", "");
             
