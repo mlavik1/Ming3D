@@ -23,7 +23,7 @@ __LINUX__
 - Terminal: sudo -v  (Only first time. This is needed because of the SDL2 conan package)
 - Terminal: cmake -G "Unix Makefiles" (alternatively, you can configure from VSCode, QtCreator or another IDE)
 - Build a project (such as Runtime): make Runtime
-- Run the executables (in the "build" folder). Make sure the "Resources" folder is in the same as the executable (just copy it over).
+- Run the executables (in the "build" folder). Make sure "Engine/Resources" is placed under the same folder as the executable (just create an empty "Engine" folder and copy "Resources" over to it).
 
 (NOTE: You need at least OpenGL 4.0)
 

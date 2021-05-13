@@ -648,7 +648,7 @@ namespace Ming3D::Rendering
 
         TokenParser tokenParser(shaderString.c_str());
 
-        ShaderPreprocessor preprocessor(tokenParser);
+        ShaderPreprocessor preprocessor(tokenParser, inParams.mShaderProgramPath);
         for (auto preprocdef : mParams.mPreprocessorDefinitions)
             preprocessor.AddDefinition(preprocdef.first, preprocdef.second);
         preprocessor.PreprocessShader();

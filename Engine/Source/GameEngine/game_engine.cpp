@@ -80,6 +80,8 @@ namespace Ming3D
         mSceneRenderer->Initialise();
 
         mPhysicsManager->CreatePhysicsScene();
+
+        LOG_INFO() << "Engine resource directory: " << GetResourceDirectory();
 	}
 
     void GameEngine::Update()
@@ -168,5 +170,10 @@ namespace Ming3D
         Rendering::WindowBase* window = mMainRenderWindow->mRenderWindow->GetWindow();
         window->SetSize(width, height);
         RecreateRenderWindow(mMainRenderWindow);
+    }
+
+    std::string GameEngine::GetResourceDirectory()
+    {
+        return std::string(MING3D_ENGINE_SOURCE_DIR) + std::string("/Resources");
     }
 }

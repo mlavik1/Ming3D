@@ -59,8 +59,8 @@ shader VertexShader
 // Fragment shader
 shader FragmentShader
 {
-    #include "Resources/Shaders/lighting.cgh"
-    #include "Resources/Shaders/shadows.cgh"
+    #include "lighting.cgh"
+    #include "shadows.cgh"
 
     void main(FSInput input)
     {

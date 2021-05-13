@@ -2,6 +2,7 @@
 #define MING3D_GAMEENGINE_H
 
 #include <vector>
+#include <string>
 
 namespace Ming3D
 {
@@ -71,6 +72,8 @@ namespace Ming3D
         void RecreateRenderWindow(RenderWindowHandle* wndHandle);
 
         void SetMainWindowSize(unsigned int width, unsigned int height);
+
+        std::string GetResourceDirectory();
 
         inline Rendering::RenderDevice* GetRenderDevice() { return mRenderDevice; }
         inline SceneRenderer* GetSceneRenderer() { return mSceneRenderer; }

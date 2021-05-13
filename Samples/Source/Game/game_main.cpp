@@ -38,14 +38,14 @@ int main()
     skybox->GetTransform().SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
     skybox->GetTransform().SetLocalScale(glm::vec3(-50.0f, 50.0f, 50.0f));
     gameEngine->GetWorld()->AddActor(skybox);
-    ModelLoader::LoadModel("Resources//Skybox//Skybox.obj", skybox, MODELLOADERFLAGS_UNLIT);
+    ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Skybox/Skybox.obj"), skybox, MODELLOADERFLAGS_UNLIT);
 
     Actor* actor1 = new Actor();
     actor1->GetTransform().SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
     actor1->GetTransform().SetLocalScale(glm::vec3(2.0f, 2.0f, 2.0f));
     actor1->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
     gameEngine->GetWorld()->AddActor(actor1);
-    ModelLoader::LoadModel("Resources//Mvr_PetCow_walk.dae", actor1);
+    ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Mvr_PetCow_walk.dae"), actor1);
     for (MeshComponent* currMeshComp : actor1->GetComponentsInChildren<MeshComponent>())
     {
         currMeshComp->GetMaterial()->SetCastShadows(true);
@@ -56,7 +56,7 @@ int main()
     actor2->GetTransform().SetLocalScale(glm::vec3(2.0f, 2.0f, 2.0f));
     actor2->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
     gameEngine->GetWorld()->AddActor(actor2);
-    ModelLoader::LoadModel("Resources//Mvr_PetCow_walk.dae", actor2);
+    ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Mvr_PetCow_walk.dae"), actor2);
     for (MeshComponent* currMeshComp : actor2->GetComponentsInChildren<MeshComponent>())
     {
         currMeshComp->GetMaterial()->SetCastShadows(true);
@@ -67,8 +67,8 @@ int main()
     Mesh* planeMesh = PrimitiveFactory::CreatePlane(glm::vec2(100.0f, 100.0f), 2, 2);
     MeshComponent* planeMeshComp = planeObj->AddComponent<MeshComponent>();
     planeMeshComp->SetMesh(planeMesh);
-    Material* planeMat = MaterialFactory::CreateMaterial("Resources/Shaders/defaultshader.cgp");
-    planeMat->SetTexture(0, TextureLoader::LoadTextureData("Resources/grass.png")); // TODO: create override with only one parameter
+    Material* planeMat = MaterialFactory::CreateMaterial(GGameEngine->GetResourceDirectory() + std::string("/Shaders/defaultshader.cgp"));
+    planeMat->SetTexture(0, TextureLoader::LoadTextureData(GGameEngine->GetResourceDirectory() + std::string("/grass.png"))); // TODO: create override with only one parameter
     planeMat->SetShaderUniformVec2("_textureTiling", glm::vec2(10.0f, 10.0f));
 	planeMat->SetReceiveShadows(true);
     planeMeshComp->SetMaterial(planeMat);
