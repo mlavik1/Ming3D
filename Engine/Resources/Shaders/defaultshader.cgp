@@ -4,9 +4,8 @@ uniform mat4 lightMat;
 
 #ifdef use_mat_colour
     uniform vec4 _colourDiffuse;
-#else
-    uniform vec2 _textureTiling;
 #endif
+uniform vec2 _textureTiling;
 
 #ifndef unlit_mode
     uniform vec4 _colourSpecular;
