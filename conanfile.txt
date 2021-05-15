@@ -11,6 +11,7 @@ cmake_find_package
 
 [options]
 physx:shared=False
+sdl2:jack=False
 
 [imports]
 bin, *.dll -> ./bin

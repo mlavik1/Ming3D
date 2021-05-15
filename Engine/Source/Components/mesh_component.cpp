@@ -28,7 +28,7 @@ namespace Ming3D
         Super::InitialiseComponent();
     }
 
-    void MeshComponent::SetMesh(Mesh* inMesh)
+    void MeshComponent::SetMesh(Mesh* inMesh, bool dynamic)
     {
         mMesh = inMesh;
 
@@ -39,7 +39,7 @@ namespace Ming3D
         Rendering::VertexData* vertexData = inMesh->mVertexData;
         Rendering::IndexData* indexData(inMesh->mIndexData);
 
-        meshBuffer->mVertexBuffer = renderDevice->CreateVertexBuffer(vertexData, Rendering::EVertexBufferUsage::StaticDraw);
+        meshBuffer->mVertexBuffer = renderDevice->CreateVertexBuffer(vertexData, dynamic ? Rendering::EVertexBufferUsage::DynamicDraw : Rendering::EVertexBufferUsage::StaticDraw);
         meshBuffer->mIndexBuffer = renderDevice->CreateIndexBuffer(indexData);
 
         mRenderSceneObject->mModelMatrix = mParent->GetTransform().GetWorldTransformMatrix();
@@ -53,6 +53,12 @@ namespace Ming3D
         mMaterial = inMat;
 
         mRenderSceneObject->mMaterial = mMaterial->mMaterialBuffer;
+    }
+
+    void MeshComponent::ReuploadVertexData()
+    {
+        Rendering::RenderDevice* renderDevice = GGameEngine->GetRenderDevice();
+        renderDevice->UpdateVertexBuffer(mRenderSceneObject->mMesh->mVertexBuffer, mMesh->mVertexData);
     }
 
     void MeshComponent::Tick(float inDeltaTime)
