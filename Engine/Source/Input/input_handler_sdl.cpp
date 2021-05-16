@@ -1,11 +1,24 @@
 #include "input_handler_sdl.h"
 #include "GameEngine/game_engine.h"
 #include "input_manager.h"
+#include "SDL2/SDL_gamecontroller.h"
 
 namespace Ming3D
 {
+    void InputHandlerSDL::Initialise()
+    {
+        SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER);
+
+        if(SDL_IsGameController(0))
+            SDL_GameControllerOpen(0);
+    }
+
     void InputHandlerSDL::Update()
     {
+        // TODO: Do this on init
+        //if (SDL_WasInit(SDL_INIT_GAMECONTROLLER) != 1)
+	    //    SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER);
+
         SDL_Event sdlEvent;
         while (SDL_PollEvent(&sdlEvent))
         {
@@ -16,6 +29,9 @@ namespace Ming3D
                 break;
             case SDL_KEYUP:
                 HandleKeyUp(sdlEvent.key.keysym.sym);
+                break;
+            case SDL_CONTROLLERAXISMOTION:
+                HandleAxis2D(sdlEvent.caxis.axis, sdlEvent.caxis.value);
                 break;
             }
         }
@@ -37,6 +53,40 @@ namespace Ming3D
         inputEvent.mKey.mKeyCode = GetKeyCode(inKeycode);
         if (inputEvent.mKey.mKeyCode != KeyCode::None)
             GGameEngine->GetInputManager()->AddInputEvent(inputEvent);
+    }
+
+    void InputHandlerSDL::HandleAxis2D(Uint8 axis, Sint16 value)
+    {
+        InputEvent inputEvent;
+        inputEvent.mType = InputEventType::Axis2D;
+        if(axis == SDL_CONTROLLER_AXIS_LEFTX)
+        {
+            mLeftConrollerAxis.x = ((static_cast<int>(value) + 32768) / 65535.0f) * 2.0f - 1.0f;
+            inputEvent.mAxis.mAxis = EAxis2D::ControllerAxisLeft;
+            inputEvent.mAxis.mValue = mLeftConrollerAxis;
+            GGameEngine->GetInputManager()->AddInputEvent(inputEvent);
+        }
+        else if(axis == SDL_CONTROLLER_AXIS_LEFTY)
+        {
+            mLeftConrollerAxis.y = ((static_cast<int>(value) + 32768) / 65535.0f) * 2.0f - 1.0f;
+            inputEvent.mAxis.mAxis = EAxis2D::ControllerAxisLeft;
+            inputEvent.mAxis.mValue = mLeftConrollerAxis;
+            GGameEngine->GetInputManager()->AddInputEvent(inputEvent);
+        }
+        else if(axis == SDL_CONTROLLER_AXIS_RIGHTX)
+        {
+            mRightConrollerAxis.x = ((static_cast<int>(value) + 32768) / 65535.0f) * 2.0f - 1.0f;
+            inputEvent.mAxis.mAxis = EAxis2D::ControllerAxisRight;
+            inputEvent.mAxis.mValue = mRightConrollerAxis;
+            GGameEngine->GetInputManager()->AddInputEvent(inputEvent);
+        }
+        else if(axis == SDL_CONTROLLER_AXIS_RIGHTY)
+        {
+            mRightConrollerAxis.y = ((static_cast<int>(value) + 32768) / 65535.0f) * 2.0f - 1.0f;
+            inputEvent.mAxis.mAxis = EAxis2D::ControllerAxisRight;
+            inputEvent.mAxis.mValue = mRightConrollerAxis;
+            GGameEngine->GetInputManager()->AddInputEvent(inputEvent);
+        }
     }
 
     KeyCode InputHandlerSDL::GetKeyCode(SDL_Keycode inKeycode)

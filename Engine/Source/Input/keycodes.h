@@ -60,6 +60,12 @@ namespace Ming3D
         Middle,
         Right
     };
+
+    enum class EAxis2D
+    {
+        ControllerAxisLeft,
+        ControllerAxisRight
+    };
 }
 
 #endif
