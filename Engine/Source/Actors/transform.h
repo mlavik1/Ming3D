@@ -38,6 +38,7 @@ namespace Ming3D
         void SetLocalScale(glm::vec3 inScale);
         void SetLocalRotation(glm::quat inRot);
         void SetLocalRotation(glm::mat4 inRot);
+        void SetLocalTransformMatrix(glm::mat4 mat);
 
         void SetWorldPosition(glm::vec3 inPosition);
         void SetWorldScale(glm::vec3 inScale);

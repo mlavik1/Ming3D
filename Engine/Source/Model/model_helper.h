@@ -9,51 +9,27 @@
 #include "Actors/actor.h"
 #include "graphics_data.h"
 
+// Forward declarations
+class aiScene;
+class aiMesh;
+class aiMaterial;
+class aiNode;
+
 namespace Ming3D
 {
-    class Texture;
-
-    class MeshData
-    {
-    public:
-        Rendering::VertexData* mVertexData = nullptr;
-        std::vector<unsigned int> mIndices;
-
-        // TODO: bones
-
-        int mMaterialIndex;
-    };
-
-    class MaterialData
-    {
-    public:
-        Texture * mTexture;
-        glm::vec4 mDiffuseColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-        glm::vec4 mSpecularColour = glm::vec4(0.3f, 0.3f, 0.3f, 1.0f);
-        glm::vec4 mAmbientColour = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f);
-        float mShininess = 32.0f;
-    };
-
-    class ModelData
-    {
-    public:
-        std::vector<MeshData*> mMeshes;
-        std::vector<MaterialData*> mMaterials;
-        glm::vec3 mPosition;
-    };
-
-    class ModelDataImporter
-    {
-    public:
-        static ModelData* ImportModelData(std::string modelPath);
-    };
-
-#define MODELLOADERFLAGS_UNLIT 1
+    class Mesh;
+    class Material;
+    class Actor;
 
     class ModelLoader
     {
     public:
         static bool LoadModel(std::string modelPath, Actor* inActor, int inFlags = 0);
+
+    private:
+        static Material* CreateMaterial(aiMaterial* aiMat, const std::string modelPath, const int flags);
+        static Mesh* CreateMesh(aiMesh* aiMesh);
+        static Actor* CreateNode(aiNode* aiNode, const std::vector<Mesh*>& meshes, const std::vector<Material*>& materials, const aiScene* scene);
     };
 }
 #endif
