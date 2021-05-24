@@ -30,6 +30,12 @@ namespace Ming3D
             case SDL_KEYUP:
                 HandleKeyUp(sdlEvent.key.keysym.sym);
                 break;
+            case SDL_CONTROLLERBUTTONDOWN:
+                HandleControllerButtonDown(sdlEvent.cbutton.button);
+                break;
+            case SDL_CONTROLLERBUTTONUP:
+                HandleControllerButtonUp(sdlEvent.cbutton.button);
+                break;
             case SDL_CONTROLLERAXISMOTION:
                 HandleAxis2D(sdlEvent.caxis.axis, sdlEvent.caxis.value);
                 break;
@@ -54,6 +60,24 @@ namespace Ming3D
         if (inputEvent.mKey.mKeyCode != KeyCode::None)
             GGameEngine->GetInputManager()->AddInputEvent(inputEvent);
     }
+
+    void InputHandlerSDL::HandleControllerButtonDown(Uint8 button)
+    {
+        InputEvent inputEvent;
+        inputEvent.mType = InputEventType::KeyDown;
+        inputEvent.mKey.mKeyCode = GetControllerKeyCode(button);
+        if (inputEvent.mKey.mKeyCode != KeyCode::None)
+            GGameEngine->GetInputManager()->AddInputEvent(inputEvent);
+    }
+
+    void InputHandlerSDL::HandleControllerButtonUp(Uint8 button)
+    {
+        InputEvent inputEvent;
+        inputEvent.mType = InputEventType::KeyUp;
+        inputEvent.mKey.mKeyCode = GetControllerKeyCode(button);
+        if (inputEvent.mKey.mKeyCode != KeyCode::None)
+            GGameEngine->GetInputManager()->AddInputEvent(inputEvent);
+    }    
 
     void InputHandlerSDL::HandleAxis2D(Uint8 axis, Sint16 value)
     {
@@ -140,6 +164,19 @@ namespace Ming3D
         case SDLK_b: return KeyCode::Key_B;
         case SDLK_n: return KeyCode::Key_N;
         case SDLK_m: return KeyCode::Key_M;
+        default:
+            return KeyCode::None;
+        }
+    }
+
+    KeyCode InputHandlerSDL::GetControllerKeyCode(Uint8 keycode)
+    {
+        switch (keycode)
+        {
+        case SDL_CONTROLLER_BUTTON_A: return KeyCode::Pad_A;
+        case SDL_CONTROLLER_BUTTON_B: return KeyCode::Pad_B;
+        case SDL_CONTROLLER_BUTTON_X: return KeyCode::Pad_X;
+        case SDL_CONTROLLER_BUTTON_Y: return KeyCode::Pad_Y;
         default:
             return KeyCode::None;
         }

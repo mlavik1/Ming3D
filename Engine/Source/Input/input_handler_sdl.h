@@ -19,8 +19,11 @@ namespace Ming3D
 
         void HandleKeyDown(SDL_Keycode inKeycode);
         void HandleKeyUp(SDL_Keycode inKeycode);
+        void HandleControllerButtonDown(Uint8 button);
+        void HandleControllerButtonUp(Uint8 button);
         void HandleAxis2D(Uint8 axis, Sint16 value);
         KeyCode GetKeyCode(SDL_Keycode inKeycode);
+        KeyCode GetControllerKeyCode(Uint8 keycode);
     };
 }
 
