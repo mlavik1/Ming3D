@@ -9,6 +9,8 @@
 #include "Actors/actor.h"
 #include "graphics_data.h"
 
+#define MODELLOADERFLAGS_UNLIT 1
+
 // Forward declarations
 class aiScene;
 class aiMesh;
