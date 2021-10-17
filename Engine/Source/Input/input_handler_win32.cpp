@@ -5,6 +5,11 @@
 
 namespace Ming3D
 {
+    void InputHandlerWin32::Initialise()
+    {
+
+    }
+
     void InputHandlerWin32::Update()
     {
 

@@ -1,11 +1,24 @@
 #include "input_handler_sdl.h"
 #include "GameEngine/game_engine.h"
 #include "input_manager.h"
+#include "SDL2/SDL_gamecontroller.h"
 
 namespace Ming3D
 {
+    void InputHandlerSDL::Initialise()
+    {
+        SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER);
+
+        if(SDL_IsGameController(0))
+            SDL_GameControllerOpen(0);
+    }
+
     void InputHandlerSDL::Update()
     {
+        // TODO: Do this on init
+        //if (SDL_WasInit(SDL_INIT_GAMECONTROLLER) != 1)
+	    //    SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER);
+
         SDL_Event sdlEvent;
         while (SDL_PollEvent(&sdlEvent))
         {
@@ -16,6 +29,15 @@ namespace Ming3D
                 break;
             case SDL_KEYUP:
                 HandleKeyUp(sdlEvent.key.keysym.sym);
+                break;
+            case SDL_CONTROLLERBUTTONDOWN:
+                HandleControllerButtonDown(sdlEvent.cbutton.button);
+                break;
+            case SDL_CONTROLLERBUTTONUP:
+                HandleControllerButtonUp(sdlEvent.cbutton.button);
+                break;
+            case SDL_CONTROLLERAXISMOTION:
+                HandleAxis2D(sdlEvent.caxis.axis, sdlEvent.caxis.value);
                 break;
             }
         }
@@ -37,6 +59,58 @@ namespace Ming3D
         inputEvent.mKey.mKeyCode = GetKeyCode(inKeycode);
         if (inputEvent.mKey.mKeyCode != KeyCode::None)
             GGameEngine->GetInputManager()->AddInputEvent(inputEvent);
+    }
+
+    void InputHandlerSDL::HandleControllerButtonDown(Uint8 button)
+    {
+        InputEvent inputEvent;
+        inputEvent.mType = InputEventType::KeyDown;
+        inputEvent.mKey.mKeyCode = GetControllerKeyCode(button);
+        if (inputEvent.mKey.mKeyCode != KeyCode::None)
+            GGameEngine->GetInputManager()->AddInputEvent(inputEvent);
+    }
+
+    void InputHandlerSDL::HandleControllerButtonUp(Uint8 button)
+    {
+        InputEvent inputEvent;
+        inputEvent.mType = InputEventType::KeyUp;
+        inputEvent.mKey.mKeyCode = GetControllerKeyCode(button);
+        if (inputEvent.mKey.mKeyCode != KeyCode::None)
+            GGameEngine->GetInputManager()->AddInputEvent(inputEvent);
+    }    
+
+    void InputHandlerSDL::HandleAxis2D(Uint8 axis, Sint16 value)
+    {
+        InputEvent inputEvent;
+        inputEvent.mType = InputEventType::Axis2D;
+        if(axis == SDL_CONTROLLER_AXIS_LEFTX)
+        {
+            mLeftConrollerAxis.x = ((static_cast<int>(value) + 32768) / 65535.0f) * 2.0f - 1.0f;
+            inputEvent.mAxis.mAxis = EAxis2D::ControllerAxisLeft;
+            inputEvent.mAxis.mValue = mLeftConrollerAxis;
+            GGameEngine->GetInputManager()->AddInputEvent(inputEvent);
+        }
+        else if(axis == SDL_CONTROLLER_AXIS_LEFTY)
+        {
+            mLeftConrollerAxis.y = ((static_cast<int>(value) + 32768) / 65535.0f) * 2.0f - 1.0f;
+            inputEvent.mAxis.mAxis = EAxis2D::ControllerAxisLeft;
+            inputEvent.mAxis.mValue = mLeftConrollerAxis;
+            GGameEngine->GetInputManager()->AddInputEvent(inputEvent);
+        }
+        else if(axis == SDL_CONTROLLER_AXIS_RIGHTX)
+        {
+            mRightConrollerAxis.x = ((static_cast<int>(value) + 32768) / 65535.0f) * 2.0f - 1.0f;
+            inputEvent.mAxis.mAxis = EAxis2D::ControllerAxisRight;
+            inputEvent.mAxis.mValue = mRightConrollerAxis;
+            GGameEngine->GetInputManager()->AddInputEvent(inputEvent);
+        }
+        else if(axis == SDL_CONTROLLER_AXIS_RIGHTY)
+        {
+            mRightConrollerAxis.y = ((static_cast<int>(value) + 32768) / 65535.0f) * 2.0f - 1.0f;
+            inputEvent.mAxis.mAxis = EAxis2D::ControllerAxisRight;
+            inputEvent.mAxis.mValue = mRightConrollerAxis;
+            GGameEngine->GetInputManager()->AddInputEvent(inputEvent);
+        }
     }
 
     KeyCode InputHandlerSDL::GetKeyCode(SDL_Keycode inKeycode)
@@ -90,6 +164,19 @@ namespace Ming3D
         case SDLK_b: return KeyCode::Key_B;
         case SDLK_n: return KeyCode::Key_N;
         case SDLK_m: return KeyCode::Key_M;
+        default:
+            return KeyCode::None;
+        }
+    }
+
+    KeyCode InputHandlerSDL::GetControllerKeyCode(Uint8 keycode)
+    {
+        switch (keycode)
+        {
+        case SDL_CONTROLLER_BUTTON_A: return KeyCode::Pad_A;
+        case SDL_CONTROLLER_BUTTON_B: return KeyCode::Pad_B;
+        case SDL_CONTROLLER_BUTTON_X: return KeyCode::Pad_X;
+        case SDL_CONTROLLER_BUTTON_Y: return KeyCode::Pad_Y;
         default:
             return KeyCode::None;
         }

@@ -12,6 +12,7 @@ namespace Ming3D
     public:
         LRESULT HandleWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
+        virtual void Initialise() override;
         virtual void Update() override;
 
     private:

@@ -73,6 +73,7 @@ namespace Ming3D
         mPlatform->Initialise();
         mMainWindow = mPlatform->CreateOSWindow();
         mInputHandler = mPlatform->CreateInputHandler();
+        mInputHandler->Initialise(),
         mInputManager = new InputManager();
         mRenderDevice = mPlatform->CreateRenderDevice();
         mMainRenderWindow = CreateRenderWindow(mMainWindow);

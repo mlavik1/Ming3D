@@ -55,6 +55,25 @@ namespace Ming3D
             mKeyPressStateMap[inEvent.mKey.mKeyCode] = false;
             break;
         }
+        case InputEventType::Axis2D:
+        {
+            mAxisValues[inEvent.mAxis.mAxis] = inEvent.mAxis.mValue;
+            break;
         }
+        }
+    }
+
+    glm::vec2 InputManager::GetMousePosition() const
+    {
+        return mMousePosition;
+    }
+
+    glm::vec2 InputManager::GetAxis2D(EAxis2D axis) const
+    {
+        auto it = mAxisValues.find(axis);
+        if(it != mAxisValues.end())
+            return it->second;
+        else
+            return glm::vec2(0.0f, 0.0f);
     }
 }

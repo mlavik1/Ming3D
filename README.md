@@ -14,8 +14,8 @@ __Requirements__
 
 __WINDOWS__
 - Clone (recursively, since it contains modules): git clone --recursive https://github.com/mlavik1/Ming3D
-- Open CMake, and set source code directory ("Where is the source code: " in CMake GUI) to the repository root directory
-- Configure and Generate
+- Open CMake, and set source code directory ("Where is the source code: " in CMake GUI) to the repository root directory.
+- Configure and Generate.
 - Optionally: For the sample projects, modify the "SampleProject" variable to select the type of sample you want to use.
 
 __LINUX__

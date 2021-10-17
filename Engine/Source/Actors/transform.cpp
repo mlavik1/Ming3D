@@ -3,6 +3,7 @@
 #include "glm/gtx/quaternion.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/rotate_vector.hpp"
+#include "glm/gtx/matrix_decompose.hpp"
 #include "actor.h"
 
 namespace Ming3D
@@ -38,6 +39,21 @@ namespace Ming3D
         mLocalRotation = inRot;
         mWorldRotation = mParentTransform == nullptr ? mLocalRotation : mParentTransform->GetWorldTransformMatrix() * glm::toMat4(mLocalRotation);
         UpdateTransformMatrix();
+    }
+
+    void Transform::SetLocalTransformMatrix(glm::mat4 mat)
+    {
+        // TODO: Optimise this
+        
+        glm::vec3 scale;
+        glm::quat rotation;
+        glm::vec3 translation;
+        glm::vec3 skew;
+        glm::vec4 perspective;
+        glm::decompose(mat, scale, rotation, translation, skew, perspective);
+        SetLocalPosition(translation);
+        SetLocalScale(scale);
+        SetLocalRotation(rotation);
     }
 
     void Transform::SetWorldPosition(glm::vec3 inPosition)
