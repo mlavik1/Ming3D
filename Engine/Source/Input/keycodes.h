@@ -51,7 +51,11 @@ namespace Ming3D
         Key_Up,
         Key_Down,
         Key_Right,
-        Key_Left
+        Key_Left,
+        Pad_A,
+        Pad_B,
+        Pad_X,
+        Pad_Y
     };
 
     enum class MouseButton
@@ -59,6 +63,12 @@ namespace Ming3D
         Left,
         Middle,
         Right
+    };
+
+    enum class EAxis2D
+    {
+        ControllerAxisLeft,
+        ControllerAxisRight
     };
 }
 

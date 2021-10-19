@@ -2,7 +2,6 @@
 #define MING3D_RENDER_DEVICE_GL_H
 
 #include "render_device.h"
-#include <GL/glew.h>
 #include "glm/glm.hpp"
 #include "render_target_gl.h"
 #include "shader_program_gl.h"

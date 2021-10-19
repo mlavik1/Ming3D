@@ -3,6 +3,7 @@
 #include "shader_parser.h"
 #include "shader_cache.h"
 #include "Texture/texture_loader.h"
+#include "GameEngine/game_engine.h"
 
 namespace Ming3D
 {
@@ -59,8 +60,8 @@ namespace Ming3D
     {
         if (mDefaultGUIMaterial == nullptr)
         {
-            mDefaultGUIMaterial = CreateMaterial("Resources/Shaders/gui.cgp");
-            Texture* whiteTex = TextureLoader::LoadTextureData("Resources/default-white.png");
+            mDefaultGUIMaterial = CreateMaterial(GGameEngine->GetResourceDirectory() + std::string("/Shaders/gui.cgp"));
+            Texture* whiteTex = TextureLoader::LoadTextureData(GGameEngine->GetResourceDirectory() + std::string("/default-white.png"));
             mDefaultGUIMaterial->SetTexture(0, whiteTex);
         }
         return mDefaultGUIMaterial;

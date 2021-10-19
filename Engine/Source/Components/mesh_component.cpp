@@ -34,17 +34,21 @@ namespace Ming3D
         Super::InitialiseComponent();
     }
 
-    void MeshComponent::SetMesh(Mesh* inMesh)
+    void MeshComponent::SetMesh(Mesh* inMesh, bool dynamic)
     {
         mMesh = inMesh;
-        mRenderObject->SetMesh(inMesh);
-
+        mRenderObject->SetMesh(inMesh, dynamic);
     }
 
     void MeshComponent::SetMaterial(Material* inMat)
     {
         mMaterial = inMat;
         mRenderObject->SetMaterial(inMat);
+    }
+
+    void MeshComponent::ReuploadVertexData()
+    {
+        mRenderObject->ReuploadVertexData(mMesh);
     }
 
     void MeshComponent::Tick(float inDeltaTime)

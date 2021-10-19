@@ -34,7 +34,8 @@ shader FragmentShader
 {
     void main(FSInput input)
     {
-        vec4 col = ReadTexture(mainTexture, input.TexCoord) * input.Colour;
+        vec4 col = ReadTexture(mainTexture, input.TexCoord);
+        col = vec4(col.r * input.Colour.r, col.g * input.Colour.g, col.b * input.Colour.b, col.a * input.Colour.a);
 
         SetFragmentColour(col);
     }

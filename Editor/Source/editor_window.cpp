@@ -40,8 +40,6 @@ namespace Ming3D
             actor1->GetTransform().SetLocalPosition(glm::vec3(-1.5f, 0.0f, 0.0f));
             actor1->GetTransform().SetLocalScale(glm::vec3(2.0f, 2.0f, 2.0f));
             actor1->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
-            //MeshComponent* meshComp1 = actor1->AddComponent<MeshComponent>();
-            //meshComp1->SetMesh("Resources//Mvr_PetCow_walk.dae");
             GGameEngine->GetWorld()->AddActor(actor1);
             mSceneHierarchyView->AddActor(actor1);
             mPropertyInspector->SelectActor(actor1);

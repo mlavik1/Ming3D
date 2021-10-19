@@ -23,9 +23,10 @@ namespace Ming3D
         MeshComponent();
         ~MeshComponent();
         virtual void InitialiseComponent();
-        void SetMesh(Mesh* inMesh);
+        void SetMesh(Mesh* inMesh, bool dynamic = false);
         void SetMaterial(Material* inMat);
-    
+        void ReuploadVertexData();
+
         virtual void Tick(float inDeltaTime) override;
 
         Mesh* GetMesh() { return mMesh; };

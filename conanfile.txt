@@ -1,0 +1,18 @@
+[requires]
+opengl/system
+glew/2.2.0
+assimp/5.0.1
+physx/4.1.1
+sdl2/2.0.14@bincrafters/stable
+sdl2_image/2.0.5@bincrafters/stable
+
+[generators]
+cmake_find_package
+
+[options]
+physx:shared=False
+sdl2:jack=False
+
+[imports]
+bin, *.dll -> ./bin
+lib, *.so* -> ./lib

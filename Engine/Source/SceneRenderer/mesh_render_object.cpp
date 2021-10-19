@@ -10,7 +10,7 @@
 
 namespace Ming3D
 {
-    void MeshRenderObject::SetMesh(Mesh* mesh)
+    void MeshRenderObject::SetMesh(Mesh* mesh, bool dynamic)
     {
         Rendering::RenderDevice* renderDevice = GGameEngine->GetRenderDevice();
 
@@ -22,8 +22,10 @@ namespace Ming3D
         if (mMeshBuffer->mIndexBuffer != nullptr)
             delete mMeshBuffer->mIndexBuffer;
 
-        mMeshBuffer->mVertexBuffer = renderDevice->CreateVertexBuffer(mesh->mVertexData, Rendering::EBufferUsage::StaticDraw);
-        mMeshBuffer->mIndexBuffer = renderDevice->CreateIndexBuffer(mesh->mIndexData, Rendering::EBufferUsage::StaticDraw);
+        Rendering::EBufferUsage bufferUsage = dynamic ? Rendering::EBufferUsage::DynamicDraw : Rendering::EBufferUsage::StaticDraw;
+
+        mMeshBuffer->mVertexBuffer = renderDevice->CreateVertexBuffer(mesh->mVertexData, bufferUsage);
+        mMeshBuffer->mIndexBuffer = renderDevice->CreateIndexBuffer(mesh->mIndexData, bufferUsage);
     }
 
     void MeshRenderObject::SetMaterial(Material* material)
@@ -34,6 +36,12 @@ namespace Ming3D
     void MeshRenderObject::SetTransform(glm::mat4 trans)
     {
         mModelMatrix = trans;
+    }
+
+    void MeshRenderObject::ReuploadVertexData(Mesh* mesh)
+    {
+        Rendering::RenderDevice* renderDevice = GGameEngine->GetRenderDevice();
+        renderDevice->UpdateVertexBuffer(mMeshBuffer->mVertexBuffer, mesh->mVertexData);
     }
 
     int MeshRenderObject::GetNumBatches()

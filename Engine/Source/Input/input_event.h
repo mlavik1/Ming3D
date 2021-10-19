@@ -11,26 +11,33 @@ namespace Ming3D
         KeyDown,
         KeyUp,
         MouseButtonDown,
-        MouseButtonUp
+        MouseButtonUp,
+        Axis2D
     };
 
     struct KeyboardEvent
     {
-        InputEventType mType;
         KeyCode mKeyCode;
     };
 
     struct MouseButtonEvent
     {
-        InputEventType mType;
         MouseButton mButton;
     };
 
-    union InputEvent
+    struct Axis2DEvent
+    {
+        EAxis2D mAxis;
+        glm::vec2 mValue;
+    };
+
+    struct InputEvent
     {
         InputEventType mType; // common for all
         KeyboardEvent mKey;
         MouseButtonEvent mMouseButton;
+        Axis2DEvent mAxis;
+        // TODO: Use std::variant or union?
     };
 }
 

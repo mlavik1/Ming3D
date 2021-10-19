@@ -36,14 +36,14 @@ int main()
     skybox->GetTransform().SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
     skybox->GetTransform().SetLocalScale(glm::vec3(-50.0f, 50.0f, 50.0f));
     gameEngine->GetWorld()->AddActor(skybox);
-    ModelLoader::LoadModel("Resources//Skybox//Skybox.obj", skybox, MODELLOADERFLAGS_UNLIT);
+    ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Skybox/Skybox.obj"), skybox, MODELLOADERFLAGS_UNLIT);
 
     Actor* actor1 = new Actor();
     actor1->GetTransform().SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
-    actor1->GetTransform().SetLocalScale(glm::vec3(2.0f, 2.0f, 2.0f));
+    actor1->GetTransform().SetLocalScale(glm::vec3(50.0f, 50.0f, 50.0f));
     actor1->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
     gameEngine->GetWorld()->AddActor(actor1);
-    ModelLoader::LoadModel("Resources//Mvr_PetCow_walk.dae", actor1);
+    ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Mvr_PetCow_walk.dae"), actor1);
 
     Actor* guiActor = new Actor();
     guiActor->GetTransform().SetLocalPosition(glm::vec3(0.0f, 0.0f, 0.0f));
@@ -65,7 +65,7 @@ int main()
     widgetComp->SetWidget(rootWidget);
     gameEngine->GetWorld()->AddActor(guiActor);
 
-    Texture* texxx = TextureLoader::LoadTextureData("Resources/texture.jpg");
+    Texture* texxx = TextureLoader::LoadTextureData(GGameEngine->GetResourceDirectory() + std::string("/texture.jpg"));
     img2->SetTexture(texxx);
     img2->SetColour(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 

@@ -1,17 +1,16 @@
 #ifdef MING3D_OPENGL
 #include "render_device_gl.h"
-
 #include "vertex_buffer_gl.h"
 #include "index_buffer_gl.h"
 #include "render_target_gl.h"
 #include "shader_program_gl.h"
 #include "texture_buffer_gl.h"
 #include "constant_buffer_gl.h"
-
 #include "Debug/debug.h"
 #include "Debug/st_assert.h"
 #include "shader_writer_glsl.h"
 #include "Debug/debug_stats.h"
+#include <GL/glew.h>
 
 namespace Ming3D::Rendering
 {
@@ -295,8 +294,10 @@ namespace Ming3D::Rendering
 
         glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, inTextureInfo.mWidth, inTextureInfo.mHeight, 0, pixelFormat, GL_UNSIGNED_BYTE, buffer);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        GLint wrapMode = inTextureInfo.mTextureWrapMode == TextureWrapMode::Clamp ? GL_CLAMP_TO_EDGE : GL_REPEAT;
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapMode);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapMode);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 

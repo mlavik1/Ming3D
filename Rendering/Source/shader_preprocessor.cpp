@@ -1,13 +1,13 @@
 #include "shader_preprocessor.h"
 #include <ctype.h>
 #include <fstream>
+#include <filesystem>
 
 namespace Ming3D::Rendering
 {
-    ShaderPreprocessor::ShaderPreprocessor(TokenParser& inTokenParser)
-        : mTokenParser(inTokenParser)
+    ShaderPreprocessor::ShaderPreprocessor(TokenParser& inTokenParser, const std::string shaderPath)
+        : mTokenParser(inTokenParser), mShaderPath(shaderPath)
     {
-
     }
 
     bool ShaderPreprocessor::IsCurrentScopeIgnored()
@@ -15,7 +15,7 @@ namespace Ming3D::Rendering
         return !mScopeStack.empty() && mScopeStack.top().mIgnoreContent;
     }
 
-    PreprocessorDirective ShaderPreprocessor::GetPreprocessorDirective(const std::string& inToken)
+    PreprocessorDirective ShaderPreprocessor::GetPreprocessorDirective(const std::string inToken)
     {
         if (inToken == "#define")
         {
@@ -97,9 +97,10 @@ namespace Ming3D::Rendering
             {
                 mTokenParser.Advance();
                 // Read included file
-                std::string includePath = mTokenParser.GetCurrentToken().mTokenString;
-                includePath = includePath.substr(1, includePath.size() - 2);
-                std::ifstream shaderFile(includePath);
+                std::string includePathLocal = mTokenParser.GetCurrentToken().mTokenString;
+                includePathLocal = includePathLocal.substr(1, includePathLocal.size() - 2);
+                std::filesystem::path includePath = std::filesystem::absolute(mShaderPath).parent_path() / std::filesystem::path(includePathLocal);
+                std::ifstream shaderFile(includePath.string());
                 std::string shaderString((std::istreambuf_iterator<char>(shaderFile)), std::istreambuf_iterator<char>());
 
                 // Parse included file

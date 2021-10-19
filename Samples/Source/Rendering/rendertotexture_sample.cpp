@@ -3,6 +3,7 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "shader_parser.h"
+#include "GameEngine/game_engine.h"
 
 namespace Ming3D
 {
@@ -19,8 +20,8 @@ namespace Ming3D
         rtargetTexInfo.mHeight = mMainWindow->GetHeight();
         mTextureRenderTarget = mRenderDevice->CreateRenderTarget(rtargetTexInfo, 1);
 
-        mModels.push_back(LoadModel("Resources//Mvr_PetCow_walk.dae"));
-        mModels.push_back(LoadModel("Resources//test.dae"));
+        mModels.push_back(LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Mvr_PetCow_walk.dae")));
+        mModels.push_back(LoadModel(GGameEngine->GetResourceDirectory() + std::string("/test.dae")));
 
         MeshData* screenRectMesh = CreateRectangleMesh(2.0f, 2.0f);
         screenRectMesh->mTexture = mModels[1]->mMeshes[0]->mTexture;
@@ -54,7 +55,7 @@ namespace Ming3D
             // TODO: Use different shaders, based on vertex layout?
             Rendering::ShaderParser parser;
             Rendering::ShaderParserParams params;
-            params.mShaderProgramPath = "Resources/Shaders/defaultshader.cgp";
+            params.mShaderProgramPath = GGameEngine->GetResourceDirectory() + std::string("/Shaders/defaultshader.cgp");
             Rendering::ParsedShaderProgram* prog = parser.ParseShaderProgram(params);
             modelData->mShaderProgram = mRenderDevice->CreateShaderProgram(prog);
         }

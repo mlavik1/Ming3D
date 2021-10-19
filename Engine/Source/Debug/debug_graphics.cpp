@@ -17,7 +17,7 @@ namespace Ming3D
     void DebugGraphics::DrawBox(const glm::vec3& boxPos, const glm::vec3& boxSize, const glm::vec4& boxColour)
     {
         Mesh* mesh = PrimitiveFactory::CreateBox(boxSize);
-        Material* mat = MaterialFactory::CreateMaterial("Resources/Shaders/debuggraphics.cgp");
+        Material* mat = MaterialFactory::CreateMaterial(GGameEngine->GetResourceDirectory() + std::string("/Shaders/debuggraphics.cgp"));
 
         MeshRenderObject* renderObject = new MeshRenderObject();
         renderObject->SetMesh(mesh);

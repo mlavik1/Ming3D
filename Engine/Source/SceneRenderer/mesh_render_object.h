@@ -18,9 +18,11 @@ namespace Ming3D
         glm::mat4 mModelMatrix;
 
     public:
-        void SetMesh(Mesh* mesh);
+        void SetMesh(Mesh* mesh, bool dynamic = false);
         void SetMaterial(Material* material);
         void SetTransform(glm::mat4 trans);
+
+        void ReuploadVertexData(Mesh* mesh);
 
         virtual int GetNumBatches() override;
         virtual void GetRenderBatch(int batchIndex, RenderBatch* outBatch) override;
