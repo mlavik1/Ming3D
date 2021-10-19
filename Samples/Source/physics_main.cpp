@@ -13,7 +13,6 @@
 #include "glm/gtx/rotate_vector.hpp"
 
 #include <iostream>
-#include "SceneRenderer/render_scene_object.h" // TEMP
 
 using namespace Ming3D;
 
@@ -31,23 +30,23 @@ int main()
 
     Actor* actor1 = new Actor();
     actor1->GetTransform().SetLocalPosition(glm::vec3(-1.0f, -2.0f, 1.0f));
-    actor1->GetTransform().SetLocalScale(glm::vec3(2.0f, 2.0f, 2.0f));
+    actor1->GetTransform().SetLocalScale(glm::vec3(50.0f, 50.0f, 50.0f));
     actor1->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
     ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Mvr_PetCow_walk.dae"), actor1);
     RigidBodyComponent* rigidComp1 = actor1->AddComponent<RigidBodyComponent>();
     rigidComp1->SetKinematic(true);
     BoxColliderComponent* boxComp1 = actor1->AddComponent<BoxColliderComponent>();
-    boxComp1->SetSize(glm::vec3(0.25f, 0.25f, 0.25f));
+    boxComp1->SetSize(glm::vec3(0.01f, 0.01f, 0.01f));
     gameEngine->GetWorld()->AddActor(actor1);
     
     Actor* actor2 = new Actor();
     actor2->GetTransform().SetLocalPosition(glm::vec3(0.0f, 1.0f, 0.0f));
-    actor2->GetTransform().SetLocalScale(glm::vec3(2.0f, 2.0f, 2.0f));
+    actor2->GetTransform().SetLocalScale(glm::vec3(50.0f, 50.0f, 50.0f));
     actor2->GetTransform().SetLocalRotation(glm::angleAxis(30.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 0.0f, 1.0f)));
     ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Mvr_PetCow_walk.dae"), actor2);
     RigidBodyComponent* rigidComp2 = actor2->AddComponent<RigidBodyComponent>();
     BoxColliderComponent* boxComp2 = actor2->AddComponent<BoxColliderComponent>();
-    boxComp2->SetSize(glm::vec3(0.25f, 0.25f, 0.25f));
+    boxComp2->SetSize(glm::vec3(0.01f, 0.01f, 0.01f));
     gameEngine->GetWorld()->AddActor(actor2);
 
     DebugGraphics::DrawBox(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.2f, 1.2f, 1.2f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
