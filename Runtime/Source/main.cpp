@@ -19,6 +19,8 @@
 #include "Texture/texture_loader.h"
 #include "GUI/image_widget.h"
 #include "Components/widget_component.h"
+#include "GUI/font_helper.h"
+#include "GUI/text_widget.h"
 
 using namespace Ming3D;
 
@@ -57,7 +59,7 @@ int main()
     img1->setSize(0.5f, 0.5f, WidgetSizeMode::Relative);
     img1->SetColour(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
     rootWidget->addWidget(img1);
-    ImageWidget* img2 = new ImageWidget();
+    /*ImageWidget* img2 = new ImageWidget();
     img2->setPosition(0.5f, 0.5f, WidgetSizeMode::Relative);
     img2->setSize(0.5f, 0.5f, WidgetSizeMode::Relative);
     img2->SetColour(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
@@ -65,9 +67,25 @@ int main()
     widgetComp->SetWidget(rootWidget);
     gameEngine->GetWorld()->AddActor(guiActor);
 
-    Texture* texxx = TextureLoader::LoadTextureData(GGameEngine->GetResourceDirectory() + std::string("/texture.jpg"));
+    //Texture* texxx = TextureLoader::LoadTextureData(GGameEngine->GetResourceDirectory() + std::string("/texture.jpg"));
+    //FontFace* fontFace = FontHelper::LoadFontFace("D:/NotoSansCJKjp-Regular.otf");
+    FontFace* fontFace = FontHelper::LoadFontFace("D:/FreeSans.ttf");
+    Texture* texxx = fontFace->mTexture;
     img2->SetTexture(texxx);
-    img2->SetColour(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+    img2->SetColour(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));*/
+
+    TextWidget* txtWidget = new TextWidget();
+    txtWidget->setPosition(0.5f, 0.5f, WidgetSizeMode::Relative);
+    txtWidget->setSize(0.5f, 0.5f, WidgetSizeMode::Relative);
+    txtWidget->SetFontFace(FontHelper::LoadFontFace("D:/FreeSans.ttf"));
+    txtWidget->SetText(L"Ming3D");
+    //txtWidget->SetColour(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+    rootWidget->addWidget(txtWidget);
+    
+    
+    
+    widgetComp->SetWidget(rootWidget);
+    gameEngine->GetWorld()->AddActor(guiActor);
 
     const float camSpeed = 3.0f;
     const float camRotSpeed = 1.0f;
