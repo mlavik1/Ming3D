@@ -1,5 +1,7 @@
 #include "text_widget.h"
 #include "text_visual.h"
+#include "GameEngine/game_engine.h"
+#include "GUI/font_manager.h"
 
 namespace Ming3D
 {
@@ -19,8 +21,15 @@ namespace Ming3D
         mTextVisual->SetText(text);
     }
 
-    void TextWidget::SetFontFace(FontFace* fontFace)
+    void TextWidget::SetFont(const std::string font, const int fontSize)
     {
-        mTextVisual->SetFontFace(fontFace);
+        mFontFace = GGameEngine->GetFontManager()->GetFontFace(font, 14);
+        mTextVisual->SetFontFace(mFontFace);
+        mTextVisual->SetFontScale(fontSize / 12);
+    }
+
+    void TextWidget::SetColour(glm::vec4 colour)
+    {
+        mTextVisual->SetColour(colour);
     }
 }

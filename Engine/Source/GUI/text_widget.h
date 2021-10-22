@@ -11,12 +11,14 @@ namespace Ming3D
     {
     private:
         TextVisual* mTextVisual;
+        FontFace* mFontFace;
 
     public:
         TextWidget();
         ~TextWidget();
 
         void SetText(const std::wstring text);
-        void SetFontFace(FontFace* fontFace);
+        void SetFont(const std::string font, const int fontSize);
+        void SetColour(glm::vec4 colour);
     };
 }

@@ -19,7 +19,6 @@
 #include "Texture/texture_loader.h"
 #include "GUI/image_widget.h"
 #include "Components/widget_component.h"
-#include "GUI/font_helper.h"
 #include "GUI/text_widget.h"
 
 using namespace Ming3D;
@@ -77,9 +76,9 @@ int main()
     TextWidget* txtWidget = new TextWidget();
     txtWidget->setPosition(0.5f, 0.5f, WidgetSizeMode::Relative);
     txtWidget->setSize(0.5f, 0.5f, WidgetSizeMode::Relative);
-    txtWidget->SetFontFace(FontHelper::LoadFontFace("D:/FreeSans.ttf"));
-    txtWidget->SetText(L"Hello Ming3D");
-    //txtWidget->SetColour(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+    txtWidget->SetFont("D:/FreeSans.ttf", 42);
+    txtWidget->SetText(L"Hello Ming3D!");
+    txtWidget->SetColour(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
     rootWidget->addWidget(txtWidget);
     
     

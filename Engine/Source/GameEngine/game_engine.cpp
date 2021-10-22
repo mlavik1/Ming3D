@@ -16,6 +16,7 @@
 #include "Input/input_manager.h"
 #include "Debug/debug_stats.h"
 #include "Window/render_window_handle.h"
+#include "GUI/font_manager.h"
 
 #ifdef MING3D_PHYSX
 #include "Physics/API/PhysX/physics_manager_physx.h"
@@ -52,6 +53,8 @@ namespace Ming3D
         mPhysicsManager = new PhysicsManagerNull();
 #endif
         mNetworkManager = new NetworkManager();
+
+        mFontManager = new FontManager();
     }
 
 	GameEngine::~GameEngine()
@@ -65,6 +68,7 @@ namespace Ming3D
         delete mNetworkManager;
         delete mPhysicsManager;
         delete mPlatform;
+        delete mFontManager;
     }
 
 	void GameEngine::Initialise()

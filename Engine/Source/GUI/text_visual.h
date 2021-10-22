@@ -19,6 +19,7 @@ namespace Ming3D
         glm::vec4 mColour;
         Material* mMaterial;
         FontFace* mFontFace;
+        float mFontScale;
 
     public:
         TextVisual();
@@ -32,5 +33,6 @@ namespace Ming3D
         void SetText(const std::wstring text);
         void SetFontFace(FontFace* fontFace);
         void SetColour(glm::vec4 colour);
+        void SetFontScale(float scale);
     };
 }

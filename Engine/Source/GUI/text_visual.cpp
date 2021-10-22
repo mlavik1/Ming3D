@@ -11,6 +11,7 @@ namespace Ming3D
         mColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
         mMaterial = MaterialFactory::GetDefaultGUIMaterial();
         mFontFace = nullptr;
+        mFontScale = 1.0f;
     }
 
     TextVisual::~TextVisual()
@@ -25,7 +26,6 @@ namespace Ming3D
         mIndexData.reserve(6 * mText.size());
 
         const glm::vec2 startOrigin(visibleRect.mPosition.x, visibleRect.mPosition.y - visibleRect.mSize.x * 0.5f);
-        const float textScale = 5.0f; // TODO: Expose to widget?
         
         // Text origin
         glm::vec2 currOrigin = startOrigin;
@@ -39,10 +39,10 @@ namespace Ming3D
                 continue;
             
             // Calculate position and size
-            const float x = currOrigin.x + glyph.mBearingX * textScale;
-            const float y = currOrigin.y - (glyph.mHeight - glyph.mBearingY) * textScale;
-            const float w = glyph.mWidth * textScale;
-            const float h = glyph.mHeight * textScale;
+            const float x = currOrigin.x + glyph.mBearingX * mFontScale;
+            const float y = currOrigin.y - (glyph.mHeight - glyph.mBearingY) * mFontScale;
+            const float w = glyph.mWidth * mFontScale;
+            const float h = glyph.mHeight * mFontScale;
 
             // Invert Y
             glyph.mTexCoord = glm::vec2(glyph.mTexCoord.x, 1.0f - glyph.mTexCoord.y);
@@ -62,7 +62,7 @@ namespace Ming3D
             mVertexData[iVert + 3].mTexCoord = glyph.mTexCoord + glm::vec2(glyph.mTexSize.x, -glyph.mTexSize.y);
 
             // Advance to next character
-            currOrigin.x += glyph.mAdvance * textScale;
+            currOrigin.x += glyph.mAdvance * mFontScale;
 
             mIndexData.push_back(iVert + 0);
             mIndexData.push_back(iVert + 3);
@@ -100,14 +100,19 @@ namespace Ming3D
     void TextVisual::SetFontFace(FontFace* fontFace)
     {
         mFontFace = fontFace;
-        mMaterial = new Material(mMaterial);
-        mMaterial->SetTexture(0, mFontFace->mTexture); // TODO !!!
+        mMaterial = fontFace->mMaterial;
         mVisualInvalidated = true;
     }
 
     void TextVisual::SetColour(glm::vec4 colour)
     {
         mColour = colour;
+        mVisualInvalidated = true;
+    }
+
+    void TextVisual::SetFontScale(float scale)
+    {
+        mFontScale = scale;
         mVisualInvalidated = true;
     }
 }

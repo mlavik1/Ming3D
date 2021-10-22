@@ -1,8 +1,10 @@
-#include "font_helper.h"
+#include "font_manager.h"
 #include "freetype2/freetype/freetype.h"
 #include <iostream>
 #include <cmath>
 #include <vector>
+#include <filesystem>
+#include "Model/material_factory.h"
 
 namespace Ming3D
 {
@@ -11,15 +13,19 @@ namespace Ming3D
         return std::pow(2, std::ceil(std::log(x) / std::log(2)));
     }
 
-    FontFace* FontHelper::LoadFontFace(const std::string fontPath)
+    FontFace* FontManager::GetFontFace(const std::string fontPath, int fontSize)
     {
-        const unsigned int fontSize = 12;
+        std::string fontName = std::filesystem::absolute(fontPath).filename().string();
+        std::string fontHash = fontPath + std::to_string(fontSize);
 
-        FT_Error error;
+        // Check if font already has been loaded
+        auto it = mFontFaces.find(fontHash);
+        if (it != mFontFaces.end())
+            return it->second;
 
         // Load FreeType
         FT_Library ftlib;
-        error = FT_Init_FreeType(&ftlib);
+        FT_Error error = FT_Init_FreeType(&ftlib);
         if (error != FT_Err_Ok)
         {
             std::cout << "FT_Init_FreeType failed with error code: " << error << std::endl;
@@ -110,6 +116,12 @@ namespace Ming3D
 
         fontFace->mTexture = new Texture();
         fontFace->mTexture->SetTextureData(buffer, 4, PixelFormat::RGBA, fntBmpWidth, fntBmpHeight);
+
+        // Create material (TODO: Maybe not here?)
+        fontFace->mMaterial = new Material(MaterialFactory::GetDefaultGUIMaterial());
+        fontFace->mMaterial->SetTexture(0, fontFace->mTexture);
+
+        mFontFaces.emplace(fontHash, fontFace);
 
         return fontFace;
     }

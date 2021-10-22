@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Texture/texture.h"
+#include "Model/material.h"
 #include "glm/vec2.hpp"
 #include <unordered_map>
 #include <string>
@@ -23,6 +24,7 @@ namespace Ming3D
     class FontFace
     {
     public:
+        Material* mMaterial; // TODO: Maybe not store this here?
         Texture* mTexture;
         std::unordered_map<wchar_t, FontGlyph> mGlyphs;
 
