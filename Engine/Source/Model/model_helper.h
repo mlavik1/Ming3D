@@ -10,6 +10,8 @@
 #include "graphics_data.h"
 
 #define MODELLOADERFLAGS_UNLIT 1
+#define MODELLOADERFLAGS_FORCE_OPAQUE 2
+#define MODELLOADERFLAGS_FORCE_TRANSPARENT 4
 
 // Forward declarations
 class aiScene;

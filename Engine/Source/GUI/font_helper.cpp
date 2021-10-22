@@ -91,10 +91,20 @@ namespace Ming3D
                 }
             }
 
+            const FT_Glyph_Metrics metrics = face->glyph->metrics;
+
             FontGlyph glyphInfo;
             glyphInfo.mTexCoord = glm::vec2(x / static_cast<float>(fntBmpWidth), y / static_cast<float>(fntBmpHeight));
+            
+            glyphInfo.mAdvance = metrics.horiAdvance / 64;
+            glyphInfo.mBearingX = metrics.horiBearingX / 64;
+            glyphInfo.mBearingY = metrics.horiBearingY / 64;
+            glyphInfo.mWidth = metrics.width / 64;
+            glyphInfo.mHeight = metrics.height / 64;
+            
             glyphInfo.mTexSize = glm::vec2(bitmap.width / static_cast<float>(fntBmpWidth), bitmap.rows / static_cast<float>(fntBmpHeight));
             glyphInfo.mRelSize = glm::vec2(bitmap.width / static_cast<float>(fontSize), bitmap.rows / static_cast<float>(fontSize));
+           
             fontFace->mGlyphs.emplace(static_cast<wchar_t>(chars[i]), glyphInfo);
         }
 

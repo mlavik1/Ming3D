@@ -13,6 +13,11 @@ namespace Ming3D
         glm::vec2 mTexCoord;
         glm::vec2 mTexSize;
         glm::vec2 mRelSize; // RENAME
+        int mAdvance;
+        int mBearingX;
+        int mBearingY;
+        int mWidth;
+        int mHeight;
     };
 
     class FontFace

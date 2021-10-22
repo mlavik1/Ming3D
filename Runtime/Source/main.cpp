@@ -38,7 +38,7 @@ int main()
     skybox->GetTransform().SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
     skybox->GetTransform().SetLocalScale(glm::vec3(-50.0f, 50.0f, 50.0f));
     gameEngine->GetWorld()->AddActor(skybox);
-    ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Skybox/Skybox.obj"), skybox, MODELLOADERFLAGS_UNLIT);
+    ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Skybox/Skybox.obj"), skybox, MODELLOADERFLAGS_UNLIT | MODELLOADERFLAGS_FORCE_OPAQUE);
 
     Actor* actor1 = new Actor();
     actor1->GetTransform().SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
@@ -78,7 +78,7 @@ int main()
     txtWidget->setPosition(0.5f, 0.5f, WidgetSizeMode::Relative);
     txtWidget->setSize(0.5f, 0.5f, WidgetSizeMode::Relative);
     txtWidget->SetFontFace(FontHelper::LoadFontFace("D:/FreeSans.ttf"));
-    txtWidget->SetText(L"Ming3D");
+    txtWidget->SetText(L"Hello Ming3D");
     //txtWidget->SetColour(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
     rootWidget->addWidget(txtWidget);
     

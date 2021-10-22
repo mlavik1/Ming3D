@@ -24,6 +24,10 @@ namespace Ming3D
         mIndexData.reserve(6 * mText.size());
 
         const float GLYPH_SIZE = 64.0f;
+        const glm::vec2 startOrigin(visibleRect.mPosition.x, visibleRect.mPosition.y - visibleRect.mSize.x * 0.5f);
+
+        const float textScale = 5.0f;
+        glm::vec2 currOrigin = startOrigin;
 
         for (int iChar = 0; iChar < mText.size(); iChar++)
         {
@@ -34,10 +38,10 @@ namespace Ming3D
             
             int iVert = iChar * 4;
 
-            const float x = visibleRect.mPosition.x + GLYPH_SIZE * iChar;
-            const float y = visibleRect.mPosition.y;
-            const float w = GLYPH_SIZE * glyph.mRelSize.x;
-            const float h = GLYPH_SIZE * glyph.mRelSize.y;
+            const float x = currOrigin.x + glyph.mBearingX * textScale;
+            const float y = currOrigin.y - (glyph.mHeight - glyph.mBearingY) * textScale;
+            const float w = glyph.mWidth * textScale;
+            const float h = glyph.mHeight * textScale;
 
             // Invert Y
             glyph.mTexCoord = glm::vec2(glyph.mTexCoord.x, 1.0f - glyph.mTexCoord.y);
@@ -54,6 +58,21 @@ namespace Ming3D
             mVertexData[iVert + 1].mTexCoord = glyph.mTexCoord + glm::vec2(0.0f, 0.0f);
             mVertexData[iVert + 2].mTexCoord = glyph.mTexCoord + glm::vec2(glyph.mTexSize.x, 0.0f);
             mVertexData[iVert + 3].mTexCoord = glyph.mTexCoord + glm::vec2(glyph.mTexSize.x, -glyph.mTexSize.y);
+
+            currOrigin.x += glyph.mAdvance * textScale;
+
+            /*mVertexData[iVert + 0].mPosition = glm::vec3(x, y, 0.0f);
+            mVertexData[iVert + 1].mPosition = glm::vec3(x, y + h, 0.0f);
+            mVertexData[iVert + 2].mPosition = glm::vec3(x + w, y + h, 0.0f);
+            mVertexData[iVert + 3].mPosition = glm::vec3(x + w, y, 0.0f);
+            mVertexData[iVert + 0].mColour = mColour;
+            mVertexData[iVert + 1].mColour = mColour;
+            mVertexData[iVert + 2].mColour = mColour;
+            mVertexData[iVert + 3].mColour = mColour;
+            mVertexData[iVert + 0].mTexCoord = glyph.mTexCoord + glm::vec2(0.0f, -glyph.mTexSize.y);
+            mVertexData[iVert + 1].mTexCoord = glyph.mTexCoord + glm::vec2(0.0f, 0.0f);
+            mVertexData[iVert + 2].mTexCoord = glyph.mTexCoord + glm::vec2(glyph.mTexSize.x, 0.0f);
+            mVertexData[iVert + 3].mTexCoord = glyph.mTexCoord + glm::vec2(glyph.mTexSize.x, -glyph.mTexSize.y);*/
 
             mIndexData.push_back(iVert + 0);
             mIndexData.push_back(iVert + 3);
