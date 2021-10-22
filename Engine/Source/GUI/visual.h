@@ -5,6 +5,7 @@
 namespace Ming3D
 {
     class Material;
+    class WidgetTree;
     
     enum class VisualType
     {
@@ -19,7 +20,7 @@ namespace Ming3D
     protected:
         bool mVisualInvalidated = true;
         VisualSubmeshNode* mSubmeshData = nullptr;
-        WidgetTree* mWidgetTree;
+        WidgetTree* mWidgetTree = nullptr;
 
     public:
         Visual() {}
