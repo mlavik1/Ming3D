@@ -350,6 +350,12 @@ namespace Ming3D::Rendering
         return depthStencilState;
     }
 
+    BlendState* RenderDeviceGL::CreateBlendState(bool enableBlend, EBlendMode blendMode)
+    {
+        BlendStateGL* blendState = new BlendStateGL(enableBlend, blendMode);
+        return blendState;
+    }
+
     ConstantBuffer* RenderDeviceGL::CreateConstantBuffer(size_t inSize)
     {
         ConstantBufferGL* cb = new ConstantBufferGL();
@@ -428,8 +434,8 @@ namespace Ming3D::Rendering
 
         //glEnable(GL_DEPTH_TEST);
         //glDepthFunc(GL_LEQUAL);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        //glEnable(GL_BLEND);
+        //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         glDepthMask(GL_TRUE); // TODO: Make this adjustable
 
@@ -529,6 +535,19 @@ namespace Ming3D::Rendering
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(glStencilState->mDepthFunc);
         glDepthRange(0.0f, 1.0f);
+
+        CheckGLErrors("SetDepthStencilState");
+    }
+
+    void RenderDeviceGL::SetBlendState(BlendState* inState)
+    {
+        BlendStateGL* blendState = (BlendStateGL*)inState;
+        
+        if(blendState->mBlendEnabled)
+            glEnable(GL_BLEND);
+        else
+            glDisable(GL_BLEND);
+        glBlendFunc(blendState->mSrcFactor, blendState->mDstFactor);
 
         CheckGLErrors("SetDepthStencilState");
     }

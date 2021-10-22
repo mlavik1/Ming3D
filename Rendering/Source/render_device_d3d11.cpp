@@ -14,6 +14,7 @@
 #include "Debug/debug_stats.h"
 #include "shader_info_hlsl.h"
 #include "depth_stencil_view_d3d11.h"
+#include "blend_state_d3d11.h"
 
 namespace Ming3D::Rendering
 {
@@ -670,6 +671,13 @@ namespace Ming3D::Rendering
         return rasteriserState;
     }
 
+    BlendState* RenderDeviceD3D11::CreateBlendState(bool enableBlend, EBlendMode blendMode)
+    {
+        BlendStateD3D11* blendState = new BlendStateD3D11(enableBlend, blendMode);
+        GetDevice()->CreateBlendState(&blendState->mBlendDesc, &blendState->mBlendState);
+        return blendState;
+    }
+
     ConstantBuffer* RenderDeviceD3D11::CreateConstantBuffer(size_t inSize)
     {
         ConstantBufferD3D11* cBuffer = new ConstantBufferD3D11();
@@ -910,6 +918,12 @@ namespace Ming3D::Rendering
     {
         DepthStencilStateD3D11* depthStencilState = (DepthStencilStateD3D11*)inState;
         GetDeviceContext()->OMSetDepthStencilState(depthStencilState->mDepthStencilState, 1);
+    }
+
+    void RenderDeviceD3D11::SetBlendState(BlendState* inState)
+    {
+        BlendStateD3D11* blendState = (BlendStateD3D11*)inState;
+        GetDeviceContext()->OMSetBlendState(blendState->mBlendState, blendState->mBlendFactor, 0xffffffff);
     }
 
     void RenderDeviceD3D11::SetConstantBufferData(ConstantBuffer* inConstantBuffer, void* inData, size_t inSize)

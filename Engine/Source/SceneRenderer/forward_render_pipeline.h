@@ -9,6 +9,7 @@ namespace Ming3D
     namespace Rendering
     {
         class RenderTarget;
+        class BlendState;
     }
 
     class ForwardRenderPipeline : public RenderPipeline
@@ -22,8 +23,15 @@ namespace Ming3D
         void UpdateUniforms(MaterialBuffer* inMat);
         void RenderObjects(RenderPipelineParams& params, ERenderType renderType, Camera* camera, LightSource* mainLightSource, bool shadowPass = false);
 
+        Rendering::BlendState* mOpaqueBlendState = nullptr; // TODO: allow custom blend states
+        Rendering::BlendState* mTransparentBlendState = nullptr; // TODO: allow custom blend states
+
+        bool mInitialised = false;
+
     public:
         virtual void Render(const RenderPipelineContext& context, RenderPipelineParams& params) override;
+    
+        void Initialise();
     };
 }
 

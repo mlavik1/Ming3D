@@ -87,7 +87,7 @@ namespace Ming3D
                     buffer[(y + yy) * fntBmpWidth * 4 + (x + xx) * 4 + 0] = r;
                     buffer[(y + yy) * fntBmpWidth * 4 + (x + xx) * 4 + 1] = r;
                     buffer[(y + yy) * fntBmpWidth * 4 + (x + xx) * 4 + 2] = r;
-                    buffer[(y + yy) * fntBmpWidth * 4 + (x + xx) * 4 + 3] = 255;
+                    buffer[(y + yy) * fntBmpWidth * 4 + (x + xx) * 4 + 3] = r;
                 }
             }
 

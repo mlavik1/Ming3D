@@ -16,6 +16,7 @@
 #include "shader_info.h"
 #include "constant_buffer.h"
 #include "texture_info.h"
+#include "blend_state.h"
 
 #include <string>
 
@@ -42,6 +43,7 @@ namespace Ming3D::Rendering
         virtual RenderWindow* CreateRenderWindow(WindowBase* inWindow) = 0;
         virtual RasteriserState* CreateRasteriserState(RasteriserStateCullMode inCullMode, bool inDepthClipEnabled) = 0;
         virtual DepthStencilState* CreateDepthStencilState(DepthStencilStateDesc inDesc) = 0;
+        virtual BlendState* CreateBlendState(bool enableBlend, EBlendMode blendMode) = 0;
         virtual ConstantBuffer* CreateConstantBuffer(size_t inSize) = 0;
 
         virtual void SetTexture(const TextureBuffer* inTexture, int inSlot) = 0;
@@ -53,6 +55,7 @@ namespace Ming3D::Rendering
         virtual void RenderPrimitive(VertexBuffer* inVertexBuffer, IndexBuffer* inIndexBuffer, unsigned int startIndex, unsigned int indexCount) = 0;
         virtual void SetRasteriserState(RasteriserState* inState) = 0;
         virtual void SetDepthStencilState(DepthStencilState* inState) = 0;
+        virtual void SetBlendState(BlendState* inState) = 0;
         virtual void SetConstantBufferData(ConstantBuffer* inConstantBuffer, void* inData, size_t inSize) = 0;
         virtual void BindConstantBuffer(ConstantBuffer* inConstantBuffer, const char* inName, ShaderProgram* inProgram) = 0;
 

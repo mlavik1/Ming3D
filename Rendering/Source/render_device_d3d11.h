@@ -50,6 +50,7 @@ namespace Ming3D::Rendering
         virtual RenderWindow* CreateRenderWindow(WindowBase* inWindow) override;
         virtual RasteriserState* CreateRasteriserState(RasteriserStateCullMode inCullMode, bool inDepthClipEnabled) override;
         virtual DepthStencilState* CreateDepthStencilState(DepthStencilStateDesc inDesc) override;
+        virtual BlendState* CreateBlendState(bool enableBlend, EBlendMode blendMode) override;
         virtual ConstantBuffer* CreateConstantBuffer(size_t inSize) override;
 
         virtual void SetTexture(const TextureBuffer* inTexture, int inSlot) override;
@@ -61,6 +62,7 @@ namespace Ming3D::Rendering
         virtual void RenderPrimitive(VertexBuffer* inVertexBuffer, IndexBuffer* inIndexBuffer, unsigned int startIndex, unsigned int indexCount) override;
         virtual void SetRasteriserState(RasteriserState* inState) override;
         virtual void SetDepthStencilState(DepthStencilState* inState) override;
+        virtual void SetBlendState(BlendState* inState) override;
         virtual void SetConstantBufferData(ConstantBuffer* inConstantBuffer, void* inData, size_t inSize) override;
         virtual void BindConstantBuffer(ConstantBuffer* inConstantBuffer, const char* inName, ShaderProgram* inProgram) override;
 

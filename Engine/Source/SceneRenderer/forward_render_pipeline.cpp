@@ -8,6 +8,7 @@
 #include "render_scene.h"
 #include "glm/gtx/norm.hpp"
 #include <algorithm>
+#include "blend_state.h"
 
 #define MING3D_SHADOWRT_W 1366
 #define MING3D_SHADOWRT_H 768
@@ -67,6 +68,15 @@ namespace Ming3D
                 return (leftNode->mSquareDistance > rightNode->mSquareDistance);
         }
     };
+
+    void ForwardRenderPipeline::Initialise()
+    {
+        RenderDevice* renderDevice = GGameEngine->GetRenderDevice();
+        mOpaqueBlendState = renderDevice->CreateBlendState(false, EBlendMode::OneMinusSrcAlpha);
+        mTransparentBlendState = renderDevice->CreateBlendState(true, EBlendMode::OneMinusSrcAlpha);
+
+        mInitialised = true;
+    }
 
     void ForwardRenderPipeline::SetupMainLight(const RenderPipelineContext& context)
     {
@@ -250,6 +260,9 @@ namespace Ming3D
 
     void ForwardRenderPipeline::Render(const RenderPipelineContext& context, RenderPipelineParams& params)
     {
+        if (!mInitialised)
+            Initialise();
+
         if (context.mMainCamera->mRenderTarget == nullptr)
             return;
 
@@ -279,7 +292,11 @@ namespace Ming3D
         context.mMainCamera->mProjectionMatrix = glm::perspective<float>(glm::radians(45.0f), (float)window->GetWidth() / (float)window->GetHeight(), 0.1f, 1000.0f);
 
         GGameEngine->GetRenderDevice()->BeginRenderTarget(context.mMainCamera->mRenderTarget);
+        // Render opaque objects
+        GGameEngine->GetRenderDevice()->SetBlendState(mOpaqueBlendState);
         RenderObjects(params, ERenderType::Opaque, context.mMainCamera, context.mMainLight);
+        // Render transparent objects
+        GGameEngine->GetRenderDevice()->SetBlendState(mTransparentBlendState);
         RenderObjects(params, ERenderType::Transparent, context.mMainCamera, context.mMainLight);
         GGameEngine->GetRenderDevice()->EndRenderTarget(context.mMainCamera->mRenderTarget);
     }
