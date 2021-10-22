@@ -52,7 +52,7 @@ namespace Ming3D
         for (FT_ULong c = FT_Get_First_Char(face, &index); index != 0; c = FT_Get_Next_Char(face, c, &index))
             chars.push_back(index);
         
-        int charsPerDim = (int)std::ceil(std::sqrtf((float)chars.size()));
+        int charsPerDim = (int)std::ceil(sqrtf((float)chars.size()));
         int fntBmpWidth = (fontSize + 2) * charsPerDim;
         int fntBmpHeight = fntBmpWidth;
 
