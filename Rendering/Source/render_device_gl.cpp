@@ -11,6 +11,7 @@
 #include "shader_writer_glsl.h"
 #include "Debug/debug_stats.h"
 #include <GL/glew.h>
+#include "blend_state_gl.h"
 
 namespace Ming3D::Rendering
 {
