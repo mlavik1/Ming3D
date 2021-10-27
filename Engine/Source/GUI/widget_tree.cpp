@@ -209,6 +209,7 @@ namespace Ming3D
             node->mVertexStartIndex = mTailSubmeshNode->mVertexStartIndex + mTailSubmeshNode->mNumVertices;
             node->mTriangleStartIndex = mTailSubmeshNode->mTriangleStartIndex + mTailSubmeshNode->mNumIndices;
             mTailSubmeshNode->mNextNode = node;
+            mTailSubmeshNode = node;
 
             mVertexData->Resize(mVertexData->GetNumVertices() + vertexCount);
             mIndexData->Resize(mIndexData->GetNumIndices() + indexCount);

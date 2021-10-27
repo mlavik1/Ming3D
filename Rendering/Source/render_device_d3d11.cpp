@@ -78,6 +78,7 @@ namespace Ming3D::Rendering
 
         DepthStencilStateDesc dssDesc;
         dssDesc.mDepthEnabled = true;
+        dssDesc.mDepthWrite = true;
         dssDesc.mDepthFunc = DepthStencilDepthFunc::LEqual;
         mDefaultDepthStencilState = (DepthStencilStateD3D11*)CreateDepthStencilState(dssDesc);
         SetDepthStencilState(mDefaultDepthStencilState);
@@ -724,7 +725,7 @@ namespace Ming3D::Rendering
         D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
         ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
         depthStencilDesc.DepthEnable = inDesc.mDepthEnabled;
-        depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+        depthStencilDesc.DepthWriteMask = inDesc.mDepthWrite ? D3D11_DEPTH_WRITE_MASK_ALL : D3D11_DEPTH_WRITE_MASK_ZERO;
         depthStencilDesc.DepthFunc = depthFuncMap[inDesc.mDepthFunc];
         depthStencilDesc.StencilEnable = true;
         depthStencilDesc.StencilReadMask = 0xFF;

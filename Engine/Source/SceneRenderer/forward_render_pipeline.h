@@ -10,6 +10,7 @@ namespace Ming3D
     {
         class RenderTarget;
         class BlendState;
+        class DepthStencilState;
     }
 
     class ForwardRenderPipeline : public RenderPipeline
@@ -25,7 +26,9 @@ namespace Ming3D
 
         Rendering::BlendState* mOpaqueBlendState = nullptr; // TODO: allow custom blend states
         Rendering::BlendState* mTransparentBlendState = nullptr; // TODO: allow custom blend states
-
+        Rendering::DepthStencilState* mOpaqueDepthStencilState = nullptr; // TODO: allow custom blend states
+        Rendering::DepthStencilState* mTransparentDepthStencilState = nullptr; // TODO: allow custom blend states
+        
         bool mInitialised = false;
 
     public:

@@ -9,6 +9,7 @@
 #include "glm/gtx/norm.hpp"
 #include <algorithm>
 #include "blend_state.h"
+#include "depth_stencil_state.h"
 
 #define MING3D_SHADOWRT_W 1366
 #define MING3D_SHADOWRT_H 768
@@ -74,6 +75,15 @@ namespace Ming3D
         RenderDevice* renderDevice = GGameEngine->GetRenderDevice();
         mOpaqueBlendState = renderDevice->CreateBlendState(false, EBlendMode::OneMinusSrcAlpha);
         mTransparentBlendState = renderDevice->CreateBlendState(true, EBlendMode::OneMinusSrcAlpha);
+
+        DepthStencilStateDesc opaqueDepthDesc;
+        opaqueDepthDesc.mDepthEnabled = true;
+        opaqueDepthDesc.mDepthWrite = true;
+        mOpaqueDepthStencilState = renderDevice->CreateDepthStencilState(opaqueDepthDesc);
+        DepthStencilStateDesc transparentDepthDesc;
+        transparentDepthDesc.mDepthEnabled = true;
+        transparentDepthDesc.mDepthWrite = false;
+        mTransparentDepthStencilState = renderDevice->CreateDepthStencilState(transparentDepthDesc);
 
         mInitialised = true;
     }
@@ -294,9 +304,11 @@ namespace Ming3D
         GGameEngine->GetRenderDevice()->BeginRenderTarget(context.mMainCamera->mRenderTarget);
         // Render opaque objects
         GGameEngine->GetRenderDevice()->SetBlendState(mOpaqueBlendState);
+        GGameEngine->GetRenderDevice()->SetDepthStencilState(mOpaqueDepthStencilState);
         RenderObjects(params, ERenderType::Opaque, context.mMainCamera, context.mMainLight);
         // Render transparent objects
         GGameEngine->GetRenderDevice()->SetBlendState(mTransparentBlendState);
+        GGameEngine->GetRenderDevice()->SetDepthStencilState(mTransparentDepthStencilState);
         RenderObjects(params, ERenderType::Transparent, context.mMainCamera, context.mMainLight);
         GGameEngine->GetRenderDevice()->EndRenderTarget(context.mMainCamera->mRenderTarget);
     }

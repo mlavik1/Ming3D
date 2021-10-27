@@ -32,6 +32,7 @@ namespace Ming3D::Rendering
         DepthStencilStateDesc dssDesc;
         dssDesc.mDepthFunc = DepthStencilDepthFunc::Less;
         dssDesc.mDepthEnabled = true;
+        dssDesc.mDepthWrite = true;
         mDefaultDepthStencilState = (DepthStencilStateGL*)CreateDepthStencilState(dssDesc);
 
         SetRasteriserState(mDefaultRasteriserState);
@@ -329,6 +330,8 @@ namespace Ming3D::Rendering
     DepthStencilState* RenderDeviceGL::CreateDepthStencilState(DepthStencilStateDesc inDesc)
     {
         DepthStencilStateGL* depthStencilState = new DepthStencilStateGL();
+        depthStencilState.mDepthEnabled = inDesc.mDepthEnabled;
+        depthStencilState.mDepthWrite = inDesc.mDepthWrite;
         switch (inDesc.mDepthFunc)
         {
         case DepthStencilDepthFunc::Less:
@@ -533,9 +536,17 @@ namespace Ming3D::Rendering
         DepthStencilStateGL* glStencilState = (DepthStencilStateGL*)inState;
         mDefaultDepthStencilState = glStencilState;
 
-        glEnable(GL_DEPTH_TEST);
+        if (inState.mDepthEnabled)
+            glEnable(GL_DEPTH_TEST);
+        else
+            glDisable(GL_DEPTH_TEST);
         glDepthFunc(glStencilState->mDepthFunc);
         glDepthRange(0.0f, 1.0f);
+
+        if (mDepthWrite)
+            glDepthMask(GL_TRUE);
+        else
+            glDepthMask(GL_FALSE);
 
         CheckGLErrors("SetDepthStencilState");
     }
