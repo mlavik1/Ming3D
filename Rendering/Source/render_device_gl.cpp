@@ -330,8 +330,8 @@ namespace Ming3D::Rendering
     DepthStencilState* RenderDeviceGL::CreateDepthStencilState(DepthStencilStateDesc inDesc)
     {
         DepthStencilStateGL* depthStencilState = new DepthStencilStateGL();
-        depthStencilState.mDepthEnabled = inDesc.mDepthEnabled;
-        depthStencilState.mDepthWrite = inDesc.mDepthWrite;
+        depthStencilState->mDepthEnabled = inDesc.mDepthEnabled;
+        depthStencilState->mDepthWrite = inDesc.mDepthWrite;
         switch (inDesc.mDepthFunc)
         {
         case DepthStencilDepthFunc::Less:
@@ -536,14 +536,14 @@ namespace Ming3D::Rendering
         DepthStencilStateGL* glStencilState = (DepthStencilStateGL*)inState;
         mDefaultDepthStencilState = glStencilState;
 
-        if (inState.mDepthEnabled)
+        if (glStencilState->mDepthEnabled)
             glEnable(GL_DEPTH_TEST);
         else
             glDisable(GL_DEPTH_TEST);
         glDepthFunc(glStencilState->mDepthFunc);
         glDepthRange(0.0f, 1.0f);
 
-        if (mDepthWrite)
+        if (glStencilState->mDepthWrite)
             glDepthMask(GL_TRUE);
         else
             glDepthMask(GL_FALSE);
