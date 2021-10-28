@@ -25,7 +25,7 @@ namespace Ming3D
         mIndexData.clear();
         mIndexData.reserve(6 * mText.size());
 
-        const glm::vec2 startOrigin(visibleRect.mPosition.x, visibleRect.mPosition.y - visibleRect.mSize.x * 0.5f);
+        const glm::vec2 startOrigin(visibleRect.mPosition.x, visibleRect.mPosition.y + visibleRect.mSize.y * 0.5f /* temp hack for centering text */);
         
         // Text origin
         glm::vec2 currOrigin = startOrigin;

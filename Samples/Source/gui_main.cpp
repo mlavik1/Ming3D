@@ -23,6 +23,7 @@
 #include "3rdparty/tinyxml2/tinyxml2.h"
 #include <vector>
 #include <string>
+#include <codecvt>
 
 using namespace Ming3D;
 
@@ -106,6 +107,19 @@ Widget* parseWidgetNode(tinyxml2::XMLElement* node)
             imgWidget->SetColour(parseVec4(colAttr->Value()) / 255.0f);
         widget = imgWidget;
     }
+    else if (nodeVal == "TextWidget")
+    {
+        TextWidget* textWidget = new TextWidget();
+        const tinyxml2::XMLAttribute* textAttr = node->FindAttribute("text");
+        if (textAttr != nullptr)
+        {
+            textWidget->SetFont(GGameEngine->GetResourceDirectory() + std::string("/Fonts/FreeSans.ttf"), 42); // TODO!
+            std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>, wchar_t> conversion;
+            std::wstring text = conversion.from_bytes(textAttr->Value());
+            textWidget->SetText(text);
+        }
+        widget = textWidget;
+    }
 
     WidgetSizeValue xVal, yVal, wVal, hVal;
     const tinyxml2::XMLAttribute* xAttr = node->FindAttribute("x");
@@ -172,43 +186,14 @@ int main()
     ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Mvr_PetCow_walk.dae"), actor1);
 
 
-
-
-
     const std::string resourceDir = std::string(MING3D_SAMPLES_SOURCE_DIR) + std::string("/Resources");
     const std::string testGuiPath = resourceDir + std::string("/gui_test.widget");
-
-
-
-    Widget* testtest = loadWidgetFromXML(testGuiPath);
-
-
 
     Actor* guiActor = new Actor();
     guiActor->GetTransform().SetLocalPosition(glm::vec3(0.0f, 0.0f, 0.0f));
     guiActor->GetTransform().SetLocalScale(glm::vec3(0.005f, 0.005f, 0.005f));
     WidgetComponent* widgetComp = guiActor->AddComponent<WidgetComponent>();
-    Widget* rootWidget = testtest;
-    /*Widget* rootWidget = new Widget();
-    rootWidget->setPosition(0.0f, 0.0f, WidgetSizeMode::Absolute);
-    rootWidget->setSize(800.0f, 600.0f, WidgetSizeMode::Absolute);
-    ImageWidget* img1 = new ImageWidget();
-    img1->setPosition(0.0f, 0.0f, WidgetSizeMode::Relative);
-    img1->setSize(0.5f, 0.5f, WidgetSizeMode::Relative);
-    img1->SetColour(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-    rootWidget->addWidget(img1);
-
-
-
-    TextWidget* txtWidget = new TextWidget();
-    txtWidget->setPosition(0.5f, 0.5f, WidgetSizeMode::Relative);
-    txtWidget->setSize(0.5f, 0.5f, WidgetSizeMode::Relative);
-    txtWidget->SetFont("D:/FreeSans.ttf", 42);
-    txtWidget->SetText(L"Hello Ming3D!");
-    txtWidget->SetColour(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-    rootWidget->addWidget(txtWidget);*/
-
-
+    Widget* rootWidget = loadWidgetFromXML(testGuiPath);
 
     widgetComp->SetWidget(rootWidget);
     gameEngine->GetWorld()->AddActor(guiActor);

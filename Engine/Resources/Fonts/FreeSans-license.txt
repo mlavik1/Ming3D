@@ -1,0 +1,2 @@
+FreeSans is licensed under GPLv3.
+See: https://www.gnu.org/software/freefont/

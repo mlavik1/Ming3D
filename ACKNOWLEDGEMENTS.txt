@@ -1,0 +1,11 @@
+This project uses the following 3rd party libraries/assets:
+
+* GNU FreeFont
+GPLv3: https://www.gnu.org/software/freefont/license.html
+A copy of the license and a notice has been added for each font used (in the same folder).
+
+* tinyxml2
+zlib license: https://github.com/leethomason/tinyxml2/blob/master/LICENSE.txt
+
+We also use Conan package manager for other 3rd party libraries (which are not redistributed directly).
+See conanfile.txt for a list of other 3rd party dependencies, that need to be acknowledged if redistributing builds from this project.
