@@ -12,6 +12,8 @@ namespace Ming3D
         mMaterial = MaterialFactory::GetDefaultGUIMaterial();
         mFontFace = nullptr;
         mFontScale = 1.0f;
+        mHorizontalAlignment = EHorizontalAlignment::Left;
+        mVerticalAlignment = EVerticalAlignment::Bottom;
     }
 
     TextVisual::~TextVisual()
@@ -25,8 +27,16 @@ namespace Ming3D
         mIndexData.clear();
         mIndexData.reserve(6 * mText.size());
 
-        const glm::vec2 startOrigin(visibleRect.mPosition.x, visibleRect.mPosition.y + visibleRect.mSize.y * 0.5f /* temp hack for centering text */);
-        
+        glm::vec2 startOrigin(visibleRect.mPosition.x, visibleRect.mPosition.y);
+
+        // Vertical alignment
+        if (mVerticalAlignment == EVerticalAlignment::Bottom)
+            startOrigin += glm::vec2(0.0f, mFontFace->mMaxBearingOffset * mFontScale);
+        else if (mVerticalAlignment == EVerticalAlignment::Centre)
+            startOrigin += glm::vec2(0.0f, visibleRect.mSize.y * 0.5f);
+        else if (mVerticalAlignment == EVerticalAlignment::Top)
+            startOrigin += glm::vec2(0.0f, visibleRect.mSize.y - mFontFace->mFontSize * mFontScale);
+
         // Text origin
         glm::vec2 currOrigin = startOrigin;
 
@@ -71,6 +81,18 @@ namespace Ming3D
             mIndexData.push_back(iVert + 3);
             mIndexData.push_back(iVert + 2);
         }
+
+        if (mHorizontalAlignment != EHorizontalAlignment::Left)
+        {
+            float vertOffset = 0.0f;
+            if (mHorizontalAlignment == EHorizontalAlignment::Centre)
+                vertOffset = (visibleRect.mSize.x - (currOrigin.x - startOrigin.x)) * 0.5f;
+            else if(mHorizontalAlignment == EHorizontalAlignment::Right)
+                vertOffset = (visibleRect.mSize.x - (currOrigin.x - startOrigin.x));
+
+            for (int iVert = 0; iVert < mText.size() * 4; iVert++)
+                mVertexData[iVert].mPosition.x += vertOffset;
+        }
     }
 
     void TextVisual::GetMeshDataSize(unsigned int& outVertexCount, unsigned int& outIndexCount)
@@ -113,6 +135,18 @@ namespace Ming3D
     void TextVisual::SetFontScale(float scale)
     {
         mFontScale = scale;
+        mVisualInvalidated = true;
+    }
+
+    void TextVisual::SetHorizontalAlignment(EHorizontalAlignment alignment)
+    {
+        mHorizontalAlignment = alignment;
+        mVisualInvalidated = true;
+    }
+
+    void TextVisual::SetVerticalAlignment(EVerticalAlignment alignment)
+    {
+        mVerticalAlignment = alignment;
         mVisualInvalidated = true;
     }
 }

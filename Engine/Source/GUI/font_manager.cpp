@@ -111,6 +111,8 @@ namespace Ming3D
             glyphInfo.mTexSize = glm::vec2(bitmap.width / static_cast<float>(fntBmpWidth), bitmap.rows / static_cast<float>(fntBmpHeight));
             glyphInfo.mRelSize = glm::vec2(bitmap.width / static_cast<float>(fontSize), bitmap.rows / static_cast<float>(fontSize));
            
+            fontFace->mMaxBearingOffset = std::max(fontFace->mMaxBearingOffset, glyphInfo.mHeight - glyphInfo.mBearingY);
+
             fontFace->mGlyphs.emplace(static_cast<wchar_t>(chars[i]), glyphInfo);
         }
 
@@ -120,6 +122,8 @@ namespace Ming3D
         // Create material (TODO: Maybe not here?)
         fontFace->mMaterial = new Material(MaterialFactory::GetDefaultGUIMaterial());
         fontFace->mMaterial->SetTexture(0, fontFace->mTexture);
+
+        fontFace->mFontSize = fontSize;
 
         mFontFaces.emplace(fontHash, fontFace);
 

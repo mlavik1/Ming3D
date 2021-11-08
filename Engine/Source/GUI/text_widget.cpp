@@ -32,4 +32,14 @@ namespace Ming3D
     {
         mTextVisual->SetColour(colour);
     }
+
+    void TextWidget::SetHorizontalAlignment(EHorizontalAlignment alignment)
+    {
+        mTextVisual->SetHorizontalAlignment(alignment);
+    }
+
+    void TextWidget::SetVerticalAlignment(EVerticalAlignment alignment)
+    {
+        mTextVisual->SetVerticalAlignment(alignment);
+    }
 }

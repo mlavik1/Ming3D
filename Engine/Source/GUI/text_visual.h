@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include "font_face.h"
+#include "text_properties.h"
 
 namespace Ming3D
 {
@@ -20,6 +21,8 @@ namespace Ming3D
         Material* mMaterial;
         FontFace* mFontFace;
         float mFontScale;
+        EHorizontalAlignment mHorizontalAlignment;
+        EVerticalAlignment mVerticalAlignment;
 
     public:
         TextVisual();
@@ -34,5 +37,7 @@ namespace Ming3D
         void SetFontFace(FontFace* fontFace);
         void SetColour(glm::vec4 colour);
         void SetFontScale(float scale);
+        void SetHorizontalAlignment(EHorizontalAlignment alignment);
+        void SetVerticalAlignment(EVerticalAlignment alignment);
     };
 }

@@ -1,6 +1,7 @@
 #include "widget.h"
 #include <string>
 #include "font_face.h"
+#include "text_properties.h"
 
 namespace Ming3D
 {
@@ -20,5 +21,7 @@ namespace Ming3D
         void SetText(const std::wstring text);
         void SetFont(const std::string font, const int fontSize);
         void SetColour(glm::vec4 colour);
+        void SetHorizontalAlignment(EHorizontalAlignment alignment);
+        void SetVerticalAlignment(EVerticalAlignment alignment);
     };
 }

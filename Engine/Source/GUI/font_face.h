@@ -27,6 +27,8 @@ namespace Ming3D
         Material* mMaterial; // TODO: Maybe not store this here?
         Texture* mTexture;
         std::unordered_map<wchar_t, FontGlyph> mGlyphs;
+        int mFontSize;
+        int mMaxBearingOffset;
 
         /* Gets the glyph info of a UTF16 character code. */
         bool GetGlyph(wchar_t charCode, FontGlyph& outGlyph);

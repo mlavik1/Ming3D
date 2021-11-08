@@ -20,147 +20,12 @@
 #include "GUI/image_widget.h"
 #include "Components/widget_component.h"
 #include "GUI/text_widget.h"
-#include "3rdparty/tinyxml2/tinyxml2.h"
 #include <vector>
 #include <string>
-#include <codecvt>
+#include "Debug/debug.h"
+#include "GUI/widget_loader.h"
 
 using namespace Ming3D;
-
-struct WidgetSizeValue
-{
-    WidgetSizeMode mWidgetSizeMode = WidgetSizeMode::Absolute;
-    float mValue = 0.0f;
-};
-
-std::vector<std::string> splitString(const std::string text, const char delimiter)
-{
-    std::vector<std::string> vec;
-    size_t iStart = 0;
-    size_t iCurr = 1;
-    for(int iCurr = 0; iCurr < text.size(); iCurr++)
-    {
-        if (text[iCurr] == ' ')
-        {
-            std::string substr = text.substr(iStart, iCurr - iStart);
-            vec.push_back(substr);
-            iStart = iCurr + 1;
-        }
-    }
-    if (iStart < text.size())
-    {
-        std::string substr = text.substr(iStart, text.size() - iStart);
-        vec.push_back(substr);
-    }
-    return vec;
-}
-
-glm::vec4 parseVec4(const std::string text)
-{
-    glm::vec4 vec;
-    std::vector<std::string> split = splitString(text, ' ');
-    
-    for (int i = 0; i < 4 && i < split.size(); i++)
-    {
-        vec[i] = std::stof(split[i]);
-    }
-    return vec;
-}
-
-WidgetSizeValue parseWidgetSizeValue(const std::string text)
-{
-    WidgetSizeValue sizeVal;
-    if (text.size() > 1 && text[text.size() - 1] == '%')
-    {
-        sizeVal.mWidgetSizeMode = WidgetSizeMode::Relative;
-        sizeVal.mValue = std::stof(text.substr(0, text.size() - 1)) / 100.0f;
-    }
-    else if (text.size() > 2 && text.substr(text.size() - 2, 2) == "px")
-    {
-        sizeVal.mWidgetSizeMode = WidgetSizeMode::Absolute;
-        sizeVal.mValue = std::stof(text.substr(0, text.size() - 2));
-    }
-    else
-    {
-        sizeVal.mWidgetSizeMode = WidgetSizeMode::Absolute;
-        sizeVal.mValue = std::stof(text);
-    }
-    return sizeVal;
-}
-
-Widget* parseWidgetNode(tinyxml2::XMLElement* node)
-{
-    Widget* widget = nullptr;
-
-    std::string nodeVal = node->Value();
-    std::cout << nodeVal << std::endl;
-
-    if (nodeVal == "CustomWidget")
-    {
-        widget = new Widget();
-    }
-    else if (nodeVal == "ImageWidget")
-    {
-        ImageWidget* imgWidget = new ImageWidget();
-        const tinyxml2::XMLAttribute* colAttr = node->FindAttribute("colour");
-        if (colAttr != nullptr)
-            imgWidget->SetColour(parseVec4(colAttr->Value()) / 255.0f);
-        widget = imgWidget;
-    }
-    else if (nodeVal == "TextWidget")
-    {
-        TextWidget* textWidget = new TextWidget();
-        const tinyxml2::XMLAttribute* textAttr = node->FindAttribute("text");
-        if (textAttr != nullptr)
-        {
-            textWidget->SetFont(GGameEngine->GetResourceDirectory() + std::string("/Fonts/FreeSans.ttf"), 42); // TODO!
-            std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>, wchar_t> conversion;
-            std::wstring text = conversion.from_bytes(textAttr->Value());
-            textWidget->SetText(text);
-        }
-        widget = textWidget;
-    }
-
-    WidgetSizeValue xVal, yVal, wVal, hVal;
-    const tinyxml2::XMLAttribute* xAttr = node->FindAttribute("x");
-    const tinyxml2::XMLAttribute* yAttr = node->FindAttribute("y");
-    const tinyxml2::XMLAttribute* wAttr = node->FindAttribute("width");
-    const tinyxml2::XMLAttribute* hAttr = node->FindAttribute("height");
-    if (xAttr != nullptr)
-        xVal = parseWidgetSizeValue(xAttr->Value());
-    if (yAttr != nullptr)
-        yVal = parseWidgetSizeValue(yAttr->Value());
-    if (wAttr != nullptr)
-        wVal = parseWidgetSizeValue(wAttr->Value());
-    if (hAttr != nullptr)
-        hVal = parseWidgetSizeValue(hAttr->Value());
-
-    widget->setHorizontalPositioning(xVal.mWidgetSizeMode);
-    widget->setVerticalPositioning(yVal.mWidgetSizeMode);
-    widget->setHorizontalScaling(wVal.mWidgetSizeMode);
-    widget->setVerticalScaling(hVal.mWidgetSizeMode);
-    widget->setPosition(xVal.mValue, yVal.mValue);
-    widget->setSize(wVal.mValue, hVal.mValue);
-
-    tinyxml2::XMLElement* currChild = node->FirstChildElement();
-    while (currChild != nullptr)
-    {
-        Widget* childWidget = parseWidgetNode(currChild);
-        if (childWidget != nullptr)
-            widget->addWidget(childWidget);
-        currChild = currChild->NextSiblingElement();
-    }
-    return widget;
-}
-
-Widget* loadWidgetFromXML(const std::string widgetPath)
-{
-    tinyxml2::XMLDocument doc;
-    doc.LoadFile(widgetPath.c_str());
-
-    tinyxml2::XMLElement* root = doc.RootElement();
-    return parseWidgetNode(root);
-}
 
 int main()
 {
@@ -193,7 +58,7 @@ int main()
     guiActor->GetTransform().SetLocalPosition(glm::vec3(0.0f, 0.0f, 0.0f));
     guiActor->GetTransform().SetLocalScale(glm::vec3(0.005f, 0.005f, 0.005f));
     WidgetComponent* widgetComp = guiActor->AddComponent<WidgetComponent>();
-    Widget* rootWidget = loadWidgetFromXML(testGuiPath);
+    Widget* rootWidget = WidgetLoader::LoadWidgetFromXML(testGuiPath);
 
     widgetComp->SetWidget(rootWidget);
     gameEngine->GetWorld()->AddActor(guiActor);
