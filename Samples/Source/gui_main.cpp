@@ -61,6 +61,7 @@ int main()
     Widget* rootWidget = WidgetLoader::LoadWidgetFromXML(testGuiPath);
 
     widgetComp->SetWidget(rootWidget);
+    widgetComp->SetRenderMode(EWidgetRenderMode::Overlay);
     gameEngine->GetWorld()->AddActor(guiActor);
 
     const float camSpeed = 3.0f;

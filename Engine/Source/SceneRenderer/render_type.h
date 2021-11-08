@@ -4,6 +4,7 @@
 enum class ERenderType
 {
     Opaque = 0,
-    Transparent = 1
+    Transparent = 1,
+    GUIOverlay = 2
 };
 #endif

@@ -3,6 +3,7 @@
 #include "Actors/actor.h"
 #include "GameEngine/game_engine.h"
 #include "SceneRenderer/scene_renderer.h"
+#include "Debug/st_assert.h"
 
 IMPLEMENT_CLASS(Ming3D::WidgetComponent)
 
@@ -12,7 +13,7 @@ namespace Ming3D
     {
         mRenderObject = new WidgetRenderObject();
         mWidgetTree = new WidgetTree();
-
+        SetRenderMode(mRenderMode);
         GGameEngine->GetSceneRenderer()->AddSceneObject(mRenderObject);
     }
 
@@ -39,13 +40,38 @@ namespace Ming3D
         mWidgetTree->UpdateRenderData();
 
         // TODO: If moved, update call mWidgetTree->SetTransform !!!
+
+        if (mRenderMode == EWidgetRenderMode::World)
+            mWidgetTree->SetTransform(GetParent()->GetTransform().GetWorldTransformMatrix());
+        else
+            mWidgetTree->SetTransform(glm::mat4());
     }
 
     void WidgetComponent::SetWidget(Widget* widget)
     {
         mWidget = widget;
         mWidgetTree->SetRootWidget(widget);
-        mWidgetTree->SetTransform(GetParent()->GetTransform().GetWorldTransformMatrix());
         mRenderObject->SetWidgetTree(mWidgetTree);
+    }
+
+    void WidgetComponent::SetRenderMode(EWidgetRenderMode renderMode)
+    {
+        mRenderMode = renderMode;
+
+        switch (renderMode)
+        {
+        case EWidgetRenderMode::World:
+        {
+            mRenderObject->SetRenderType(ERenderType::Transparent);
+            break;
+        }
+        case EWidgetRenderMode::Overlay:
+        {
+            mRenderObject->SetRenderType(ERenderType::GUIOverlay);
+            break;
+        }
+        default:
+            __AssertComment(false, "Unimplemented widget render mode.");
+        }
     }
 }

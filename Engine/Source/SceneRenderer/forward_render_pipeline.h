@@ -28,7 +28,8 @@ namespace Ming3D
         Rendering::BlendState* mTransparentBlendState = nullptr; // TODO: allow custom blend states
         Rendering::DepthStencilState* mOpaqueDepthStencilState = nullptr; // TODO: allow custom blend states
         Rendering::DepthStencilState* mTransparentDepthStencilState = nullptr; // TODO: allow custom blend states
-        
+        Rendering::DepthStencilState* mOverlayGUIDepthStencilState = nullptr;
+
         bool mInitialised = false;
 
     public:

@@ -47,6 +47,7 @@ namespace Ming3D
         RenderPipelineNodeCollection mVisibleNodes;
         std::vector<unsigned int> mOpaqueNodeIndices;
         std::vector<unsigned int> mTransparentNodeIndices;
+        std::vector<unsigned int> mGUIOverlayNodeIndices;
     };
 
     struct RenderPipelineContext

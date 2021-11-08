@@ -11,6 +11,7 @@ namespace Ming3D
     private:
         WidgetTree* mWidgetTree = nullptr;
         Camera* mCamera = nullptr;
+        ERenderType mRenderType = ERenderType::Transparent;
 
     public:
         virtual int GetNumBatches() override;
@@ -21,5 +22,6 @@ namespace Ming3D
         virtual glm::vec3 GetWorldPosition() override;
 
         void SetWidgetTree(WidgetTree* widgetTree);
+        void SetRenderType(ERenderType renderType);
     };
 }

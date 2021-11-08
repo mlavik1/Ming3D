@@ -18,7 +18,7 @@ namespace Ming3D
 
     ERenderType WidgetRenderObject::GetRenderType()
     {
-        return ERenderType::Transparent;
+        return mRenderType;
     }
 
     bool WidgetRenderObject::GetCastShadows()
@@ -34,5 +34,10 @@ namespace Ming3D
     void WidgetRenderObject::SetWidgetTree(WidgetTree* widgetTree)
     {
         mWidgetTree = widgetTree;
+    }
+
+    void WidgetRenderObject::SetRenderType(ERenderType renderType)
+    {
+        mRenderType = renderType;
     }
 }

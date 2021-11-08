@@ -80,10 +80,16 @@ namespace Ming3D
         opaqueDepthDesc.mDepthEnabled = true;
         opaqueDepthDesc.mDepthWrite = true;
         mOpaqueDepthStencilState = renderDevice->CreateDepthStencilState(opaqueDepthDesc);
+        
         DepthStencilStateDesc transparentDepthDesc;
         transparentDepthDesc.mDepthEnabled = true;
         transparentDepthDesc.mDepthWrite = false;
         mTransparentDepthStencilState = renderDevice->CreateDepthStencilState(transparentDepthDesc);
+
+        DepthStencilStateDesc overlayGUIDepthDesc;
+        overlayGUIDepthDesc.mDepthEnabled = false;
+        overlayGUIDepthDesc.mDepthWrite = false;
+        mOverlayGUIDepthStencilState = renderDevice->CreateDepthStencilState(overlayGUIDepthDesc);
 
         mInitialised = true;
     }
@@ -116,6 +122,8 @@ namespace Ming3D
 
         TransparentNodeSorter transparentSorter(&params.mVisibleNodes);
         std::sort(params.mTransparentNodeIndices.begin(), params.mTransparentNodeIndices.end(), transparentSorter);
+
+        // TODO: Sort GUIOverlay by user-defined "order"?
     }
 
     void ForwardRenderPipeline::UpdateUniforms(MaterialBuffer* inMat)
@@ -184,7 +192,7 @@ namespace Ming3D
 
         MaterialBuffer* currMaterial = nullptr;
 
-        std::vector<unsigned int>* nodeIndices;
+        std::vector<unsigned int>* nodeIndices = nullptr;
         switch (renderType)
         {
         case ERenderType::Opaque:
@@ -192,6 +200,9 @@ namespace Ming3D
             break;
         case ERenderType::Transparent:
             nodeIndices = &params.mTransparentNodeIndices;
+            break;
+        case ERenderType::GUIOverlay:
+            nodeIndices = &params.mGUIOverlayNodeIndices;
             break;
         }
 
@@ -310,6 +321,13 @@ namespace Ming3D
         GGameEngine->GetRenderDevice()->SetBlendState(mTransparentBlendState);
         GGameEngine->GetRenderDevice()->SetDepthStencilState(mTransparentDepthStencilState);
         RenderObjects(params, ERenderType::Transparent, context.mMainCamera, context.mMainLight);
+        // Render GUI overlay
+        GGameEngine->GetRenderDevice()->SetBlendState(mTransparentBlendState);
+        GGameEngine->GetRenderDevice()->SetDepthStencilState(mOverlayGUIDepthStencilState);
+        context.mMainCamera->mProjectionMatrix = glm::ortho<float>(0.0f, (float)window->GetWidth(), 0.0f, (float)window->GetHeight(), -1.0f, 1.0f);
+        context.mMainCamera->mCameraMatrix = glm::mat4();
+        RenderObjects(params, ERenderType::GUIOverlay, context.mMainCamera, context.mMainLight);
+
         GGameEngine->GetRenderDevice()->EndRenderTarget(context.mMainCamera->mRenderTarget);
     }
 }

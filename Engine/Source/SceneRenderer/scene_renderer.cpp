@@ -12,6 +12,7 @@
 #include <algorithm>
 #include "constant_buffer_data.h"
 #include "Model/material_buffer.h"
+#include "Debug/st_assert.h"
 
 namespace Ming3D
 {
@@ -89,8 +90,12 @@ namespace Ming3D
                 node = params.mVisibleNodes.push_back();
                 if (obj->GetRenderType() == ERenderType::Opaque)
                     params.mOpaqueNodeIndices.push_back(iNode++);
-                else
+                else if (obj->GetRenderType() == ERenderType::Transparent)
                     params.mTransparentNodeIndices.push_back(iNode++);
+                else if (obj->GetRenderType() == ERenderType::GUIOverlay)
+                    params.mGUIOverlayNodeIndices.push_back(iNode++);
+                else
+                    __AssertComment(false, "Unimplemented RenderType");
 
                 // Get batch
                 obj->GetRenderBatch(iBatch, &node->mRenderBatch);
@@ -130,6 +135,7 @@ namespace Ming3D
             mPipelineParams.mVisibleNodes.clear();
             mPipelineParams.mOpaqueNodeIndices.clear();
             mPipelineParams.mTransparentNodeIndices.clear();
+            mPipelineParams.mGUIOverlayNodeIndices.clear();
 
             // Collect renderable objects in the scene
             CollectVisibleObjects(context, camera->mRenderPipeline, mPipelineParams);

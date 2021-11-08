@@ -7,6 +7,12 @@ namespace Ming3D
 {
     class Widget;
 
+    enum class EWidgetRenderMode
+    {
+        World,
+        Overlay
+    };
+
     class WidgetComponent : public Component
     {
         DEFINE_CLASS(Ming3D::WidgetComponent, Ming3D::Component)
@@ -17,6 +23,7 @@ namespace Ming3D
         WidgetRenderObject* mRenderObject = nullptr;
         Widget* mWidget = nullptr;
         WidgetTree* mWidgetTree = nullptr;
+        EWidgetRenderMode mRenderMode = EWidgetRenderMode::World;
 
     public:
         WidgetComponent();
@@ -26,5 +33,6 @@ namespace Ming3D
         virtual void Tick(float inDeltaTime) override;
 
         void SetWidget(Widget* widget);
+        void SetRenderMode(EWidgetRenderMode renderMode);
     };
 }
