@@ -13,6 +13,7 @@
 #include "Model/material_factory.h"
 #include "Texture/texture.h"
 #include "Texture/texture_loader.h"
+#include <memory>
 
 using namespace Ming3D;
 
@@ -68,7 +69,7 @@ int main()
     MeshComponent* planeMeshComp = planeObj->AddComponent<MeshComponent>();
     planeMeshComp->SetMesh(planeMesh);
     Material* planeMat = MaterialFactory::CreateMaterial(GGameEngine->GetResourceDirectory() + std::string("/Shaders/defaultshader.cgp"));
-    planeMat->SetTexture(0, TextureLoader::LoadTextureData(GGameEngine->GetResourceDirectory() + std::string("/grass.png"))); // TODO: create override with only one parameter
+    planeMat->SetTexture(0, std::shared_ptr<Texture>(TextureLoader::LoadTextureData(GGameEngine->GetResourceDirectory() + std::string("/grass.png")))); // TODO: create override with only one parameter
     planeMat->SetShaderUniformVec2("_textureTiling", glm::vec2(10.0f, 10.0f));
 	planeMat->SetReceiveShadows(true);
     planeMeshComp->SetMaterial(planeMat);
