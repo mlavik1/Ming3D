@@ -33,7 +33,7 @@ namespace Ming3D
 		size_t numTextures = shaderProgram->mShaderTextures.size();
 
 		MaterialBuffer* oldMatBuffer = mMaterialBuffer;
-		std::vector<Texture*> oldTextures = mTextures;
+		std::vector<std::shared_ptr<Texture>> oldTextures = mTextures;
 
 		// create new material buffer
 		mMaterialBuffer = new MaterialBuffer();
@@ -112,11 +112,8 @@ namespace Ming3D
 		InitMaterial(newShaderProg);
 	}
 
-    void Material::SetTexture(size_t textureIndex, Texture* texture)
+    void Material::SetTexture(size_t textureIndex, std::shared_ptr<Texture> texture)
     {
-        if (mTextures[textureIndex] != nullptr)
-            delete mTextures[textureIndex];
-
         mTextures[textureIndex] = texture;
 
         // TODO: Queue render thread command
@@ -125,7 +122,7 @@ namespace Ming3D
         mMaterialBuffer->mTextureBuffers[textureIndex] = GGameEngine->GetRenderDevice()->CreateTextureBuffer(texture->GetTextureInfo(), texture->GetTextureData());
     }
 
-    void Material::SetTexture(const std::string& textureName, Texture* texture)
+    void Material::SetTexture(const std::string& textureName, std::shared_ptr<Texture> texture)
     {
         SetTexture(mMaterialBuffer->GetTextureID(textureName), texture);
     }

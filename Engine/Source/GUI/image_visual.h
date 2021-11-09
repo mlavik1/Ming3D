@@ -2,6 +2,7 @@
 #include "visual.h"
 #include "gui_vertex_data.h"
 #include <vector>
+#include <memory>
 
 namespace Ming3D
 {
@@ -27,7 +28,7 @@ namespace Ming3D
         virtual Material* GetMaterial() override;
 
         void SetColour(glm::vec4 colour);
-        void SetTexture(Texture* texture);
+        void SetTexture(std::shared_ptr<Texture> texture);
         void SetCustomMaterial(Material* material);
 
     };

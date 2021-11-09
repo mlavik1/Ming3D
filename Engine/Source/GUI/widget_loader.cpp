@@ -8,6 +8,7 @@
 #include "GameEngine/game_engine.h"
 #include "Texture/texture_loader.h"
 #include <filesystem>
+#include <memory>
 
 namespace Ming3D
 {
@@ -127,7 +128,7 @@ namespace Ming3D
             if (imgAttr != nullptr)
             {
                 const std::string texturePath = params.mDirectory + std::string("/") + std::string(imgAttr->Value());
-                Texture* texture = TextureLoader::LoadTextureData(texturePath); // TODO: Texture leak! (use smart pointer)
+                std::shared_ptr<Texture> texture = std::shared_ptr<Texture>(TextureLoader::LoadTextureData(texturePath));
                 imgWidget->SetTexture(texture);
             }
 

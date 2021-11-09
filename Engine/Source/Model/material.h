@@ -5,6 +5,7 @@
 #include <vector>
 #include "glm/glm.hpp"
 #include "SceneRenderer/render_type.h"
+#include <memory>
 
 namespace Ming3D
 {
@@ -28,7 +29,7 @@ namespace Ming3D
     class Material
     {
     private:
-        std::vector<Texture*> mTextures;
+        std::vector<std::shared_ptr<Texture>> mTextures;
 
 		/**
 		 * @brief Initialises the material. This can be done on a new material or an old material.
@@ -51,8 +52,8 @@ namespace Ming3D
         Material(Material* otherMat);
         ~Material();
 
-        void SetTexture(size_t textureIndex, Texture* texture);
-        void SetTexture(const std::string& textureName, Texture* texture);
+        void SetTexture(size_t textureIndex, std::shared_ptr<Texture> texture);
+        void SetTexture(const std::string& textureName, std::shared_ptr<Texture> texture);
 		void SetColour(glm::vec4 colour);
 
         void SetCastShadows(bool castShadows);

@@ -17,9 +17,7 @@
 #include "Model/material_factory.h"
 #include "Texture/texture.h"
 #include "Texture/texture_loader.h"
-#include "GUI/image_widget.h"
 #include "Components/widget_component.h"
-#include "GUI/text_widget.h"
 
 using namespace Ming3D;
 
@@ -45,46 +43,6 @@ int main()
     actor1->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
     gameEngine->GetWorld()->AddActor(actor1);
     ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Mvr_PetCow_walk.dae"), actor1);
-
-    Actor* guiActor = new Actor();
-    guiActor->GetTransform().SetLocalPosition(glm::vec3(0.0f, 0.0f, 0.0f));
-    guiActor->GetTransform().SetLocalScale(glm::vec3(0.005f, 0.005f, 0.005f));
-    WidgetComponent* widgetComp = guiActor->AddComponent<WidgetComponent>();
-    Widget* rootWidget = new Widget();
-    rootWidget->setPosition(0.0f, 0.0f, WidgetSizeMode::Absolute);
-    rootWidget->setSize(800.0f, 600.0f, WidgetSizeMode::Absolute);
-    ImageWidget* img1 = new ImageWidget();
-    img1->setPosition(0.0f, 0.0f, WidgetSizeMode::Relative);
-    img1->setSize(0.5f, 0.5f, WidgetSizeMode::Relative);
-    img1->SetColour(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-    rootWidget->addWidget(img1);
-    /*ImageWidget* img2 = new ImageWidget();
-    img2->setPosition(0.5f, 0.5f, WidgetSizeMode::Relative);
-    img2->setSize(0.5f, 0.5f, WidgetSizeMode::Relative);
-    img2->SetColour(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-    rootWidget->addWidget(img2);
-    widgetComp->SetWidget(rootWidget);
-    gameEngine->GetWorld()->AddActor(guiActor);
-
-    //Texture* texxx = TextureLoader::LoadTextureData(GGameEngine->GetResourceDirectory() + std::string("/texture.jpg"));
-    //FontFace* fontFace = FontHelper::LoadFontFace("D:/NotoSansCJKjp-Regular.otf");
-    FontFace* fontFace = FontHelper::LoadFontFace("D:/FreeSans.ttf");
-    Texture* texxx = fontFace->mTexture;
-    img2->SetTexture(texxx);
-    img2->SetColour(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));*/
-
-    TextWidget* txtWidget = new TextWidget();
-    txtWidget->setPosition(0.5f, 0.5f, WidgetSizeMode::Relative);
-    txtWidget->setSize(0.5f, 0.5f, WidgetSizeMode::Relative);
-    txtWidget->SetFont("D:/FreeSans.ttf", 42);
-    txtWidget->SetText(L"Hello Ming3D!");
-    txtWidget->SetColour(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-    rootWidget->addWidget(txtWidget);
-    
-    
-    
-    widgetComp->SetWidget(rootWidget);
-    gameEngine->GetWorld()->AddActor(guiActor);
 
     const float camSpeed = 3.0f;
     const float camRotSpeed = 1.0f;

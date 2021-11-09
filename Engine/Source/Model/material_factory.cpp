@@ -1,5 +1,5 @@
 #include "material_factory.h"
-
+#include <memory>
 #include "shader_parser.h"
 #include "shader_cache.h"
 #include "Texture/texture_loader.h"
@@ -61,7 +61,7 @@ namespace Ming3D
         if (mDefaultGUIMaterial == nullptr)
         {
             mDefaultGUIMaterial = CreateMaterial(GGameEngine->GetResourceDirectory() + std::string("/Shaders/gui.cgp"));
-            Texture* whiteTex = TextureLoader::LoadTextureData(GGameEngine->GetResourceDirectory() + std::string("/default-white.png"));
+            std::shared_ptr<Texture> whiteTex = std::shared_ptr<Texture>(TextureLoader::LoadTextureData(GGameEngine->GetResourceDirectory() + std::string("/default-white.png")));
             mDefaultGUIMaterial->SetTexture(0, whiteTex);
         }
         return mDefaultGUIMaterial;

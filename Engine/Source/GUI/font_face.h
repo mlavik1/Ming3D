@@ -25,7 +25,7 @@ namespace Ming3D
     {
     public:
         Material* mMaterial; // TODO: Maybe not store this here?
-        Texture* mTexture;
+        std::shared_ptr<Texture> mTexture;
         std::unordered_map<wchar_t, FontGlyph> mGlyphs;
         int mFontSize;
         int mMaxBearingOffset;

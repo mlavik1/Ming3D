@@ -60,7 +60,7 @@ namespace Ming3D
         mVisualInvalidated = true;
     }
 
-    void ImageVisual::SetTexture(Texture* texture)
+    void ImageVisual::SetTexture(std::shared_ptr<Texture> texture)
     {
         if (!mHasCustomMat)
         {

@@ -116,7 +116,7 @@ namespace Ming3D
             fontFace->mGlyphs.emplace(static_cast<wchar_t>(chars[i]), glyphInfo);
         }
 
-        fontFace->mTexture = new Texture();
+        fontFace->mTexture = std::make_shared<Texture>();
         fontFace->mTexture->SetTextureData(buffer, 4, PixelFormat::RGBA, fntBmpWidth, fntBmpHeight);
 
         // Create material (TODO: Maybe not here?)

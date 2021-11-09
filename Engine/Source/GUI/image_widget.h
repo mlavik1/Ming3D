@@ -1,5 +1,6 @@
 #include "widget.h"
 #include "glm/vec4.hpp"
+#include <memory>
 
 namespace Ming3D
 {
@@ -16,6 +17,6 @@ namespace Ming3D
         ~ImageWidget();
 
         void SetColour(glm::vec4 colour);
-        void SetTexture(Texture* texture);
+        void SetTexture(std::shared_ptr<Texture> texture);
     };
 }

@@ -11,6 +11,7 @@
 #include "mesh.h"
 #include "material_factory.h"
 #include "shader_program.h"
+#include <memory>
 
 #define MODELLOADERFLAGS_UNLIT 1
 
@@ -18,7 +19,7 @@ namespace Ming3D
 {
     Material* ModelLoader::CreateMaterial(aiMaterial* aiMat, const std::string modelPath, const int flags)
     {
-        Texture* diffuseTexture = nullptr;
+        std::shared_ptr<Texture> diffuseTexture = nullptr;
         glm::vec4 diffuseColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
         glm::vec4 specularColour = glm::vec4(0.3f, 0.3f, 0.3f, 1.0f);
         glm::vec4 ambientColour = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f);
@@ -34,7 +35,7 @@ namespace Ming3D
                 texturePath = texturePath.substr(0, iLastSlash + 1) + std::string(path.C_Str());
             else
                 texturePath = std::string(path.C_Str());
-            diffuseTexture = TextureLoader::LoadTextureData(texturePath.c_str());
+            diffuseTexture = std::shared_ptr<Texture>(TextureLoader::LoadTextureData(texturePath.c_str()));
         }
 
         // Read material properties

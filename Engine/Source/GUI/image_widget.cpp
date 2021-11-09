@@ -20,7 +20,7 @@ namespace Ming3D
         mImageVisual->SetColour(colour);
     }
 
-    void ImageWidget::SetTexture(Texture* texture)
+    void ImageWidget::SetTexture(std::shared_ptr<Texture> texture)
     {
         mImageVisual->SetTexture(texture);
     }
