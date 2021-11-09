@@ -23,9 +23,12 @@ namespace Ming3D
 
     void TextWidget::SetFont(const std::string font, const int fontSize)
     {
-        mFontFace = GGameEngine->GetFontManager()->GetFontFace(font, 14);
+        // TODO: Find a smarter way of detecting if the font atlas will become too large.
+        const int MAX_FONT_SIZE = 20;
+        const int actualFontSize = std::min(fontSize, MAX_FONT_SIZE);
+        mFontFace = GGameEngine->GetFontManager()->GetFontFace(font, actualFontSize);
         mTextVisual->SetFontFace(mFontFace);
-        mTextVisual->SetFontScale(fontSize / 12);
+        mTextVisual->SetFontScale(fontSize / fontSize);
     }
 
     void TextWidget::SetColour(glm::vec4 colour)

@@ -28,7 +28,8 @@ namespace Ming3D
         std::shared_ptr<Texture> mTexture;
         std::unordered_map<wchar_t, FontGlyph> mGlyphs;
         int mFontSize;
-        int mMaxBearingOffset;
+        int mMaxBearingOffset; // Max difference between glyph height and bearing.
+        int mMeanBearing; // Mean vertical bearing.
 
         /* Gets the glyph info of a UTF16 character code. */
         bool GetGlyph(wchar_t charCode, FontGlyph& outGlyph);

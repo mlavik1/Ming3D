@@ -33,7 +33,7 @@ namespace Ming3D
         if (mVerticalAlignment == EVerticalAlignment::Bottom)
             startOrigin += glm::vec2(0.0f, mFontFace->mMaxBearingOffset * mFontScale);
         else if (mVerticalAlignment == EVerticalAlignment::Centre)
-            startOrigin += glm::vec2(0.0f, visibleRect.mSize.y * 0.5f);
+            startOrigin += glm::vec2(0.0f, visibleRect.mSize.y * 0.5f - mFontFace->mMeanBearing * mFontScale * 0.5f);
         else if (mVerticalAlignment == EVerticalAlignment::Top)
             startOrigin += glm::vec2(0.0f, visibleRect.mSize.y - mFontFace->mFontSize * mFontScale);
 

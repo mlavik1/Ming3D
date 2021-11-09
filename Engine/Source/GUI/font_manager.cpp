@@ -111,10 +111,13 @@ namespace Ming3D
             glyphInfo.mTexSize = glm::vec2(bitmap.width / static_cast<float>(fntBmpWidth), bitmap.rows / static_cast<float>(fntBmpHeight));
             glyphInfo.mRelSize = glm::vec2(bitmap.width / static_cast<float>(fontSize), bitmap.rows / static_cast<float>(fontSize));
            
+            fontFace->mMeanBearing += glyphInfo.mBearingY;
             fontFace->mMaxBearingOffset = std::max(fontFace->mMaxBearingOffset, glyphInfo.mHeight - glyphInfo.mBearingY);
 
             fontFace->mGlyphs.emplace(static_cast<wchar_t>(chars[i]), glyphInfo);
         }
+
+        fontFace->mMeanBearing /= fontFace->mGlyphs.size();
 
         fontFace->mTexture = std::make_shared<Texture>();
         fontFace->mTexture->SetTextureData(buffer, 4, PixelFormat::RGBA, fntBmpWidth, fntBmpHeight);
