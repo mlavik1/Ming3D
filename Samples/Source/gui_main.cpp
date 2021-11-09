@@ -31,6 +31,7 @@ int main()
 {
     GameEngine* gameEngine = new GameEngine();
     gameEngine->Initialise();
+    gameEngine->SetMainWindowSize(1280, 720);
 
     Actor* camActor = new Actor();
     camActor->AddComponent<CameraComponent>();
@@ -52,7 +53,8 @@ int main()
 
 
     const std::string resourceDir = std::string(MING3D_SAMPLES_SOURCE_DIR) + std::string("/Resources");
-    const std::string testGuiPath = resourceDir + std::string("/gui_test.widget");
+    const std::string testGuiPath = resourceDir + std::string("/menu_test.widget");
+    //const std::string testGuiPath = resourceDir + std::string("/gui_test.widget");
 
     Actor* guiActor = new Actor();
     guiActor->GetTransform().SetLocalPosition(glm::vec3(0.0f, 0.0f, 0.0f));

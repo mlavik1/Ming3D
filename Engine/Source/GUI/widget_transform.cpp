@@ -33,22 +33,22 @@ namespace Ming3D
         const glm::vec2 parentPos = parentRect->mPosition;
         const glm::vec2 parentSize = parentRect->mSize;
 
+        // Horizontal positioning
         if (mHorizontalPositioning == WidgetSizeMode::Relative)
-        {
             absoluteRect.mPosition.x = (parentPos.x + parentSize.x) * mPosition.x + parentPos.x * (1.0f - mPosition.x);
-        }
+        else
+            absoluteRect.mPosition.x = parentPos.x + mPosition.x;
+        // Vertical positioning
         if (mVerticalPositioning == WidgetSizeMode::Relative)
-        {
             absoluteRect.mPosition.y = (parentPos.y + parentSize.y) * mPosition.y + parentPos.y * (1.0f - mPosition.y);
-        }
+        else
+            absoluteRect.mPosition.y = parentPos.y + mPosition.y;
+        // Horizontal scaling
         if (mHorizontalScaling == WidgetSizeMode::Relative)
-        {
             absoluteRect.mSize.x = parentSize.x * mSize.x;
-        }
+        // Vertical scaling
         if (mVerticalScaling == WidgetSizeMode::Relative)
-        {
             absoluteRect.mSize.y = parentSize.y * mSize.y;
-        }
 
         const glm::vec2 absPivotPos = (absoluteRect.mPosition + absoluteRect.mSize) * mPivot + absoluteRect.mPosition * (1.0f - mPivot);
         absoluteRect.mPosition -= (absPivotPos - absoluteRect.mPosition);

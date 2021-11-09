@@ -6,9 +6,17 @@
 #include <codecvt>
 #include "Debug/debug.h"
 #include "GameEngine/game_engine.h"
+#include "Texture/texture_loader.h"
+#include <filesystem>
 
 namespace Ming3D
 {
+    struct WidgetLoadParams
+    {
+        std::string mFilePath;
+        std::string mDirectory;
+    };
+
     struct WidgetSizeValue
     {
         WidgetSizeMode mWidgetSizeMode = WidgetSizeMode::Absolute;
@@ -98,7 +106,7 @@ namespace Ming3D
         return true;
     }
 
-    Widget* ParseWidgetNode(tinyxml2::XMLElement* node)
+    Widget* ParseWidgetNode(tinyxml2::XMLElement* node, WidgetLoadParams params)
     {
         Widget* widget = nullptr;
 
@@ -114,15 +122,30 @@ namespace Ming3D
             const tinyxml2::XMLAttribute* colAttr = node->FindAttribute("colour");
             if (colAttr != nullptr)
                 imgWidget->SetColour(ParseVec4(colAttr->Value()) / 255.0f);
+
+            const tinyxml2::XMLAttribute* imgAttr = node->FindAttribute("image");
+            if (imgAttr != nullptr)
+            {
+                const std::string texturePath = params.mDirectory + std::string("/") + std::string(imgAttr->Value());
+                Texture* texture = TextureLoader::LoadTextureData(texturePath); // TODO: Texture leak! (use smart pointer)
+                imgWidget->SetTexture(texture);
+            }
+
             widget = imgWidget;
         }
         else if (nodeVal == "TextWidget")
         {
             TextWidget* textWidget = new TextWidget();
+            int fontSize = 24;
+            const tinyxml2::XMLAttribute* fontSizeAttr = node->FindAttribute("font-size");
+            if (fontSizeAttr != nullptr)
+            {
+                fontSize = std::stoi(fontSizeAttr->Value());
+            }
             const tinyxml2::XMLAttribute* textAttr = node->FindAttribute("text");
             if (textAttr != nullptr)
             {
-                textWidget->SetFont(GGameEngine->GetResourceDirectory() + std::string("/Fonts/FreeSans.ttf"), 42); // TODO!
+                textWidget->SetFont(GGameEngine->GetResourceDirectory() + std::string("/Fonts/FreeSans.ttf"), fontSize); // TODO!
                 std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>, wchar_t> conversion;
                 std::wstring text = conversion.from_bytes(textAttr->Value());
                 textWidget->SetText(text);
@@ -172,7 +195,7 @@ namespace Ming3D
         tinyxml2::XMLElement* currChild = node->FirstChildElement();
         while (currChild != nullptr)
         {
-            Widget* childWidget = ParseWidgetNode(currChild);
+            Widget* childWidget = ParseWidgetNode(currChild, params);
             if (childWidget != nullptr)
                 widget->addWidget(childWidget);
             currChild = currChild->NextSiblingElement();
@@ -182,10 +205,14 @@ namespace Ming3D
 
     Widget* WidgetLoader::LoadWidgetFromXML(const std::string widgetPath)
     {
+        WidgetLoadParams params;
+        params.mFilePath = widgetPath;
+        params.mDirectory = std::filesystem::path(widgetPath).parent_path().string();
+
         tinyxml2::XMLDocument doc;
         doc.LoadFile(widgetPath.c_str());
 
         tinyxml2::XMLElement* root = doc.RootElement();
-        return ParseWidgetNode(root);
+        return ParseWidgetNode(root, params);
     }
 }
