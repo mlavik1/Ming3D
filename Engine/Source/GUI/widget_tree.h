@@ -36,6 +36,8 @@ namespace Ming3D
 
         void UpdateWidgetRecursive(Widget* widget, WidgetUpdateParams params);
 
+        void AddRenderBatch(RenderBatch batch);
+
         void OffsetSubmeshes(VisualSubmeshNode* node, int64_t vertexOffset, int64_t indexOffset);
 
         VisualSubmeshNode* ReallocSubmesh(VisualSubmeshNode* oldNode, unsigned int vertexCount, unsigned int indexCount);

@@ -93,7 +93,7 @@ namespace Ming3D
             batch.mModelMatrix = mTransformMatrix;
             batch.mStartIndex = visual->mSubmeshData->mTriangleStartIndex;
             batch.mNumIndices = visual->mSubmeshData->mNumIndices;
-            mRenderBatches.push_back(batch);
+            AddRenderBatch(batch);
         }
 
         // Update child widgets
@@ -103,6 +103,26 @@ namespace Ming3D
         }
 
         widget->mWidgetInvalidated = false;
+    }
+
+    void WidgetTree::AddRenderBatch(RenderBatch batch)
+    {
+        // Try to combine with previous batch
+        bool combinedBatch = false;
+        if (mRenderBatches.size() > 0)
+        {
+            RenderBatch& lastBatch = mRenderBatches[mRenderBatches.size() - 1];
+            if (lastBatch.mMaterial == batch.mMaterial && lastBatch.mMeshBuffer == batch.mMeshBuffer
+                && lastBatch.mStartIndex + lastBatch.mNumIndices == batch.mStartIndex)
+            {
+                // Combine batches
+                lastBatch.mNumIndices += batch.mNumIndices;
+                combinedBatch = true;
+            }
+
+        }
+        if (!combinedBatch)
+            mRenderBatches.push_back(batch);
     }
 
     void WidgetTree::UpdateWidgetTree()
