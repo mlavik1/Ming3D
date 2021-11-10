@@ -74,7 +74,7 @@ namespace Ming3D
         if (flags & MODELLOADERFLAGS_FORCE_OPAQUE)
             material->SetRenderType(ERenderType::Opaque);
         else if ((flags & MODELLOADERFLAGS_FORCE_TRANSPARENT)
-            || (diffuseTexture != nullptr || diffuseColour.a < 1.0f))
+            || diffuseColour.a < 1.0f)
             material->SetRenderType(ERenderType::Transparent);
         else
             material->SetRenderType(ERenderType::Opaque);

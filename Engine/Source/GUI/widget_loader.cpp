@@ -128,7 +128,7 @@ namespace Ming3D
             if (imgAttr != nullptr)
             {
                 const std::string texturePath = params.mDirectory + std::string("/") + std::string(imgAttr->Value());
-                std::shared_ptr<Texture> texture = std::shared_ptr<Texture>(TextureLoader::LoadTextureData(texturePath));
+                std::shared_ptr<Texture> texture = std::shared_ptr<Texture>(TextureLoader::LoadTextureData(texturePath)); // TODO: Re-use already imported textures
                 imgWidget->SetTexture(texture);
             }
 
