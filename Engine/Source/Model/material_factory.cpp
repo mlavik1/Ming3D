@@ -7,8 +7,6 @@
 
 namespace Ming3D
 {
-    Material* MaterialFactory::mDefaultGUIMaterial = nullptr;
-
     Material* MaterialFactory::CreateMaterial(const std::string& inShaderProgram)
     {
         MaterialParams params;
@@ -55,15 +53,4 @@ namespace Ming3D
 		}
 		return parsedProgram;
 	}
-
-    Material* MaterialFactory::GetDefaultGUIMaterial()
-    {
-        if (mDefaultGUIMaterial == nullptr)
-        {
-            mDefaultGUIMaterial = CreateMaterial(GGameEngine->GetResourceDirectory() + std::string("/Shaders/gui.cgp"));
-            std::shared_ptr<Texture> whiteTex = std::shared_ptr<Texture>(TextureLoader::LoadTextureData(GGameEngine->GetResourceDirectory() + std::string("/default-white.png")));
-            mDefaultGUIMaterial->SetTexture(0, whiteTex);
-        }
-        return mDefaultGUIMaterial;
-    }
 }

@@ -3,14 +3,15 @@
 #include "Texture/texture.h"
 #include "Model/material.h"
 #include "Model/material_factory.h"
+#include "gui_resource_manager.h"
+#include "GameEngine/game_engine.h"
 
 namespace Ming3D
 {
     ImageVisual::ImageVisual()
     {
         mColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-        mMaterial = MaterialFactory::GetDefaultGUIMaterial();
-        mHasCustomMat = false;
+        mMaterial = GGameEngine->GetGUIResourceManager()->GetDefaultGUIMaterial();
     }
 
     ImageVisual::~ImageVisual()
@@ -62,15 +63,7 @@ namespace Ming3D
 
     void ImageVisual::SetTexture(std::shared_ptr<Texture> texture)
     {
-        if (!mHasCustomMat)
-        {
-            // Create new material
-            // TODO: Add support for using different textures in the same default GUI material
-            mHasCustomMat = true;
-            mMaterial = new Material(mMaterial);
-        }
-
-        mMaterial->SetTexture(0, texture);
+        mMaterial = GGameEngine->GetGUIResourceManager()->GetMaterialForTexture(texture);
         mVisualInvalidated = true;
     }
 

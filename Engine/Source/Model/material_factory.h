@@ -14,14 +14,10 @@ namespace Ming3D
 
     class MaterialFactory
     {
-    private:
-        static Material* mDefaultGUIMaterial;
-
     public:
         static Material* CreateMaterial(const std::string& inShaderProgram);
         static Material* CreateMaterial(const MaterialParams& inParams);
 		static Rendering::ParsedShaderProgram* GetParsedShaderProgram(const MaterialParams& inParams);
-        static Material* GetDefaultGUIMaterial();
     };
 }
 

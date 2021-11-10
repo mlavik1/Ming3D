@@ -5,6 +5,8 @@
 #include <vector>
 #include <filesystem>
 #include "Model/material_factory.h"
+#include "GameEngine/game_engine.h"
+#include "gui_resource_manager.h"
 
 namespace Ming3D
 {
@@ -123,7 +125,7 @@ namespace Ming3D
         fontFace->mTexture->SetTextureData(buffer, 4, PixelFormat::RGBA, fntBmpWidth, fntBmpHeight);
 
         // Create material (TODO: Maybe not here?)
-        fontFace->mMaterial = new Material(MaterialFactory::GetDefaultGUIMaterial());
+        fontFace->mMaterial = new Material(GGameEngine->GetGUIResourceManager()->GetDefaultGUIMaterial());
         fontFace->mMaterial->SetTexture(0, fontFace->mTexture);
 
         fontFace->mFontSize = fontSize;

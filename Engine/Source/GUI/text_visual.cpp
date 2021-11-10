@@ -3,13 +3,15 @@
 #include "Texture/texture.h"
 #include "Model/material.h"
 #include "Model/material_factory.h"
+#include "gui_resource_manager.h"
+#include "GameEngine/game_engine.h"
 
 namespace Ming3D
 {
     TextVisual::TextVisual()
     {
         mColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-        mMaterial = MaterialFactory::GetDefaultGUIMaterial();
+        mMaterial = GGameEngine->GetGUIResourceManager()->GetDefaultGUIMaterial();
         mFontFace = nullptr;
         mFontScale = 1.0f;
         mHorizontalAlignment = EHorizontalAlignment::Left;

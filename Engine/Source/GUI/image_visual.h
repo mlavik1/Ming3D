@@ -15,8 +15,7 @@ namespace Ming3D
         std::vector<unsigned int> mIndexData;
 
         glm::vec4 mColour;
-        Material* mMaterial;
-        bool mHasCustomMat;
+        Material* mMaterial; // TODO: smart pointer
 
     public:
         ImageVisual();

@@ -9,6 +9,8 @@
 #include "GameEngine/game_engine.h"
 #include "render_device.h"
 #include "graphics_data.h"
+#include "gui_resource_manager.h"
+#include "GameEngine/game_engine.h"
 
 namespace Ming3D
 {
@@ -17,7 +19,7 @@ namespace Ming3D
         mRootSubmeshNode = nullptr;
         mRootWidget = new Widget();
 
-        mMaterial = MaterialFactory::GetDefaultGUIMaterial();
+        mMaterial = GGameEngine->GetGUIResourceManager()->GetDefaultGUIMaterial();
         mMeshBuffer = new MeshBuffer();
 
         Rendering::VertexLayout vertexLayout;

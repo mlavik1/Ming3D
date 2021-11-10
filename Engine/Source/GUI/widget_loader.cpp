@@ -9,6 +9,7 @@
 #include "Texture/texture_loader.h"
 #include <filesystem>
 #include <memory>
+#include "gui_resource_manager.h"
 
 namespace Ming3D
 {
@@ -128,7 +129,7 @@ namespace Ming3D
             if (imgAttr != nullptr)
             {
                 const std::string texturePath = params.mDirectory + std::string("/") + std::string(imgAttr->Value());
-                std::shared_ptr<Texture> texture = std::shared_ptr<Texture>(TextureLoader::LoadTextureData(texturePath)); // TODO: Re-use already imported textures
+                std::shared_ptr<Texture> texture = GGameEngine->GetGUIResourceManager()->GetTexture(texturePath); // TODO: Re-use already imported textures
                 imgWidget->SetTexture(texture);
             }
 

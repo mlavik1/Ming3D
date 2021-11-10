@@ -19,6 +19,7 @@ namespace Ming3D
     class LightSource;
     class RenderWindowHandle;
     class FontManager;
+    class GUIResourceManager;
     namespace Rendering
     {
         class RenderDevice;
@@ -45,6 +46,7 @@ namespace Ming3D
         InputHandler* mInputHandler = nullptr;
         InputManager* mInputManager = nullptr;
         FontManager* mFontManager = nullptr;
+        GUIResourceManager* mGUIResourceManager = nullptr;
 
         float mTime = 0.0f;
         float mDeltaTime = 0.0f;
@@ -88,6 +90,7 @@ namespace Ming3D
         inline InputHandler* GetInputHandler() { return mInputHandler; }
         inline InputManager* GetInputManager() { return mInputManager; }
         inline FontManager* GetFontManager() { return mFontManager; }
+        inline GUIResourceManager* GetGUIResourceManager() { return mGUIResourceManager; }
 
         float GetDeltaTime() const { return mDeltaTime; }
         float GetTime() const { return mTime; }
