@@ -2,9 +2,20 @@
 #include "GameEngine/game_engine.h"
 #include "input_manager.h"
 #include "SDL2/SDL_gamecontroller.h"
+#include "sdl_window.h"
 
 namespace Ming3D
 {
+    InputHandlerSDL::InputHandlerSDL(Rendering::SDLWindow* window)
+    {
+        mWindow = window;
+    }
+
+    InputHandlerSDL::~InputHandlerSDL()
+    {
+
+    }
+
     void InputHandlerSDL::Initialise()
     {
         SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER);
@@ -38,6 +49,10 @@ namespace Ming3D
                 break;
             case SDL_CONTROLLERAXISMOTION:
                 HandleAxis2D(sdlEvent.caxis.axis, sdlEvent.caxis.value);
+                break;
+            case SDL_WINDOWEVENT:
+                if (sdlEvent.window.event == SDL_WINDOWEVENT_CLOSE)
+                    mWindow->Close();
                 break;
             }
         }

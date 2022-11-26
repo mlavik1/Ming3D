@@ -82,9 +82,9 @@ namespace Ming3D
         return nullptr;
     }
 
-    InputHandler* PlatformLinux::CreateInputHandler()
+    InputHandler* PlatformLinux::CreateInputHandler(Rendering::WindowBase* window)
     {
-        return new InputHandlerSDL();
+        return new InputHandlerSDL(static_cast<Rendering::SDLWindow*>(window));
     }
     
     std::string PlatformLinux::ReadConsoleLine()

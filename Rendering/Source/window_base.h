@@ -14,6 +14,8 @@ namespace Ming3D::Rendering
         virtual void BeginRender() = 0;
         virtual void EndRender() = 0;
         virtual void* GetOSWindowHandle() = 0;
+        virtual void Close() = 0;
+        virtual bool IsOpen() = 0;
     };
 }
 

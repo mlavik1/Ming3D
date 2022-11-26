@@ -58,7 +58,7 @@ namespace Ming3D
 		~GameEngine();
 
 		void Initialise();
-        void Update();
+        bool Update();
 
         void AddCamera(CameraComponent* inCamera);
         void RemoveCamera(CameraComponent* inCamera);

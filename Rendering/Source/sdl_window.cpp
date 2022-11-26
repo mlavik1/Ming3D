@@ -29,6 +29,15 @@ namespace Ming3D::Rendering
         __Assert(mSDLWindow != nullptr);
     }
 
+    SDLWindow::~SDLWindow()
+    {
+        if (mSDLWindow != nullptr)
+        {
+            SDL_DestroyWindow(mSDLWindow);
+            mSDLWindow = nullptr;
+        }
+    }
+
     void SDLWindow::Initialise()
     {
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
@@ -82,5 +91,16 @@ namespace Ming3D::Rendering
 #else
         return nullptr; // TODO
 #endif
+    }
+
+    void SDLWindow::Close()
+    {
+        SDL_DestroyWindow(mSDLWindow);
+        mSDLWindow = nullptr;
+    }
+
+    bool SDLWindow::IsOpen()
+    {
+        return mSDLWindow != nullptr;
     }
 }

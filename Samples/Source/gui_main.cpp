@@ -69,9 +69,8 @@ int main()
     const float camSpeed = 3.0f;
     const float camRotSpeed = 1.0f;
 
-    while (true)
+    while (gameEngine->Update())
     {
-        gameEngine->Update();
         actor1->GetTransform().Rotate(0.001f, glm::vec3(0, 1, 0));
 
         float speed = camSpeed * GGameEngine->GetDeltaTime();

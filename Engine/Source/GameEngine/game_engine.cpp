@@ -79,7 +79,7 @@ namespace Ming3D
         mClassManager->InitialiseClasses();
         mPlatform->Initialise();
         mMainWindow = mPlatform->CreateOSWindow();
-        mInputHandler = mPlatform->CreateInputHandler();
+        mInputHandler = mPlatform->CreateInputHandler(mMainWindow);
         mInputHandler->Initialise(),
         mInputManager = new InputManager();
         mRenderDevice = mPlatform->CreateRenderDevice();
@@ -92,8 +92,11 @@ namespace Ming3D
         LOG_INFO() << "Engine resource directory: " << GetResourceDirectory();
 	}
 
-    void GameEngine::Update()
+    bool GameEngine::Update()
     {
+        if (!mMainWindow->IsOpen())
+            return false;
+        
         mTimeManager->UpdateTime();
         float deltaTime = mTimeManager->GetDeltaTimeSeconds();
         mDeltaTime = deltaTime;
@@ -102,6 +105,10 @@ namespace Ming3D
         mPlatform->Update();
         mInputHandler->Update();
         mInputManager->Update();
+
+        // If main window was closed this frame
+        if (!mMainWindow->IsOpen())
+            return false;
 
         mPhysicsManager->SimulateScenes(deltaTime);
 
@@ -115,6 +122,8 @@ namespace Ming3D
         mSceneRenderer->Render();
 
         HandleDebugStats();
+
+        return true;
     }
 
     void GameEngine::HandleDebugStats()

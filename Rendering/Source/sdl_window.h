@@ -21,6 +21,7 @@ namespace Ming3D::Rendering
     public:
         SDLWindow();
         SDLWindow(const void* inNativewindow);
+        virtual ~SDLWindow();
 
         virtual void Initialise() override;
         virtual void SetSize(unsigned int inWidth, unsigned int inHeight) override;
@@ -29,6 +30,8 @@ namespace Ming3D::Rendering
         virtual void BeginRender() override;
         virtual void EndRender() override;
         virtual void* GetOSWindowHandle() override;
+        virtual void Close() override;
+        virtual bool IsOpen() override;
         SDL_Window* GetSDLWindow() { return mSDLWindow; }
         SDL_GLContext GetGLContext() { return mGLContext; }
     };

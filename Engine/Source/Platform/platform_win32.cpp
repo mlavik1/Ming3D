@@ -125,7 +125,7 @@ namespace Ming3D
         return new NetSocketWinsock();
     }
 
-    InputHandler* PlatformWin32::CreateInputHandler()
+    InputHandler* PlatformWin32::CreateInputHandler(Rendering::WindowBase* window)
     {
 #if MING3D_OPENGL
         return new InputHandlerSDL();

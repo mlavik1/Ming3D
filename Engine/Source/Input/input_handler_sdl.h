@@ -7,13 +7,21 @@
 
 namespace Ming3D
 {
+    namespace Rendering
+    {
+        class SDLWindow;
+    }
+
     class InputHandlerSDL : public InputHandler
     {
     public:
+        InputHandlerSDL(Rendering::SDLWindow* window);
+        virtual ~InputHandlerSDL();
         virtual void Initialise() override;
         virtual void Update() override;
 
     private:
+        Rendering::SDLWindow* mWindow;
         glm::vec2 mLeftConrollerAxis;
         glm::vec2 mRightConrollerAxis;
 

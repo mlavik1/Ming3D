@@ -29,6 +29,8 @@ namespace Ming3D::Rendering
         virtual void BeginRender() override;
         virtual void EndRender() override;
         virtual void* GetOSWindowHandle() override;
+        virtual void Close() override;
+        virtual bool IsOpen() override;
 
         std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)> mWndProcCallback;
     
