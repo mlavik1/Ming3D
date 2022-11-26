@@ -432,16 +432,10 @@ namespace Ming3D::Rendering
         const int h = mRenderWindow->GetWindow()->GetHeight();
         glViewport(0, 0, w, h);
 
+        glDepthMask(GL_TRUE);
         glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         glClear(GL_DEPTH_BUFFER_BIT);
-
-        //glEnable(GL_DEPTH_TEST);
-        //glDepthFunc(GL_LEQUAL);
-        //glEnable(GL_BLEND);
-        //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-        glDepthMask(GL_TRUE); // TODO: Make this adjustable
 
         CheckGLErrors("BeginRenderTarget");
 
