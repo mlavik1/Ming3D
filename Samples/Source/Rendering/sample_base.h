@@ -6,6 +6,7 @@
 #include "index_buffer.h"
 #include "shader_program.h"
 #include "Texture/texture.h"
+#include "Platform/platform.h"
 
 namespace Ming3D
 {
@@ -47,6 +48,7 @@ namespace Ming3D
         void RunSample();
 
     protected:
+        Ming3D::Platform* mPlatform;
         Rendering::WindowBase* mMainWindow;
         Rendering::RenderDevice* mRenderDevice;
         Rendering::RenderWindow* mRenderWindow;

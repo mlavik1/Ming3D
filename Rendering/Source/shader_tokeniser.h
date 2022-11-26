@@ -5,6 +5,7 @@
 #include <set>
 #include <unordered_map>
 #include <stack>
+#include <string>
 
 namespace Ming3D::Rendering
 {
