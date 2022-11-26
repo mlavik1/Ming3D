@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomWidget type="GUITest" x="400" y="80" width="400px" height="600px">
     <ImageWidget x="0%" y="0%" width="100%" height="100%" colour="255 255 255 255" image="menu_background.png">
-        <ImageWidget x="100px" y="450px" width="200px" height="80px" colour="255 255 255 255" image="button1.png">
+        <ButtonWidget x="100px" y="450px" width="200px" height="80px" colour="255 255 255 255" image="button1.png">
             <TextWidget x="0%" y="0%" width="100%" height="100%" text="New game" vertical-alignment="centre" horizontal-alignment="centre" font-size="26">
             </TextWidget>
-        </ImageWidget>
-        <ImageWidget x="100px" y="350px" width="200px" height="80px" colour="255 255 255 255" image="button1.png">
+        </ButtonWidget>
+        <ButtonWidget x="100px" y="350px" width="200px" height="80px" colour="255 255 255 255" image="button1.png">
             <TextWidget x="0%" y="0%" width="100%" height="100%" text="Load game" vertical-alignment="centre" horizontal-alignment="centre" font-size="26">
             </TextWidget>
-        </ImageWidget>
-        <ImageWidget x="100px" y="100px" width="200px" height="80px" colour="255 255 255 255" image="button1.png">
+        </ButtonWidget>
+        <ButtonWidget x="100px" y="100px" width="200px" height="80px" colour="255 255 255 255" image="button1.png">
             <TextWidget x="0%" y="0%" width="100%" height="100%" text="Quit" vertical-alignment="centre" horizontal-alignment="centre" font-size="26">
             </TextWidget>
-        </ImageWidget>
+        </ButtonWidget>
     </ImageWidget>
 </CustomWidget>

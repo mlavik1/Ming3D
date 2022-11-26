@@ -5,17 +5,19 @@
 
 namespace Ming3D
 {
-    class ImageVisual;
+    class ImageWidget;
     class Texture;
 
-    class ImageWidget : public Widget
+    class ButtonWidget : public Widget
     {
     private:
-        std::shared_ptr<ImageVisual> mImageVisual;
+        std::shared_ptr<ImageWidget> mImageWidget;
 
     public:
-        ImageWidget();
-        ~ImageWidget();
+        ButtonWidget();
+        virtual ~ButtonWidget();
+
+        std::shared_ptr<ImageWidget> GetImageWidget() { return mImageWidget; }
 
         void SetColour(glm::vec4 colour);
         void SetTexture(std::shared_ptr<Texture> texture);

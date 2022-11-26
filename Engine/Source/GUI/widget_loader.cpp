@@ -1,6 +1,7 @@
 #include "widget_loader.h"
 #include "image_widget.h"
 #include "text_widget.h"
+#include "button_widget.h"
 #include <vector>
 #include "3rdparty/tinyxml2/tinyxml2.h"
 #include <codecvt>
@@ -108,6 +109,57 @@ namespace Ming3D
         return true;
     }
 
+    void SetTextWidgetProperties(TextWidget* textWidget, tinyxml2::XMLElement* node)
+    {
+        int fontSize = 24;
+        const tinyxml2::XMLAttribute* fontSizeAttr = node->FindAttribute("font-size");
+        if (fontSizeAttr != nullptr)
+        {
+            fontSize = std::stoi(fontSizeAttr->Value());
+        }
+        const tinyxml2::XMLAttribute* textAttr = node->FindAttribute("text");
+        if (textAttr != nullptr)
+        {
+            textWidget->SetFont(GGameEngine->GetResourceDirectory() + std::string("/Fonts/FreeSans.ttf"), fontSize); // TODO!
+            std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>, wchar_t> conversion;
+            std::wstring text = conversion.from_bytes(textAttr->Value());
+            textWidget->SetText(text);
+        }
+        const tinyxml2::XMLAttribute* horAlignAttr = node->FindAttribute("horizontal-alignment");
+        if (horAlignAttr != nullptr)
+        {
+            EHorizontalAlignment align;
+            if (ParseHorizontalAlignment(horAlignAttr->Value(), align))
+                textWidget->SetHorizontalAlignment(align);
+            else
+                LOG_ERROR() << "Invalid horizontal alignment value: " << horAlignAttr->Value();
+        }
+        const tinyxml2::XMLAttribute* vertAlignAttr = node->FindAttribute("vertical-alignment");
+        if (vertAlignAttr != nullptr)
+        {
+            EVerticalAlignment align;
+            if (ParseVerticalAlignment(vertAlignAttr->Value(), align))
+                textWidget->SetVerticalAlignment(align);
+            else
+                LOG_ERROR() << "Invalid vertical alignment value: " << vertAlignAttr->Value();
+        }
+    }
+
+    void SetImageWidgetProperties(ImageWidget* imageWidget, tinyxml2::XMLElement* node, WidgetLoadParams params)
+    {
+        const tinyxml2::XMLAttribute* colAttr = node->FindAttribute("colour");
+        if (colAttr != nullptr)
+            imageWidget->SetColour(ParseVec4(colAttr->Value()) / 255.0f);
+
+        const tinyxml2::XMLAttribute* imgAttr = node->FindAttribute("image");
+        if (imgAttr != nullptr)
+        {
+            const std::string texturePath = params.mDirectory + std::string("/") + std::string(imgAttr->Value());
+            std::shared_ptr<Texture> texture = GGameEngine->GetGUIResourceManager()->GetTexture(texturePath); // TODO: Re-use already imported textures
+            imageWidget->SetTexture(texture);
+        }
+    }
+
     std::shared_ptr<Widget> ParseWidgetNode(tinyxml2::XMLElement* node, WidgetLoadParams params)
     {
         std::shared_ptr<Widget> widget = nullptr;
@@ -120,57 +172,21 @@ namespace Ming3D
         }
         else if (nodeVal == "ImageWidget")
         {
-            std::shared_ptr<ImageWidget> imgWidget = std::make_shared<ImageWidget>();
-            const tinyxml2::XMLAttribute* colAttr = node->FindAttribute("colour");
-            if (colAttr != nullptr)
-                imgWidget->SetColour(ParseVec4(colAttr->Value()) / 255.0f);
-
-            const tinyxml2::XMLAttribute* imgAttr = node->FindAttribute("image");
-            if (imgAttr != nullptr)
-            {
-                const std::string texturePath = params.mDirectory + std::string("/") + std::string(imgAttr->Value());
-                std::shared_ptr<Texture> texture = GGameEngine->GetGUIResourceManager()->GetTexture(texturePath); // TODO: Re-use already imported textures
-                imgWidget->SetTexture(texture);
-            }
-
-            widget = imgWidget;
+            std::shared_ptr<ImageWidget> imageWidget = std::make_shared<ImageWidget>();
+            SetImageWidgetProperties(imageWidget.get(), node, params);
+            widget = imageWidget;
         }
         else if (nodeVal == "TextWidget")
         {
             std::shared_ptr<TextWidget> textWidget = std::make_shared<TextWidget>();
-            int fontSize = 24;
-            const tinyxml2::XMLAttribute* fontSizeAttr = node->FindAttribute("font-size");
-            if (fontSizeAttr != nullptr)
-            {
-                fontSize = std::stoi(fontSizeAttr->Value());
-            }
-            const tinyxml2::XMLAttribute* textAttr = node->FindAttribute("text");
-            if (textAttr != nullptr)
-            {
-                textWidget->SetFont(GGameEngine->GetResourceDirectory() + std::string("/Fonts/FreeSans.ttf"), fontSize); // TODO!
-                std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>, wchar_t> conversion;
-                std::wstring text = conversion.from_bytes(textAttr->Value());
-                textWidget->SetText(text);
-            }
-            const tinyxml2::XMLAttribute* horAlignAttr = node->FindAttribute("horizontal-alignment");
-            if (horAlignAttr != nullptr)
-            {
-                EHorizontalAlignment align;
-                if (ParseHorizontalAlignment(horAlignAttr->Value(), align))
-                    textWidget->SetHorizontalAlignment(align);
-                else
-                    LOG_ERROR() << "Invalid horizontal alignment value: " << horAlignAttr->Value();
-            }
-            const tinyxml2::XMLAttribute* vertAlignAttr = node->FindAttribute("vertical-alignment");
-            if (vertAlignAttr != nullptr)
-            {
-                EVerticalAlignment align;
-                if (ParseVerticalAlignment(vertAlignAttr->Value(), align))
-                    textWidget->SetVerticalAlignment(align);
-                else
-                    LOG_ERROR() << "Invalid vertical alignment value: " << vertAlignAttr->Value();
-            }
+            SetTextWidgetProperties(textWidget.get(), node);
             widget = textWidget;
+        }
+        else if (nodeVal == "ButtonWidget")
+        {
+            std::shared_ptr<ButtonWidget> buttonWidget = std::make_shared<ButtonWidget>();
+            SetImageWidgetProperties(buttonWidget->GetImageWidget().get(), node, params);
+            widget = buttonWidget;
         }
 
         WidgetSizeValue xVal, yVal, wVal, hVal;
