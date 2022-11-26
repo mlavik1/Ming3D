@@ -47,7 +47,7 @@ namespace Ming3D
             mWidgetTree->SetTransform(glm::mat4());
     }
 
-    void WidgetComponent::SetWidget(Widget* widget)
+    void WidgetComponent::SetWidget(std::shared_ptr<Widget> widget)
     {
         mWidget = widget;
         mWidgetTree->SetRootWidget(widget);

@@ -22,6 +22,7 @@
 #include "GUI/text_widget.h"
 #include <vector>
 #include <string>
+#include <memory>
 #include "Debug/debug.h"
 #include "GUI/widget_loader.h"
 
@@ -60,7 +61,7 @@ int main()
     guiActor->GetTransform().SetLocalPosition(glm::vec3(0.0f, 0.0f, 0.0f));
     guiActor->GetTransform().SetLocalScale(glm::vec3(0.005f, 0.005f, 0.005f));
     WidgetComponent* widgetComp = guiActor->AddComponent<WidgetComponent>();
-    Widget* rootWidget = WidgetLoader::LoadWidgetFromXML(testGuiPath);
+    std::shared_ptr<Widget> rootWidget = WidgetLoader::LoadWidgetFromXML(testGuiPath);
 
     widgetComp->SetWidget(rootWidget);
     widgetComp->SetRenderMode(EWidgetRenderMode::Overlay);

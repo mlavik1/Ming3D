@@ -108,19 +108,19 @@ namespace Ming3D
         return true;
     }
 
-    Widget* ParseWidgetNode(tinyxml2::XMLElement* node, WidgetLoadParams params)
+    std::shared_ptr<Widget> ParseWidgetNode(tinyxml2::XMLElement* node, WidgetLoadParams params)
     {
-        Widget* widget = nullptr;
+        std::shared_ptr<Widget> widget = nullptr;
 
         std::string nodeVal = node->Value();
 
         if (nodeVal == "CustomWidget")
         {
-            widget = new Widget();
+            widget = std::make_shared<Widget>();
         }
         else if (nodeVal == "ImageWidget")
         {
-            ImageWidget* imgWidget = new ImageWidget();
+            std::shared_ptr<ImageWidget> imgWidget = std::make_shared<ImageWidget>();
             const tinyxml2::XMLAttribute* colAttr = node->FindAttribute("colour");
             if (colAttr != nullptr)
                 imgWidget->SetColour(ParseVec4(colAttr->Value()) / 255.0f);
@@ -137,7 +137,7 @@ namespace Ming3D
         }
         else if (nodeVal == "TextWidget")
         {
-            TextWidget* textWidget = new TextWidget();
+            std::shared_ptr<TextWidget> textWidget = std::make_shared<TextWidget>();
             int fontSize = 24;
             const tinyxml2::XMLAttribute* fontSizeAttr = node->FindAttribute("font-size");
             if (fontSizeAttr != nullptr)
@@ -197,7 +197,7 @@ namespace Ming3D
         tinyxml2::XMLElement* currChild = node->FirstChildElement();
         while (currChild != nullptr)
         {
-            Widget* childWidget = ParseWidgetNode(currChild, params);
+            std::shared_ptr<Widget> childWidget = ParseWidgetNode(currChild, params);
             if (childWidget != nullptr)
                 widget->addWidget(childWidget);
             currChild = currChild->NextSiblingElement();
@@ -205,7 +205,7 @@ namespace Ming3D
         return widget;
     }
 
-    Widget* WidgetLoader::LoadWidgetFromXML(const std::string widgetPath)
+    std::shared_ptr<Widget> WidgetLoader::LoadWidgetFromXML(const std::string& widgetPath)
     {
         WidgetLoadParams params;
         params.mFilePath = widgetPath;

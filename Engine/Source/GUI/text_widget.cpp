@@ -7,7 +7,7 @@ namespace Ming3D
 {
     TextWidget::TextWidget()
     {
-        mTextVisual = new TextVisual();
+        mTextVisual = std::make_shared<TextVisual>();
         mVisuals.push_back(mTextVisual);
     }
 
@@ -16,12 +16,12 @@ namespace Ming3D
 
     }
 
-    void TextWidget::SetText(const std::wstring text)
+    void TextWidget::SetText(const std::wstring& text)
     {
         mTextVisual->SetText(text);
     }
 
-    void TextWidget::SetFont(const std::string font, const int fontSize)
+    void TextWidget::SetFont(const std::string& font, const int fontSize)
     {
         // TODO: Find a smarter way of detecting if the font atlas will become too large.
         const int MAX_FONT_SIZE = 20;

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include "component.h"
 #include "GUI/widget_render_object.h"
 
@@ -21,7 +22,7 @@ namespace Ming3D
         static void InitialiseClass();
 
         WidgetRenderObject* mRenderObject = nullptr;
-        Widget* mWidget = nullptr;
+        std::shared_ptr<Widget> mWidget = nullptr;
         WidgetTree* mWidgetTree = nullptr;
         EWidgetRenderMode mRenderMode = EWidgetRenderMode::World;
 
@@ -32,7 +33,7 @@ namespace Ming3D
 
         virtual void Tick(float inDeltaTime) override;
 
-        void SetWidget(Widget* widget);
+        void SetWidget(std::shared_ptr<Widget> widget);
         void SetRenderMode(EWidgetRenderMode renderMode);
     };
 }

@@ -6,7 +6,7 @@ namespace Ming3D
 {
     ImageWidget::ImageWidget()
     {
-        mImageVisual = new ImageVisual();
+        mImageVisual = std::make_shared<ImageVisual>();
         mVisuals.push_back(mImageVisual);
     }
 

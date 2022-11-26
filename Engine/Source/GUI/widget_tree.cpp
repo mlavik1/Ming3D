@@ -3,6 +3,7 @@
 #include "visual.h"
 #include "gui_vertex_data.h"
 #include <cassert>
+#include <cstring>
 #include <memory>
 #include "Model/material.h"
 #include "Model/material_factory.h"
@@ -17,7 +18,7 @@ namespace Ming3D
     WidgetTree::WidgetTree()
     {
         mRootSubmeshNode = nullptr;
-        mRootWidget = new Widget();
+        mRootWidget = std::make_shared<Widget>();
 
         mMaterial = GGameEngine->GetGUIResourceManager()->GetDefaultGUIMaterial();
         mMeshBuffer = new MeshBuffer();
@@ -26,13 +27,12 @@ namespace Ming3D
         vertexLayout.VertexComponents.push_back(Rendering::EVertexComponent::Position);
         vertexLayout.VertexComponents.push_back(Rendering::EVertexComponent::Colour);
         vertexLayout.VertexComponents.push_back(Rendering::EVertexComponent::TexCoord);
-        mVertexData = new Rendering::VertexData(vertexLayout, 0);
-        mIndexData = new Rendering::IndexData(0);
+        mVertexData = std::make_unique<Rendering::VertexData>(vertexLayout, 0);
+        mIndexData = std::make_unique<Rendering::IndexData>(0);
     }
 
     WidgetTree::~WidgetTree()
     {
-        delete mRootWidget;
     }
 
     void WidgetTree::UpdateWidgetRecursive(Widget* widget, WidgetUpdateParams params)
@@ -59,7 +59,7 @@ namespace Ming3D
         params.mVisibleRect.mSize = glm::vec2(visibleSizeW, visibleSizeH);
 
         // Update visuals
-        for (Visual* visual : widget->mVisuals)
+        for (auto& visual : widget->mVisuals)
         {
             if (params.mVisualsInvalidated || visual->mVisualInvalidated)
             {
@@ -97,9 +97,9 @@ namespace Ming3D
         }
 
         // Update child widgets
-        for (Widget* childWidget : widget->mChildWidgets)
+        for (auto& childWidget : widget->mChildWidgets)
         {
-            UpdateWidgetRecursive(childWidget, params);
+            UpdateWidgetRecursive(childWidget.get(), params);
         }
 
         widget->mWidgetInvalidated = false;
@@ -136,9 +136,9 @@ namespace Ming3D
         params.mVisibleRect = params.mContentRect;
         params.mVisualsInvalidated = mRootWidget->mWidgetInvalidated;
 
-        for (Widget* childWidget : mRootWidget->mChildWidgets)
+        for (auto& childWidget : mRootWidget->mChildWidgets)
         {
-            UpdateWidgetRecursive(childWidget, params);
+            UpdateWidgetRecursive(childWidget.get(), params);
         }
 
         mRootWidget->mWidgetInvalidated = false;
@@ -148,13 +148,13 @@ namespace Ming3D
     {
         if (mMeshBuffer->mVertexBuffer == nullptr)
         {
-            mMeshBuffer->mVertexBuffer = GGameEngine->GetRenderDevice()->CreateVertexBuffer(mVertexData, Rendering::EBufferUsage::DynamicDraw);
-            mMeshBuffer->mIndexBuffer = GGameEngine->GetRenderDevice()->CreateIndexBuffer(mIndexData, Rendering::EBufferUsage::DynamicDraw);
+            mMeshBuffer->mVertexBuffer = GGameEngine->GetRenderDevice()->CreateVertexBuffer(mVertexData.get(), Rendering::EBufferUsage::DynamicDraw);
+            mMeshBuffer->mIndexBuffer = GGameEngine->GetRenderDevice()->CreateIndexBuffer(mIndexData.get(), Rendering::EBufferUsage::DynamicDraw);
         }
         else
         {
-            GGameEngine->GetRenderDevice()->UpdateVertexBuffer(mMeshBuffer->mVertexBuffer, mVertexData);
-            GGameEngine->GetRenderDevice()->UpdateIndexBuffer(mMeshBuffer->mIndexBuffer, mIndexData);
+            GGameEngine->GetRenderDevice()->UpdateVertexBuffer(mMeshBuffer->mVertexBuffer, mVertexData.get());
+            GGameEngine->GetRenderDevice()->UpdateIndexBuffer(mMeshBuffer->mIndexBuffer, mIndexData.get());
         }
     }
 
@@ -166,9 +166,9 @@ namespace Ming3D
             int64_t newStartVertex = static_cast<int64_t>(currNode->mVertexStartIndex) + vertexOffset;
             int64_t newStartIndex = static_cast<int64_t>(currNode->mVertexStartIndex) + vertexOffset;
 
-            // Move vertex/index data
-            memmove(&mVertexData[newStartVertex], &mVertexData[node->mVertexStartIndex], currNode->mNumVertices);
-            memmove(&mIndexData[newStartIndex], &mIndexData[node->mTriangleStartIndex], currNode->mNumIndices);
+            // Move vertex/index datasam
+            std::memmove(mVertexData->GetDataPtrAt(newStartVertex), mVertexData->GetDataPtrAt(node->mVertexStartIndex), currNode->mNumVertices);
+            std::memmove(mIndexData->GetDataPtrAt(newStartIndex), mIndexData->GetDataPtrAt(node->mTriangleStartIndex), currNode->mNumIndices);
 
             // Set new start indices
             currNode->mVertexStartIndex = newStartVertex;
@@ -240,7 +240,7 @@ namespace Ming3D
         return node;
     }
 
-    void WidgetTree::SetRootWidget(Widget* widget)
+    void WidgetTree::SetRootWidget(std::shared_ptr<Widget> widget)
     {
         mRootWidget = widget;
     }

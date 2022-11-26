@@ -1,6 +1,7 @@
 #pragma once
 #include "widget_transform.h"
 #include <vector>
+#include <memory>
 #include "visual.h"
 
 namespace Ming3D
@@ -21,8 +22,8 @@ namespace Ming3D
 
         Widget* mParentWidget = nullptr;
 
-        std::vector<Widget*> mChildWidgets;
-        std::vector<Visual*> mVisuals;
+        std::vector<std::shared_ptr<Widget>> mChildWidgets;
+        std::vector<std::shared_ptr<Visual>> mVisuals;
 
         bool mTransformIsDirty = true;
 
@@ -34,13 +35,13 @@ namespace Ming3D
         */
         void setTransformDirty();
 
-        void addVisual(Visual* visual);
+        void addVisual(std::shared_ptr<Visual> visual);
 
     public:
         Widget();
         virtual ~Widget();
 
-        void addWidget(Widget* widget);
+        void addWidget(std::shared_ptr<Widget> widget);
 
         /*
         * Gets the absolute (screen space) rect of this Widget's transform.

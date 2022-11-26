@@ -8,8 +8,6 @@ namespace Ming3D
 
     Widget::~Widget()
     {
-        for (Widget* child : mChildWidgets)
-            delete child;
     }
 
     void Widget::setTransformDirty()
@@ -17,17 +15,17 @@ namespace Ming3D
         mTransformIsDirty = true;
         mWidgetInvalidated = true;
 
-        for (Widget* child : mChildWidgets)
-            child->setTransformDirty();
+        for (std::vector<std::shared_ptr<Widget>>::iterator itrWidget = mChildWidgets.begin(); itrWidget != mChildWidgets.end(); ++itrWidget)
+            (*itrWidget)->setTransformDirty();
     }
 
-    void Widget::addVisual(Visual* visual)
+    void Widget::addVisual(std::shared_ptr<Visual> visual)
     {
         mVisuals.push_back(visual);
         mWidgetInvalidated = true;
     }
 
-    void Widget::addWidget(Widget* widget)
+    void Widget::addWidget(std::shared_ptr<Widget> widget)
     {
         mChildWidgets.push_back(widget);
         widget->mParentWidget = this;

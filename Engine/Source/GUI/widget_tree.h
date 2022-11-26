@@ -1,6 +1,7 @@
 #pragma once
 #include "widget_update_params.h"
 #include <vector>
+#include <memory>
 #include "SceneRenderer/render_batch.h"
 
 namespace Ming3D
@@ -20,13 +21,13 @@ namespace Ming3D
     class WidgetTree
     {
     private:
-        Widget* mRootWidget;
+        std::shared_ptr<Widget> mRootWidget;
 
         VisualSubmeshNode* mRootSubmeshNode;
         VisualSubmeshNode* mTailSubmeshNode;
 
-        Rendering::VertexData* mVertexData;
-        Rendering::IndexData* mIndexData;
+        std::unique_ptr<Rendering::VertexData> mVertexData;
+        std::unique_ptr<Rendering::IndexData> mIndexData;
 
         std::vector<RenderBatch> mRenderBatches;
 
@@ -46,7 +47,7 @@ namespace Ming3D
         WidgetTree();
         ~WidgetTree();
         
-        void SetRootWidget(Widget* widget);
+        void SetRootWidget(std::shared_ptr<Widget> widget);
         void SetTransform(glm::mat4 transMat);
 
         void UpdateWidgetTree();
