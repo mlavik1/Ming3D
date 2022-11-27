@@ -11,6 +11,7 @@ jobs:
     - uses: actions/checkout@v1
     - name: Get dependencies
       run: |
+        apt install libgl-dev
         pip3 install conan
         conan --version
 
