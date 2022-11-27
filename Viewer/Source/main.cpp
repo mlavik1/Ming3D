@@ -45,16 +45,14 @@ int main()
 	GameEngine* gameEngine = new GameEngine();
 	gameEngine->Initialise();
 
-    Actor* camActor = new Actor();
+    Actor* camActor = gameEngine->GetWorld()->SpawnActor();
     camActor->AddComponent<CameraComponent>();
     camActor->GetTransform().SetWorldPosition(glm::vec3(0.0f, 0.0f, 3.0f));
-    gameEngine->GetWorld()->AddActor(camActor);
 
-    Actor* modelActor = new Actor();
+    Actor* modelActor = gameEngine->GetWorld()->SpawnActor();
     modelActor->GetTransform().SetLocalPosition(glm::vec3(0.0f, 0.0f, 0.0f));
     modelActor->GetTransform().SetLocalScale(glm::vec3(1.0f, 1.0f, 1.0f));
     modelActor->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
-    gameEngine->GetWorld()->AddActor(modelActor);
     LoadModel(modelActor);
 
     // Normalise mesh scale

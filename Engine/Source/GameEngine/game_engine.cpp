@@ -46,7 +46,7 @@ namespace Ming3D
         mPlatform = new PlatformLinux();
 #endif
         mTimeManager = new TimeManager();
-        mWorld = new World();
+        mWorld = new World(this);
         mSceneRenderer = new SceneRenderer();
 #ifdef MING3D_PHYSX
         mPhysicsManager = new PhysicsManagerPhysX();

@@ -34,10 +34,9 @@ namespace Ming3D
 
         // TODO: Create/load scene
 
-        Actor* camActor = new Actor();
+        Actor* camActor = engine->GetWorld()->SpawnActor();
         camActor->AddComponent<CameraComponent>();
         camActor->GetTransform().SetWorldPosition(glm::vec3(0.0f, 2.0f, 6.0f));
-        engine->GetWorld()->AddActor(camActor);
 
 		mEditorWindow = new EditorWindow();
 

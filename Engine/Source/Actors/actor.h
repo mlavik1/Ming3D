@@ -10,6 +10,8 @@
 
 namespace Ming3D
 {
+    class World;
+
     class Actor : public GameObject
     {
         DEFINE_CLASS(Ming3D::Actor, Ming3D::GameObject)
@@ -17,9 +19,9 @@ namespace Ming3D
     private:
         static void InitialiseClass();
         
+        World* mWorld;
         Transform mTransform;
         std::vector<Component*> mComponents;
-        bool mIsInitialised = false;
         std::string mActorName;
 
         std::vector<Component*> newComponents;
@@ -42,11 +44,14 @@ namespace Ming3D
             }
         }
 
-    public:
-        Actor();
-        virtual ~Actor();
-
         void AddComponent(Component* inComp);
+
+    public:
+        Actor() {}
+
+    public:
+        Actor(World* world);
+        virtual ~Actor();
 
         template <typename T>
         T* AddComponent()
@@ -57,7 +62,10 @@ namespace Ming3D
             return newComp;
         }
 
-        virtual void InitialiseActor();
+        Actor* SpawnChildActor();
+
+        World* GetWorld() { return mWorld; }
+
         virtual void Tick(float inDeltaTime);
 
         /**

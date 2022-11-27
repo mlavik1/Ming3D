@@ -141,9 +141,9 @@ namespace Ming3D
         return mesh;
     }
 
-    Actor* ModelLoader::CreateNode(aiNode* aiNode, const std::vector<Mesh*>& meshes, const std::vector<Material*>& materials, const aiScene* scene)
+    Actor* ModelLoader::CreateNode(aiNode* aiNode, const std::vector<Mesh*>& meshes, const std::vector<Material*>& materials, const aiScene* scene, Actor* parent)
     {
-        Actor* actor = new Actor();
+        Actor* actor = parent->SpawnChildActor();
 
         aiMatrix4x4 m = aiNode->mTransformation;
         glm::mat4 rootTransform(
@@ -165,8 +165,7 @@ namespace Ming3D
 
         for(unsigned int iChild = 0; iChild < aiNode->mNumChildren; iChild++)
         {
-            Actor* child = CreateNode(aiNode->mChildren[iChild], meshes, materials, scene);
-            child->GetTransform().SetParent(&actor->GetTransform());
+            Actor* child = CreateNode(aiNode->mChildren[iChild], meshes, materials, scene, actor);
         }
 
         return actor;
@@ -203,8 +202,7 @@ namespace Ming3D
             meshes.push_back(mesh);
         }
 
-        Actor* childActor = CreateNode(scene->mRootNode, meshes, materials, scene);
-        childActor->GetTransform().SetParent(&inActor->GetTransform());
+        Actor* childActor = CreateNode(scene->mRootNode, meshes, materials, scene, inActor);
 
         return true;
     }
