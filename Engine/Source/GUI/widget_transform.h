@@ -10,10 +10,17 @@ namespace Ming3D
         Relative
     };
 
-    struct WidgetRect
+    class WidgetRect
     {
+    public:
         glm::vec2 mPosition;
         glm::vec2 mSize;
+
+        bool Contains(glm::vec2 point) const
+        {
+            return point.x >= mPosition.x && point.x <= mPosition.x + mSize.x &&
+             point.y >= mPosition.y && point.y <= mPosition.y + mSize.y;
+        }
     };
 
     class WidgetTransform

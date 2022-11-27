@@ -3,6 +3,7 @@
 #include <vector>
 #include <memory>
 #include "visual.h"
+#include "Input/input_event.h"
 
 namespace Ming3D
 {
@@ -64,5 +65,9 @@ namespace Ming3D
         void setHorizontalPositioning(WidgetSizeMode arg_mode);
         void setVerticalScaling(WidgetSizeMode arg_mode);
         void setHorizontalScaling(WidgetSizeMode arg_mode);
+
+        virtual void OnInputEvent(InputEvent event) {}
+
+        const std::vector<std::shared_ptr<Widget>>& GetChildren() { return mChildWidgets; }
     };
 }

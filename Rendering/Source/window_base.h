@@ -9,8 +9,8 @@ namespace Ming3D::Rendering
         virtual ~WindowBase() = default;
         virtual void Initialise() = 0;
         virtual void SetSize(unsigned int inWidth, unsigned int inHeight) = 0;
-        virtual unsigned int GetWidth() = 0;
-        virtual unsigned int GetHeight() = 0;
+        virtual unsigned int GetWidth() const = 0;
+        virtual unsigned int GetHeight() const = 0;
         virtual void BeginRender() = 0;
         virtual void EndRender() = 0;
         virtual void* GetOSWindowHandle() = 0;

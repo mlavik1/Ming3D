@@ -24,7 +24,10 @@ namespace Ming3D
         Rendering::SDLWindow* mWindow;
         glm::vec2 mLeftConrollerAxis;
         glm::vec2 mRightConrollerAxis;
+        glm::ivec2 mMousePosition;
 
+        void HandleMouseDown(Uint8 mouseButton);
+        void HandleMouseUp(Uint8 mouseButton);
         void HandleKeyDown(SDL_Keycode inKeycode);
         void HandleKeyUp(SDL_Keycode inKeycode);
         void HandleControllerButtonDown(Uint8 button);
@@ -32,6 +35,7 @@ namespace Ming3D
         void HandleAxis2D(Uint8 axis, Sint16 value);
         KeyCode GetKeyCode(SDL_Keycode inKeycode);
         KeyCode GetControllerKeyCode(Uint8 keycode);
+        void AddInputEvent(InputEvent event);
     };
 }
 

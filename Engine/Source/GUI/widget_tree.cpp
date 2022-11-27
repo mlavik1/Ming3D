@@ -240,6 +240,30 @@ namespace Ming3D
         return node;
     }
 
+    void HandleEventRecursive(Widget* widget, InputEvent event, glm::ivec2 mousePosition)
+    {
+        const WidgetRect rect = widget->getAbsoluteRect();
+        if (rect.Contains(mousePosition))
+        {
+            widget->OnInputEvent(event);
+            for (auto child : widget->GetChildren())
+            {
+                HandleEventRecursive(child.get(), event, mousePosition);
+            }
+        }
+    }
+
+    void WidgetTree::HandleEvents(const std::vector<InputEvent>& events, glm::ivec2 mousePosition)
+    {
+        for (std::vector<InputEvent>::const_iterator iter = events.begin(); iter != events.end(); ++iter)
+        {
+            InputEvent event = (*iter);
+            Widget* widget = mRootWidget.get();
+            HandleEventRecursive(widget, event, mousePosition);
+        }
+    }
+
+
     void WidgetTree::SetRootWidget(std::shared_ptr<Widget> widget)
     {
         mRootWidget = widget;

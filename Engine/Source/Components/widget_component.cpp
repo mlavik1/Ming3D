@@ -4,6 +4,10 @@
 #include "GameEngine/game_engine.h"
 #include "SceneRenderer/scene_renderer.h"
 #include "Debug/st_assert.h"
+#include "Input/input_manager.h"
+#include "World/world.h"
+#include "window_base.h"
+#include <cmath>
 
 IMPLEMENT_CLASS(Ming3D::WidgetComponent)
 
@@ -36,6 +40,15 @@ namespace Ming3D
     {
         Component::Tick(inDeltaTime);
 
+        auto inputManager = GetWorld()->GetGameEngine()->GetInputManager();
+        const std::vector<InputEvent>& events = inputManager->GetEvents();
+        glm::ivec2 mousePosition = inputManager->GetMousePosition();
+        if (mRenderMode == EWidgetRenderMode::World)
+        {
+            // TODO: Raycast
+        }
+        mWidgetTree->HandleEvents(events, mousePosition);
+        
         mWidgetTree->UpdateWidgetTree();
         mWidgetTree->UpdateRenderData();
 

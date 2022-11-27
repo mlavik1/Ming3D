@@ -21,5 +21,7 @@ namespace Ming3D
 
         void SetColour(glm::vec4 colour);
         void SetTexture(std::shared_ptr<Texture> texture);
+
+        virtual void OnInputEvent(InputEvent event) override;
     };
 }

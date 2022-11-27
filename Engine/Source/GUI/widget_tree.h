@@ -3,6 +3,8 @@
 #include <vector>
 #include <memory>
 #include "SceneRenderer/render_batch.h"
+#include "Input/input_event.h"
+#include "glm/vec2.hpp"
 
 namespace Ming3D
 {
@@ -50,6 +52,8 @@ namespace Ming3D
         void SetRootWidget(std::shared_ptr<Widget> widget);
         void SetTransform(glm::mat4 transMat);
 
+        void HandleEvents(const std::vector<InputEvent>& events, glm::ivec2 mousePosition);
+        
         void UpdateWidgetTree();
         void UpdateRenderData();
         size_t GetNumBatches();

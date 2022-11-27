@@ -1,5 +1,6 @@
 #include "button_widget.h"
 #include "image_widget.h"
+#include <iostream>
 
 namespace Ming3D
 {
@@ -23,5 +24,13 @@ namespace Ming3D
     void ButtonWidget::SetTexture(std::shared_ptr<Texture> texture)
     {
         mImageWidget->SetTexture(texture);
+    }
+
+    void ButtonWidget::OnInputEvent(InputEvent event)
+    {
+        if (event.mType == InputEventType::MouseButtonDown)
+        {
+            std::cout << "Mouse button down: " << event.mMouseButton.mButton << std::endl;
+        }
     }
 }

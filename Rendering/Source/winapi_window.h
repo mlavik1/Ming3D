@@ -24,8 +24,8 @@ namespace Ming3D::Rendering
         WinAPIWindow(HWND inHWND);
         virtual void Initialise() override;
         virtual void SetSize(unsigned int inWidth, unsigned int inHeight) override;
-        virtual unsigned int GetWidth() override { return mWindowWidth; };
-        virtual unsigned int GetHeight() override { return mWindowHeight; };
+        virtual unsigned int GetWidth() const override { return mWindowWidth; };
+        virtual unsigned int GetHeight() const override { return mWindowHeight; };
         virtual void BeginRender() override;
         virtual void EndRender() override;
         virtual void* GetOSWindowHandle() override;
