@@ -105,7 +105,7 @@ namespace Ming3D::Rendering
         // TODO
     }
 
-    virtual bool WinAPIWindow::IsOpen()
+    bool WinAPIWindow::IsOpen()
     {
         return true; // TODO
     }

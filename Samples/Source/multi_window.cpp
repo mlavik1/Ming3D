@@ -47,7 +47,7 @@ int main()
 
     Actor* actor1 = gameEngine->GetWorld()->SpawnActor();
     actor1->GetTransform().SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
-    actor1->GetTransform().SetLocalScale(glm::vec3(2.0f, 2.0f, 2.0f));
+    actor1->GetTransform().SetLocalScale(glm::vec3(20.0f, 20.0f, 20.0f));
     actor1->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
     ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Mvr_PetCow_walk.dae"), actor1);
     for (MeshComponent* currMeshComp : actor1->GetComponentsInChildren<MeshComponent>())
@@ -57,7 +57,7 @@ int main()
 
     Actor* actor2 = gameEngine->GetWorld()->SpawnActor();
     actor2->GetTransform().SetLocalPosition(glm::vec3(-1.5f, 0.0f, 0.0f));
-    actor2->GetTransform().SetLocalScale(glm::vec3(2.0f, 2.0f, 2.0f));
+    actor2->GetTransform().SetLocalScale(glm::vec3(20.0f, 20.0f, 20.0f));
     actor2->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
     ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Mvr_PetCow_walk.dae"), actor2);
     for (MeshComponent* currMeshComp : actor2->GetComponentsInChildren<MeshComponent>())
