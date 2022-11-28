@@ -7,8 +7,10 @@ namespace Ming3D
     ButtonWidget::ButtonWidget()
     {
         mImageWidget = std::make_shared<ImageWidget>();
-        mImageWidget->setPosition(0.0f, 0.0f, WidgetSizeMode::Relative);
-        mImageWidget->setSize(1.0f, 1.0f, WidgetSizeMode::Relative);
+        WidgetTransform imageTransform{};
+        imageTransform.anchorMin = glm::vec2(0.0f, 0.0f);
+        imageTransform.anchorMax = glm::vec2(1.0f, 1.0f);
+        mImageWidget->SetWidgetTransform(imageTransform);
         this->addWidget(mImageWidget);
     }
 

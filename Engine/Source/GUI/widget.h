@@ -49,22 +49,9 @@ namespace Ming3D
         **/
         WidgetRect getAbsoluteRect();
 
-        void setPosition(glm::vec2 arg_pos);
-        void setPosition(glm::vec2 arg_pos, const WidgetSizeMode arg_mode);
-        void setSize(glm::vec2 arg_size);
-        void setSize(glm::vec2 arg_size, const WidgetSizeMode arg_mode);
-        void setPivot(glm::vec2 arg_pivot);
+        void SetWidgetTransform(const WidgetTransform& transform);
 
-        inline void setPosition(const float& x, const float& y) { setPosition(glm::vec2(x, y)); }
-        inline void setPosition(const float& x, const float& y, const WidgetSizeMode arg_mode) { setPosition(glm::vec2(x, y), arg_mode); }
-        inline void setSize(const float& w, const float& h) { setSize(glm::vec2(w, h)); }
-        inline void setSize(const float& w, const float& h, const WidgetSizeMode arg_mode) { setSize(glm::vec2(w, h), arg_mode); }
-        inline void setPivot(const float& x, const float& y) { setPivot(glm::vec2(x, y)); }
-
-        void setVerticalPositioning(WidgetSizeMode arg_mode);
-        void setHorizontalPositioning(WidgetSizeMode arg_mode);
-        void setVerticalScaling(WidgetSizeMode arg_mode);
-        void setHorizontalScaling(WidgetSizeMode arg_mode);
+        inline WidgetTransform GetWidgetTransform() const { return mTransform; }
 
         virtual void OnInputEvent(InputEvent event) {}
 

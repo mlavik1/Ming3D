@@ -203,12 +203,44 @@ namespace Ming3D
         if (hAttr != nullptr)
             hVal = ParseWidgetSizeValue(hAttr->Value());
 
-        widget->setHorizontalPositioning(xVal.mWidgetSizeMode);
-        widget->setVerticalPositioning(yVal.mWidgetSizeMode);
-        widget->setHorizontalScaling(wVal.mWidgetSizeMode);
-        widget->setVerticalScaling(hVal.mWidgetSizeMode);
-        widget->setPosition(xVal.mValue, yVal.mValue);
-        widget->setSize(wVal.mValue, hVal.mValue);
+        WidgetTransform transform{};
+        transform.mPivot = glm::vec2(0.0f, 0.0f);
+        if (xVal.mWidgetSizeMode == WidgetSizeMode::Relative)
+        {
+            transform.anchorMin.x = xVal.mValue;
+        }
+        else
+        {
+            transform.mPosition.x = xVal.mValue;
+        }
+        if (yVal.mWidgetSizeMode == WidgetSizeMode::Relative)
+        {
+            transform.anchorMin.y = yVal.mValue;
+        }
+        else
+        {
+            transform.mPosition.y = yVal.mValue;
+        }
+        
+        if (wVal.mWidgetSizeMode == WidgetSizeMode::Relative)
+        {
+            transform.anchorMax.x = wVal.mValue + transform.anchorMin.x;
+        }
+        else
+        {
+            transform.anchorMax.x = transform.anchorMin.x;
+            transform.mSize.x = wVal.mValue;
+        }
+        if (hVal.mWidgetSizeMode == WidgetSizeMode::Relative)
+        {
+            transform.anchorMax.y = hVal.mValue + transform.anchorMin.y;
+        }
+        else
+        {
+            transform.anchorMax.y = transform.anchorMin.y;
+            transform.mSize.y = hVal.mValue;
+        }
+        widget->SetWidgetTransform(transform);
 
         tinyxml2::XMLElement* currChild = node->FirstChildElement();
         while (currChild != nullptr)
