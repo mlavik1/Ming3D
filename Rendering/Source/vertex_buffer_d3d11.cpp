@@ -3,7 +3,7 @@
 
 namespace Ming3D::Rendering
 {
-    VertexBufferD3D11::VertexBufferD3D11(const VertexLayout& inLayout, EVertexBufferUsage usage)
+    VertexBufferD3D11::VertexBufferD3D11(const VertexLayout& inLayout, EBufferUsage usage)
     : VertexBuffer(inLayout, usage)
     {
 

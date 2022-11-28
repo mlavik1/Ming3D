@@ -16,7 +16,7 @@ namespace Ming3D
         virtual Rendering::WindowBase* CreateOSWindow() override;
         virtual Rendering::RenderWindow* CreateRenderWindow(Rendering::WindowBase* inWindow, Rendering::RenderDevice* inDevice) override;
         virtual NetSocket* CreateSocket() override;
-        virtual InputHandler* CreateInputHandler() override;
+        virtual InputHandler* CreateInputHandler(Rendering::WindowBase* window) override;
         virtual std::string ReadConsoleLine() override;
 
     };

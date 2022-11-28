@@ -16,6 +16,8 @@
 #include "Input/input_manager.h"
 #include "Debug/debug_stats.h"
 #include "Window/render_window_handle.h"
+#include "GUI/font_manager.h"
+#include "GUI/gui_resource_manager.h"
 
 #ifdef MING3D_PHYSX
 #include "Physics/API/PhysX/physics_manager_physx.h"
@@ -44,7 +46,7 @@ namespace Ming3D
         mPlatform = new PlatformLinux();
 #endif
         mTimeManager = new TimeManager();
-        mWorld = new World();
+        mWorld = new World(this);
         mSceneRenderer = new SceneRenderer();
 #ifdef MING3D_PHYSX
         mPhysicsManager = new PhysicsManagerPhysX();
@@ -52,6 +54,10 @@ namespace Ming3D
         mPhysicsManager = new PhysicsManagerNull();
 #endif
         mNetworkManager = new NetworkManager();
+
+        mFontManager = new FontManager();
+
+        mGUIResourceManager = new GUIResourceManager();
     }
 
 	GameEngine::~GameEngine()
@@ -65,6 +71,7 @@ namespace Ming3D
         delete mNetworkManager;
         delete mPhysicsManager;
         delete mPlatform;
+        delete mFontManager;
     }
 
 	void GameEngine::Initialise()
@@ -72,7 +79,7 @@ namespace Ming3D
         mClassManager->InitialiseClasses();
         mPlatform->Initialise();
         mMainWindow = mPlatform->CreateOSWindow();
-        mInputHandler = mPlatform->CreateInputHandler();
+        mInputHandler = mPlatform->CreateInputHandler(mMainWindow);
         mInputHandler->Initialise(),
         mInputManager = new InputManager();
         mRenderDevice = mPlatform->CreateRenderDevice();
@@ -85,8 +92,11 @@ namespace Ming3D
         LOG_INFO() << "Engine resource directory: " << GetResourceDirectory();
 	}
 
-    void GameEngine::Update()
+    bool GameEngine::Update()
     {
+        if (!mMainWindow->IsOpen())
+            return false;
+        
         mTimeManager->UpdateTime();
         float deltaTime = mTimeManager->GetDeltaTimeSeconds();
         mDeltaTime = deltaTime;
@@ -95,6 +105,10 @@ namespace Ming3D
         mPlatform->Update();
         mInputHandler->Update();
         mInputManager->Update();
+
+        // If main window was closed this frame
+        if (!mMainWindow->IsOpen())
+            return false;
 
         mPhysicsManager->SimulateScenes(deltaTime);
 
@@ -108,6 +122,8 @@ namespace Ming3D
         mSceneRenderer->Render();
 
         HandleDebugStats();
+
+        return true;
     }
 
     void GameEngine::HandleDebugStats()

@@ -1,0 +1,15 @@
+ERROR: Error when compiling Vertex Shader: Resources//shader_PNT.shader
+   (29,41-43): error X3004: undeclared identifier 'MVP'
+(29,21-44): error X3013: 'mul': no matching 2 parameter intrinsic function
+(29,21-44): error X3013: Possible intrinsic functions are:
+(29,21-44): error X3013:     mul(float|half|double|min10float|min16float|int|uint|min12int|min16int|min16uint, float|half|double|min10float|min16float|int|uint|min12int|min16int|min16uint)
+(29,21-44): error X3013:     mul(float|half|double|min10float|min16float|int|uint|min12int|min16int|min16uint, floatK|halfK|doubleK|min10floatK|min16floatK|intK|uintK|min12intK|min16intK|min16uintK)
+(29,21-44): error X3013:     mul(float|half|double|min10float|min16float|int|uint|min12int|min16int|min16uint, floatLxK|halfLxK|doubleLxK|min10floatLxK|min16floatLxK|intLxK|uintLxK|min12intLxK|min16intLxK|min16uintLxK)
+(29,21-44): error X3013:     mul(floatM|halfM|doubleM|min10floatM|min16floatM|intM|uintM|min12intM|min16intM|min16uintM, float|half|double|min10float|min16float|int|uint|min12int|min16int|min16uint)
+(29,21-44): error X3013:     mul(floatM|halfM|doubleM|min10floatM|min16floatM|intM|uintM|min12intM|min16intM|min16uintM, floatM|halfM|doubleM|min10floatM|min16floatM|intM|uintM|min12intM|min16intM|min16uintM)
+(29,21-44): error X3013:     mul(floatM|halfM|doubleM|min10floatM|min16floatM|intM|uintM|min12intM|min16intM|min16uintM, floatMxK|halfMxK|doubleMxK|min10floatMxK|min16floatMxK|intMxK|uintMxK|min12intMxK|min16intMxK|min16uintMxK)
+(29,21-44): error X3013:     mul(floatNxM|halfNxM|doubleNxM|min10floatNxM|min16floatNxM|intNxM|uintNxM|min12intNxM|min16intNxM|min16uintNxM, float|half|double|min10float|min16float|int|uint|min12int|min16int|min16uint)
+(29,21-44): error X3013:     mul(floatNxM|halfNxM|doubleNxM|min10floatNxM|min16floatNxM|intNxM|uintNxM|min12intNxM|min16intNxM|min16uintNxM, floatM|halfM|doubleM|min10floatM|min16floatM|intM|uintM|min12intM|min16intM|min16uintM)
+(29,21-44): error X3013:     mul(floatNxM|halfNxM|doubleNxM|min10floatNxM|min16floatNxM|intNxM|uintNxM|min12intNxM|min16intNxM|min16uintNxM, floatMxK|halfMxK|doubleMxK|min10floatMxK|min16floatMxK|intMxK|uintMxK|min12intMxK|min16intMxK|min16uintMxK)
+, in D:\Projects\Ming3D\Rendering\Source\render_device_d3d11.cpp, line 287
+ERROR: Assertion error on vsBlob != nullptr && psBlob != nullptr, "Failed compiling shader - see log for error.", in D:\Projects\Ming3D\Rendering\Source\render_device_d3d11.cpp, line 298

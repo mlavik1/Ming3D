@@ -18,6 +18,8 @@ namespace Ming3D
     class InputManager;
     class LightSource;
     class RenderWindowHandle;
+    class FontManager;
+    class GUIResourceManager;
     namespace Rendering
     {
         class RenderDevice;
@@ -43,6 +45,8 @@ namespace Ming3D
         PhysicsManager* mPhysicsManager = nullptr;
         InputHandler* mInputHandler = nullptr;
         InputManager* mInputManager = nullptr;
+        FontManager* mFontManager = nullptr;
+        GUIResourceManager* mGUIResourceManager = nullptr;
 
         float mTime = 0.0f;
         float mDeltaTime = 0.0f;
@@ -54,7 +58,7 @@ namespace Ming3D
 		~GameEngine();
 
 		void Initialise();
-        void Update();
+        bool Update();
 
         void AddCamera(CameraComponent* inCamera);
         void RemoveCamera(CameraComponent* inCamera);
@@ -85,7 +89,9 @@ namespace Ming3D
         inline PhysicsManager* GetPhysicsManager() { return mPhysicsManager; }
         inline InputHandler* GetInputHandler() { return mInputHandler; }
         inline InputManager* GetInputManager() { return mInputManager; }
-        
+        inline FontManager* GetFontManager() { return mFontManager; }
+        inline GUIResourceManager* GetGUIResourceManager() { return mGUIResourceManager; }
+
         float GetDeltaTime() const { return mDeltaTime; }
         float GetTime() const { return mTime; }
     };

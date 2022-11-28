@@ -2,23 +2,24 @@
 #define MING3D_RENDERPIPELINE_H
 
 #include <vector>
-#include "render_scene_object.h"
+#include "render_object.h"
 #include "camera.h"
 #include "Light/light_source.h"
 #include "render_type.h"
+#include "render_batch.h"
 
 namespace Ming3D
 {
     class RenderScene;
+    class MeshBuffer;
 
     class RenderPipelineNode
     {
     public:
-        MeshBuffer* mMesh = nullptr;
-        MaterialBuffer* mMaterial = nullptr;
-        glm::mat4 mModelMatrix;
+        RenderBatch mRenderBatch;
         ERenderType mRenderType;
         float mSquareDistance;
+        int mRenderOrderOffset = 0;
     };
 
     class RenderPipelineNodeCollection
@@ -43,11 +44,10 @@ namespace Ming3D
 
     struct RenderPipelineParams
     {
-        Camera* mCamera;
         RenderPipelineNodeCollection mVisibleNodes;
         std::vector<unsigned int> mOpaqueNodeIndices;
         std::vector<unsigned int> mTransparentNodeIndices;
-        bool mIsShadowPass = false;
+        std::vector<unsigned int> mGUIOverlayNodeIndices;
     };
 
     struct RenderPipelineContext

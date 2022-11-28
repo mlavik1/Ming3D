@@ -12,6 +12,7 @@ namespace Ming3D
         KeyUp,
         MouseButtonDown,
         MouseButtonUp,
+        MouseMove,
         Axis2D
     };
 
@@ -22,7 +23,7 @@ namespace Ming3D
 
     struct MouseButtonEvent
     {
-        MouseButton mButton;
+        int mButton = 0;
     };
 
     struct Axis2DEvent
@@ -37,6 +38,7 @@ namespace Ming3D
         KeyboardEvent mKey;
         MouseButtonEvent mMouseButton;
         Axis2DEvent mAxis;
+        glm::ivec2 mMousePosition;
         // TODO: Use std::variant or union?
     };
 }

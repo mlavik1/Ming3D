@@ -1,22 +1,18 @@
-#ifndef MING3D_RENDERSCENEOBJECT_H
-#define MING3D_RENDERSCENEOBJECT_H
+#pragma once
 
 #include "Model/mesh_buffer.h"
-#include "Components/component.h"
 #include "Model/material_buffer.h"
 #include "glm/glm.hpp"
 
 namespace Ming3D
 {
-    class MeshBuffer;
-
-    class RenderSceneObject
+    class RenderBatch
     {
     public:
-        MeshBuffer* mMesh;
+        MeshBuffer* mMeshBuffer;
         glm::mat4 mModelMatrix;
         MaterialBuffer* mMaterial = nullptr;
+        unsigned int mStartIndex;
+        unsigned int mNumIndices;
     };
 }
-
-#endif

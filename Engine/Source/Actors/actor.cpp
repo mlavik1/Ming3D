@@ -1,6 +1,7 @@
 #include "actor.h"
 #include "Source/Components/component.h"
 #include <algorithm>
+#include "World/world.h"
 
 IMPLEMENT_CLASS(Ming3D::Actor)
 
@@ -14,8 +15,9 @@ namespace Ming3D
         Actor::GetStaticClass()->RegisterProperty("mTransform", &Actor::mTransform, PropertyFlag::Serialise);
     }
 
-    Actor::Actor()
+    Actor::Actor(World* world)
     {
+        mWorld = world;
         mTransform.mActor = this;
         SetObjectFlag(ObjectFlag::Serialise); // serialised by default
         mActorName = std::string("Actor_") + std::to_string(instanceCounter++);
@@ -31,16 +33,15 @@ namespace Ming3D
     {
         inComp->mParent = this;
         mComponents.push_back(inComp);
-        if (mIsInitialised)
-        {
-            inComp->InitialiseComponent();
-        }
+        inComp->InitialiseComponent();
         newComponents.push_back(inComp);
     }
 
-    void Actor::InitialiseActor()
+    Actor* Actor::SpawnChildActor()
     {
-        mIsInitialised = true;
+        Actor* child = GetWorld()->SpawnActor();
+        child->mTransform.SetParent(&this->mTransform);
+        return child;
     }
 
     void Actor::Tick(float inDeltaTime)

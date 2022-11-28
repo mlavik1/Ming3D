@@ -58,13 +58,6 @@ namespace Ming3D
         Pad_Y
     };
 
-    enum class MouseButton
-    {
-        Left,
-        Middle,
-        Right
-    };
-
     enum class EAxis2D
     {
         ControllerAxisLeft,

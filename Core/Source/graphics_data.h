@@ -64,6 +64,8 @@ namespace Ming3D::Rendering
         size_t GetNumVertices();
         size_t GetVertexSize();
 
+        void Resize(size_t vertCount);
+
         template<typename T>
         T* GetDataAs()
         {
@@ -71,6 +73,8 @@ namespace Ming3D::Rendering
         }
 
         void* GetDataPtr() { return mData.data(); }
+
+        void* GetDataPtrAt(int index) { return mData.data() + index * mVertexSize; }
         
         const VertexLayout& GetVertexLayout() { return mVertexLayout; }
 
@@ -90,6 +94,9 @@ namespace Ming3D::Rendering
         IndexData(size_t inNumIndices);
         size_t GetNumIndices();
         unsigned int* GetData() { return mData.data(); }
+        void* GetDataPtrAt(int index) { return mData.data() + index * sizeof(unsigned int); }
+
+        void Resize(size_t indexCount);
     };
 
     template <typename T>

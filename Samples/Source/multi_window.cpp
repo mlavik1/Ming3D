@@ -13,6 +13,7 @@
 #include "Model/material_factory.h"
 #include "Texture/texture.h"
 #include "Texture/texture_loader.h"
+#include <memory>
 
 using namespace Ming3D;
 
@@ -22,65 +23,58 @@ int main()
     gameEngine->Initialise();
     gameEngine->SetMainWindowSize(1366, 768);
 
-    Actor* camActor = new Actor();
+    Actor* camActor = gameEngine->GetWorld()->SpawnActor();
     camActor->AddComponent<CameraComponent>();
     camActor->GetTransform().SetWorldPosition(glm::vec3(0.0f, 2.0f, 6.0f));
-    gameEngine->GetWorld()->AddActor(camActor);
 
     RenderWindowHandle* window2 = gameEngine->CreateRenderWindow(800, 600);
-    Actor* camActor2 = new Actor();
+    Actor* camActor2 = gameEngine->GetWorld()->SpawnActor();
     CameraComponent* camComp = camActor2->AddComponent<CameraComponent>();
     camComp->SetRenderTarget(window2);
     camActor2->GetTransform().SetWorldPosition(glm::vec3(6.0f, 2.0f, 0.0f));
     camActor2->GetTransform().Rotate(glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    gameEngine->GetWorld()->AddActor(camActor2);
     
-    Actor* lightActor = new Actor();
+    Actor* lightActor = gameEngine->GetWorld()->SpawnActor();
 	LightComponent* lightComp = lightActor->AddComponent<LightComponent>();
 	lightComp->SetShadowType(EShadowType::HardShadows);
     lightActor->GetTransform().SetWorldPosition(glm::vec3(0.0f, 10.0f, 6.0f));
     lightActor->GetTransform().SetWorldRotation(glm::angleAxis(glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
-    gameEngine->GetWorld()->AddActor(lightActor);
 
-    Actor* skybox = new Actor();
+    Actor* skybox = gameEngine->GetWorld()->SpawnActor();
     skybox->GetTransform().SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
     skybox->GetTransform().SetLocalScale(glm::vec3(-50.0f, 50.0f, 50.0f));
-    gameEngine->GetWorld()->AddActor(skybox);
     ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Skybox/Skybox.obj"), skybox, MODELLOADERFLAGS_UNLIT);
 
-    Actor* actor1 = new Actor();
+    Actor* actor1 = gameEngine->GetWorld()->SpawnActor();
     actor1->GetTransform().SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
-    actor1->GetTransform().SetLocalScale(glm::vec3(2.0f, 2.0f, 2.0f));
+    actor1->GetTransform().SetLocalScale(glm::vec3(20.0f, 20.0f, 20.0f));
     actor1->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
-    gameEngine->GetWorld()->AddActor(actor1);
     ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Mvr_PetCow_walk.dae"), actor1);
     for (MeshComponent* currMeshComp : actor1->GetComponentsInChildren<MeshComponent>())
     {
         currMeshComp->GetMaterial()->SetCastShadows(true);
     }
 
-    Actor* actor2 = new Actor();
+    Actor* actor2 = gameEngine->GetWorld()->SpawnActor();
     actor2->GetTransform().SetLocalPosition(glm::vec3(-1.5f, 0.0f, 0.0f));
-    actor2->GetTransform().SetLocalScale(glm::vec3(2.0f, 2.0f, 2.0f));
+    actor2->GetTransform().SetLocalScale(glm::vec3(20.0f, 20.0f, 20.0f));
     actor2->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
-    gameEngine->GetWorld()->AddActor(actor2);
     ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Mvr_PetCow_walk.dae"), actor2);
     for (MeshComponent* currMeshComp : actor2->GetComponentsInChildren<MeshComponent>())
     {
         currMeshComp->GetMaterial()->SetCastShadows(true);
     }
 
-    Actor* planeObj = new Actor();
+    Actor* planeObj = gameEngine->GetWorld()->SpawnActor();
     planeObj->GetTransform().SetLocalPosition(glm::vec3(0.0f, 0.0f, 0.0f));
     Mesh* planeMesh = PrimitiveFactory::CreatePlane(glm::vec2(100.0f, 100.0f), 2, 2);
     MeshComponent* planeMeshComp = planeObj->AddComponent<MeshComponent>();
     planeMeshComp->SetMesh(planeMesh);
     Material* planeMat = MaterialFactory::CreateMaterial(GGameEngine->GetResourceDirectory() + std::string("/Shaders/defaultshader.cgp"));
-    planeMat->SetTexture(0, TextureLoader::LoadTextureData(GGameEngine->GetResourceDirectory() + std::string("/grass.png"))); // TODO: create override with only one parameter
+    planeMat->SetTexture(0, std::shared_ptr<Texture>(TextureLoader::LoadTextureData(GGameEngine->GetResourceDirectory() + std::string("/grass.png")))); // TODO: create override with only one parameter
     planeMat->SetShaderUniformVec2("_textureTiling", glm::vec2(10.0f, 10.0f));
 	planeMat->SetReceiveShadows(true);
     planeMeshComp->SetMaterial(planeMat);
-    gameEngine->GetWorld()->AddActor(planeObj);
 
     const float camSpeed = 3.0f;
     const float camRotSpeed = 1.0f;

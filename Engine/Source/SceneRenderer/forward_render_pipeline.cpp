@@ -8,6 +8,8 @@
 #include "render_scene.h"
 #include "glm/gtx/norm.hpp"
 #include <algorithm>
+#include "blend_state.h"
+#include "depth_stencil_state.h"
 
 #define MING3D_SHADOWRT_W 1366
 #define MING3D_SHADOWRT_H 768
@@ -32,12 +34,13 @@ namespace Ming3D
             RenderPipelineNode* leftNode = mNodeCollection->at(leftIndex);
             RenderPipelineNode* rightNode = mNodeCollection->at(rightIndex);
             // sort by material
-            if (leftNode->mMaterial != rightNode->mMaterial)
-                return (leftNode->mMaterial < rightNode->mMaterial); // TODO: use material ID?
+            if (leftNode->mRenderBatch.mMaterial != rightNode->mRenderBatch.mMaterial)
+                return (leftNode->mRenderBatch.mMaterial < rightNode->mRenderBatch.mMaterial); // TODO: use material ID?
             // sort by mesh
-            //else if (leftNode->mMesh != rightNode->mMesh)
-            //    return (leftNode->mMesh < rightNode->mMesh); // TODO: use mesh ID?
+            else if (leftNode->mRenderBatch.mMeshBuffer != rightNode->mRenderBatch.mMeshBuffer)
+                return (leftNode->mRenderBatch.mMeshBuffer < rightNode->mRenderBatch.mMeshBuffer); // TODO: use mesh ID?
             // sort front to back
+            else
                 return (leftNode->mSquareDistance < rightNode->mSquareDistance);
         }
     };
@@ -57,10 +60,39 @@ namespace Ming3D
         {
             RenderPipelineNode* leftNode = mNodeCollection->at(leftIndex);
             RenderPipelineNode* rightNode = mNodeCollection->at(rightIndex);
+
+            float distDIff = leftNode->mSquareDistance - rightNode->mSquareDistance;
+            if (distDIff == 0.0f)
+                return leftNode->mRenderOrderOffset < rightNode->mRenderOrderOffset;
             // sort back to front
-            return (leftNode->mSquareDistance > rightNode->mSquareDistance);
+            else
+                return (leftNode->mSquareDistance > rightNode->mSquareDistance);
         }
     };
+
+    void ForwardRenderPipeline::Initialise()
+    {
+        RenderDevice* renderDevice = GGameEngine->GetRenderDevice();
+        mOpaqueBlendState = renderDevice->CreateBlendState(false, EBlendMode::OneMinusSrcAlpha);
+        mTransparentBlendState = renderDevice->CreateBlendState(true, EBlendMode::OneMinusSrcAlpha);
+
+        DepthStencilStateDesc opaqueDepthDesc;
+        opaqueDepthDesc.mDepthEnabled = true;
+        opaqueDepthDesc.mDepthWrite = true;
+        mOpaqueDepthStencilState = renderDevice->CreateDepthStencilState(opaqueDepthDesc);
+        
+        DepthStencilStateDesc transparentDepthDesc;
+        transparentDepthDesc.mDepthEnabled = true;
+        transparentDepthDesc.mDepthWrite = false;
+        mTransparentDepthStencilState = renderDevice->CreateDepthStencilState(transparentDepthDesc);
+
+        DepthStencilStateDesc overlayGUIDepthDesc;
+        overlayGUIDepthDesc.mDepthEnabled = false;
+        overlayGUIDepthDesc.mDepthWrite = false;
+        mOverlayGUIDepthStencilState = renderDevice->CreateDepthStencilState(overlayGUIDepthDesc);
+
+        mInitialised = true;
+    }
 
     void ForwardRenderPipeline::SetupMainLight(const RenderPipelineContext& context)
     {
@@ -72,9 +104,6 @@ namespace Ming3D
             Camera* lightCam = new Camera();
             lightCam->mCameraMatrix = context.mMainLight->mLightMat;
             lightCam->mProjectionMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, -10.0f, 20.0f);
-            lightCam->mRenderPipelineParams = new RenderPipelineParams();
-            lightCam->mRenderPipelineParams->mCamera = lightCam;
-            lightCam->mRenderPipelineParams->mIsShadowPass = true;
             RenderDevice* renderdev = GGameEngine->GetRenderDevice();
             TextureInfo rtinfo;
             rtinfo.mWidth = MING3D_SHADOWRT_W;
@@ -86,62 +115,15 @@ namespace Ming3D
         }
     }
 
-    void ForwardRenderPipeline::CollectVisibleObjects(const RenderPipelineContext& context, RenderPipelineParams& params)
+    void ForwardRenderPipeline::SortNodeIndices(RenderPipelineParams& params)
     {
-        params.mVisibleNodes.clear();
-
-        glm::vec3 camPos = glm::inverse(params.mCamera->mCameraMatrix) * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-
-        for (RenderSceneObject* obj : context.mScene->mSceneObjects)
-        {
-			ERenderType nodeRenderType = obj->mMaterial->mRenderType;
-			
-			if (params.mIsShadowPass && nodeRenderType == ERenderType::Transparent)
-                continue;
-            if (params.mIsShadowPass && !obj->mMaterial->mCastShadows)
-                continue;
-
-			// TODO: view frustum culling
-
-			RenderPipelineNode* node = params.mVisibleNodes.push_back();
-            node->mMaterial = obj->mMaterial;
-            node->mMesh = obj->mMesh;
-            node->mModelMatrix = obj->mModelMatrix;
-            node->mRenderType = obj->mMaterial->mRenderType;
-            node->mSquareDistance = glm::length2(glm::vec3(obj->mModelMatrix * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)) - camPos);
-        }
-    }
-
-    void ForwardRenderPipeline::SetupNodeIndices(RenderPipelineParams& params)
-    {
-        params.mOpaqueNodeIndices.clear();
-        params.mTransparentNodeIndices.clear();
-
-        for (size_t iNode = 0; iNode < params.mVisibleNodes.size(); iNode++)
-        {
-            RenderPipelineNode* node = params.mVisibleNodes.at(iNode);
-            switch (node->mRenderType)
-            {
-            case ERenderType::Opaque:
-            {
-                params.mOpaqueNodeIndices.push_back(iNode);
-                break;
-            }
-            case ERenderType::Transparent:
-            {
-                params.mTransparentNodeIndices.push_back(iNode);
-                break;
-            }
-            }
-        }
-
-        // sort opaque nodes
         OpaqueNodeSorter opaqueSorter(&params.mVisibleNodes);
         std::sort(params.mOpaqueNodeIndices.begin(), params.mOpaqueNodeIndices.end(), opaqueSorter);
 
-        // sort transparent nodes
         TransparentNodeSorter transparentSorter(&params.mVisibleNodes);
         std::sort(params.mTransparentNodeIndices.begin(), params.mTransparentNodeIndices.end(), transparentSorter);
+
+        // TODO: Sort GUIOverlay by user-defined "order"?
     }
 
     void ForwardRenderPipeline::UpdateUniforms(MaterialBuffer* inMat)
@@ -204,14 +186,13 @@ namespace Ming3D
         inMat->mModifiedUniforms.clear();
     }
 
-    void ForwardRenderPipeline::RenderObjects(RenderPipelineParams& params, ERenderType renderType, LightSource* mainLightSource)
+    void ForwardRenderPipeline::RenderObjects(RenderPipelineParams& params, ERenderType renderType, Camera* camera, LightSource* mainLightSource, bool shadowPass)
     {
-        WindowBase* window = GGameEngine->GetMainWindow();
         RenderDevice* renderDevice = GGameEngine->GetRenderDevice();
 
         MaterialBuffer* currMaterial = nullptr;
 
-        std::vector<unsigned int>* nodeIndices;
+        std::vector<unsigned int>* nodeIndices = nullptr;
         switch (renderType)
         {
         case ERenderType::Opaque:
@@ -220,18 +201,25 @@ namespace Ming3D
         case ERenderType::Transparent:
             nodeIndices = &params.mTransparentNodeIndices;
             break;
+        case ERenderType::GUIOverlay:
+            nodeIndices = &params.mGUIOverlayNodeIndices;
+            break;
         }
 
         for (unsigned int nodeIndex : *nodeIndices)
         {
             RenderPipelineNode* node = params.mVisibleNodes.at(nodeIndex);
+            const RenderBatch renderBatch = node->mRenderBatch;
 
-            assert(node->mMaterial != nullptr);
+            if (shadowPass && !node->mRenderBatch.mMaterial->mCastShadows)
+                continue;
+
+            assert(renderBatch.mMaterial != nullptr);
 
             // if new material, update per-material data
-            if (node->mMaterial != currMaterial)
+            if (renderBatch.mMaterial != currMaterial)
             {
-                currMaterial = node->mMaterial;
+                currMaterial = renderBatch.mMaterial;
 
                 // set shader program
                 renderDevice->SetActiveShaderProgram(currMaterial->mShaderProgram);
@@ -254,11 +242,11 @@ namespace Ming3D
                 UpdateUniforms(currMaterial);
             }
 
-            glm::mat4 Projection = params.mCamera->mProjectionMatrix;
+            glm::mat4 Projection = camera->mProjectionMatrix;
 
             // matrices
-            glm::mat4 view = params.mCamera->mCameraMatrix;
-            glm::mat4 model = node->mModelMatrix;
+            glm::mat4 view = camera->mCameraMatrix;
+            glm::mat4 model = renderBatch.mModelMatrix;
 
             glm::mat4 mvp = Projection * view * model;
 
@@ -287,14 +275,20 @@ namespace Ming3D
 
             // TODO: Don't bind vertex/index buffer if same mesh as last frame
 
-            renderDevice->RenderPrimitive(node->mMesh->mVertexBuffer, node->mMesh->mIndexBuffer);
+            renderDevice->RenderPrimitive(renderBatch.mMeshBuffer->mVertexBuffer, renderBatch.mMeshBuffer->mIndexBuffer, renderBatch.mStartIndex, renderBatch.mNumIndices);
         }
     }
 
     void ForwardRenderPipeline::Render(const RenderPipelineContext& context, RenderPipelineParams& params)
     {
-        if (params.mCamera->mRenderTarget == nullptr)
+        if (!mInitialised)
+            Initialise();
+
+        if (context.mMainCamera->mRenderTarget == nullptr)
             return;
+
+        // Sort nodes
+        SortNodeIndices(params);
 
         SetupMainLight(context);
 
@@ -309,24 +303,31 @@ namespace Ming3D
             glm::vec3 lightpos = lookTarget - lightDir; // TODO
             context.mMainLight->mLightCamera->mCameraMatrix = glm::lookAt(lightpos, lookTarget, glm::vec3(0.0f, 0.0f, 1.0f));
 
-            CollectVisibleObjects(context, *context.mMainLight->mLightCamera->mRenderPipelineParams);
-            SetupNodeIndices(*context.mMainLight->mLightCamera->mRenderPipelineParams);
-
             GGameEngine->GetRenderDevice()->BeginRenderTarget(context.mMainLight->mLightCamera->mRenderTarget);
-            RenderObjects(*context.mMainLight->mLightCamera->mRenderPipelineParams, ERenderType::Opaque, nullptr);
+            RenderObjects(params, ERenderType::Opaque, context.mMainLight->mLightCamera, nullptr, true);
             GGameEngine->GetRenderDevice()->EndRenderTarget(context.mMainLight->mLightCamera->mRenderTarget);
         }
 
         // set camera projection matrix
         WindowBase* window = GGameEngine->GetMainWindow(); // TODO
-        params.mCamera->mProjectionMatrix = glm::perspective<float>(glm::radians(45.0f), (float)window->GetWidth() / (float)window->GetHeight(), 0.1f, 1000.0f);
+        context.mMainCamera->mProjectionMatrix = glm::perspective<float>(glm::radians(45.0f), (float)window->GetWidth() / (float)window->GetHeight(), 0.1f, 1000.0f);
 
-        CollectVisibleObjects(context, params);
-        SetupNodeIndices(params);
+        GGameEngine->GetRenderDevice()->BeginRenderTarget(context.mMainCamera->mRenderTarget);
+        // Render opaque objects
+        GGameEngine->GetRenderDevice()->SetBlendState(mOpaqueBlendState);
+        GGameEngine->GetRenderDevice()->SetDepthStencilState(mOpaqueDepthStencilState);
+        RenderObjects(params, ERenderType::Opaque, context.mMainCamera, context.mMainLight);
+        // Render transparent objects
+        GGameEngine->GetRenderDevice()->SetBlendState(mTransparentBlendState);
+        GGameEngine->GetRenderDevice()->SetDepthStencilState(mTransparentDepthStencilState);
+        RenderObjects(params, ERenderType::Transparent, context.mMainCamera, context.mMainLight);
+        // Render GUI overlay
+        GGameEngine->GetRenderDevice()->SetBlendState(mTransparentBlendState);
+        GGameEngine->GetRenderDevice()->SetDepthStencilState(mOverlayGUIDepthStencilState);
+        context.mMainCamera->mProjectionMatrix = glm::ortho<float>(0.0f, (float)window->GetWidth(), 0.0f, (float)window->GetHeight(), -1.0f, 1.0f);
+        context.mMainCamera->mCameraMatrix = glm::mat4();
+        RenderObjects(params, ERenderType::GUIOverlay, context.mMainCamera, context.mMainLight);
 
-        GGameEngine->GetRenderDevice()->BeginRenderTarget(params.mCamera->mRenderTarget);
-        RenderObjects(params, ERenderType::Opaque, context.mMainLight);
-        RenderObjects(params, ERenderType::Transparent, context.mMainLight);
-        GGameEngine->GetRenderDevice()->EndRenderTarget(params.mCamera->mRenderTarget);
+        GGameEngine->GetRenderDevice()->EndRenderTarget(context.mMainCamera->mRenderTarget);
     }
 }

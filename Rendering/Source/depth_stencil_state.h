@@ -11,6 +11,7 @@ namespace Ming3D::Rendering
     struct DepthStencilStateDesc
     {
         bool mDepthEnabled = true;
+        bool mDepthWrite = true;
         DepthStencilDepthFunc mDepthFunc = DepthStencilDepthFunc::LEqual;
     };
 

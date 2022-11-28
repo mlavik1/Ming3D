@@ -10,6 +10,8 @@
 #include "graphics_data.h"
 
 #define MODELLOADERFLAGS_UNLIT 1
+#define MODELLOADERFLAGS_FORCE_OPAQUE 2
+#define MODELLOADERFLAGS_FORCE_TRANSPARENT 4
 
 // Forward declarations
 class aiScene;
@@ -31,7 +33,7 @@ namespace Ming3D
     private:
         static Material* CreateMaterial(aiMaterial* aiMat, const std::string modelPath, const int flags);
         static Mesh* CreateMesh(aiMesh* aiMesh);
-        static Actor* CreateNode(aiNode* aiNode, const std::vector<Mesh*>& meshes, const std::vector<Material*>& materials, const aiScene* scene);
+        static Actor* CreateNode(aiNode* aiNode, const std::vector<Mesh*>& meshes, const std::vector<Material*>& materials, const aiScene* scene, Actor* parent);
     };
 }
 #endif

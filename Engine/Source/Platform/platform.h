@@ -30,7 +30,7 @@ namespace Ming3D
         virtual Rendering::WindowBase* CreateOSWindow() = 0;
         virtual Rendering::RenderWindow* CreateRenderWindow(Rendering::WindowBase* inWindow, Rendering::RenderDevice* inDevice) = 0;
         virtual NetSocket* CreateSocket() = 0;
-        virtual InputHandler* CreateInputHandler() = 0;
+        virtual InputHandler* CreateInputHandler(Rendering::WindowBase* window) = 0;
         virtual std::string ReadConsoleLine() = 0;
         
     };

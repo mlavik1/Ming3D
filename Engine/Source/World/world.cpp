@@ -5,13 +5,29 @@
 
 namespace Ming3D
 {
+    World::World(GameEngine* gameEngine)
+    {
+        mGameEngine = gameEngine;
+    }
+
+    World::~World()
+    {
+        // TODO: Destroy actors?
+    }
+
     void World::AddActor(Actor* inActor)
     {
         mActors.push_back(inActor);
-        inActor->InitialiseActor();
         for (Component* comp : inActor->GetComponents())
         {
             comp->InitialiseComponent();
         }
+    }
+
+    Actor* World::SpawnActor()
+    {
+        Actor* actor = new Actor(this);
+        AddActor(actor);
+        return actor;
     }
 }

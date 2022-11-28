@@ -33,8 +33,8 @@ namespace Ming3D
                 memcpy(vertexData.GetDataPtr(), meshData->mVertices.data(), meshData->mVertices.size() * sizeof(Vertex));
                 memcpy(indexData.GetData(), meshData->mIndices.data(), meshData->mIndices.size() * sizeof(unsigned int));
 
-                meshData->mVertexBuffer = mRenderDevice->CreateVertexBuffer(&vertexData, Rendering::EVertexBufferUsage::StaticDraw);
-                meshData->mIndexBuffer = mRenderDevice->CreateIndexBuffer(&indexData);
+                meshData->mVertexBuffer = mRenderDevice->CreateVertexBuffer(&vertexData, Rendering::EBufferUsage::StaticDraw);
+                meshData->mIndexBuffer = mRenderDevice->CreateIndexBuffer(&indexData, Rendering::EBufferUsage::StaticDraw);
 
                 if (meshData->mTexture != nullptr)
                 {
@@ -87,7 +87,7 @@ namespace Ming3D
             for (MeshData* meshData : modelData->mMeshes)
             {
                 mRenderDevice->SetTexture(meshData->mTextureBuffer, 0); // temp
-                mRenderDevice->RenderPrimitive(meshData->mVertexBuffer, meshData->mIndexBuffer);
+                mRenderDevice->RenderPrimitive(meshData->mVertexBuffer, meshData->mIndexBuffer, 0, meshData->mIndices.size());
             }
         }
 

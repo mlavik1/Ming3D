@@ -15,7 +15,13 @@ namespace Ming3D
 {
     MeshComponent::MeshComponent()
     {
-        mRenderSceneObject = new RenderSceneObject();
+        mRenderObject = new MeshRenderObject();
+        GGameEngine->GetSceneRenderer()->AddSceneObject(mRenderObject);
+    }
+
+    MeshComponent::~MeshComponent()
+    {
+        delete mRenderObject;
     }
 
     void MeshComponent::InitialiseClass()
@@ -31,40 +37,23 @@ namespace Ming3D
     void MeshComponent::SetMesh(Mesh* inMesh, bool dynamic)
     {
         mMesh = inMesh;
-
-        Rendering::RenderDevice* renderDevice = GGameEngine->GetRenderDevice();
-        MeshBuffer* meshBuffer = new MeshBuffer();
-
-        // TODO: Store vertex layout in mesh
-        Rendering::VertexData* vertexData = inMesh->mVertexData;
-        Rendering::IndexData* indexData(inMesh->mIndexData);
-
-        meshBuffer->mVertexBuffer = renderDevice->CreateVertexBuffer(vertexData, dynamic ? Rendering::EVertexBufferUsage::DynamicDraw : Rendering::EVertexBufferUsage::StaticDraw);
-        meshBuffer->mIndexBuffer = renderDevice->CreateIndexBuffer(indexData);
-
-        mRenderSceneObject->mModelMatrix = mParent->GetTransform().GetWorldTransformMatrix();
-        mRenderSceneObject->mMesh = meshBuffer;
-
-        GGameEngine->GetSceneRenderer()->AddSceneObject(mRenderSceneObject);
+        mRenderObject->SetMesh(inMesh, dynamic);
     }
 
     void MeshComponent::SetMaterial(Material* inMat)
     {
         mMaterial = inMat;
-
-        mRenderSceneObject->mMaterial = mMaterial->mMaterialBuffer;
+        mRenderObject->SetMaterial(inMat);
     }
 
     void MeshComponent::ReuploadVertexData()
     {
-        Rendering::RenderDevice* renderDevice = GGameEngine->GetRenderDevice();
-        renderDevice->UpdateVertexBuffer(mRenderSceneObject->mMesh->mVertexBuffer, mMesh->mVertexData);
+        mRenderObject->ReuploadVertexData(mMesh);
     }
 
     void MeshComponent::Tick(float inDeltaTime)
     {
         Component::Tick(inDeltaTime);
-
-        mRenderSceneObject->mModelMatrix = mParent->GetTransform().GetWorldTransformMatrix();
+        mRenderObject->SetTransform(mParent->GetTransform().GetWorldTransformMatrix());
     }
 }

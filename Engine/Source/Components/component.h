@@ -29,7 +29,8 @@ namespace Ming3D
 
         virtual void PostMove();
 
-        Actor* GetParent() { return mParent; }
+        Actor* GetParent();
+        World* GetWorld();
     };
 }
 #endif

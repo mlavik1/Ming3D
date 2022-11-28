@@ -36,7 +36,7 @@ namespace Ming3D
     bool InputManager::GetKeyUp(KeyCode inKey)
     {
         auto iter = mKeyUpSet.find(inKey);
-        return iter != mKeyDownSet.end();
+        return iter != mKeyUpSet.end();
     }
 
     void InputManager::HandleEvent(const InputEvent& inEvent)
@@ -60,10 +60,15 @@ namespace Ming3D
             mAxisValues[inEvent.mAxis.mAxis] = inEvent.mAxis.mValue;
             break;
         }
+        case InputEventType::MouseMove:
+        {
+            mMousePosition = inEvent.mMousePosition;
+            break;
+        }
         }
     }
 
-    glm::vec2 InputManager::GetMousePosition() const
+    glm::ivec2 InputManager::GetMousePosition() const
     {
         return mMousePosition;
     }

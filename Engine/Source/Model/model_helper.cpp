@@ -11,6 +11,7 @@
 #include "mesh.h"
 #include "material_factory.h"
 #include "shader_program.h"
+#include <memory>
 
 #define MODELLOADERFLAGS_UNLIT 1
 
@@ -18,7 +19,7 @@ namespace Ming3D
 {
     Material* ModelLoader::CreateMaterial(aiMaterial* aiMat, const std::string modelPath, const int flags)
     {
-        Texture* diffuseTexture = nullptr;
+        std::shared_ptr<Texture> diffuseTexture = nullptr;
         glm::vec4 diffuseColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
         glm::vec4 specularColour = glm::vec4(0.3f, 0.3f, 0.3f, 1.0f);
         glm::vec4 ambientColour = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f);
@@ -34,7 +35,7 @@ namespace Ming3D
                 texturePath = texturePath.substr(0, iLastSlash + 1) + std::string(path.C_Str());
             else
                 texturePath = std::string(path.C_Str());
-            diffuseTexture = TextureLoader::LoadTextureData(texturePath.c_str());
+            diffuseTexture = std::shared_ptr<Texture>(TextureLoader::LoadTextureData(texturePath.c_str()));
         }
 
         // Read material properties
@@ -70,8 +71,11 @@ namespace Ming3D
         material->SetShaderUniformVec4("_colourSpecular", specularColour);
         material->SetShaderUniformFloat("_shininess", shininess);
         
-        if (diffuseTexture != nullptr || diffuseColour.a < 1.0f)
-            material->SetRenderType(ERenderType::Transparent); // TODO: Let user decide?
+        if (flags & MODELLOADERFLAGS_FORCE_OPAQUE)
+            material->SetRenderType(ERenderType::Opaque);
+        else if ((flags & MODELLOADERFLAGS_FORCE_TRANSPARENT)
+            || diffuseColour.a < 1.0f)
+            material->SetRenderType(ERenderType::Transparent);
         else
             material->SetRenderType(ERenderType::Opaque);
 
@@ -137,9 +141,9 @@ namespace Ming3D
         return mesh;
     }
 
-    Actor* ModelLoader::CreateNode(aiNode* aiNode, const std::vector<Mesh*>& meshes, const std::vector<Material*>& materials, const aiScene* scene)
+    Actor* ModelLoader::CreateNode(aiNode* aiNode, const std::vector<Mesh*>& meshes, const std::vector<Material*>& materials, const aiScene* scene, Actor* parent)
     {
-        Actor* actor = new Actor();
+        Actor* actor = parent->SpawnChildActor();
 
         aiMatrix4x4 m = aiNode->mTransformation;
         glm::mat4 rootTransform(
@@ -161,8 +165,7 @@ namespace Ming3D
 
         for(unsigned int iChild = 0; iChild < aiNode->mNumChildren; iChild++)
         {
-            Actor* child = CreateNode(aiNode->mChildren[iChild], meshes, materials, scene);
-            child->GetTransform().SetParent(&actor->GetTransform());
+            Actor* child = CreateNode(aiNode->mChildren[iChild], meshes, materials, scene, actor);
         }
 
         return actor;
@@ -199,8 +202,7 @@ namespace Ming3D
             meshes.push_back(mesh);
         }
 
-        Actor* childActor = CreateNode(scene->mRootNode, meshes, materials, scene);
-        childActor->GetTransform().SetParent(&inActor->GetTransform());
+        Actor* childActor = CreateNode(scene->mRootNode, meshes, materials, scene, inActor);
 
         return true;
     }

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomWidget type="GUITest" x="0" y="0" width="1280px" height="720px">
+    <ImageWidget x="0%" y="0%" width="50%" height="50%" colour="255 0 0 255">
+        <ImageWidget x="0%" y="0%" width="50%" height="100%" colour="0 0 0 255">
+        </ImageWidget>
+    </ImageWidget>
+    <ImageWidget x="50%" y="0%" width="50%" height="50%" colour="0 255 0 255">
+        <TextWidget x="0%" y="0%" width="100%" height="100%" text="Hello World!gjw" vertical-alignment="centre" horizontal-alignment="centre">
+        </TextWidget>
+    </ImageWidget>
+    <ImageWidget x="0%" y="50%" width="50%" height="50%" colour="0 0 255 255">
+    </ImageWidget>
+    <ImageWidget x="50%" y="50%" width="50%" height="50%" colour="255 255 255 255">
+    </ImageWidget>
+</CustomWidget>

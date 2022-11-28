@@ -11,21 +11,11 @@
 
 #include "Debug/debug.h"
 
-#ifdef MING3D_OPENGL
-#ifdef _WIN32
-#include <SDL.h>
-#else
-#include <SDL2/SDL.h>
-#endif
-#include "sdl_window.h"
-#include "render_device_gl.h"
-#else
-#include "render_device_d3d11.h"
-#include "winapi_window.h"
-#endif
-
 #ifdef _WIN32
 #include <Windows.h>
+#include "Platform/platform_win32.h"
+#else
+#include "Platform/platform_linux.h"
 #endif
 
 namespace Ming3D
@@ -53,33 +43,15 @@ namespace Ming3D
 
     void SampleBase::init()
     {
-#ifdef MING3D_OPENGL
-        if (SDL_Init(SDL_INIT_VIDEO) != 0)
-            LOG_ERROR() << "Failed to initialise SDL";
-        else
-        {
-            SDL_version linkedver; SDL_version compiledver;
-            SDL_GetVersion(&linkedver);
-            SDL_VERSION(&compiledver);
-            LOG_INFO() << "SDL compiled version: " << (int)compiledver.major << "." << (int)compiledver.minor << ", pathch: " << (int)compiledver.patch;
-            LOG_INFO() << "SDL linked version: " << (int)linkedver.major << "." << (int)linkedver.minor << ", pathch: " << (int)linkedver.patch;
-        }
-#endif
 
-#ifdef MING3D_OPENGL
-        mMainWindow = new Rendering::SDLWindow();
+#ifdef _WIN32
+        mPlatform = new PlatformWin32();
 #else
-        mMainWindow = new Rendering::WinAPIWindow();
-#endif
-        mMainWindow->Initialise();
-
-#ifdef MING3D_OPENGL
-        LOG_INFO() << "Using OpenGL, version " << glGetString(GL_VERSION);
-        mRenderDevice = new Rendering::RenderDeviceGL();
-#else
-        mRenderDevice = new Rendering::RenderDeviceD3D11();
+        mPlatform = new PlatformLinux();
 #endif
 
+        mMainWindow = mPlatform->CreateOSWindow();
+        mRenderDevice = mPlatform->CreateRenderDevice();
         mRenderWindow = mRenderDevice->CreateRenderWindow(mMainWindow);
     }
 

@@ -1,8 +1,10 @@
 [requires]
 opengl/system
+zlib/1.2.12
 glew/2.2.0
 assimp/5.0.1
 physx/4.1.1
+freetype/2.11.0
 sdl2/2.0.14@bincrafters/stable
 sdl2_image/2.0.5@bincrafters/stable
 

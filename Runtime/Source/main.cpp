@@ -17,6 +17,7 @@
 #include "Model/material_factory.h"
 #include "Texture/texture.h"
 #include "Texture/texture_loader.h"
+#include "Components/widget_component.h"
 
 using namespace Ming3D;
 
@@ -25,30 +26,26 @@ int main()
     GameEngine* gameEngine = new GameEngine();
 	gameEngine->Initialise();
 
-    Actor* camActor = new Actor();
+    Actor* camActor = gameEngine->GetWorld()->SpawnActor();
     camActor->AddComponent<CameraComponent>();
     camActor->GetTransform().SetWorldPosition(glm::vec3(0.0f, 2.0f, 6.0f));
-    gameEngine->GetWorld()->AddActor(camActor);
 
-    Actor* skybox = new Actor();
+    Actor* skybox = gameEngine->GetWorld()->SpawnActor();
     skybox->GetTransform().SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
     skybox->GetTransform().SetLocalScale(glm::vec3(-50.0f, 50.0f, 50.0f));
-    gameEngine->GetWorld()->AddActor(skybox);
-    ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Skybox/Skybox.obj"), skybox, MODELLOADERFLAGS_UNLIT);
+    ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Skybox/Skybox.obj"), skybox, MODELLOADERFLAGS_UNLIT | MODELLOADERFLAGS_FORCE_OPAQUE);
 
-    Actor* actor1 = new Actor();
+    Actor* actor1 = gameEngine->GetWorld()->SpawnActor();
     actor1->GetTransform().SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
     actor1->GetTransform().SetLocalScale(glm::vec3(50.0f, 50.0f, 50.0f));
     actor1->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
-    gameEngine->GetWorld()->AddActor(actor1);
     ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Mvr_PetCow_walk.dae"), actor1);
 
     const float camSpeed = 3.0f;
     const float camRotSpeed = 1.0f;
 
-    while (true)
+    while (gameEngine->Update())
     {
-        gameEngine->Update();
         actor1->GetTransform().Rotate(0.001f, glm::vec3(0,1,0));
 
         float speed = camSpeed * GGameEngine->GetDeltaTime();

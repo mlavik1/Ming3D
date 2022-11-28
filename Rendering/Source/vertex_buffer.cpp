@@ -2,7 +2,7 @@
 
 namespace Ming3D::Rendering
 {
-    VertexBuffer::VertexBuffer(const VertexLayout& inLayout, EVertexBufferUsage usage)
+    VertexBuffer::VertexBuffer(const VertexLayout& inLayout, EBufferUsage usage)
     {
         mUsage = usage;
         mVertexLayout = inLayout;

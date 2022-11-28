@@ -4,6 +4,7 @@
 #include <vector> // TODO: Use a smart pointer to a stream
 #include <cstring>
 #include "texture_info.h"
+#include <cstdint>
 
 namespace Ming3D
 {
@@ -14,11 +15,16 @@ namespace Ming3D
     */
     class Texture
     {
+    private:
+        static uint64_t GUIDCounter;
+
     public:
         std::vector<char> mTextureData; // TODO: Use a smart pointer to a stream
         TextureInfo mTextureInfo;
+        const uint64_t mGUID;
 
     public:
+        Texture();
         virtual ~Texture() {}
         void SetTextureData(const void* inData, const size_t inBytesPerPixel, PixelFormat inPixelFormat, unsigned int inWidth, unsigned int inHeight); // TODO: Use a smart pointer to a stream
         

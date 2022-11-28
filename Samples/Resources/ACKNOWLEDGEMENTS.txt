@@ -1,0 +1,4 @@
+Fantasy GUI by MELLE (https://opengameart.org/content/fantasy-gui-0):
+- button1.png
+- menu_background.png
+License: Public Domain (CC0)

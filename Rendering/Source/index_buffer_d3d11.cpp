@@ -3,6 +3,17 @@
 
 namespace Ming3D::Rendering
 {
+    IndexBufferD3D11::IndexBufferD3D11(EBufferUsage usage)
+        : IndexBuffer(usage)
+    {
+
+    }
+    
+    IndexBufferD3D11::~IndexBufferD3D11()
+    {
+        delete mD3DBuffer;
+    }
+
     void IndexBufferD3D11::SetD3DBuffer(ID3D11Buffer* inBuffer)
     {
         mD3DBuffer = inBuffer;

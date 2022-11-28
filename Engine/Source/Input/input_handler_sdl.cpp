@@ -2,9 +2,20 @@
 #include "GameEngine/game_engine.h"
 #include "input_manager.h"
 #include "SDL2/SDL_gamecontroller.h"
+#include "sdl_window.h"
 
 namespace Ming3D
 {
+    InputHandlerSDL::InputHandlerSDL(Rendering::SDLWindow* window)
+    {
+        mWindow = window;
+    }
+
+    InputHandlerSDL::~InputHandlerSDL()
+    {
+
+    }
+
     void InputHandlerSDL::Initialise()
     {
         SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER);
@@ -19,11 +30,30 @@ namespace Ming3D
         //if (SDL_WasInit(SDL_INIT_GAMECONTROLLER) != 1)
 	    //    SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER);
 
+        int mouseX = 0;
+        int mouseY = 0;
+        SDL_GetMouseState(&mouseX, &mouseY);
+        glm::ivec2 newMousePos = glm::ivec2(mouseX, mWindow->GetHeight() - mouseY);
+        if (newMousePos != mMousePosition)
+        {
+            mMousePosition = newMousePos;
+            InputEvent inputEvent{};
+            inputEvent.mType = InputEventType::MouseMove;
+            inputEvent.mMousePosition = mMousePosition;
+            AddInputEvent(inputEvent);
+        }
+
         SDL_Event sdlEvent;
         while (SDL_PollEvent(&sdlEvent))
         {
             switch (sdlEvent.type)
             {
+            case SDL_MOUSEBUTTONDOWN:
+                HandleMouseDown(sdlEvent.button.button);
+                break;
+            case SDL_MOUSEBUTTONUP:
+                HandleMouseUp(sdlEvent.button.button);
+                break;
             case SDL_KEYDOWN:
                 HandleKeyDown(sdlEvent.key.keysym.sym);
                 break;
@@ -39,77 +69,97 @@ namespace Ming3D
             case SDL_CONTROLLERAXISMOTION:
                 HandleAxis2D(sdlEvent.caxis.axis, sdlEvent.caxis.value);
                 break;
+            case SDL_WINDOWEVENT:
+                if (sdlEvent.window.event == SDL_WINDOWEVENT_CLOSE)
+                    mWindow->Close();
+                break;
             }
         }
     }
 
+    void InputHandlerSDL::HandleMouseDown(Uint8 mouseButton)
+    {
+        InputEvent inputEvent{};
+        inputEvent.mType = InputEventType::MouseButtonDown;
+        inputEvent.mMouseButton.mButton = static_cast<int>(mouseButton);
+        AddInputEvent(inputEvent);
+    }
+
+    void InputHandlerSDL::HandleMouseUp(Uint8 mouseButton)
+    {
+        InputEvent inputEvent{};
+        inputEvent.mType = InputEventType::MouseButtonUp;
+        inputEvent.mMouseButton.mButton = static_cast<int>(mouseButton);
+        AddInputEvent(inputEvent);
+    }
+
     void InputHandlerSDL::HandleKeyDown(SDL_Keycode inKeycode)
     {
-        InputEvent inputEvent;
+        InputEvent inputEvent{};
         inputEvent.mType = InputEventType::KeyDown;
         inputEvent.mKey.mKeyCode = GetKeyCode(inKeycode);
         if (inputEvent.mKey.mKeyCode != KeyCode::None)
-            GGameEngine->GetInputManager()->AddInputEvent(inputEvent);
+            AddInputEvent(inputEvent);
     }
 
     void InputHandlerSDL::HandleKeyUp(SDL_Keycode inKeycode)
     {
-        InputEvent inputEvent;
+        InputEvent inputEvent{};
         inputEvent.mType = InputEventType::KeyUp;
         inputEvent.mKey.mKeyCode = GetKeyCode(inKeycode);
         if (inputEvent.mKey.mKeyCode != KeyCode::None)
-            GGameEngine->GetInputManager()->AddInputEvent(inputEvent);
+            AddInputEvent(inputEvent);
     }
 
     void InputHandlerSDL::HandleControllerButtonDown(Uint8 button)
     {
-        InputEvent inputEvent;
+        InputEvent inputEvent{};
         inputEvent.mType = InputEventType::KeyDown;
         inputEvent.mKey.mKeyCode = GetControllerKeyCode(button);
         if (inputEvent.mKey.mKeyCode != KeyCode::None)
-            GGameEngine->GetInputManager()->AddInputEvent(inputEvent);
+            AddInputEvent(inputEvent);
     }
 
     void InputHandlerSDL::HandleControllerButtonUp(Uint8 button)
     {
-        InputEvent inputEvent;
+        InputEvent inputEvent{};
         inputEvent.mType = InputEventType::KeyUp;
         inputEvent.mKey.mKeyCode = GetControllerKeyCode(button);
         if (inputEvent.mKey.mKeyCode != KeyCode::None)
-            GGameEngine->GetInputManager()->AddInputEvent(inputEvent);
+            AddInputEvent(inputEvent);
     }    
 
     void InputHandlerSDL::HandleAxis2D(Uint8 axis, Sint16 value)
     {
-        InputEvent inputEvent;
+        InputEvent inputEvent{};
         inputEvent.mType = InputEventType::Axis2D;
         if(axis == SDL_CONTROLLER_AXIS_LEFTX)
         {
             mLeftConrollerAxis.x = ((static_cast<int>(value) + 32768) / 65535.0f) * 2.0f - 1.0f;
             inputEvent.mAxis.mAxis = EAxis2D::ControllerAxisLeft;
             inputEvent.mAxis.mValue = mLeftConrollerAxis;
-            GGameEngine->GetInputManager()->AddInputEvent(inputEvent);
+            AddInputEvent(inputEvent);
         }
         else if(axis == SDL_CONTROLLER_AXIS_LEFTY)
         {
             mLeftConrollerAxis.y = ((static_cast<int>(value) + 32768) / 65535.0f) * 2.0f - 1.0f;
             inputEvent.mAxis.mAxis = EAxis2D::ControllerAxisLeft;
             inputEvent.mAxis.mValue = mLeftConrollerAxis;
-            GGameEngine->GetInputManager()->AddInputEvent(inputEvent);
+            AddInputEvent(inputEvent);
         }
         else if(axis == SDL_CONTROLLER_AXIS_RIGHTX)
         {
             mRightConrollerAxis.x = ((static_cast<int>(value) + 32768) / 65535.0f) * 2.0f - 1.0f;
             inputEvent.mAxis.mAxis = EAxis2D::ControllerAxisRight;
             inputEvent.mAxis.mValue = mRightConrollerAxis;
-            GGameEngine->GetInputManager()->AddInputEvent(inputEvent);
+            AddInputEvent(inputEvent);
         }
         else if(axis == SDL_CONTROLLER_AXIS_RIGHTY)
         {
             mRightConrollerAxis.y = ((static_cast<int>(value) + 32768) / 65535.0f) * 2.0f - 1.0f;
             inputEvent.mAxis.mAxis = EAxis2D::ControllerAxisRight;
             inputEvent.mAxis.mValue = mRightConrollerAxis;
-            GGameEngine->GetInputManager()->AddInputEvent(inputEvent);
+            AddInputEvent(inputEvent);
         }
     }
 
@@ -180,5 +230,11 @@ namespace Ming3D
         default:
             return KeyCode::None;
         }
+    }
+
+    void InputHandlerSDL::AddInputEvent(InputEvent event)
+    {
+        event.mMousePosition = mMousePosition;
+        GGameEngine->GetInputManager()->AddInputEvent(event);
     }
 }

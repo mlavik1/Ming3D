@@ -21,14 +21,17 @@ namespace Ming3D::Rendering
     public:
         SDLWindow();
         SDLWindow(const void* inNativewindow);
+        virtual ~SDLWindow();
 
         virtual void Initialise() override;
         virtual void SetSize(unsigned int inWidth, unsigned int inHeight) override;
-        virtual unsigned int GetWidth() override { return mWindowWidth; };
-        virtual unsigned int GetHeight() override { return mWindowHeight; };
+        virtual unsigned int GetWidth() const override { return mWindowWidth; };
+        virtual unsigned int GetHeight() const override { return mWindowHeight; };
         virtual void BeginRender() override;
         virtual void EndRender() override;
         virtual void* GetOSWindowHandle() override;
+        virtual void Close() override;
+        virtual bool IsOpen() override;
         SDL_Window* GetSDLWindow() { return mSDLWindow; }
         SDL_GLContext GetGLContext() { return mGLContext; }
     };

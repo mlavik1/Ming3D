@@ -41,14 +41,16 @@ namespace Ming3D::Rendering
 
         virtual RenderTarget* CreateRenderTarget(RenderWindow* inWindow) override;
         virtual RenderTarget* CreateRenderTarget(TextureInfo inTextureInfo, int numTextures) override;
-        virtual VertexBuffer* CreateVertexBuffer(VertexData* inVertexData, EVertexBufferUsage usage) override;
+        virtual VertexBuffer* CreateVertexBuffer(VertexData* inVertexData, EBufferUsage usage) override;
         virtual void UpdateVertexBuffer(VertexBuffer* inVertexBuffer, VertexData* inVertexData) override;
-        virtual IndexBuffer* CreateIndexBuffer(IndexData* inIndexData) override;
+        virtual IndexBuffer* CreateIndexBuffer(IndexData* inIndexData, EBufferUsage usage) override;
+        virtual void UpdateIndexBuffer(IndexBuffer* inIndexBuffer, IndexData* inIndexData) override;
         virtual ShaderProgram* CreateShaderProgram(ParsedShaderProgram* parsedProgram) override;
         virtual TextureBuffer* CreateTextureBuffer(TextureInfo inTextureInfo, void* inTextureData) override;
         virtual RenderWindow* CreateRenderWindow(WindowBase* inWindow) override;
         virtual RasteriserState* CreateRasteriserState(RasteriserStateCullMode inCullMode, bool inDepthClipEnabled) override;
         virtual DepthStencilState* CreateDepthStencilState(DepthStencilStateDesc inDesc) override;
+        virtual BlendState* CreateBlendState(bool enableBlend, EBlendMode blendMode) override;
         virtual ConstantBuffer* CreateConstantBuffer(size_t inSize) override;
 
         virtual void SetTexture(const TextureBuffer* inTexture, int inSlot) override;
@@ -57,9 +59,10 @@ namespace Ming3D::Rendering
         virtual void EndRenderWindow(RenderWindow* inWindow) override;
         virtual void BeginRenderTarget(RenderTarget* inTarget) override;
         virtual void EndRenderTarget(RenderTarget* inTarget) override;
-        virtual void RenderPrimitive(VertexBuffer* inVertexBuffer, IndexBuffer* inIndexBuffer) override;
+        virtual void RenderPrimitive(VertexBuffer* inVertexBuffer, IndexBuffer* inIndexBuffer, unsigned int startIndex, unsigned int indexCount) override;
         virtual void SetRasteriserState(RasteriserState* inState) override;
         virtual void SetDepthStencilState(DepthStencilState* inState) override;
+        virtual void SetBlendState(BlendState* inState) override;
         virtual void SetConstantBufferData(ConstantBuffer* inConstantBuffer, void* inData, size_t inSize) override;
         virtual void BindConstantBuffer(ConstantBuffer* inConstantBuffer, const char* inName, ShaderProgram* inProgram) override;
 

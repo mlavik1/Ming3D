@@ -1,7 +1,9 @@
 #include "material_factory.h"
-
+#include <memory>
 #include "shader_parser.h"
 #include "shader_cache.h"
+#include "Texture/texture_loader.h"
+#include "GameEngine/game_engine.h"
 
 namespace Ming3D
 {

@@ -1,6 +1,8 @@
 #ifndef MING3D_INDEX_BUFFER_H
 #define MING3D_INDEX_BUFFER_H
 
+#include "buffer_common.h"
+
 namespace Ming3D::Rendering
 {
     /**
@@ -12,11 +14,14 @@ namespace Ming3D::Rendering
     {
     private:
         unsigned int mNumIndices;
+        EBufferUsage mUsage = EBufferUsage::StaticDraw;
 
     public:
+        IndexBuffer(EBufferUsage usage);
         virtual ~IndexBuffer() = default;
         void SetNumIndices(unsigned int inNumIndices);
         unsigned int GetNumIndices();
+        EBufferUsage GetUsage() { return mUsage; }
     };
 }
 

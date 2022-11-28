@@ -99,6 +99,16 @@ namespace Ming3D::Rendering
     {
         return mHWND;
     }
+
+    void WinAPIWindow::Close()
+    {
+        // TODO
+    }
+
+    bool WinAPIWindow::IsOpen()
+    {
+        return true; // TODO
+    }
 }
 #endif
 

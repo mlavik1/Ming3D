@@ -3,7 +3,7 @@
 
 #include "render_target.h"
 
-#include <GL/glew.h>
+#include "GL/glew.h"
 #include <vector>
 #include "texture_buffer_gl.h"
 

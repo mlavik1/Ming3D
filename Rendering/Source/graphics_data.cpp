@@ -90,6 +90,11 @@ namespace Ming3D::Rendering
         return 0;
     }
 
+    void VertexData::Resize(size_t vertCount)
+    {
+        mData.resize(vertCount * mVertexSize);
+    }
+
 
     IndexData::IndexData(size_t inNumIndices)
     {
@@ -99,5 +104,10 @@ namespace Ming3D::Rendering
     size_t IndexData::GetNumIndices()
     {
         return mData.size();
+    }
+
+    void IndexData::Resize(size_t indexCount)
+    {
+        mData.resize(indexCount);
     }
 }
