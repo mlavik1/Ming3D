@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<CustomWidget type="GUITest" x="0" y="0" width="1280px" height="720px">
+<CustomWidget type="GUITest" x="0" y="0" width="100%" height="100%">
     <ImageWidget x="0%" y="0%" width="50%" height="50%" colour="255 0 0 255">
         <ImageWidget x="0%" y="0%" width="50%" height="100%" colour="0 0 0 255">
         </ImageWidget>

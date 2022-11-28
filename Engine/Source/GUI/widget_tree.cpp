@@ -45,7 +45,7 @@ namespace Ming3D
         params.mVisualsInvalidated |= widget->mWidgetInvalidated;
         widget->mWidgetInvalidated = false;
 
-        WidgetRect widgetRect = widget->getAbsoluteRect();
+        WidgetRect widgetRect = ToScreenSpaceRect(widget->getAbsoluteRect());
         WidgetRect parentRect = params.mContentRect;
 
         // Calculate content rect (rect to render widget in) and visible rect (usually the same, unless parent widget is smaller)
@@ -244,7 +244,7 @@ namespace Ming3D
     WidgetRect WidgetTree::ToScreenSpaceRect(const WidgetRect& rect)
     {
         WidgetRect screenRect = rect;
-        screenRect.mPosition.y = mCanvasSize.y - screenRect.mPosition.y;
+        screenRect.mPosition.y = mCanvasSize.y - screenRect.mPosition.y - screenRect.mSize.y;
         return screenRect;
     }
 
@@ -270,7 +270,6 @@ namespace Ming3D
             HandleEventRecursive(widget, event, mousePosition);
         }
     }
-
 
     void WidgetTree::SetWidget(std::shared_ptr<Widget> widget)
     {
