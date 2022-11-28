@@ -36,6 +36,8 @@ namespace Ming3D
         MeshBuffer* mMeshBuffer;
         Material* mMaterial;
         glm::mat4 mTransformMatrix;
+        glm::ivec2 mCanvasSize;
+        bool mVisualsInvalidated = true;
 
         void UpdateWidgetRecursive(Widget* widget, WidgetUpdateParams params);
 
@@ -45,18 +47,21 @@ namespace Ming3D
 
         VisualSubmeshNode* ReallocSubmesh(VisualSubmeshNode* oldNode, unsigned int vertexCount, unsigned int indexCount);
 
+        WidgetRect ToScreenSpaceRect(const WidgetRect& rect);
+
     public:
         WidgetTree();
         ~WidgetTree();
         
-        void SetRootWidget(std::shared_ptr<Widget> widget);
+        void SetWidget(std::shared_ptr<Widget> widget);
         void SetTransform(glm::mat4 transMat);
+        void SetCanvasSize(glm::ivec2 canvasSize);
 
         void HandleEvents(const std::vector<InputEvent>& events, glm::ivec2 mousePosition);
         
         void UpdateWidgetTree();
         void UpdateRenderData();
-        size_t GetNumBatches();
+        size_t GetNumBatches() const;
         void GetBatch(size_t batchIndex, RenderBatch* outBatch);
     };
 }

@@ -17,8 +17,13 @@ namespace Ming3D
 {
     WidgetTree::WidgetTree()
     {
+        mCanvasSize = glm::vec2(1280.0f, 720.0f);
         mRootSubmeshNode = nullptr;
         mRootWidget = std::make_shared<Widget>();
+        WidgetTransform rootTransform{};
+        rootTransform.anchorMin = rootTransform.anchorMax = glm::vec2(0.0f, 0.0f);
+        rootTransform.mSize = mCanvasSize;
+        mRootWidget->SetWidgetTransform(rootTransform);
 
         mMaterial = GGameEngine->GetGUIResourceManager()->GetDefaultGUIMaterial();
         mMeshBuffer = new MeshBuffer();
@@ -130,16 +135,12 @@ namespace Ming3D
         mRenderBatches.clear();
 
         WidgetUpdateParams params;
-        WidgetRect rootWidgetRect = mRootWidget->getAbsoluteRect();
-        params.mContentRect.mPosition = rootWidgetRect.mPosition;
-        params.mContentRect.mSize = rootWidgetRect.mSize;
+        params.mContentRect.mPosition = glm::vec2(0.0f, 0.0f);
+        params.mContentRect.mSize = mCanvasSize;
         params.mVisibleRect = params.mContentRect;
-        params.mVisualsInvalidated = mRootWidget->mWidgetInvalidated;
+        params.mVisualsInvalidated = mVisualsInvalidated;
 
-        for (auto& childWidget : mRootWidget->mChildWidgets)
-        {
-            UpdateWidgetRecursive(childWidget.get(), params);
-        }
+        UpdateWidgetRecursive(mRootWidget.get(), params);
 
         mRootWidget->mWidgetInvalidated = false;
     }
@@ -240,6 +241,13 @@ namespace Ming3D
         return node;
     }
 
+    WidgetRect WidgetTree::ToScreenSpaceRect(const WidgetRect& rect)
+    {
+        WidgetRect screenRect = rect;
+        screenRect.mPosition.y = mCanvasSize.y - screenRect.mPosition.y;
+        return screenRect;
+    }
+
     void HandleEventRecursive(Widget* widget, InputEvent event, glm::ivec2 mousePosition)
     {
         const WidgetRect rect = widget->getAbsoluteRect();
@@ -264,17 +272,26 @@ namespace Ming3D
     }
 
 
-    void WidgetTree::SetRootWidget(std::shared_ptr<Widget> widget)
+    void WidgetTree::SetWidget(std::shared_ptr<Widget> widget)
     {
-        mRootWidget = widget;
+        mRootWidget->mChildWidgets.clear(); // TODO
+        mRootWidget->addWidget(widget);
+        mVisualsInvalidated = true;
     }
 
     void WidgetTree::SetTransform(glm::mat4 transMat)
     {
         mTransformMatrix = transMat;
+        mVisualsInvalidated = true;
     }
 
-    size_t WidgetTree::GetNumBatches()
+    void WidgetTree::SetCanvasSize(glm::ivec2 canvasSize)
+    {
+        mCanvasSize = canvasSize;
+        mVisualsInvalidated = true;
+    }
+
+    size_t WidgetTree::GetNumBatches() const
     {
         return mRenderBatches.size();
     }

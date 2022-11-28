@@ -63,7 +63,7 @@ namespace Ming3D
     void WidgetComponent::SetWidget(std::shared_ptr<Widget> widget)
     {
         mWidget = widget;
-        mWidgetTree->SetRootWidget(widget);
+        mWidgetTree->SetWidget(widget);
         mRenderObject->SetWidgetTree(mWidgetTree);
     }
 
@@ -76,15 +76,25 @@ namespace Ming3D
         case EWidgetRenderMode::World:
         {
             mRenderObject->SetRenderType(ERenderType::Transparent);
+            mWidgetTree->SetCanvasSize(mCanvasSize);
             break;
         }
         case EWidgetRenderMode::Overlay:
         {
             mRenderObject->SetRenderType(ERenderType::GUIOverlay);
+            auto window = GetWorld()->GetGameEngine()->GetMainWindow();
+            mWidgetTree->SetCanvasSize(glm::ivec2(window->GetWidth(), window->GetHeight()));
             break;
         }
         default:
             __AssertComment(false, "Unimplemented widget render mode.");
         }
+    }
+
+    void WidgetComponent::SetCanvasSize(glm::ivec2 canvasSize)
+    {
+        mCanvasSize = canvasSize;
+        if (mRenderMode == EWidgetRenderMode::World)
+            mWidgetTree->SetCanvasSize(canvasSize);
     }
 }

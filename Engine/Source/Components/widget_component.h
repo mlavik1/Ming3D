@@ -3,6 +3,7 @@
 #include <memory>
 #include "component.h"
 #include "GUI/widget_render_object.h"
+#include "glm/vec2.hpp"
 
 namespace Ming3D
 {
@@ -25,6 +26,7 @@ namespace Ming3D
         std::shared_ptr<Widget> mWidget = nullptr;
         WidgetTree* mWidgetTree = nullptr;
         EWidgetRenderMode mRenderMode = EWidgetRenderMode::World;
+        glm::ivec2 mCanvasSize;
 
     public:
         WidgetComponent();
@@ -35,5 +37,6 @@ namespace Ming3D
 
         void SetWidget(std::shared_ptr<Widget> widget);
         void SetRenderMode(EWidgetRenderMode renderMode);
+        void SetCanvasSize(glm::ivec2 canvasSize);
     };
 }
