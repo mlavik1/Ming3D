@@ -1,6 +1,7 @@
 #include "light_component.h"
 #include "Actors/actor.h"
-#include "GameEngine/game_engine.h"
+#include "World/world.h"
+#include "SceneRenderer/render_scene.h"
 
 namespace Ming3D
 {
@@ -11,6 +12,7 @@ namespace Ming3D
 
     LightComponent::~LightComponent()
     {
+        GetWorld()->GetRenderScene()->RemoveLightSource(mLightSource);
         delete mLightSource;
     }
 
@@ -31,7 +33,7 @@ namespace Ming3D
 
     void LightComponent::InitialTick()
     {
-        GGameEngine->AddLightSource(mLightSource);
+        GetWorld()->GetRenderScene()->AddLightSource(mLightSource);
     }
 
     void LightComponent::Tick(float inDeltaTime)

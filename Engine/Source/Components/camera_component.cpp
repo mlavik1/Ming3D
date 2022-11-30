@@ -3,6 +3,9 @@
 #include "glm/gtx/rotate_vector.hpp"
 #include "Actors/actor.h"
 #include "Window/render_window_handle.h"
+#include "World/world.h"
+#include "SceneRenderer/render_scene.h"
+#include "SceneRenderer/camera.h"
 
 IMPLEMENT_CLASS(Ming3D::CameraComponent)
 
@@ -21,7 +24,7 @@ namespace Ming3D
 
     CameraComponent::~CameraComponent()
     {
-        GGameEngine->RemoveCamera(this);
+        GetWorld()->GetRenderScene()->RemoveCamera(mCamera);
         delete mCamera;
     }
 
@@ -39,7 +42,7 @@ namespace Ming3D
 
     void CameraComponent::InitialTick()
     {
-        GGameEngine->AddCamera(this);
+        GetWorld()->GetRenderScene()->AddCamera(mCamera);
     }
 
     void CameraComponent::Tick(float inDeltaTime)

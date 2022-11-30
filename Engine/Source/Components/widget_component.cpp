@@ -2,11 +2,12 @@
 #include "GUI/widget_tree.h"
 #include "Actors/actor.h"
 #include "GameEngine/game_engine.h"
-#include "SceneRenderer/scene_renderer.h"
 #include "Debug/st_assert.h"
 #include "Input/input_manager.h"
 #include "World/world.h"
 #include "window_base.h"
+#include "World/world.h"
+#include "SceneRenderer/render_scene.h"
 #include <cmath>
 
 IMPLEMENT_CLASS(Ming3D::WidgetComponent)
@@ -17,12 +18,11 @@ namespace Ming3D
     {
         mRenderObject = new WidgetRenderObject();
         mWidgetTree = new WidgetTree();
-        SetRenderMode(mRenderMode);
-        GGameEngine->GetSceneRenderer()->AddSceneObject(mRenderObject);
     }
 
     WidgetComponent::~WidgetComponent()
     {
+        GetWorld()->GetRenderScene()->RemoveSceneObject(mRenderObject);
         delete mRenderObject;
     }
 
@@ -34,6 +34,8 @@ namespace Ming3D
     void WidgetComponent::InitialiseComponent()
     {
         Super::InitialiseComponent();
+        SetRenderMode(mRenderMode);
+        GetWorld()->GetRenderScene()->AddSceneObject(mRenderObject);
     }
 
     void WidgetComponent::Tick(float inDeltaTime)

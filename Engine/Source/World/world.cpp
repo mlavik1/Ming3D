@@ -8,6 +8,7 @@ namespace Ming3D
     World::World(GameEngine* gameEngine)
     {
         mGameEngine = gameEngine;
+        mRenderScene = std::make_unique<RenderScene>();
     }
 
     World::~World()

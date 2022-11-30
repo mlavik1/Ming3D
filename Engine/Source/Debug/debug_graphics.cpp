@@ -1,7 +1,7 @@
 #include "debug_graphics.h"
 
 #include "GameEngine/game_engine.h"
-#include "SceneRenderer/scene_renderer.h"
+#include "SceneRenderer/render_scene.h"
 #include "SceneRenderer/mesh_render_object.h"
 #include "render_device.h"
 #include "glm/gtx/transform.hpp"
@@ -10,6 +10,7 @@
 #include "Model/primitive_factory.h"
 #include "Model/material_factory.h"
 #include "Model/mesh.h"
+#include "World/world.h"
 
 namespace Ming3D
 {
@@ -24,7 +25,7 @@ namespace Ming3D
         renderObject->SetMaterial(mat);
         renderObject->SetTransform(glm::translate(glm::mat4(1.0f), boxPos) * glm::mat4(1.0f) * glm::scale(glm::mat4(1.0f), boxSize));
 
-        GGameEngine->GetSceneRenderer()->AddSceneObject(renderObject);
+        GGameEngine->GetWorld()->GetRenderScene()->AddSceneObject(renderObject);
 
         mat->SetShaderUniformVec4("colour", boxColour);
 

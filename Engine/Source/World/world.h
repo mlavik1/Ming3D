@@ -4,6 +4,8 @@
 #include <vector>
 #include <type_traits>
 #include <string>
+#include "SceneRenderer/render_scene.h"
+#include <memory>
 
 namespace Ming3D
 {
@@ -15,6 +17,7 @@ namespace Ming3D
     private:
         std::vector<Actor*> mActors;
         GameEngine* mGameEngine;
+        std::unique_ptr<RenderScene> mRenderScene;
 
         void AddActor(Actor* inActor);
 
@@ -36,6 +39,7 @@ namespace Ming3D
         std::vector<Actor*> GetActors() { return mActors; }
 
         GameEngine* GetGameEngine() { return mGameEngine; }
+        RenderScene* GetRenderScene() { return mRenderScene.get(); }
     };
 }
 

@@ -2,11 +2,16 @@
 #define MING3D_CAMERACOMPONENT_H
 
 #include "component.h"
-#include "SceneRenderer/camera.h"
 
 namespace Ming3D
 {
+    namespace Rendering
+    {
+        class RenderTarget;
+    }
+
     class RenderWindowHandle;
+    class Camera;
 
     class CameraComponent : public Component
     {

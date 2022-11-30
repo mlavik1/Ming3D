@@ -60,12 +60,6 @@ namespace Ming3D
 		void Initialise();
         bool Update();
 
-        void AddCamera(CameraComponent* inCamera);
-        void RemoveCamera(CameraComponent* inCamera);
-
-        void AddLightSource(LightSource* light);
-        void RemoveLightSource(LightSource* light);
-
         /* Create a new RenderWindow. */
         RenderWindowHandle* CreateRenderWindow(unsigned int width, unsigned int height);
 

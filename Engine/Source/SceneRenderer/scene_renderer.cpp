@@ -9,10 +9,12 @@
 #include "Actors/actor.h"
 #include "Model/shader_uniform_data.h"
 #include "forward_render_pipeline.h"
-#include <algorithm>
 #include "constant_buffer_data.h"
 #include "Model/material_buffer.h"
 #include "Debug/st_assert.h"
+#include "render_scene.h"
+#include "Light/light_source.h"
+#include <algorithm>
 
 namespace Ming3D
 {
@@ -22,44 +24,17 @@ namespace Ming3D
 
     SceneRenderer::SceneRenderer()
     {
-        mRenderScene = new RenderScene();
         mFallbackPipeline = new ForwardRenderPipeline();
     }
 
     SceneRenderer::~SceneRenderer()
     {
-        delete mRenderScene;
     }
 
     void SceneRenderer::Initialise()
     {
         cbDataGlobal.SetData(glm::vec3(), glm::vec4(), glm::vec3(), 0.0f);
         mGlobalCBuffer = GGameEngine->GetRenderDevice()->CreateConstantBuffer(cbDataGlobal.mSize);
-    }
-
-    void SceneRenderer::AddCamera(Camera* inCamera)
-    {
-        mCameras.push_back(inCamera);
-    }
-
-    void SceneRenderer::RemoveCamera(Camera* inCamera)
-    {
-        mCameras.remove(inCamera);
-    }
-
-    void SceneRenderer::AddLightSource(LightSource* light)
-    {
-        mLightSources.push_back(light);
-    }
-
-    void SceneRenderer::RemoveLightSource(LightSource* light)
-    {
-        mLightSources.remove(light);
-    }
-
-    void SceneRenderer::AddSceneObject(RenderObject* inObject)
-    {
-        mRenderScene->mSceneObjects.push_back(inObject);
     }
 
     void SceneRenderer::RegisterMaterial(MaterialBuffer* inMat)
@@ -107,15 +82,15 @@ namespace Ming3D
         }
     }
 
-    void SceneRenderer::Render()
+    void SceneRenderer::Render(RenderScene* renderScene)
     {
         RenderDevice* renderDevice = GGameEngine->GetRenderDevice();
 
         LightSource* mainLight = nullptr;
-        if(!mLightSources.empty())
-            mainLight = mLightSources.back(); // TODO: support multiple light sources
+        if(!renderScene->mLightSources.empty())
+            mainLight = renderScene->mLightSources.back(); // TODO: support multiple light sources
 
-        for (Camera* camera : mCameras)
+        for (Camera* camera : renderScene->mCameras)
         {
             if (camera->mRenderTarget == nullptr)
                 continue;
@@ -127,7 +102,7 @@ namespace Ming3D
                 renderDevice->BeginRenderWindow(renderWindow);
 
             RenderPipelineContext context;
-            context.mScene = mRenderScene;
+            context.mScene = renderScene;
             context.mMainCamera = camera;
             context.mMainLight = mainLight;
 

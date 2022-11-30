@@ -1,13 +1,12 @@
 #include "mesh_component.h"
 
 #include "Model/model_helper.h"
-#include "SceneRenderer/render_scene.h"
-#include "GameEngine/game_engine.h"
 #include "render_device.h"
-#include "SceneRenderer/scene_renderer.h"
 #include "Actors/actor.h"
 #include "Model/material_factory.h"
 #include "render_device.h"
+#include "World/world.h"
+#include "SceneRenderer/render_scene.h"
 
 IMPLEMENT_CLASS(Ming3D::MeshComponent)
 
@@ -16,11 +15,11 @@ namespace Ming3D
     MeshComponent::MeshComponent()
     {
         mRenderObject = new MeshRenderObject();
-        GGameEngine->GetSceneRenderer()->AddSceneObject(mRenderObject);
     }
 
     MeshComponent::~MeshComponent()
     {
+        GetWorld()->GetRenderScene()->RemoveSceneObject(mRenderObject);
         delete mRenderObject;
     }
 
@@ -32,6 +31,7 @@ namespace Ming3D
     void MeshComponent::InitialiseComponent()
     {
         Super::InitialiseComponent();
+        GetWorld()->GetRenderScene()->AddSceneObject(mRenderObject);
     }
 
     void MeshComponent::SetMesh(Mesh* inMesh, bool dynamic)

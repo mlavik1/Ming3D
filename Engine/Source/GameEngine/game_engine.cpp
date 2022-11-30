@@ -119,7 +119,7 @@ namespace Ming3D
 
         mNetworkManager->UpdateNetworks();
 
-        mSceneRenderer->Render();
+        mSceneRenderer->Render(mWorld->GetRenderScene());
 
         HandleDebugStats();
 
@@ -136,26 +136,6 @@ namespace Ming3D
         }
 #endif
         ClearFrameStats();
-    }
-
-    void GameEngine::AddCamera(CameraComponent* inCamera)
-    {
-        mSceneRenderer->AddCamera(inCamera->GetCamera());
-    }
-
-    void GameEngine::RemoveCamera(CameraComponent* inCamera)
-    {
-        mSceneRenderer->RemoveCamera(inCamera->GetCamera());
-    }
-
-    void GameEngine::AddLightSource(LightSource* light)
-    {
-        mSceneRenderer->AddLightSource(light);
-    }
-
-    void GameEngine::RemoveLightSource(LightSource* light)
-    {
-        mSceneRenderer->RemoveLightSource(light);
     }
 
     RenderWindowHandle* GameEngine::CreateRenderWindow(unsigned int width, unsigned int height)
