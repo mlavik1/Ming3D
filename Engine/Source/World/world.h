@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <type_traits>
+#include <string>
 
 namespace Ming3D
 {
@@ -30,6 +31,7 @@ namespace Ming3D
             return actor;
         }
         Actor* SpawnActor();
+        Actor* SpawnActor(const std::string& name);
 
         std::vector<Actor*> GetActors() { return mActors; }
 

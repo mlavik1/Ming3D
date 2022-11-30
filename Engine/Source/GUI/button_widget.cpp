@@ -2,8 +2,15 @@
 #include "image_widget.h"
 #include <iostream>
 
+IMPLEMENT_CLASS(Ming3D::ButtonWidget)
+
 namespace Ming3D
 {
+    void ButtonWidget::InitialiseClass()
+    {
+        
+    }
+
     ButtonWidget::ButtonWidget()
     {
         mImageWidget = std::make_shared<ImageWidget>();

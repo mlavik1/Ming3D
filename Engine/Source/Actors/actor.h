@@ -94,6 +94,8 @@ namespace Ming3D
         /** Caled from Transform after movement. */
         void OnTransformMoved();
 
+        void SetActorName(const std::string& name);
+
         inline Transform& GetTransform() { return mTransform; }
         std::vector<Component*> GetComponents() { return mComponents; }
         std::string GetActorName() { return mActorName; }

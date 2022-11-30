@@ -3,12 +3,20 @@
 #include "GameEngine/game_engine.h"
 #include "GUI/font_manager.h"
 
+IMPLEMENT_CLASS(Ming3D::TextWidget)
+
 namespace Ming3D
 {
+    void TextWidget::InitialiseClass()
+    {
+        
+    }
+
     TextWidget::TextWidget()
     {
         mTextVisual = std::make_shared<TextVisual>();
         mVisuals.push_back(mTextVisual);
+        SetFont(GGameEngine->GetResourceDirectory() + std::string("/Fonts/FreeSans.ttf"), 16); // TODO!
     }
 
     TextWidget::~TextWidget()
@@ -16,7 +24,7 @@ namespace Ming3D
 
     }
 
-    void TextWidget::SetText(const std::wstring& text)
+    void TextWidget::SetText(const std::string& text)
     {
         mTextVisual->SetText(text);
     }

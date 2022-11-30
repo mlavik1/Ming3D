@@ -1,5 +1,6 @@
 #include "text_visual.h"
 #include <memory>
+#include <algorithm>
 #include "Texture/texture.h"
 #include "Model/material.h"
 #include "Model/material_factory.h"
@@ -29,7 +30,9 @@ namespace Ming3D
         mIndexData.clear();
         mIndexData.reserve(6 * mText.size());
 
-        glm::vec2 startOrigin(visibleRect.mPosition.x, visibleRect.mPosition.y);
+        const glm::vec2 min = glm::vec2(visibleRect.mPosition.x, visibleRect.mPosition.y);
+        const glm::vec2 max = visibleRect.mPosition + visibleRect.mSize;
+        glm::vec2 startOrigin = min;
 
         // Vertical alignment
         if (mVerticalAlignment == EVerticalAlignment::Bottom)
@@ -56,14 +59,21 @@ namespace Ming3D
             const float w = glyph.mWidth * mFontScale;
             const float h = glyph.mHeight * mFontScale;
 
+            // Calculate start/end vertices of plyph quad
+            const glm::vec2 glyphMin(std::min(x, max.x), std::min(y, max.y));
+            const glm::vec2 glyphMax(std::min(x + w, max.x), std::min(y + h, max.y));
+
+            if (glyphMax.x <= glyphMin.x)
+                break;
+
             // Invert Y
             glyph.mTexCoord = glm::vec2(glyph.mTexCoord.x, 1.0f - glyph.mTexCoord.y);
 
             const size_t iVert = iChar * 4;
-            mVertexData[iVert + 0].mPosition = glm::vec3(x, y, 0.0f);
-            mVertexData[iVert + 1].mPosition = glm::vec3(x, y + h, 0.0f);
-            mVertexData[iVert + 2].mPosition = glm::vec3(x + w, y + h, 0.0f);
-            mVertexData[iVert + 3].mPosition = glm::vec3(x + w, y, 0.0f);
+            mVertexData[iVert + 0].mPosition = glm::vec3(glyphMin.x, glyphMin.y, 0.0f);
+            mVertexData[iVert + 1].mPosition = glm::vec3(glyphMin.x, glyphMax.y, 0.0f);
+            mVertexData[iVert + 2].mPosition = glm::vec3(glyphMax.x, glyphMax.y, 0.0f);
+            mVertexData[iVert + 3].mPosition = glm::vec3(glyphMax.x, glyphMin.y, 0.0f);
             mVertexData[iVert + 0].mColour = mColour;
             mVertexData[iVert + 1].mColour = mColour;
             mVertexData[iVert + 2].mColour = mColour;
@@ -115,7 +125,7 @@ namespace Ming3D
         return mMaterial;
     }
 
-    void TextVisual::SetText(const std::wstring text)
+    void TextVisual::SetText(const std::string text)
     {
         mText = text;
         mVisualInvalidated = true;

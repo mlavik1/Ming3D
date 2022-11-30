@@ -47,8 +47,8 @@ namespace Ming3D
         {
             // TODO: Raycast
         }
+        mWidgetTree->TickWidgets(inDeltaTime);
         mWidgetTree->HandleEvents(events, mousePosition);
-        
         mWidgetTree->UpdateWidgetTree();
         mWidgetTree->UpdateRenderData();
 
@@ -63,6 +63,7 @@ namespace Ming3D
     void WidgetComponent::SetWidget(std::shared_ptr<Widget> widget)
     {
         mWidget = widget;
+        mWidgetTree->SetCanvasSize(mCanvasSize);
         mWidgetTree->SetWidget(widget);
         mRenderObject->SetWidgetTree(mWidgetTree);
     }
@@ -94,7 +95,6 @@ namespace Ming3D
     void WidgetComponent::SetCanvasSize(glm::ivec2 canvasSize)
     {
         mCanvasSize = canvasSize;
-        if (mRenderMode == EWidgetRenderMode::World)
-            mWidgetTree->SetCanvasSize(canvasSize);
+        mWidgetTree->SetCanvasSize(canvasSize);
     }
 }

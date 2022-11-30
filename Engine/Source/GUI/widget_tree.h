@@ -39,6 +39,8 @@ namespace Ming3D
         glm::ivec2 mCanvasSize;
         bool mVisualsInvalidated = true;
 
+        void TickWidgetsRecursive(Widget* widget, float deltaTime);
+
         void UpdateWidgetRecursive(Widget* widget, WidgetUpdateParams params);
 
         void AddRenderBatch(RenderBatch batch);
@@ -59,6 +61,7 @@ namespace Ming3D
 
         void HandleEvents(const std::vector<InputEvent>& events, glm::ivec2 mousePosition);
         
+        void TickWidgets(float deltaTime);
         void UpdateWidgetTree();
         void UpdateRenderData();
         size_t GetNumBatches() const;

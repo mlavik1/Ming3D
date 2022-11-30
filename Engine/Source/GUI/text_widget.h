@@ -12,6 +12,11 @@ namespace Ming3D
 
     class TextWidget : public Widget
     {
+        DEFINE_CLASS(Ming3D::TextWidget, Ming3D::Widget)
+
+    private:
+        static void InitialiseClass();
+
     private:
         std::shared_ptr<TextVisual> mTextVisual;
         FontFace* mFontFace;
@@ -20,7 +25,7 @@ namespace Ming3D
         TextWidget();
         ~TextWidget();
 
-        void SetText(const std::wstring& text);
+        void SetText(const std::string& text);
         void SetFont(const std::string& font, const int fontSize);
         void SetColour(glm::vec4 colour);
         void SetHorizontalAlignment(EHorizontalAlignment alignment);

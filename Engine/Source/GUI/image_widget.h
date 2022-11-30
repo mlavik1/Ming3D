@@ -10,6 +10,11 @@ namespace Ming3D
 
     class ImageWidget : public Widget
     {
+        DEFINE_CLASS(Ming3D::ImageWidget, Ming3D::Widget)
+
+    private:
+        static void InitialiseClass();
+
     private:
         std::shared_ptr<ImageVisual> mImageVisual;
 

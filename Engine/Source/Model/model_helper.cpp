@@ -144,6 +144,7 @@ namespace Ming3D
     Actor* ModelLoader::CreateNode(aiNode* aiNode, const std::vector<Mesh*>& meshes, const std::vector<Material*>& materials, const aiScene* scene, Actor* parent)
     {
         Actor* actor = parent->SpawnChildActor();
+        actor->SetActorName(aiNode->mName.C_Str());
 
         aiMatrix4x4 m = aiNode->mTransformation;
         glm::mat4 rootTransform(

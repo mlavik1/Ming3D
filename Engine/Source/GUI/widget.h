@@ -4,15 +4,22 @@
 #include <memory>
 #include "visual.h"
 #include "Input/input_event.h"
+#include "Object/object.h"
+#include "Object/objdefs.h"
 
 namespace Ming3D
 {
     /**
     * Base class for add Widgets.
     */
-    class Widget
+    class Widget : public Object
     {
         friend class WidgetTree;
+        
+        DEFINE_CLASS(Ming3D::Widget, Ming3D::Object)
+
+    private:
+        static void InitialiseClass();
 
     protected:
         /* The local transform of this widget. Is relative to parent Widget. */
@@ -41,6 +48,8 @@ namespace Ming3D
     public:
         Widget();
         virtual ~Widget();
+
+        virtual void Tick(float inDeltaTime);
 
         void addWidget(std::shared_ptr<Widget> widget);
 

@@ -30,4 +30,11 @@ namespace Ming3D
         AddActor(actor);
         return actor;
     }
+
+    Actor* World::SpawnActor(const std::string& name)
+    {
+        Actor* actor = SpawnActor();
+        actor->SetActorName(name);
+        return actor;
+    }
 }

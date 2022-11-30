@@ -51,17 +51,16 @@ namespace Ming3D
         // Calculate content rect (rect to render widget in) and visible rect (usually the same, unless parent widget is smaller)
         const glm::vec2 contentXYBounds = widgetRect.mPosition + widgetRect.mSize;
         const glm::vec2 parentXYBounds = parentRect.mPosition + parentRect.mSize;
-        const float visiblePosX = std::fminf(std::fmaxf(widgetRect.mPosition.x, parentRect.mPosition.x), parentXYBounds.x);
-        const float visiblePosY = std::fminf(std::fmaxf(widgetRect.mPosition.y, parentRect.mPosition.y), parentXYBounds.y);
-        const float visibleSizeW = std::fminf(contentXYBounds.x, parentXYBounds.x) - visiblePosX;
-        const float visibleSizeH = std::fminf(contentXYBounds.y, parentXYBounds.y) - visiblePosY;
+        const float croppedPosX = std::fminf(std::fmaxf(widgetRect.mPosition.x, parentRect.mPosition.x), parentXYBounds.x);
+        const float croppedPosY = std::fminf(std::fmaxf(widgetRect.mPosition.y, parentRect.mPosition.y), parentXYBounds.y);
+        const glm::vec2 visibleXYBounds = glm::min(glm::min(contentXYBounds, parentXYBounds), params.mVisibleRect.mPosition + params.mVisibleRect.mSize);
 
         // Update contect rect
         params.mContentRect.mPosition = widgetRect.mPosition;
         params.mContentRect.mSize = widgetRect.mSize;
         // Update visible rect
-        params.mVisibleRect.mPosition = glm::vec2(visiblePosX, visiblePosY);
-        params.mVisibleRect.mSize = glm::vec2(visibleSizeW, visibleSizeH);
+        params.mVisibleRect.mPosition = glm::vec2(croppedPosX, croppedPosY);
+        params.mVisibleRect.mSize = visibleXYBounds - params.mVisibleRect.mPosition;
 
         // Update visuals
         for (auto& visual : widget->mVisuals)
@@ -129,6 +128,22 @@ namespace Ming3D
         if (!combinedBatch)
             mRenderBatches.push_back(batch);
     }
+
+    void WidgetTree::TickWidgetsRecursive(Widget* widget, float deltaTime)
+    {
+        widget->Tick(deltaTime);
+        
+        for (auto& childWidget : widget->mChildWidgets)
+        {
+            TickWidgetsRecursive(childWidget.get(), deltaTime);
+        }
+    }
+
+    void WidgetTree::TickWidgets(float deltaTime)
+    {
+        TickWidgetsRecursive(mRootWidget.get(), deltaTime);
+    }
+
 
     void WidgetTree::UpdateWidgetTree()
     {
@@ -287,6 +302,9 @@ namespace Ming3D
     void WidgetTree::SetCanvasSize(glm::ivec2 canvasSize)
     {
         mCanvasSize = canvasSize;
+        WidgetTransform rootTransform = mRootWidget->GetWidgetTransform();
+        rootTransform.mSize = mCanvasSize;
+        mRootWidget->SetWidgetTransform(rootTransform);
         mVisualsInvalidated = true;
     }
 

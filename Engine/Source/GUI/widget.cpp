@@ -1,5 +1,7 @@
 #include "widget.h"
 
+IMPLEMENT_CLASS(Ming3D::Widget)
+
 namespace Ming3D
 {
     Widget::Widget()
@@ -8,6 +10,11 @@ namespace Ming3D
 
     Widget::~Widget()
     {
+    }
+
+    void Widget::InitialiseClass()
+    {
+        
     }
 
     void Widget::setTransformDirty()
@@ -51,5 +58,10 @@ namespace Ming3D
     {
         mTransform = transform;
         setTransformDirty();
+    }
+
+    void Widget::Tick(float inDeltaTime)
+    {
+
     }
 }

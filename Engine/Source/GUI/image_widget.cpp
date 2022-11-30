@@ -2,8 +2,15 @@
 #include "image_visual.h"
 #include "Texture/texture.h"
 
+IMPLEMENT_CLASS(Ming3D::ImageWidget)
+
 namespace Ming3D
 {
+    void ImageWidget::InitialiseClass()
+    {
+        
+    }
+
     ImageWidget::ImageWidget()
     {
         mImageVisual = std::make_shared<ImageVisual>();

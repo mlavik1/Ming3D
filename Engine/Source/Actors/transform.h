@@ -49,6 +49,8 @@ namespace Ming3D
 
         void Rotate(float inAngle, const glm::vec3& inAxis);
 
+        Transform* GetParent() const { return mParentTransform; }
+        
         glm::vec3 GetForward() const;
         glm::vec3 GetUp() const;
         glm::vec3 GetRight() const;

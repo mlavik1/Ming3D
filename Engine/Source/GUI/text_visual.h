@@ -16,7 +16,7 @@ namespace Ming3D
         std::vector<GUIVertexData> mVertexData;
         std::vector<unsigned int> mIndexData;
 
-        std::wstring mText;
+        std::string mText;
         glm::vec4 mColour;
         Material* mMaterial;
         FontFace* mFontFace;
@@ -33,7 +33,7 @@ namespace Ming3D
         virtual void GetMeshData(GUIVertexData* outVertData, unsigned int* outIndexData) override;
         virtual Material* GetMaterial() override;
 
-        void SetText(const std::wstring text);
+        void SetText(const std::string text);
         void SetFontFace(FontFace* fontFace);
         void SetColour(glm::vec4 colour);
         void SetFontScale(float scale);

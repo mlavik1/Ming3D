@@ -192,4 +192,9 @@ namespace Ming3D
             comp->PostMove();
         }
     }
+
+    void Actor::SetActorName(const std::string& name)
+    {
+        mActorName = name;
+    }
 }

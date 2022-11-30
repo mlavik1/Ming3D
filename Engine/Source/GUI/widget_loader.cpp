@@ -4,7 +4,6 @@
 #include "button_widget.h"
 #include <vector>
 #include "3rdparty/tinyxml2/tinyxml2.h"
-#include <codecvt>
 #include "Debug/debug.h"
 #include "GameEngine/game_engine.h"
 #include "Texture/texture_loader.h"
@@ -121,8 +120,7 @@ namespace Ming3D
         if (textAttr != nullptr)
         {
             textWidget->SetFont(GGameEngine->GetResourceDirectory() + std::string("/Fonts/FreeSans.ttf"), fontSize); // TODO!
-            std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>, wchar_t> conversion;
-            std::wstring text = conversion.from_bytes(textAttr->Value());
+            std::string text = std::string(textAttr->Value());
             textWidget->SetText(text);
         }
         const tinyxml2::XMLAttribute* horAlignAttr = node->FindAttribute("horizontal-alignment");
@@ -187,6 +185,20 @@ namespace Ming3D
             std::shared_ptr<ButtonWidget> buttonWidget = std::make_shared<ButtonWidget>();
             SetImageWidgetProperties(buttonWidget->GetImageWidget().get(), node, params);
             widget = buttonWidget;
+        }
+        else
+        {
+            Class* widgetClass = Class::GetClassByName(nodeVal.c_str(), false);
+            if (widgetClass != nullptr)
+            {
+                widget = std::shared_ptr<Widget>(static_cast<Widget*>(widgetClass->CreateInstance()));
+            }
+        }
+
+        if (widget == nullptr)
+        {
+            LOG_ERROR() << "Failed to create widget of type: " << nodeVal;
+            return nullptr;
         }
 
         WidgetSizeValue xVal, yVal, wVal, hVal;

@@ -29,7 +29,7 @@ namespace Ming3D
         glm::vec2 anchorMin = glm::vec2(0.0f, 0.0f);
         glm::vec2 anchorMax = glm::vec2(1.0f, 1.0f);
         glm::vec2 mPosition = glm::vec2(0.0f, 0.0f);
-        glm::vec2 mSize = glm::vec2(1.0f, 1.0f);
+        glm::vec2 mSize = glm::vec2(0.0f, 0.0f);
         glm::vec2 mPivot = glm::vec2(0.0f, 0.0f);
 
     public:

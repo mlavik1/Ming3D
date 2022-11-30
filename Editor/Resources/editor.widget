@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomWidget type="GUITest" x="0" y="0" width="100%" height="100%">
+    <ImageWidget x="0%" y="0%" width="100%" height="100%" colour="50 50 50 255">
+        <ImageWidget x="0%" y="0px" width="100%" height="150px" colour="50 50 50 255">
+            <ImageWidget x="0%" y="0px" width="100%" height="40px" colour="40 40 40 255">
+                <TextWidget x="10px" y="0%" width="50px" height="100%" text="File" font-size="14" vertical-alignment="centre" horizontal-alignment="left">
+                </TextWidget>
+                <TextWidget x="50px" y="0%" width="50px" height="100%" text="Assets" font-size="14" vertical-alignment="centre" horizontal-alignment="left">
+                </TextWidget>
+                <TextWidget x="1160px" y="0%" width="40px" height="100%" text="X" font-size="14" vertical-alignment="centre" horizontal-alignment="centre">
+                </TextWidget>
+            </ImageWidget>
+            <ImageWidget x="40%" y="60px" width="30px" height="30px" colour="255 255 255 255" image="play.png">
+            </ImageWidget>
+        </ImageWidget>
+        <SceneHierarchyWidget x="0%" y="10%" width="20%" height="60%">
+        </SceneHierarchyWidget>
+        <ImageWidget x="0%" y="70%" width="100%" height="30%" colour="40 40 40 255">
+        </ImageWidget>
+    </ImageWidget>
+</CustomWidget>

@@ -26,7 +26,7 @@ namespace Ming3D
         std::shared_ptr<Widget> mWidget = nullptr;
         WidgetTree* mWidgetTree = nullptr;
         EWidgetRenderMode mRenderMode = EWidgetRenderMode::World;
-        glm::ivec2 mCanvasSize;
+        glm::ivec2 mCanvasSize = glm::ivec2(1280, 720);
 
     public:
         WidgetComponent();
