@@ -22,25 +22,21 @@ namespace Ming3D
 
     ConstantBufferData<glm::vec3, glm::vec4, glm::vec3, float> cbDataGlobal; // TODO
 
-    class CameraSorter
+    bool CameraSortAsc(Camera* left, Camera* right)
     {
-    public:
-        inline bool operator() (Camera* left, Camera* right)
-        {
-            auto leftRT = left->mRenderTarget;
-            auto leftWnd = leftRT->GetRenderWindow();
-            auto rightRT = right->mRenderTarget;
-            auto rightWnd = rightRT->GetRenderWindow();
-            // sort by window
-            if (leftWnd != rightWnd)
-                return (leftWnd < rightWnd); // TODO: use ID?
-            // sort by render target
-            else if(leftRT != rightRT)
-                return (leftRT < rightRT); // TODO: use ID?
-            else
-                return (left->mRenderOrder < right->mRenderOrder);
-        }
-    };
+        auto leftRT = left->mRenderTarget;
+        auto leftWnd = leftRT->GetRenderWindow();
+        auto rightRT = right->mRenderTarget;
+        auto rightWnd = rightRT->GetRenderWindow();
+        // sort by window
+        if (leftWnd != rightWnd)
+            return (leftWnd < rightWnd); // TODO: use ID?
+        // sort by render target
+        else if(leftRT != rightRT)
+            return (leftRT < rightRT); // TODO: use ID?
+        else
+            return (left->mRenderOrder < right->mRenderOrder);
+    }
 
     SceneRenderer::SceneRenderer()
     {
@@ -114,7 +110,7 @@ namespace Ming3D
                     cameras.push_back(camera);
             }
         }
-        std::sort(cameras.begin(), cameras.end(), CameraSorter());
+        std::sort(cameras.begin(), cameras.end(), CameraSortAsc);
 
         RenderWindow* currRendWnd = nullptr;
         for (auto camera : cameras)
@@ -134,12 +130,12 @@ namespace Ming3D
             // TODO: Probably won't have camera in more than one scene?
             for (auto scene : scenes)
             {
-                for (auto sceneCamera : scene->mCameras){
-                    if (sceneCamera == camera)
-                    {
-                        Render(scene, camera);
-                        break;
-                    }
+                if (std::any_of(
+                    scene->mCameras.begin(), scene->mCameras.end(),
+                    [&camera](const Camera* sceneCamera) { return sceneCamera == camera; }))
+                {
+                    Render(scene, camera);
+                    break;
                 }
             }
         }
