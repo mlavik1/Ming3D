@@ -8,6 +8,7 @@
 #include "rasteriser_state_d3d11.h"
 #include "depth_stencil_state_d3d11.h"
 #include "shader_info.h"
+#include "viewport.h"
 
 #include <Windows.h>
 #include <windowsx.h>
@@ -59,6 +60,7 @@ namespace Ming3D::Rendering
         virtual void EndRenderWindow(RenderWindow* inWindow) override;
         virtual void BeginRenderTarget(RenderTarget* inTarget) override;
         virtual void EndRenderTarget(RenderTarget* inTarget) override;
+        virtual void BeginViewport(Viewport viewport) override;
         virtual void RenderPrimitive(VertexBuffer* inVertexBuffer, IndexBuffer* inIndexBuffer, unsigned int startIndex, unsigned int indexCount) override;
         virtual void SetRasteriserState(RasteriserState* inState) override;
         virtual void SetDepthStencilState(DepthStencilState* inState) override;

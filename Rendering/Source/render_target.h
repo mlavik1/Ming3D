@@ -4,6 +4,7 @@
 #include "window_base.h"
 
 #include "texture_buffer.h"
+#include "texture_info.h"
 
 namespace Ming3D::Rendering
 {
@@ -18,6 +19,8 @@ namespace Ming3D::Rendering
     public:
         RenderTarget();
         virtual ~RenderTarget() = default;
+
+        TextureInfo mTextureInfo;
 
         virtual void BeginRendering() = 0;
         virtual void EndRendering() = 0;

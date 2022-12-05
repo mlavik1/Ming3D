@@ -20,6 +20,8 @@ namespace Ming3D
         RenderPipeline* mFallbackPipeline;
         RenderPipelineParams mPipelineParams;
 
+        void Render(RenderScene* renderScene, Camera* camera);
+
     public:
         SceneRenderer();
         ~SceneRenderer();
@@ -30,7 +32,7 @@ namespace Ming3D
 
         void CollectVisibleObjects(const RenderPipelineContext& context, RenderPipeline* renderPipeline, RenderPipelineParams& params);
 
-        void Render(RenderScene* renderScene);
+        void Render(std::vector<RenderScene*> renderScene);
     };
 }
 

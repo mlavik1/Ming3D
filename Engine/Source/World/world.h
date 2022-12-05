@@ -25,6 +25,8 @@ namespace Ming3D
         World(GameEngine* gameEngine);
         ~World();
 
+        void Tick(float inDeltaTime);
+        
         template <typename T>
         T* SpawnActor()
         {

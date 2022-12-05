@@ -22,6 +22,26 @@ namespace Ming3D
 
     ConstantBufferData<glm::vec3, glm::vec4, glm::vec3, float> cbDataGlobal; // TODO
 
+    class CameraSorter
+    {
+    public:
+        inline bool operator() (Camera* left, Camera* right)
+        {
+            auto leftRT = left->mRenderTarget;
+            auto leftWnd = leftRT->GetRenderWindow();
+            auto rightRT = right->mRenderTarget;
+            auto rightWnd = rightRT->GetRenderWindow();
+            // sort by window
+            if (leftWnd != rightWnd)
+                return (leftWnd < rightWnd); // TODO: use ID?
+            // sort by render target
+            else if(leftRT != rightRT)
+                return (leftRT < rightRT); // TODO: use ID?
+            else
+                return (left->mRenderOrder < right->mRenderOrder);
+        }
+    };
+
     SceneRenderer::SceneRenderer()
     {
         mFallbackPipeline = new ForwardRenderPipeline();
@@ -82,7 +102,52 @@ namespace Ming3D
         }
     }
 
-    void SceneRenderer::Render(RenderScene* renderScene)
+    void SceneRenderer::Render(std::vector<RenderScene*> scenes)
+    {
+        RenderDevice* renderDevice = GGameEngine->GetRenderDevice();
+        
+        std::vector<Camera*> cameras;
+        for (auto scene : scenes)
+        {
+            for (auto camera : scene->mCameras){
+                if (camera->mRenderTarget != nullptr)
+                    cameras.push_back(camera);
+            }
+        }
+        std::sort(cameras.begin(), cameras.end(), CameraSorter());
+
+        RenderWindow* currRendWnd = nullptr;
+        for (auto camera : cameras)
+        {
+            RenderWindow* rendWnd = camera->mRenderTarget->GetRenderWindow();
+            if (rendWnd != nullptr && rendWnd != currRendWnd)
+            {
+                if (currRendWnd != nullptr)
+                    renderDevice->EndRenderWindow(currRendWnd);
+                renderDevice->BeginRenderWindow(rendWnd);
+                currRendWnd = rendWnd;
+            }
+
+            auto viewport = camera->GetAbsoluteViewport();
+            renderDevice->BeginViewport(viewport.x, viewport.y, viewport.x + viewport.width, viewport.y + viewport.height);
+
+            // TODO: Probably won't have camera in more than one scene?
+            for (auto scene : scenes)
+            {
+                for (auto sceneCamera : scene->mCameras){
+                    if (sceneCamera == camera)
+                    {
+                        Render(scene, camera);
+                        break;
+                    }
+                }
+            }
+        }
+        if (currRendWnd != nullptr)
+            renderDevice->EndRenderWindow(currRendWnd);
+    }
+
+    void SceneRenderer::Render(RenderScene* renderScene, Camera* camera)
     {
         RenderDevice* renderDevice = GGameEngine->GetRenderDevice();
 
@@ -90,40 +155,25 @@ namespace Ming3D
         if(!renderScene->mLightSources.empty())
             mainLight = renderScene->mLightSources.back(); // TODO: support multiple light sources
 
-        for (Camera* camera : renderScene->mCameras)
-        {
-            if (camera->mRenderTarget == nullptr)
-                continue;
+        RenderPipelineContext context;
+        context.mScene = renderScene;
+        context.mMainCamera = camera;
+        context.mMainLight = mainLight;
 
-            RenderWindow* renderWindow = camera->mRenderTarget->GetRenderWindow();
+        // Setup parameters for render pipeline
+        mPipelineParams.mVisibleNodes.clear();
+        mPipelineParams.mOpaqueNodeIndices.clear();
+        mPipelineParams.mTransparentNodeIndices.clear();
+        mPipelineParams.mGUIOverlayNodeIndices.clear();
 
-            // Is render target a window? => begin window rendering
-            if(renderWindow != nullptr)
-                renderDevice->BeginRenderWindow(renderWindow);
+        // Collect renderable objects in the scene
+        CollectVisibleObjects(context, camera->mRenderPipeline, mPipelineParams);
 
-            RenderPipelineContext context;
-            context.mScene = renderScene;
-            context.mMainCamera = camera;
-            context.mMainLight = mainLight;
+        // Set per-camera constant buffer data
+        cbDataGlobal.SetData(glm::vec3(0.0f, -1.0f, 0.0f)/* TODO */, glm::vec4(0.8f, 0.8f, 0.8f, 1.0f), camera->mCameraMatrix * glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), GGameEngine->GetTime());
+        GGameEngine->GetRenderDevice()->SetConstantBufferData(mGlobalCBuffer, cbDataGlobal.mDataPtr, cbDataGlobal.mSize);
 
-            // Setup parameters for render pipeline
-            mPipelineParams.mVisibleNodes.clear();
-            mPipelineParams.mOpaqueNodeIndices.clear();
-            mPipelineParams.mTransparentNodeIndices.clear();
-            mPipelineParams.mGUIOverlayNodeIndices.clear();
-
-            // Collect renderable objects in the scene
-            CollectVisibleObjects(context, camera->mRenderPipeline, mPipelineParams);
-
-            // Set per-camera constant buffer data
-            cbDataGlobal.SetData(glm::vec3(0.0f, -1.0f, 0.0f)/* TODO */, glm::vec4(0.8f, 0.8f, 0.8f, 1.0f), camera->mCameraMatrix * glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), GGameEngine->GetTime());
-            GGameEngine->GetRenderDevice()->SetConstantBufferData(mGlobalCBuffer, cbDataGlobal.mDataPtr, cbDataGlobal.mSize);
-
-            // Render using specified render pipeline
-            camera->mRenderPipeline->Render(context, mPipelineParams);
-
-            if (renderWindow != nullptr)
-                renderDevice->EndRenderWindow(renderWindow);
-        }
+        // Render using specified render pipeline
+        camera->mRenderPipeline->Render(context, mPipelineParams);
     }
 }

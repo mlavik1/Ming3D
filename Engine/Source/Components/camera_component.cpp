@@ -40,6 +40,16 @@ namespace Ming3D
         mCamera->mRenderTarget = wndHandle->mRenderTarget;
     }
 
+    void CameraComponent::SetRenderOrder(int renderOrder)
+    {
+        mCamera->mRenderOrder = renderOrder;
+    }
+
+    void CameraComponent::SetViewport(float x, float y, float width, float height)
+    {
+        mCamera->mViewport = { x, y, width, height };
+    }
+
     void CameraComponent::InitialTick()
     {
         GetWorld()->GetRenderScene()->AddCamera(mCamera);

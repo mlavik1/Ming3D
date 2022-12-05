@@ -38,6 +38,11 @@ namespace Ming3D
 
         /* Set a RenderWindow that the Camera will render to. */
         void SetRenderTarget(RenderWindowHandle* wndHandle);
+
+        /* Sets the render order of the camera. Camera's with a high render order will be rendered last. */
+        void SetRenderOrder(int renderOrder);
+
+        void SetViewport(float x, float y, float width, float height);
     };
 }
 

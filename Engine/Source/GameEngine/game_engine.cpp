@@ -18,6 +18,7 @@
 #include "Window/render_window_handle.h"
 #include "GUI/font_manager.h"
 #include "GUI/gui_resource_manager.h"
+#include <algorithm>
 
 #ifdef MING3D_PHYSX
 #include "Physics/API/PhysX/physics_manager_physx.h"
@@ -46,7 +47,8 @@ namespace Ming3D
         mPlatform = new PlatformLinux();
 #endif
         mTimeManager = new TimeManager();
-        mWorld = new World(this);
+        mWorld = std::make_shared<World>(this);
+        mWorlds.push_back(mWorld);
         mSceneRenderer = new SceneRenderer();
 #ifdef MING3D_PHYSX
         mPhysicsManager = new PhysicsManagerPhysX();
@@ -63,7 +65,6 @@ namespace Ming3D
 	GameEngine::~GameEngine()
 	{
 		delete mClassManager;
-        delete mWorld;
         delete mTimeManager;
         delete mMainRenderWindow;
         delete mMainWindow;
@@ -112,14 +113,16 @@ namespace Ming3D
 
         mPhysicsManager->SimulateScenes(deltaTime);
 
-        for (Actor* actor : mWorld->GetActors())
+        for (auto world : mWorlds)
         {
-            actor->Tick(deltaTime);
+            world->Tick(deltaTime);
         }
 
         mNetworkManager->UpdateNetworks();
 
-        mSceneRenderer->Render(mWorld->GetRenderScene());
+        std::vector<RenderScene*> renderScenes;
+        std::transform(mWorlds.cbegin(), mWorlds.cend(), std::back_inserter(renderScenes), [](auto world) { return world->GetRenderScene(); });
+        mSceneRenderer->Render(renderScenes);
 
         HandleDebugStats();
 
@@ -172,5 +175,24 @@ namespace Ming3D
     std::string GameEngine::GetResourceDirectory()
     {
         return std::string(MING3D_ENGINE_SOURCE_DIR) + std::string("/Resources");
+    }
+
+    std::weak_ptr<World> GameEngine::CreateWorld()
+    {
+        std::shared_ptr<World> world = std::make_shared<World>(this);
+        mWorlds.push_back(world);
+        return world;
+    }
+
+    void GameEngine::DestroyWorld(World* world)
+    {
+        for (std::list<std::shared_ptr<World>>::iterator iter = mWorlds.begin(); iter != mWorlds.end(); ++iter)
+        {
+            if (iter->get() == world)
+            {
+                mWorlds.erase(iter);
+                break;
+            }
+        }
     }
 }

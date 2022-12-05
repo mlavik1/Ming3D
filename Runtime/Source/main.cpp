@@ -26,16 +26,18 @@ int main()
     GameEngine* gameEngine = new GameEngine();
 	gameEngine->Initialise();
 
-    Actor* camActor = gameEngine->GetWorld()->SpawnActor();
+    auto world = gameEngine->GetWorld().lock();
+    
+    Actor* camActor = world->SpawnActor();
     camActor->AddComponent<CameraComponent>();
     camActor->GetTransform().SetWorldPosition(glm::vec3(0.0f, 2.0f, 6.0f));
 
-    Actor* skybox = gameEngine->GetWorld()->SpawnActor();
+    Actor* skybox = world->SpawnActor();
     skybox->GetTransform().SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
     skybox->GetTransform().SetLocalScale(glm::vec3(-50.0f, 50.0f, 50.0f));
     ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Skybox/Skybox.obj"), skybox, MODELLOADERFLAGS_UNLIT | MODELLOADERFLAGS_FORCE_OPAQUE);
 
-    Actor* actor1 = gameEngine->GetWorld()->SpawnActor();
+    Actor* actor1 = world->SpawnActor();
     actor1->GetTransform().SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
     actor1->GetTransform().SetLocalScale(glm::vec3(50.0f, 50.0f, 50.0f));
     actor1->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));

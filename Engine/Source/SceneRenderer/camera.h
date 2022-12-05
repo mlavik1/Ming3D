@@ -8,6 +8,11 @@ namespace Ming3D
     class RenderPipeline;
     class RenderPipelineParams;
 
+    struct CameraViewport
+    {
+        float x = 0.0f, y = 0.0f, width = 1.0f, height = 1.0f;
+    };
+
     namespace Rendering
     {
         class RenderTarget;
@@ -21,8 +26,12 @@ namespace Ming3D
 
         glm::mat4 mCameraMatrix;
         glm::mat4 mProjectionMatrix;
-        Rendering::RenderTarget* mRenderTarget = nullptr;
-        RenderPipeline* mRenderPipeline;
+        Rendering::RenderTarget* mRenderTarget = nullptr; // TODO: weak_ptr
+        RenderPipeline* mRenderPipeline; // TODO: unique_ptr
+        CameraViewport mViewport;
+        int mRenderOrder = 0;
+
+        CameraViewport GetAbsoluteViewport() const;
     };
 }
 

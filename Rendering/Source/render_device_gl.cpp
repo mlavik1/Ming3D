@@ -58,6 +58,7 @@ namespace Ming3D::Rendering
     RenderTarget* RenderDeviceGL::CreateRenderTarget(TextureInfo inTextureInfo, int numTextures)
     {
         RenderTargetGL* renderTarget = new RenderTargetGL();
+        renderTarget->mTextureInfo = inTextureInfo;
 
         GLuint frameBuffer = 0;
         glGenFramebuffers(1, &frameBuffer);
@@ -428,15 +429,6 @@ namespace Ming3D::Rendering
         glBindFramebuffer(GL_FRAMEBUFFER, mRenderTarget->mFrameBufferID);
         glDrawBuffers(1, mRenderTarget->mAttachments.data());
 
-        const int w = mRenderWindow->GetWindow()->GetWidth();
-        const int h = mRenderWindow->GetWindow()->GetHeight();
-        glViewport(0, 0, w, h);
-
-        glDepthMask(GL_TRUE);
-        glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-        glClear(GL_DEPTH_BUFFER_BIT);
-
         CheckGLErrors("BeginRenderTarget");
 
         SetDepthStencilState(mDefaultDepthStencilState); // TODO
@@ -468,6 +460,16 @@ namespace Ming3D::Rendering
 
         CheckGLErrors("BlitRenderTarget");
     }
+
+    void RenderDeviceGL::BeginViewport(unsigned int x, unsigned int y, unsigned int width, unsigned int height)
+    {
+        glViewport(x, y, width, height);
+        glDepthMask(GL_TRUE);
+        glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_DEPTH_BUFFER_BIT);
+    }
+
 
     void RenderDeviceGL::CheckGLErrors(const char* callerName)
     {

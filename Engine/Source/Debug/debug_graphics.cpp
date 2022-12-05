@@ -25,7 +25,7 @@ namespace Ming3D
         renderObject->SetMaterial(mat);
         renderObject->SetTransform(glm::translate(glm::mat4(1.0f), boxPos) * glm::mat4(1.0f) * glm::scale(glm::mat4(1.0f), boxSize));
 
-        GGameEngine->GetWorld()->GetRenderScene()->AddSceneObject(renderObject);
+        GGameEngine->GetWorld().lock()->GetRenderScene()->AddSceneObject(renderObject);
 
         mat->SetShaderUniformVec4("colour", boxColour);
 

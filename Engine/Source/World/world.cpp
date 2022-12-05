@@ -13,7 +13,8 @@ namespace Ming3D
 
     World::~World()
     {
-        // TODO: Destroy actors?
+        for (Actor* actor : mActors)
+            delete actor;
     }
 
     void World::AddActor(Actor* inActor)
@@ -37,5 +38,13 @@ namespace Ming3D
         Actor* actor = SpawnActor();
         actor->SetActorName(name);
         return actor;
+    }
+
+    void World::Tick(float inDeltaTime)
+    {
+        for (Actor* actor : mActors)
+        {
+            actor->Tick(inDeltaTime);
+        }
     }
 }

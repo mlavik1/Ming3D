@@ -176,6 +176,7 @@ namespace Ming3D::Rendering
 
         renderTarget->mWidth = inTextureInfo.mWidth;
         renderTarget->mHeight = inTextureInfo.mHeight;
+        renderTarget->mTextureInfo = inTextureInfo;
 
         for (int i = 0; i < numTextures; i++)
         {
@@ -883,6 +884,11 @@ namespace Ming3D::Rendering
 		GRenderDeviceD3D11->GetDeviceContext()->OMSetRenderTargets(1, &nullRTV, nullptr);
 
         mRenderTarget = nullptr;
+    }
+
+    void RenderDeviceD3D11::BeginViewport(Viewport viewport)
+    {
+        // TODO
     }
 
     void RenderDeviceD3D11::RenderPrimitive(VertexBuffer* inVertexBuffer, IndexBuffer* inIndexBuffer, unsigned int startIndex, unsigned int indexCount)

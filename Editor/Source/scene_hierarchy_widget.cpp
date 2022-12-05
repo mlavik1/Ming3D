@@ -31,7 +31,7 @@ namespace Ming3D
             return;
         isInitialisedHACK = true; // TODO: InitialTick? (we want to do this whenever the scene changes though!)
 
-        auto actors = GGameEngine->GetWorld()->GetActors();
+        auto actors = GGameEngine->GetWorld().lock()->GetActors();
         for (size_t i = 0; i < actors.size(); ++i)
         {
             auto actor = actors[i];

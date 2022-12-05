@@ -2,7 +2,9 @@
 #define MING3D_GAMEENGINE_H
 
 #include <vector>
+#include <list>
 #include <string>
+#include <memory>
 
 namespace Ming3D
 {
@@ -33,7 +35,8 @@ namespace Ming3D
 	private:
 		ClassManager* mClassManager = nullptr;
         Platform* mPlatform = nullptr;
-        World* mWorld = nullptr;
+        std::shared_ptr<World> mWorld = nullptr;
+        std::list<std::shared_ptr<World>> mWorlds;
         TimeManager* mTimeManager = nullptr;
         Rendering::RenderDevice* mRenderDevice = nullptr;
         Rendering::WindowBase* mMainWindow = nullptr;
@@ -73,11 +76,14 @@ namespace Ming3D
 
         std::string GetResourceDirectory();
 
+        std::weak_ptr<World> CreateWorld();
+        void DestroyWorld(World* world);
+
         inline Rendering::RenderDevice* GetRenderDevice() { return mRenderDevice; }
         inline SceneRenderer* GetSceneRenderer() { return mSceneRenderer; }
         inline Rendering::WindowBase* GetMainWindow() { return mMainWindow; }
         inline RenderWindowHandle* GetMainRenderWindow() { return mMainRenderWindow; }
-        inline World* GetWorld() { return mWorld; }
+        inline std::weak_ptr<World> GetWorld() { return mWorld; }
         inline Platform* GetPlatform() { return mPlatform; }
         inline NetworkManager* GetNetworkManager() { return mNetworkManager; }
         inline PhysicsManager* GetPhysicsManager() { return mPhysicsManager; }
