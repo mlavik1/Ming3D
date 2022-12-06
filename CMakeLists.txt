@@ -76,7 +76,6 @@ else()
     set(CONANFILE_PATH conanfile.txt)
 endif()
 
-conan_add_remote(NAME bincrafters INDEX 1 URL https://bincrafters.jfrog.io/artifactory/api/conan/conan-legacy-inexorgame VERIFY_SSL True)
 conan_cmake_run(CONANFILE ${CONANFILE_PATH} BASIC_SETUP CMAKE_TARGETS BUILD missing)
 
 # project

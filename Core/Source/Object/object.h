@@ -16,6 +16,7 @@ namespace Ming3D
 
 	private:
         ObjectFlag mObjectFlags;
+		uint64_t mGuid;
 
 	public:
 		Object();
@@ -38,6 +39,8 @@ namespace Ming3D
 
         void SetObjectFlag(ObjectFlag inFlag);
         bool HasObjectFlags(ObjectFlag inFlags);
+
+		inline uint64_t GetGuid() { return mGuid; };
 	};
 }
 

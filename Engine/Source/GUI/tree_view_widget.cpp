@@ -20,9 +20,25 @@ namespace Ming3D
 
     }
 
+    void TreeViewWidget::OnItemClicked(int id)
+    {
+        auto itWidget = std::find_if(mItems.begin(), mItems.end(), [id](auto candidate){ return candidate->mId == id; });
+        if (itWidget != mItems.end())
+        {
+            if (!mSelectedItem.expired())
+                mSelectedItem.lock()->SetSelected(false);
+            mSelectedItem = *itWidget;
+            (*itWidget)->SetSelected(true);
+        }
+        mOnItemSelected(id);
+    }
+
     void TreeViewWidget::AddItem(int id, const std::string& displayName, int depth)
     {
         std::shared_ptr<TreeViewItemWidget> itemWidget = std::make_shared<TreeViewItemWidget>(id, displayName, depth);
+        itemWidget->mOnClick = [this](int id){
+            this->OnItemClicked(id);
+        };
         mItems.push_back(itemWidget);
         this->addWidget(itemWidget);
         UpdateTransforms();
@@ -36,7 +52,7 @@ namespace Ming3D
             transform.anchorMin = glm::vec2(0.0f, 0.0f);
             transform.anchorMax = glm::vec2(1.0f, 0.0f);
             transform.mSize.y = mItemHeight;
-            transform.mPosition.x = mIndentWidth * i;
+            transform.mPosition.x = mIndentWidth * mItems[i]->mDepth;
             transform.mPosition.y = mItemHeight * i;
             mItems[i]->SetWidgetTransform(transform);
         }

@@ -2,6 +2,7 @@
 #include "widget.h"
 #include <vector>
 #include <memory>
+#include <functional>
 
 namespace Ming3D
 {
@@ -18,12 +19,17 @@ namespace Ming3D
         std::vector<std::shared_ptr<TreeViewItemWidget>> mItems;
         int mItemHeight = 16;
         int mIndentWidth = 16;
+        std::weak_ptr<TreeViewItemWidget> mSelectedItem;
 
         void UpdateTransforms();
+        void OnItemClicked(int id);
 
     public:
         TreeViewWidget();
         virtual ~TreeViewWidget();
+        
+        std::function<void(int)> mOnItemSelected;
+        
         void AddItem(int id, const std::string& displayName, int depth = 0);
     };
 }

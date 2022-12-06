@@ -28,19 +28,13 @@ int main()
     gameEngine->Initialise();
     gameEngine->SetMainWindowSize(1600, 900);
 
-    Actor* camActor = gameEngine->GetWorld().lock()->SpawnActor("Camera");
-    CameraComponent* sceneCamera = camActor->AddComponent<CameraComponent>();
-    sceneCamera->SetRenderOrder(1);
-    sceneCamera->SetViewport(0.21f, 0.3f, 0.3f, 0.29);
-    camActor->GetTransform().SetWorldPosition(glm::vec3(0.0f, 2.0f, 6.0f));
-
     Actor* skybox = gameEngine->GetWorld().lock()->SpawnActor("Skybox");
-    skybox->GetTransform().SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
+    skybox->GetTransform().SetLocalPosition(glm::vec3(1.5f, -2.0f, -6.0f));
     skybox->GetTransform().SetLocalScale(glm::vec3(-50.0f, 50.0f, 50.0f));
     ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Skybox/Skybox.obj"), skybox, MODELLOADERFLAGS_UNLIT | MODELLOADERFLAGS_FORCE_OPAQUE);
 
     Actor* actor1 = gameEngine->GetWorld().lock()->SpawnActor("Cow");
-    actor1->GetTransform().SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
+    actor1->GetTransform().SetLocalPosition(glm::vec3(1.5f, -2.0f, -6.0f));
     actor1->GetTransform().SetLocalScale(glm::vec3(50.0f, 50.0f, 50.0f));
     actor1->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
     ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Mvr_PetCow_walk.dae"), actor1);
@@ -63,7 +57,6 @@ int main()
     std::shared_ptr<Widget> rootWidget = WidgetLoader::LoadWidgetFromXML(testGuiPath);
     widgetComp->SetWidget(rootWidget);
     widgetComp->SetRenderMode(EWidgetRenderMode::Overlay);
-
 
     while (gameEngine->Update())
     {

@@ -93,7 +93,9 @@ namespace Ming3D
 			{
 				return childClass;
 			}
-			return childClass->GetChildClassByName(arg_name, arg_fullname);
+			Class* classInChildren = childClass->GetChildClassByName(arg_name, arg_fullname);
+			if (classInChildren != nullptr)
+				return classInChildren;
 		}
 		return nullptr;
 	}

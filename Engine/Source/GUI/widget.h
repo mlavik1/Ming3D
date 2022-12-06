@@ -9,17 +9,23 @@
 
 namespace Ming3D
 {
+    class World;
+    
     /**
     * Base class for add Widgets.
     */
     class Widget : public Object
     {
         friend class WidgetTree;
+        friend class WidgetComponent;
         
         DEFINE_CLASS(Ming3D::Widget, Ming3D::Object)
 
     private:
         static void InitialiseClass();
+
+        bool mHasTicked = false;
+        World* mWorld;
 
     protected:
         /* The local transform of this widget. Is relative to parent Widget. */
@@ -37,6 +43,8 @@ namespace Ming3D
 
         bool mWidgetInvalidated = true;
 
+        bool mEnabled = true;
+
         /**
         * Marks the absolute transform as dirty.
         * This is called when doing transformations on the widget.
@@ -45,9 +53,13 @@ namespace Ming3D
 
         void addVisual(std::shared_ptr<Visual> visual);
 
+        inline World* GetWorld() { return mWorld; }
+
     public:
         Widget();
         virtual ~Widget();
+
+        virtual void Start();
 
         virtual void Tick(float inDeltaTime);
 
@@ -62,8 +74,12 @@ namespace Ming3D
 
         inline WidgetTransform GetWidgetTransform() const { return mTransform; }
 
+        inline bool IsEnabled() const { return mEnabled; }
+
         virtual void OnInputEvent(InputEvent event) {}
 
         const std::vector<std::shared_ptr<Widget>>& GetChildren() { return mChildWidgets; }
+
+        void SetEnabled(bool enabled);
     };
 }

@@ -4,6 +4,8 @@
 #include "World/world.h"
 #include "GUI/tree_view_widget.h"
 #include "Actors/actor.h"
+#include <algorithm>
+#include "Debug/debug.h"
 
 IMPLEMENT_CLASS(Ming3D::SceneHierarchyWidget)
 
@@ -12,6 +14,9 @@ namespace Ming3D
     SceneHierarchyWidget::SceneHierarchyWidget()
     {
         mTreeView = std::make_shared<TreeViewWidget>();
+        mTreeView->mOnItemSelected = [this](int clickedId){
+            this->OnItemSelected(clickedId);
+        };
         addWidget(mTreeView);
     }
 
@@ -25,24 +30,33 @@ namespace Ming3D
         
     }
 
+    void SceneHierarchyWidget::AddActorRecursive(Actor* actor, int depth)
+    {
+        mTreeView->AddItem(static_cast<int>(actor->GetGuid()), actor->GetActorName(), depth);
+        
+        for (Actor* child : actor->GetChildren())
+        {
+            //AddActorRecursive(child, depth++);
+        }
+    }
+
+    void SceneHierarchyWidget::OnItemSelected(int id)
+    {
+        LOG_INFO() << "Selected ID: " << id;
+    }
+
+    void SceneHierarchyWidget::Start()
+    {
+        std::vector<Actor*> actors = GGameEngine->GetWorld().lock()->GetActors();
+        std::vector<Actor*> rootActors;
+        std::copy_if(actors.begin(),  actors.end(), std::back_inserter(rootActors), [](Actor* actor){ return actor->GetTransform().GetParent() == nullptr; });
+        for (auto actor : rootActors)
+        {
+            AddActorRecursive(actor, 0);
+        }
+    }
+
     void SceneHierarchyWidget::Tick(float inDeltaTime)
     {
-        if (isInitialisedHACK)
-            return;
-        isInitialisedHACK = true; // TODO: InitialTick? (we want to do this whenever the scene changes though!)
-
-        auto actors = GGameEngine->GetWorld().lock()->GetActors();
-        for (size_t i = 0; i < actors.size(); ++i)
-        {
-            auto actor = actors[i];
-            int depth = 0;
-            auto parent = actor->GetTransform().GetParent();
-            while (parent != nullptr)
-            {
-                depth++;
-                parent = parent->GetParent();
-            }
-            mTreeView->AddItem(static_cast<int>(i), actor->GetActorName(), depth);
-        }
     }
 }

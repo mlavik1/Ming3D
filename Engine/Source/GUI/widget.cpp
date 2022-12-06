@@ -37,6 +37,7 @@ namespace Ming3D
         mChildWidgets.push_back(widget);
         widget->mParentWidget = this;
         mWidgetInvalidated = true;
+        widget->mWorld = mWorld; // TODO ?
     }
 
     WidgetRect Widget::getAbsoluteRect()
@@ -58,6 +59,17 @@ namespace Ming3D
     {
         mTransform = transform;
         setTransformDirty();
+    }
+
+    void Widget::SetEnabled(bool enabled)
+    {
+        mEnabled = enabled;
+        setTransformDirty();
+    }
+
+    void Widget::Start()
+    {
+
     }
 
     void Widget::Tick(float inDeltaTime)

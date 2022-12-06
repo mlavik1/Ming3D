@@ -125,7 +125,7 @@ namespace Ming3D
             }
 
             auto viewport = camera->GetAbsoluteViewport();
-            renderDevice->BeginViewport(viewport.x, viewport.y, viewport.x + viewport.width, viewport.y + viewport.height);
+            renderDevice->BeginViewport(viewport.x, viewport.y, viewport.width, viewport.height);
 
             // TODO: Probably won't have camera in more than one scene?
             for (auto scene : scenes)

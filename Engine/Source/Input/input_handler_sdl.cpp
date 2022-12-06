@@ -33,7 +33,7 @@ namespace Ming3D
         int mouseX = 0;
         int mouseY = 0;
         SDL_GetMouseState(&mouseX, &mouseY);
-        glm::ivec2 newMousePos = glm::ivec2(mouseX, mWindow->GetHeight() - mouseY);
+        glm::ivec2 newMousePos = glm::ivec2(mouseX, mouseY);
         if (newMousePos != mMousePosition)
         {
             mMousePosition = newMousePos;

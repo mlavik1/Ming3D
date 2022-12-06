@@ -143,9 +143,10 @@ namespace Ming3D::Rendering
         {
             LOG_WARNING() << "Recreating vertex buffer. This can be expesnive."
                 << "Please consider setting it to dynamic, and call UpdateVertexBuffer with vertex data of same size";
+            GLenum usageGL = vertexBuffer->GetUsage() == EBufferUsage::StaticDraw ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW;
             vertexBuffer->mDataSize = newSize;
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vertexBuffer->GetGLBuffer());
-            glBufferData(GL_ARRAY_BUFFER, vertexBuffer->mDataSize, inVertexData->GetDataPtr(), GL_DYNAMIC_DRAW);
+            glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer->GetGLBuffer());
+            glBufferData(GL_ARRAY_BUFFER, vertexBuffer->mDataSize, inVertexData->GetDataPtr(), usageGL);
         }
 
         CheckGLErrors("UpdateVertexBuffer");
@@ -188,9 +189,10 @@ namespace Ming3D::Rendering
                     << "Please consider setting it to dynamic, and call UpdateVertexBuffer with vertex data of same size";
             }
 
+            GLenum usageGL = inIndexBuffer->GetUsage() == EBufferUsage::StaticDraw ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW;
             indexBuffer->SetNumIndices(inIndexData->GetNumIndices());
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer->GetGLBuffer());
-            glBufferData(GL_ARRAY_BUFFER, newSize, inIndexData->GetData(), GL_DYNAMIC_DRAW);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, newSize, inIndexData->GetData(), usageGL);
         }
 
         CheckGLErrors("UpdateVertexBuffer");

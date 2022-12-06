@@ -2,11 +2,11 @@
 opengl/system
 zlib/1.2.12
 glew/2.2.0
-assimp/5.0.1
+assimp/5.2.2
 physx/4.1.1
 freetype/2.11.0
-sdl2/2.0.14@bincrafters/stable
-sdl2_image/2.0.5@bincrafters/stable
+sdl/2.26.0
+sdl_image/2.0.5
 
 [generators]
 cmake_find_package
@@ -14,6 +14,8 @@ cmake_find_package
 [options]
 physx:shared=False
 sdl2:jack=False
+assimp:with_ifc=False
+assimp:with_3mf_exporter=False
 
 [imports]
 bin, *.dll -> ./bin

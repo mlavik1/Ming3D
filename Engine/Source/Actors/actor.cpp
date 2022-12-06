@@ -60,7 +60,8 @@ namespace Ming3D
         // TODO: refactor actor/component update loop
         for (Transform* childTrans : mTransform.mChildren)
         {
-            childTrans->mActor->Tick(inDeltaTime);
+            // TODO: World currently ticks *all* actors - only tick root actors, and let them tick their children?
+            //childTrans->mActor->Tick(inDeltaTime);
         }
     }
 
@@ -196,5 +197,12 @@ namespace Ming3D
     void Actor::SetActorName(const std::string& name)
     {
         mActorName = name;
+    }
+
+    std::vector<Actor*> Actor::GetChildren()
+    {
+        std::vector<Actor*> children;
+        std::transform(mTransform.mChildren.begin(), mTransform.mChildren.end(), std::back_inserter(children), [](auto transform) -> Actor* { return transform->mActor; });
+        return children;
     }
 }

@@ -9,6 +9,8 @@
 #include "World/world.h"
 #include "SceneRenderer/render_scene.h"
 #include <cmath>
+#include "GUI/widget.h"
+#include <functional>
 
 IMPLEMENT_CLASS(Ming3D::WidgetComponent)
 
@@ -68,6 +70,15 @@ namespace Ming3D
         mWidgetTree->SetCanvasSize(mCanvasSize);
         mWidgetTree->SetWidget(widget);
         mRenderObject->SetWidgetTree(mWidgetTree);
+        // Set world - TODO: Do this on Widget creation maybe?
+        World* world = GetWorld(); // TODO ?
+        std::function<void(Widget*)> setWorldRecursive;
+        setWorldRecursive = [world, &setWorldRecursive](Widget* widget){
+            widget->mWorld = world;
+            for (auto child: widget->mChildWidgets)
+                setWorldRecursive(child.get());
+        };
+        setWorldRecursive(widget.get());
     }
 
     void WidgetComponent::SetRenderMode(EWidgetRenderMode renderMode)

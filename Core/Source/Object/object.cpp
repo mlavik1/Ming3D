@@ -6,7 +6,8 @@ namespace Ming3D
 {
 	Object::Object()
 	{
-
+        static uint64_t GUID = 0;
+        mGuid = GUID++;
 	}
 
 	Object::~Object()

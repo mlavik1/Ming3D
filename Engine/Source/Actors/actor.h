@@ -99,6 +99,7 @@ namespace Ming3D
         inline Transform& GetTransform() { return mTransform; }
         std::vector<Component*> GetComponents() { return mComponents; }
         std::string GetActorName() { return mActorName; }
+        std::vector<Actor*> GetChildren();
         
         template<typename T>
         T* GetComponent()

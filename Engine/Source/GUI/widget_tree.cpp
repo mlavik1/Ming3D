@@ -42,6 +42,9 @@ namespace Ming3D
 
     void WidgetTree::UpdateWidgetRecursive(Widget* widget, WidgetUpdateParams params)
     {
+        if (!widget->IsEnabled())
+            return;
+
         params.mVisualsInvalidated |= widget->mWidgetInvalidated;
         widget->mWidgetInvalidated = false;
 
@@ -131,6 +134,10 @@ namespace Ming3D
 
     void WidgetTree::TickWidgetsRecursive(Widget* widget, float deltaTime)
     {
+        if (!widget->mHasTicked)
+            widget->Start();
+        widget->mHasTicked = true;
+
         widget->Tick(deltaTime);
         
         for (auto& childWidget : widget->mChildWidgets)
@@ -158,6 +165,7 @@ namespace Ming3D
         UpdateWidgetRecursive(mRootWidget.get(), params);
 
         mRootWidget->mWidgetInvalidated = false;
+        mVisualsInvalidated = false;
     }
 
     void WidgetTree::UpdateRenderData()
@@ -241,6 +249,7 @@ namespace Ming3D
         }
         else
         {
+            // TODO: Handle deletion of widgets?
             node = new VisualSubmeshNode();
             node->mNumVertices = vertexCount;
             node->mNumIndices = indexCount;
@@ -295,8 +304,11 @@ namespace Ming3D
 
     void WidgetTree::SetTransform(glm::mat4 transMat)
     {
-        mTransformMatrix = transMat;
-        mVisualsInvalidated = true;
+        if (mTransformMatrix != transMat)
+        {
+            mTransformMatrix = transMat;
+            mVisualsInvalidated = true;
+        }
     }
 
     void WidgetTree::SetCanvasSize(glm::ivec2 canvasSize)
