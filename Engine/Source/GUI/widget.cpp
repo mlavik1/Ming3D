@@ -1,4 +1,5 @@
 #include "widget.h"
+#include <algorithm>
 
 IMPLEMENT_CLASS(Ming3D::Widget)
 
@@ -38,6 +39,13 @@ namespace Ming3D
         widget->mParentWidget = this;
         mWidgetInvalidated = true;
         widget->mWorld = mWorld; // TODO ?
+    }
+
+    void Widget::removeWidget(Widget* widget)
+    {
+        auto itEnd = std::remove_if(mChildWidgets.begin(), mChildWidgets.end(), [widget](auto candidate){ return candidate.get() == widget; });
+        mChildWidgets.erase(itEnd, mChildWidgets.end());
+        mWidgetInvalidated = true;
     }
 
     WidgetRect Widget::getAbsoluteRect()

@@ -6,6 +6,7 @@
 #include "Actors/actor.h"
 #include <algorithm>
 #include "Debug/debug.h"
+#include "editor.h"
 
 IMPLEMENT_CLASS(Ming3D::SceneHierarchyWidget)
 
@@ -36,13 +37,19 @@ namespace Ming3D
         
         for (Actor* child : actor->GetChildren())
         {
-            //AddActorRecursive(child, depth++);
+            AddActorRecursive(child, depth++);
         }
     }
 
     void SceneHierarchyWidget::OnItemSelected(int id)
     {
         LOG_INFO() << "Selected ID: " << id;
+        auto actors = GGameEngine->GetWorld().lock()->GetActorsRecursive();
+        auto itActor = std::find_if(actors.begin(), actors.end(), [id](Actor* candidate){ return candidate->GetGuid() == id; });
+        if (itActor != actors.end())
+        {
+            GEditor->mSelectedActor = *itActor;
+        }
     }
 
     void SceneHierarchyWidget::Start()

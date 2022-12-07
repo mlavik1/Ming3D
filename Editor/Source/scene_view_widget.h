@@ -7,7 +7,7 @@ namespace Ming3D
     class World;
     class Camera;
 
-    class SceneViewWidget : Widget
+    class SceneViewWidget : public Widget
     {
         DEFINE_CLASS(Ming3D::SceneViewWidget, Ming3D::Widget)
 

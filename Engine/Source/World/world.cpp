@@ -1,7 +1,8 @@
 #include "world.h"
-
 #include "Source/Actors/actor.h"
 #include "Source/Components/component.h"
+
+#include <functional>
 
 namespace Ming3D
 {
@@ -38,6 +39,19 @@ namespace Ming3D
         Actor* actor = SpawnActor();
         actor->SetActorName(name);
         return actor;
+    }
+
+    std::vector<Actor*> World::GetActorsRecursive()
+    {
+        std::vector<Actor*> actors;
+        std::function<void(Actor*)> addActorRecursive;
+        addActorRecursive = [&actors, &addActorRecursive](Actor* actor) {
+            actors.push_back(actor);
+            auto children = actor->GetChildren();
+            std::for_each(children.begin(), children.end(), addActorRecursive);
+        };
+        std::for_each(mActors.begin(), mActors.end(), addActorRecursive);
+        return mActors;
     }
 
     void World::Tick(float inDeltaTime)

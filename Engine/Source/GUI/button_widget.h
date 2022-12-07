@@ -2,6 +2,7 @@
 #include "widget.h"
 #include "glm/vec4.hpp"
 #include <memory>
+#include <functional>
 
 namespace Ming3D
 {
@@ -21,6 +22,8 @@ namespace Ming3D
     public:
         ButtonWidget();
         virtual ~ButtonWidget();
+
+        std::function<void()> mOnClick; // TODO: Multiple?
 
         std::shared_ptr<ImageWidget> GetImageWidget() { return mImageWidget; }
 

@@ -5,7 +5,6 @@
 #include "Model/model_helper.h"
 #include "World/world.h"
 #include "SceneRenderer/camera.h"
-#include "World/world.h"
 #include "Window/render_window_handle.h"
 #include "texture_info.h"
 #include "render_target.h"

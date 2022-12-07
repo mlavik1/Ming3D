@@ -64,6 +64,7 @@ namespace Ming3D
         virtual void Tick(float inDeltaTime);
 
         void addWidget(std::shared_ptr<Widget> widget);
+        void removeWidget(Widget* widget);
 
         /*
         * Gets the absolute (screen space) rect of this Widget's transform.

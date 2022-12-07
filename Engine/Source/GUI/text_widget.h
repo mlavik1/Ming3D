@@ -16,6 +16,7 @@ namespace Ming3D
 
     private:
         static void InitialiseClass();
+        std::string mText;
 
     private:
         std::shared_ptr<TextVisual> mTextVisual;
@@ -30,5 +31,6 @@ namespace Ming3D
         void SetColour(glm::vec4 colour);
         void SetHorizontalAlignment(EHorizontalAlignment alignment);
         void SetVerticalAlignment(EVerticalAlignment alignment);
+        std::string GetText() const;
     };
 }

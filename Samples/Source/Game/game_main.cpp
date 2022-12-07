@@ -23,22 +23,22 @@ int main()
     gameEngine->Initialise();
     gameEngine->SetMainWindowSize(1366, 768);
 
-    Actor* camActor = gameEngine->GetWorld()->SpawnActor();
+    Actor* camActor = gameEngine->GetWorld().lock()->SpawnActor();
     camActor->AddComponent<CameraComponent>();
     camActor->GetTransform().SetWorldPosition(glm::vec3(0.0f, 2.0f, 6.0f));
 
-    Actor* lightActor = gameEngine->GetWorld()->SpawnActor();
+    Actor* lightActor = gameEngine->GetWorld().lock()->SpawnActor();
 	LightComponent* lightComp = lightActor->AddComponent<LightComponent>();
 	lightComp->SetShadowType(EShadowType::HardShadows);
     lightActor->GetTransform().SetWorldPosition(glm::vec3(0.0f, 10.0f, 6.0f));
     lightActor->GetTransform().SetWorldRotation(glm::angleAxis(glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 
-    Actor* skybox = gameEngine->GetWorld()->SpawnActor();
+    Actor* skybox = gameEngine->GetWorld().lock()->SpawnActor();
     skybox->GetTransform().SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
     skybox->GetTransform().SetLocalScale(glm::vec3(-50.0f, 50.0f, 50.0f));
     ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Skybox/Skybox.obj"), skybox, MODELLOADERFLAGS_UNLIT);
 
-    Actor* actor1 = gameEngine->GetWorld()->SpawnActor();
+    Actor* actor1 = gameEngine->GetWorld().lock()->SpawnActor();
     actor1->GetTransform().SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
     actor1->GetTransform().SetLocalScale(glm::vec3(50.0f, 50.0f, 50.0f));
     actor1->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
@@ -48,7 +48,7 @@ int main()
         currMeshComp->GetMaterial()->SetCastShadows(true);
     }
 
-    Actor* actor2 = gameEngine->GetWorld()->SpawnActor();
+    Actor* actor2 = gameEngine->GetWorld().lock()->SpawnActor();
     actor2->GetTransform().SetLocalPosition(glm::vec3(-1.5f, 0.0f, 0.0f));
     actor2->GetTransform().SetLocalScale(glm::vec3(50.0f, 50.0f, 50.0f));
     actor2->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
@@ -58,7 +58,7 @@ int main()
         currMeshComp->GetMaterial()->SetCastShadows(true);
     }
 
-    Actor* planeObj = gameEngine->GetWorld()->SpawnActor();
+    Actor* planeObj = gameEngine->GetWorld().lock()->SpawnActor();
     planeObj->GetTransform().SetLocalPosition(glm::vec3(0.0f, 0.0f, 0.0f));
     Mesh* planeMesh = PrimitiveFactory::CreatePlane(glm::vec2(100.0f, 100.0f), 2, 2);
     MeshComponent* planeMeshComp = planeObj->AddComponent<MeshComponent>();

@@ -8,7 +8,7 @@ namespace Ming3D
     class TreeViewWidget;
     class Actor;
 
-    class SceneHierarchyWidget : Widget
+    class SceneHierarchyWidget : public Widget
     {
         DEFINE_CLASS(Ming3D::SceneHierarchyWidget, Ming3D::Widget)
 

@@ -26,7 +26,13 @@ namespace Ming3D
 
     void TextWidget::SetText(const std::string& text)
     {
+        mText = text;
         mTextVisual->SetText(text);
+    }
+
+    std::string TextWidget::GetText() const
+    {
+        return mText;
     }
 
     void TextWidget::SetFont(const std::string& font, const int fontSize)

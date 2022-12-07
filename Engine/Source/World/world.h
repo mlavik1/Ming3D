@@ -39,6 +39,7 @@ namespace Ming3D
         Actor* SpawnActor(const std::string& name);
 
         std::vector<Actor*> GetActors() { return mActors; }
+        std::vector<Actor*> GetActorsRecursive();
 
         GameEngine* GetGameEngine() { return mGameEngine; }
         RenderScene* GetRenderScene() { return mRenderScene.get(); }
