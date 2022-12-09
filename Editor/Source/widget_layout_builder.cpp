@@ -3,6 +3,7 @@
 #include "GUI/button_widget.h"
 #include "GUI/text_widget.h"
 #include "GUI/image_widget.h"
+#include "GUI/text_input_widget.h"
 #include <typeinfo>
 #include <algorithm>
 
@@ -32,7 +33,7 @@ namespace Ming3D
             return nullptr;
     }
 
-    std::string WidgetLayoutBuilder::TextFieldInternal(std::string text, uint64_t controlKeyHash, bool readOnly, const EditorControlStyle &style)
+    void WidgetLayoutBuilder::LabelInternal(std::string text, uint64_t controlKeyHash, bool readOnly, const EditorControlStyle &style)
     {
         // Create control if it doesn't exist
         std::shared_ptr<TextWidget> textWidget = std::static_pointer_cast<TextWidget>(GetWidget(controlKeyHash));
@@ -42,6 +43,52 @@ namespace Ming3D
             textWidget = std::make_shared<TextWidget>();
             mContainerWidget->addWidget(textWidget);
             textWidget->SetText(text);
+            textWidget->SetFontSize(style.fontSize);
+            //textWidget->SetFont(style.fontSize); // TODO
+            //textWidget->SetReadonly(readOnly); // TODO
+            WidgetTransform transform{};
+            transform.anchorMin = glm::vec2(0.0f, 0.0f);
+            transform.anchorMax = glm::vec2(0.0f, 0.0f);
+            transform.mPosition = glm::vec2(0.0f, mCurrHeight);
+            transform.mSize = glm::vec2(mContainerRect.mSize.x, mWidgetheight);
+            textWidget->SetWidgetTransform(transform);
+            mWidgets[controlKeyHash] = textWidget;
+            CachedControlData cachedData;
+            cachedData.stringValue = text;
+            mWidgetDataCache[controlKeyHash] = cachedData;
+        }
+
+        if (mHorizontalMode)
+            mQueueHorizontalWidgets.push_back(textWidget); // TODO: Optimise
+        else
+            mCurrHeight += mWidgetheight;
+        
+        const EditorControlStyle oldStyle = mWidgetDataCache[controlKeyHash].style;
+        // TODO
+        //if (oldStyle.fontSize != style.fontSize)
+        //    textWidget->SetFontSize(style.fontSize);
+        mWidgetDataCache[controlKeyHash].style = style; // TODO
+
+        // Modify existing control
+        if(ctrlExists)
+        {
+            mWidgetsToUpdate.erase(controlKeyHash);
+
+            // TODO: update position and size if needed
+        }
+    }
+
+    std::string WidgetLayoutBuilder::TextFieldInternal(std::string text, uint64_t controlKeyHash, bool readOnly, const EditorControlStyle &style)
+    {
+        // Create control if it doesn't exist
+        std::shared_ptr<TextInputWidget> textWidget = std::static_pointer_cast<TextInputWidget>(GetWidget(controlKeyHash));
+        const bool ctrlExists = textWidget != nullptr;
+        if (!ctrlExists)
+        {
+            textWidget = std::make_shared<TextInputWidget>();
+            mContainerWidget->addWidget(textWidget);
+            textWidget->SetText(text);
+            textWidget->SetFontSize(style.fontSize);
             //textWidget->SetFont(style.fontSize); // TODO
             //textWidget->SetReadonly(readOnly); // TODO
             WidgetTransform transform{};
@@ -137,7 +184,7 @@ namespace Ming3D
 
     std::string WidgetLayoutBuilder::TextField(const std::string& text, const EditorControlStyle &style)
     {
-        widget_id controlKeyHash = GetWidgetKeyHash(MING3D_FLOATFIELD_HASH, mCurrVertIndex, mCurrHorIndex);
+        widget_id controlKeyHash = GetWidgetKeyHash(MING3D_TEXTFIELD_HASH, mCurrVertIndex, mCurrHorIndex);
 
         std::string newStr = TextFieldInternal(text, controlKeyHash, false, style);
 
@@ -151,17 +198,17 @@ namespace Ming3D
         return TextField(text, mDefaultStyle);
     }
 
-    void WidgetLayoutBuilder::LabelField(const std::string& text, const EditorControlStyle &style)
+    void WidgetLayoutBuilder::Label(const std::string& text, const EditorControlStyle &style)
     {
-        widget_id controlKeyHash = GetWidgetKeyHash(MING3D_FLOATFIELD_HASH, mCurrVertIndex, mCurrHorIndex);
+        widget_id controlKeyHash = GetWidgetKeyHash(MING3D_LABEL_HASH, mCurrVertIndex, mCurrHorIndex);
 
-        TextFieldInternal(text, controlKeyHash, true, style);
+        LabelInternal(text, controlKeyHash, true, style);
         mCurrVertIndex++; // TODO: handle horizontal mode
     }
 
-    void WidgetLayoutBuilder::LabelField(const std::string& text)
+    void WidgetLayoutBuilder::Label(const std::string& text)
     {
-        return LabelField(text, mDefaultStyle);
+        return Label(text, mDefaultStyle);
     }
 
     bool WidgetLayoutBuilder::Button(const std::string& text, const EditorControlStyle &style)
@@ -235,7 +282,7 @@ namespace Ming3D
             BeginHorizontal();
             std::string strHeader = property->GetPropertyName() + ":";
             std::string* stringPtr = (std::string*)valPtr;
-            LabelField(strHeader);
+            Label(strHeader);
             std::string newValStr = TextField(*stringPtr);
             *(std::string*)valPtr = newValStr;
             EndHorizontal();
@@ -244,7 +291,7 @@ namespace Ming3D
         else if (typeName == typeid(Transform).name())
         {
             std::string strHeader = property->GetPropertyName() + ":";
-            LabelField(strHeader);
+            Label(strHeader);
             
             Transform* transform = (Transform*)valPtr;
             glm::vec3 localPos = transform->GetLocalPosition();
@@ -252,19 +299,19 @@ namespace Ming3D
             glm::vec3 localRot = glm::eulerAngles(transform->GetLocalRotation());
 
             BeginHorizontal();
-            LabelField("Position");
+            Label("Position");
             localPos.x = FloatField(localPos.x);
             localPos.y = FloatField(localPos.y);
             localPos.z = FloatField(localPos.z);
             EndHorizontal();
             BeginHorizontal();
-            LabelField("Scale");
+            Label("Scale");
             localScale.x = FloatField(localScale.x);
             localScale.y = FloatField(localScale.y);
             localScale.z = FloatField(localScale.z);
             EndHorizontal();
             BeginHorizontal();
-            LabelField("Rotation");
+            Label("Rotation");
             localRot.x = FloatField(localRot.x);
             localRot.y = FloatField(localRot.y);
             localRot.z = FloatField(localRot.z);
@@ -294,6 +341,7 @@ namespace Ming3D
             WidgetTransform transform = widget->GetWidgetTransform();
             transform.mPosition.x = widgetWidth * iWidget;
             transform.mSize.x = widgetWidth;
+            widget->SetWidgetTransform(transform);
             maxHeight = std::max(maxHeight, transform.mSize.y);
         }
         mCurrHeight += maxHeight;

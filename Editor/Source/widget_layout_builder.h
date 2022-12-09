@@ -12,6 +12,8 @@
 #define MING3D_FLOATFIELD_HASH 1
 #define MING3D_INTFIELD_HASH 2
 #define MING3D_BUTTON_HASH 3
+#define MING3D_TEXTFIELD_HASH 3
+#define MING3D_LABEL_HASH 3
 
 // !!!!!
 // !!!!!
@@ -32,7 +34,7 @@ namespace Ming3D
     struct EditorControlStyle
     {
     public:
-        int fontSize = 12;
+        int fontSize = 16;
         // TODO: bold, italic, font (use font resource ID?)
         // TODO: states: default, hover, pressed, disabled
         // TODO: min/max size, etc.
@@ -76,6 +78,7 @@ namespace Ming3D
 
         widget_id GetWidgetKeyHash(int typeHash, int verticalIndex, int horizontalIndex);
         std::shared_ptr<Widget> GetWidget(widget_id controlKeyHash);
+        void LabelInternal(std::string inText, uint64_t controlKeyHash, bool readOnly, const EditorControlStyle &style);
         std::string TextFieldInternal(std::string inText, uint64_t controlKeyHash, bool readOnly, const EditorControlStyle &style);
 
     public:
@@ -91,8 +94,8 @@ namespace Ming3D
         float FloatField(float value);
         std::string TextField(const std::string& inText, const EditorControlStyle &style);
         std::string TextField(const std::string& inText);
-        void LabelField(const std::string& inText, const EditorControlStyle &style);
-        void LabelField(const std::string& inText);
+        void Label(const std::string& inText, const EditorControlStyle &style);
+        void Label(const std::string& inText);
         bool Button(const std::string& inText, const EditorControlStyle &style);
         bool Button(const std::string& inText);
 

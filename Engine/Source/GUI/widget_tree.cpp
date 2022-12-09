@@ -272,16 +272,32 @@ namespace Ming3D
         return screenRect;
     }
 
-    void HandleEventRecursive(Widget* widget, InputEvent event, glm::ivec2 mousePosition)
+    void WidgetTree::HandleEventRecursive(Widget* widget, InputEvent event, glm::ivec2 mousePosition)
     {
         const WidgetRect rect = widget->getAbsoluteRect();
         if (rect.Contains(mousePosition))
         {
+            if (!widget->mHasMouseInside)
+            {
+                widget->mHasMouseInside = true;
+                InputEvent mouseEnterEvent{};
+                mouseEnterEvent.mType = InputEventType::MouseEnter;
+                mouseEnterEvent.mMousePosition = event.mMousePosition;
+                widget->OnInputEvent(mouseEnterEvent);
+            }
             widget->OnInputEvent(event);
             for (auto child : widget->GetChildren())
             {
                 HandleEventRecursive(child.get(), event, mousePosition);
             }
+        }
+        else if (widget->mHasMouseInside)
+        {
+            widget->mHasMouseInside = false;
+            InputEvent mouseLeaveEvent{};
+            mouseLeaveEvent.mType = InputEventType::MouseLeave;
+            mouseLeaveEvent.mMousePosition = event.mMousePosition;
+            widget->OnInputEvent(mouseLeaveEvent);
         }
     }
 

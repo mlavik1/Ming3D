@@ -30,8 +30,8 @@ namespace Ming3D
         mIndexData.clear();
         mIndexData.reserve(6 * mText.size());
 
-        const glm::vec2 min = glm::vec2(visibleRect.mPosition.x, visibleRect.mPosition.y);
-        const glm::vec2 max = visibleRect.mPosition + visibleRect.mSize;
+        const glm::vec2 min = glm::vec2(visibleRect.mPosition.x + mMargin, visibleRect.mPosition.y);
+        const glm::vec2 max = visibleRect.mPosition + visibleRect.mSize - glm::vec2(mMargin, 0.0f);
         glm::vec2 startOrigin = min;
 
         // Vertical alignment

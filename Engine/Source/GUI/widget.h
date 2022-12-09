@@ -26,6 +26,7 @@ namespace Ming3D
 
         bool mHasTicked = false;
         World* mWorld;
+        bool mHasMouseInside = false;
 
     protected:
         /* The local transform of this widget. Is relative to parent Widget. */

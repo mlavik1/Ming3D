@@ -12,6 +12,8 @@ namespace Ming3D
         KeyUp,
         MouseButtonDown,
         MouseButtonUp,
+        MouseEnter,
+        MouseLeave,
         MouseMove,
         Axis2D
     };

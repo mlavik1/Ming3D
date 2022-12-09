@@ -23,6 +23,7 @@ namespace Ming3D
         float mFontScale;
         EHorizontalAlignment mHorizontalAlignment;
         EVerticalAlignment mVerticalAlignment;
+        int mMargin = 4;
 
     public:
         TextVisual();
@@ -39,5 +40,7 @@ namespace Ming3D
         void SetFontScale(float scale);
         void SetHorizontalAlignment(EHorizontalAlignment alignment);
         void SetVerticalAlignment(EVerticalAlignment alignment);
+
+        const float GetFontScale() const { return mFontScale; };
     };
 }

@@ -17,6 +17,7 @@ namespace Ming3D
     private:
         static void InitialiseClass();
         std::string mText;
+        std::string mFont; // TODO: Font asset?
 
     private:
         std::shared_ptr<TextVisual> mTextVisual;
@@ -28,6 +29,7 @@ namespace Ming3D
 
         void SetText(const std::string& text);
         void SetFont(const std::string& font, const int fontSize);
+        void SetFontSize(const int fontSize);
         void SetColour(glm::vec4 colour);
         void SetHorizontalAlignment(EHorizontalAlignment alignment);
         void SetVerticalAlignment(EVerticalAlignment alignment);

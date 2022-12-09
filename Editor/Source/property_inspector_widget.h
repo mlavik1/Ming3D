@@ -1,6 +1,7 @@
 #pragma once
 #include "GUI/widget.h"
 #include <memory>
+#include "widget_layout_builder.h"
 
 namespace Ming3D
 {
@@ -13,6 +14,8 @@ namespace Ming3D
     private:
         static void InitialiseClass();
         std::unique_ptr<WidgetLayoutBuilder> mWidgetLayoutBuilder;
+        EditorControlStyle mHeaderTextStyle;
+        EditorControlStyle mSubHeaderTextStyle;
 
     public:
         PropertyInspectorWidget();

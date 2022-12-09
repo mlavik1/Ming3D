@@ -51,6 +51,8 @@ namespace Ming3D
 
         WidgetRect ToScreenSpaceRect(const WidgetRect& rect);
 
+        void HandleEventRecursive(Widget* widget, InputEvent event, glm::ivec2 mousePosition);
+
     public:
         WidgetTree();
         ~WidgetTree();
