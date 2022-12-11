@@ -6,6 +6,7 @@
 namespace Ming3D
 {
     class WidgetLayoutBuilder;
+    class ImageWidget;
 
     class PropertyInspectorWidget : public Widget
     {
@@ -14,6 +15,7 @@ namespace Ming3D
     private:
         static void InitialiseClass();
         std::unique_ptr<WidgetLayoutBuilder> mWidgetLayoutBuilder;
+        std::shared_ptr<ImageWidget> mBackgroundWidget; // TODO: inherit from a Panel widget class instead?
         EditorControlStyle mHeaderTextStyle;
         EditorControlStyle mSubHeaderTextStyle;
 

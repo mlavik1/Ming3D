@@ -10,16 +10,18 @@
                 <TextWidget x="1160px" y="0%" width="40px" height="100%" text="X" font-size="14" vertical-alignment="centre" horizontal-alignment="centre">
                 </TextWidget>
             </ImageWidget>
-            <ImageWidget x="40%" y="60px" width="30px" height="30px" colour="255 255 255 255" image="play.png">
+            <ImageWidget x="40%" y="50px" width="30px" height="30px" colour="255 255 255 255" image="play.png">
             </ImageWidget>
         </ImageWidget>
         <SceneHierarchyWidget x="0%" y="10%" width="20%" height="60%">
         </SceneHierarchyWidget>
-        <SceneViewWidget x="20%" y="15%" width="60%" height="55%">
+        <SceneViewWidget x="20%" y="10%" width="60%" height="60%">
         </SceneViewWidget>
         <PropertyInspectorWidget x="80%" y="10%" width="20%" height="60%">
         </PropertyInspectorWidget>
         <ImageWidget x="0%" y="70%" width="100%" height="30%" colour="40 40 40 255">
+            <ImageWidget x="0px" y="0px" width="100%" height="40px" colour="50 50 50 255">
+            </ImageWidget>
         </ImageWidget>
     </ImageWidget>
 </CustomWidget>

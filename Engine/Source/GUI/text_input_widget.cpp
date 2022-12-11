@@ -13,10 +13,10 @@ namespace Ming3D
 
     TextInputWidget::TextInputWidget()
     {
-        mDefaultStyle.mBackgroundColour = glm::vec4(0.35f, 0.35, 0.35f, 1.0f);
-        mDefaultStyle.mBorderColour = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-        mHoveredStyle.mBackgroundColour = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
-        mHoveredStyle.mBorderColour = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+        mDefaultStyle.mBackgroundColour = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f);
+        mDefaultStyle.mBorderColour = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+        mHoveredStyle.mBackgroundColour = glm::vec4(0.35f, 0.35f, 0.35f, 1.0f);
+        mHoveredStyle.mBorderColour = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 
         mBorderWidget = std::make_shared<ImageWidget>();
         this->addWidget(mBorderWidget);
@@ -25,7 +25,7 @@ namespace Ming3D
         mTextWidget = std::make_shared<TextWidget>();
         this->addWidget(mTextWidget);
 
-        mTextWidget->SetColour(glm::vec4(0.7f, 0.7f, 0.7f, 1.0f));
+        mTextWidget->SetColour(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
         UpdateStyle();
     }
 
@@ -101,5 +101,6 @@ namespace Ming3D
         TextInputStyle style = mIsHovered ? mHoveredStyle : mDefaultStyle;
         mBorderWidget->SetColour(style.mBorderColour);
         mBackgroundWidget->SetColour(style.mBackgroundColour);
+        mBorderWidget->SetEnabled(style.mBorderColour.a > 0.0f);
     }
 }

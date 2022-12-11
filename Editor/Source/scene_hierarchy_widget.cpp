@@ -7,6 +7,7 @@
 #include <algorithm>
 #include "Debug/debug.h"
 #include "editor.h"
+#include "GUI/image_widget.h"
 
 IMPLEMENT_CLASS(Ming3D::SceneHierarchyWidget)
 
@@ -14,6 +15,10 @@ namespace Ming3D
 {
     SceneHierarchyWidget::SceneHierarchyWidget()
     {
+        mBackgroundWidget = std::make_shared<ImageWidget>();
+        mBackgroundWidget->SetColour(glm::vec4(0.15f, 0.15f, 0.15f, 1.0f));
+        addWidget(mBackgroundWidget);
+
         mTreeView = std::make_shared<TreeViewWidget>();
         mTreeView->mOnItemSelected = [this](int clickedId){
             this->OnItemSelected(clickedId);

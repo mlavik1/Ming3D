@@ -90,7 +90,6 @@ namespace Ming3D
         if (event.mType == InputEventType::MouseButtonDown && event.mMouseButton.mButton == 1)
         {
             mPrevMousePos = relativeMouse;
-            mRotationDelta = glm::vec2(0.0f, 0.0f);
             mMousePressed = true;
         }
         else if (event.mType == InputEventType::MouseButtonUp || event.mType == InputEventType::MouseLeave)
@@ -102,9 +101,8 @@ namespace Ming3D
         if(mMousePressed && event.mType == InputEventType::MouseMove)
         {
             glm::vec2 mouseOffset = relativeMouse - mPrevMousePos;
-            mPitch += mouseOffset.y * mRotationSpeed * deltaTime;
-            mYaw += mouseOffset.x * mRotationSpeed * deltaTime;
-            mRotationMatrix = glm::eulerAngleXYZ(mPitch, mYaw, 0.0f);
+            mPitch -= mouseOffset.y * mRotationSpeed * deltaTime;
+            mYaw -= mouseOffset.x * mRotationSpeed * deltaTime;
             glm::quat quaternion;
             quaternion = glm::rotate(quaternion, mYaw, glm::vec3(0.0f, 1.0f, 0.0f));
             quaternion = glm::rotate(quaternion, mPitch, glm::vec3(1.0f, 0.0f, 0.0f));

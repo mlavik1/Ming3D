@@ -7,6 +7,7 @@ namespace Ming3D
 {
     class TreeViewWidget;
     class Actor;
+    class ImageWidget;
 
     class SceneHierarchyWidget : public Widget
     {
@@ -17,6 +18,7 @@ namespace Ming3D
 
     private:
         std::shared_ptr<TreeViewWidget> mTreeView;
+        std::shared_ptr<ImageWidget> mBackgroundWidget;
 
         void AddActorRecursive(Actor* actor, int depth);
         void OnItemSelected(int id);

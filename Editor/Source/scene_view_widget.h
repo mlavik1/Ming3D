@@ -8,6 +8,7 @@ namespace Ming3D
 {
     class World;
     class Camera;
+    class ImageWidget;
 
     class SceneViewWidget : public Widget
     {
@@ -15,6 +16,7 @@ namespace Ming3D
 
     private:
         static void InitialiseClass();
+        std::shared_ptr<ImageWidget> mBackgroundWidget;
         std::unique_ptr<Camera> mCamera;
         std::weak_ptr<World> mGameWorld;
         glm::vec2 mPrevMousePos;
@@ -23,7 +25,6 @@ namespace Ming3D
         float mPitch = 0.0f;
         float mYaw = 0.0f;
         bool mMousePressed = false;
-        glm::vec2 mRotationDelta;
         const float mRotationSpeed = 150.0f;
         const float mMovementSpeed = 5.0f;
 

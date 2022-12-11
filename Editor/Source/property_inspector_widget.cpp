@@ -4,6 +4,7 @@
 #include "World/world.h"
 #include "editor.h"
 #include "Object/class.h"
+#include "GUI/image_widget.h"
 
 IMPLEMENT_CLASS(Ming3D::PropertyInspectorWidget)
 
@@ -11,6 +12,9 @@ namespace Ming3D
 {
     PropertyInspectorWidget::PropertyInspectorWidget()
     {
+        mBackgroundWidget = std::make_shared<ImageWidget>();
+        mBackgroundWidget->SetColour(glm::vec4(0.15f, 0.15f, 0.15f, 1.0f));
+        addWidget(mBackgroundWidget);
         mWidgetLayoutBuilder = std::make_unique<WidgetLayoutBuilder>(this);
         mHeaderTextStyle.fontSize = 24;
         mSubHeaderTextStyle.fontSize = 20;
