@@ -424,7 +424,7 @@ namespace Ming3D::Rendering
         mRenderWindow = nullptr;
     }
 
-    void RenderDeviceGL::BeginRenderTarget(RenderTarget* inTarget)
+    void RenderDeviceGL::SetRenderTarget(RenderTarget* inTarget)
     {
         mRenderTarget = (RenderTargetGL*)inTarget;
 
@@ -436,17 +436,13 @@ namespace Ming3D::Rendering
         SetDepthStencilState(mDefaultDepthStencilState); // TODO
     }
 
-    void RenderDeviceGL::EndRenderTarget(RenderTarget* inTarget)
+    void RenderDeviceGL::BlitRenderTargetToWindow(RenderTarget* inTarget, RenderWindow* inTargetWindow)
     {
-        __Assert(mRenderTarget == inTarget);
+        SetRenderTarget(inTarget);
 
         RenderTargetGL* glTarget = (RenderTargetGL*)inTarget;
 
-        // If rendering to window render target, blit framebuffers (from render target FBO to Window's default FBO)
-        if (glTarget->mRenderWindow != nullptr)
-        {
-            BlitRenderTarget(glTarget, mRenderWindow);
-        }
+        BlitRenderTarget(glTarget, mRenderWindow);
 
         mRenderTarget = nullptr;
     }
@@ -465,11 +461,14 @@ namespace Ming3D::Rendering
 
     void RenderDeviceGL::BeginViewport(unsigned int x, unsigned int y, unsigned int width, unsigned int height)
     {
-        glViewport(x, y, width, height);
+        glEnable(GL_SCISSOR_TEST);
+        glScissor(x, y, width, height);
         glDepthMask(GL_TRUE);
         glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         glClear(GL_DEPTH_BUFFER_BIT);
+        glDisable(GL_SCISSOR_TEST);
+        glViewport(x, y, width, height);
     }
 
 

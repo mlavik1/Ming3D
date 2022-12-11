@@ -35,6 +35,7 @@ namespace Ming3D
         void HandleAxis2D(Uint8 axis, Sint16 value);
         KeyCode GetKeyCode(SDL_Keycode inKeycode);
         KeyCode GetControllerKeyCode(Uint8 keycode);
+        int GetMouseButton(Uint8 buttonId);
         void AddInputEvent(InputEvent event);
     };
 }

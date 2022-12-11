@@ -81,7 +81,7 @@ namespace Ming3D
     {
         InputEvent inputEvent{};
         inputEvent.mType = InputEventType::MouseButtonDown;
-        inputEvent.mMouseButton.mButton = static_cast<int>(mouseButton);
+        inputEvent.mMouseButton.mButton = GetMouseButton(mouseButton);
         AddInputEvent(inputEvent);
     }
 
@@ -89,7 +89,7 @@ namespace Ming3D
     {
         InputEvent inputEvent{};
         inputEvent.mType = InputEventType::MouseButtonUp;
-        inputEvent.mMouseButton.mButton = static_cast<int>(mouseButton);
+        inputEvent.mMouseButton.mButton = GetMouseButton(mouseButton);
         AddInputEvent(inputEvent);
     }
 
@@ -229,6 +229,21 @@ namespace Ming3D
         case SDL_CONTROLLER_BUTTON_Y: return KeyCode::Pad_Y;
         default:
             return KeyCode::None;
+        }
+    }
+
+    int InputHandlerSDL::GetMouseButton(Uint8 buttonId)
+    {
+        switch (buttonId)
+        {
+            case 1:
+                return 0;
+            case 2:
+                return 2;
+            case 3:
+                return 1;
+            default:
+                return static_cast<int>(buttonId) - 1;
         }
     }
 

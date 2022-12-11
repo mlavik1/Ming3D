@@ -101,7 +101,7 @@ namespace Ming3D
     void SceneRenderer::Render(std::vector<RenderScene*> scenes)
     {
         RenderDevice* renderDevice = GGameEngine->GetRenderDevice();
-        
+        // TODO: Clean up this mess
         std::vector<Camera*> cameras;
         for (auto scene : scenes)
         {
@@ -113,9 +113,14 @@ namespace Ming3D
         std::sort(cameras.begin(), cameras.end(), CameraSortAsc);
 
         RenderWindow* currRendWnd = nullptr;
+        RenderTarget* currRenderTarget = nullptr;
         for (auto camera : cameras)
         {
+            // TODO: Only one RT per window?
             RenderWindow* rendWnd = camera->mRenderTarget->GetRenderWindow();
+            if (camera->mRenderTarget != currRenderTarget && currRendWnd != nullptr)
+                renderDevice->BlitRenderTargetToWindow(currRenderTarget, currRendWnd);
+            currRenderTarget = camera->mRenderTarget;
             if (rendWnd != nullptr && rendWnd != currRendWnd)
             {
                 if (currRendWnd != nullptr)
@@ -139,6 +144,8 @@ namespace Ming3D
                 }
             }
         }
+        if (currRendWnd != nullptr)
+            renderDevice->BlitRenderTargetToWindow(currRenderTarget, currRendWnd);
         if (currRendWnd != nullptr)
             renderDevice->EndRenderWindow(currRendWnd);
     }

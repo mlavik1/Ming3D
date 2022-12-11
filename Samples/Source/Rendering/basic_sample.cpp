@@ -61,7 +61,7 @@ namespace Ming3D
         float height = 600.0f;
 
         mRenderDevice->BeginRenderWindow(mRenderWindow);
-        mRenderDevice->BeginRenderTarget(mRenderTarget);
+        mRenderDevice->SetRenderTarget(mRenderTarget);
 
         for (ModelData* modelData : mModels)
         {
@@ -91,7 +91,7 @@ namespace Ming3D
             }
         }
 
-        mRenderDevice->EndRenderTarget(mRenderTarget);
+        mRenderDevice->BlitRenderTargetToWindow(mRenderTarget, mRenderWindow);
         mRenderDevice->EndRenderWindow(mRenderWindow);
     
     }

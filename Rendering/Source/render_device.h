@@ -50,9 +50,8 @@ namespace Ming3D::Rendering
         virtual void SetActiveShaderProgram(ShaderProgram* inProgram) = 0;
         virtual void BeginRenderWindow(RenderWindow* inWindow) = 0;
         virtual void EndRenderWindow(RenderWindow* inWindow) = 0;
-        virtual void BeginRenderTarget(RenderTarget* inTarget) = 0;
-        virtual void EndRenderTarget(RenderTarget* inTarget) = 0;
-        //virtual void BlitRenderTargetToWindow(RenderTarget* inTarget, RenderWindow* inWindow) = 0;
+        virtual void SetRenderTarget(RenderTarget* inTarget) = 0;
+        virtual void BlitRenderTargetToWindow(RenderTarget* inTarget, RenderWindow* inWindow) = 0;
         virtual void BeginViewport(unsigned int x, unsigned int y, unsigned int width, unsigned int height) = 0;
         virtual void RenderPrimitive(VertexBuffer* inVertexBuffer, IndexBuffer* inIndexBuffer, unsigned int startIndex, unsigned int indexCount) = 0;
         virtual void SetRasteriserState(RasteriserState* inState) = 0;

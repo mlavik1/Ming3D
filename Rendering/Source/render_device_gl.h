@@ -47,9 +47,8 @@ namespace Ming3D::Rendering
         virtual void SetActiveShaderProgram(ShaderProgram* inProgram) override;
         virtual void BeginRenderWindow(RenderWindow* inWindow) override;
         virtual void EndRenderWindow(RenderWindow* inWindow) override;
-        virtual void BeginRenderTarget(RenderTarget* inTarget) override;
-        virtual void EndRenderTarget(RenderTarget* inTarget) override;
-        //virtual void BlitRenderTargetToWindow(RenderTarget* inTarget) override;
+        virtual void SetRenderTarget(RenderTarget* inTarget) override;
+        virtual void BlitRenderTargetToWindow(RenderTarget* target, RenderWindow* window) override;
         virtual void BeginViewport(unsigned int x, unsigned int y, unsigned int width, unsigned int height) override;
         virtual void RenderPrimitive(VertexBuffer* inVertexBuffer, IndexBuffer* inIndexBuffer, unsigned int startIndex, unsigned int indexCount) override;
         virtual void SetRasteriserState(RasteriserState* inState) override;

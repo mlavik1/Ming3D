@@ -303,16 +303,15 @@ namespace Ming3D
             glm::vec3 lightpos = lookTarget - lightDir; // TODO
             context.mMainLight->mLightCamera->mCameraMatrix = glm::lookAt(lightpos, lookTarget, glm::vec3(0.0f, 0.0f, 1.0f));
 
-            GGameEngine->GetRenderDevice()->BeginRenderTarget(context.mMainLight->mLightCamera->mRenderTarget);
+            GGameEngine->GetRenderDevice()->SetRenderTarget(context.mMainLight->mLightCamera->mRenderTarget);
             RenderObjects(params, ERenderType::Opaque, context.mMainLight->mLightCamera, nullptr, true);
-            GGameEngine->GetRenderDevice()->EndRenderTarget(context.mMainLight->mLightCamera->mRenderTarget);
         }
 
         // set camera projection matrix
         WindowBase* window = GGameEngine->GetMainWindow(); // TODO
         context.mMainCamera->mProjectionMatrix = glm::perspective<float>(glm::radians(45.0f), (float)window->GetWidth() / (float)window->GetHeight(), 0.1f, 1000.0f);
 
-        GGameEngine->GetRenderDevice()->BeginRenderTarget(context.mMainCamera->mRenderTarget);
+        GGameEngine->GetRenderDevice()->SetRenderTarget(context.mMainCamera->mRenderTarget);
         // Render opaque objects
         GGameEngine->GetRenderDevice()->SetBlendState(mOpaqueBlendState);
         GGameEngine->GetRenderDevice()->SetDepthStencilState(mOpaqueDepthStencilState);
@@ -324,10 +323,13 @@ namespace Ming3D
         // Render GUI overlay
         GGameEngine->GetRenderDevice()->SetBlendState(mTransparentBlendState);
         GGameEngine->GetRenderDevice()->SetDepthStencilState(mOverlayGUIDepthStencilState);
+        // TODO: Do not pass camera to this function? (just matrices and RT?)
+        glm::mat4 projMat = context.mMainCamera->mProjectionMatrix;
+        glm::mat4 camMat = context.mMainCamera->mCameraMatrix;
         context.mMainCamera->mProjectionMatrix = glm::ortho<float>(0.0f, (float)window->GetWidth(), 0.0f, (float)window->GetHeight(), -1.0f, 1.0f);
         context.mMainCamera->mCameraMatrix = glm::mat4();
         RenderObjects(params, ERenderType::GUIOverlay, context.mMainCamera, context.mMainLight);
-
-        GGameEngine->GetRenderDevice()->EndRenderTarget(context.mMainCamera->mRenderTarget);
+        context.mMainCamera->mProjectionMatrix = projMat;
+        context.mMainCamera->mCameraMatrix = camMat;
     }
 }

@@ -27,9 +27,9 @@ namespace Ming3D
         void Update();
         void AddInputEvent(const InputEvent& inEvent);
 
-        bool GetKey(KeyCode inKey);
-        bool GetKeyDown(KeyCode inKey);
-        bool GetKeyUp(KeyCode inKey);
+        bool GetKey(KeyCode inKey) const;
+        bool GetKeyDown(KeyCode inKey) const;
+        bool GetKeyUp(KeyCode inKey) const;
         glm::ivec2 GetMousePosition() const;
         glm::vec2 GetAxis2D(EAxis2D axis) const;
 

@@ -21,19 +21,19 @@ namespace Ming3D
         mQueuedEvents.push_back(inEvent);
     }
 
-    bool InputManager::GetKey(KeyCode inKey)
+    bool InputManager::GetKey(KeyCode inKey) const
     {
         auto iter = mKeyPressStateMap.find(inKey);
         return iter != mKeyPressStateMap.end() && iter->second;
     }
 
-    bool InputManager::GetKeyDown(KeyCode inKey)
+    bool InputManager::GetKeyDown(KeyCode inKey) const
     {
         auto iter = mKeyDownSet.find(inKey);
         return iter != mKeyDownSet.end();
     }
 
-    bool InputManager::GetKeyUp(KeyCode inKey)
+    bool InputManager::GetKeyUp(KeyCode inKey) const
     {
         auto iter = mKeyUpSet.find(inKey);
         return iter != mKeyUpSet.end();
