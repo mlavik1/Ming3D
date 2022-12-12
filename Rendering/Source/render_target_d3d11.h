@@ -31,9 +31,6 @@ namespace Ming3D::Rendering
         
         ID3D11RenderTargetView* GetBackBuffer() { return mBackBuffer; }
 
-        virtual void BeginRendering() override;
-        virtual void EndRendering() override;
-
         virtual TextureBuffer* GetColourTextureBuffer(int inSlot) override;
         virtual TextureBuffer* GetDepthTextureBuffer() override;
 

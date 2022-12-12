@@ -10,7 +10,7 @@ namespace Ming3D
         Editor();
         ~Editor();
 
-        Actor* mSelectedActor; // TODO: Smart pointer
+        Actor* mSelectedActor = nullptr; // TODO: Smart pointer
 
     public:
         void Run();

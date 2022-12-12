@@ -8,20 +8,18 @@
 #include "rasteriser_state_d3d11.h"
 #include "depth_stencil_state_d3d11.h"
 #include "shader_info.h"
-#include "viewport.h"
 
 #include <Windows.h>
 #include <windowsx.h>
-#include <d3d11.h>
-
+#include <d3d11_1.h>
 
 namespace Ming3D::Rendering
 {
     class RenderDeviceD3D11 : public RenderDevice
     {
     private:
-        ID3D11Device* mDevice;
-        ID3D11DeviceContext* mDeviceContext;
+        ID3D11Device1* mDevice;
+        ID3D11DeviceContext1* mDeviceContext;
         IDXGIFactory* mDXGIFactory;
         RenderTargetD3D11* mRenderTarget = nullptr;
         RenderWindowD3D11* mRenderWindow = nullptr;
@@ -58,9 +56,9 @@ namespace Ming3D::Rendering
         virtual void SetActiveShaderProgram(ShaderProgram* inProgram) override;
         virtual void BeginRenderWindow(RenderWindow* inWindow) override;
         virtual void EndRenderWindow(RenderWindow* inWindow) override;
-        virtual void BeginRenderTarget(RenderTarget* inTarget) override;
-        virtual void EndRenderTarget(RenderTarget* inTarget) override;
-        virtual void BeginViewport(Viewport viewport) override;
+        virtual void SetRenderTarget(RenderTarget* inTarget) override;
+        virtual void BlitRenderTargetToWindow(RenderTarget* target, RenderWindow* window) override;
+        virtual void BeginViewport(unsigned int x, unsigned int y, unsigned int width, unsigned int height) override;
         virtual void RenderPrimitive(VertexBuffer* inVertexBuffer, IndexBuffer* inIndexBuffer, unsigned int startIndex, unsigned int indexCount) override;
         virtual void SetRasteriserState(RasteriserState* inState) override;
         virtual void SetDepthStencilState(DepthStencilState* inState) override;

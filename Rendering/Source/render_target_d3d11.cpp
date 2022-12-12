@@ -20,16 +20,6 @@ namespace Ming3D::Rendering
         }
     }
 
-    void RenderTargetD3D11::BeginRendering()
-    {
-        
-    }
-
-    void RenderTargetD3D11::EndRendering()
-    {
-
-    }
-
     TextureBuffer* RenderTargetD3D11::GetColourTextureBuffer(int inSlot)
     {
         return mColourBuffers[inSlot];

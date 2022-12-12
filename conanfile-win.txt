@@ -12,8 +12,13 @@ sdl_image/2.0.5
 cmake_find_package
 
 [options]
+zlib:shared=True
 physx:shared=True
 sdl2:jack=False
+sdl:shared=True
+sdl_image:shared=True
+freetype:shared=True
+assimp:shared=True
 assimp:with_ifc=False
 assimp:with_3mf_exporter=False
 

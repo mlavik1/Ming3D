@@ -16,8 +16,12 @@ namespace Ming3D
         virtual void Update() override;
 
     private:
-        void HandleKeyDown(WPARAM wParam);
-        void HandleKeyUp(WPARAM wParam);
+        void HandleKeyDown(WPARAM wParam, HWND hWnd);
+        void HandleKeyUp(WPARAM wParam, HWND hWnd);
+        void HandleMouseDown(int button, HWND hWnd);
+        void HandleMouseUp(int button, HWND hWnd);
+        void HandleMouseMove(HWND hWnd);
+        void AddInputEvent(InputEvent event, HWND hWnd);
         KeyCode GetKeyCode(WPARAM wParam);
     };
 }

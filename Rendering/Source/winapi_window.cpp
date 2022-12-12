@@ -1,5 +1,8 @@
 #ifdef _WIN32
 #include "winapi_window.h"
+#include <cassert>
+
+#define MING3D_WINDOW_STYLE WS_OVERLAPPEDWINDOW
 
 namespace Ming3D::Rendering
 {
@@ -57,12 +60,12 @@ namespace Ming3D::Rendering
         }
 
         RECT wr = { 0, 0, mWindowWidth, mWindowHeight };
-        AdjustWindowRect(&wr, WS_OVERLAPPEDWINDOW, FALSE);
+        AdjustWindowRect(&wr, MING3D_WINDOW_STYLE, FALSE);
 
         mHWND = CreateWindowEx(NULL,
             L"WinAPIWindowClass",
             L"Ming3D",
-            WS_OVERLAPPEDWINDOW,
+            MING3D_WINDOW_STYLE,
             100,
             100,
             wr.right - wr.left,
@@ -82,7 +85,18 @@ namespace Ming3D::Rendering
         mWindowWidth = inWidth;
         mWindowHeight = inHeight;
 
-		SetWindowPos(mHWND, NULL, 0, 0, mWindowWidth, mWindowHeight, 0);
+        RECT oldRect;
+        assert(GetWindowRect(mHWND, &oldRect));
+
+        RECT wndRect = { 0, 0, mWindowWidth, mWindowHeight };
+        assert(AdjustWindowRect(&wndRect, MING3D_WINDOW_STYLE, FALSE));
+
+        wndRect.right += (oldRect.left - wndRect.left);
+        wndRect.left = oldRect.left;
+        wndRect.bottom += (oldRect.top - wndRect.top);
+        wndRect.top = oldRect.top;
+
+		SetWindowPos(mHWND, NULL, wndRect.left, wndRect.top, wndRect.right - wndRect.left, wndRect.bottom - wndRect.top, 0);
     }
 
     void WinAPIWindow::BeginRender()

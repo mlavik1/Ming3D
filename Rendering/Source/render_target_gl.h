@@ -24,9 +24,6 @@ namespace Ming3D::Rendering
         RenderTargetGL();
         ~RenderTargetGL();
 
-        virtual void BeginRendering() override;
-        virtual void EndRendering() override;
-
         virtual TextureBuffer* GetColourTextureBuffer(int inSlot) override;
         virtual TextureBuffer* GetDepthTextureBuffer() override;
 

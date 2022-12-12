@@ -129,6 +129,8 @@ namespace Ming3D
                 currRendWnd = rendWnd;
             }
 
+            // TODO: Do this (set RT and VP) in render pipeline?
+            renderDevice->SetRenderTarget(camera->mRenderTarget);
             auto viewport = camera->GetAbsoluteViewport();
             renderDevice->BeginViewport(viewport.x, viewport.y, viewport.width, viewport.height);
 

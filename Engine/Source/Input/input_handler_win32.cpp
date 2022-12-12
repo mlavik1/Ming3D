@@ -2,6 +2,7 @@
 #include "input_handler_win32.h"
 #include "GameEngine/game_engine.h"
 #include "input_manager.h"
+#include <windowsx.h>
 
 namespace Ming3D
 {
@@ -20,32 +21,88 @@ namespace Ming3D
         switch (uMsg)
         {
         case WM_KEYDOWN:
-            HandleKeyDown(wParam);
+            HandleKeyDown(wParam, hWnd);
             break;
         case WM_KEYUP:
-            HandleKeyUp(wParam);
+            HandleKeyUp(wParam, hWnd);
+            break;
+        case WM_LBUTTONUP:
+            HandleMouseUp(0, hWnd);
+            break;
+        case WM_RBUTTONUP:
+            HandleMouseUp(1, hWnd);
+            break;
+        case WM_MBUTTONUP:
+            HandleMouseUp(2, hWnd);
+            break;
+        case WM_LBUTTONDOWN:
+            HandleMouseDown(0, hWnd);
+            break;
+        case WM_RBUTTONDOWN:
+            HandleMouseDown(1, hWnd);
+            break;
+        case WM_MBUTTONDOWN:
+            HandleMouseDown(2, hWnd);
+            break;
+        case WM_MOUSEMOVE:
+            HandleMouseMove(hWnd);
             break;
         }
 
         return ::DefWindowProc(hWnd, uMsg, wParam, lParam);
     }
 
-    void InputHandlerWin32::HandleKeyDown(WPARAM wParam)
+    void InputHandlerWin32::HandleKeyDown(WPARAM wParam, HWND hWnd)
     {
         InputEvent inputEvent;
         inputEvent.mType = InputEventType::KeyDown;
         inputEvent.mKey.mKeyCode = GetKeyCode(wParam);
-        if(inputEvent.mKey.mKeyCode != KeyCode::None)
-            GGameEngine->GetInputManager()->AddInputEvent(inputEvent);
+        if (inputEvent.mKey.mKeyCode != KeyCode::None)
+            AddInputEvent(inputEvent, hWnd);
     }
 
-    void InputHandlerWin32::HandleKeyUp(WPARAM wParam)
+    void InputHandlerWin32::HandleKeyUp(WPARAM wParam, HWND hWnd)
     {
         InputEvent inputEvent;
         inputEvent.mType = InputEventType::KeyUp;
         inputEvent.mKey.mKeyCode = GetKeyCode(wParam);
         if (inputEvent.mKey.mKeyCode != KeyCode::None)
-            GGameEngine->GetInputManager()->AddInputEvent(inputEvent);
+            AddInputEvent(inputEvent, hWnd);
+    }
+
+    void InputHandlerWin32::HandleMouseDown(int button, HWND hWnd)
+    {
+        InputEvent inputEvent;
+        inputEvent.mType = InputEventType::MouseButtonDown;
+        inputEvent.mMouseButton.mButton = button;
+        AddInputEvent(inputEvent, hWnd);
+    }
+
+    void InputHandlerWin32::HandleMouseUp(int button, HWND hWnd)
+    {
+        InputEvent inputEvent;
+        inputEvent.mType = InputEventType::MouseButtonUp;
+        inputEvent.mMouseButton.mButton = button;
+        AddInputEvent(inputEvent, hWnd);
+    }
+
+    void InputHandlerWin32::HandleMouseMove(HWND hWnd)
+    {
+        InputEvent inputEvent;
+        inputEvent.mType = InputEventType::MouseMove;
+        AddInputEvent(inputEvent, hWnd);
+    }
+
+    void InputHandlerWin32::AddInputEvent(InputEvent event, HWND hWnd)
+    {
+        POINT cursorPos;
+        RECT wndRect;
+        RECT clientRect;
+        if (GetCursorPos(&cursorPos) && ScreenToClient(hWnd, &cursorPos))
+        {
+            event.mMousePosition = glm::ivec2(static_cast<int>(cursorPos.x), static_cast<int>(cursorPos.y));
+        }
+        GGameEngine->GetInputManager()->AddInputEvent(event);
     }
 
     KeyCode InputHandlerWin32::GetKeyCode(WPARAM wParam)

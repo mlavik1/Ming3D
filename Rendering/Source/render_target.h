@@ -22,9 +22,6 @@ namespace Ming3D::Rendering
 
         TextureInfo mTextureInfo;
 
-        virtual void BeginRendering() = 0;
-        virtual void EndRendering() = 0;
-
         /*
         * Returns the TextureBuffer for the coloiur attachment at the specified location.
         * This can be used as a texture when rendering.

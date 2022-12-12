@@ -1,7 +1,7 @@
 #include "world.h"
 #include "Source/Actors/actor.h"
 #include "Source/Components/component.h"
-
+#include <algorithm>
 #include <functional>
 
 namespace Ming3D

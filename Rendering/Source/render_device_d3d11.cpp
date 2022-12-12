@@ -7,7 +7,6 @@
 #include "index_buffer_d3d11.h"
 #include "texture_buffer_d3d11.h"
 #include "shader_writer_hlsl.h"
-#include <d3d11.h>
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
 #include "shader_constant_d3d11.h"
@@ -31,7 +30,11 @@ namespace Ming3D::Rendering
         UINT flags = 0;
 #endif
 
-        D3D11CreateDevice(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, flags, NULL, 0, D3D11_SDK_VERSION, &mDevice, NULL, &mDeviceContext);
+        ID3D11Device* baseDevice = nullptr;
+        ID3D11DeviceContext* baseDeviceContext = nullptr;
+        D3D11CreateDevice(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, flags, NULL, 0, D3D11_SDK_VERSION, &baseDevice, NULL, &baseDeviceContext);
+        baseDevice->QueryInterface(__uuidof (ID3D11Device1), reinterpret_cast<void**>(&mDevice));
+        baseDeviceContext->QueryInterface(__uuidof (ID3D11DeviceContext1), reinterpret_cast<void**>(&mDeviceContext));
 
         IDXGIDevice * dxgiDevice = 0;
         HRESULT hr = mDevice->QueryInterface(__uuidof(IDXGIDevice), (void **)& dxgiDevice);
@@ -147,7 +150,10 @@ namespace Ming3D::Rendering
 
         renderTarget->mWidth = inWindow->GetWindow()->GetWidth();
         renderTarget->mHeight = inWindow->GetWindow()->GetHeight();
-
+        renderTarget->mTextureInfo.mWidth = renderTarget->mWidth;
+        renderTarget->mTextureInfo.mHeight = renderTarget->mHeight;
+        // TODO: set the rest of mTextureInfo???
+        
         // create backbuffer resource view
         ID3D11ShaderResourceView* backBufferSRV;
         D3D11_SHADER_RESOURCE_VIEW_DESC backBufferSRVDesc;
@@ -289,8 +295,10 @@ namespace Ming3D::Rendering
             // Delete old buffer
             ID3D11Buffer* oldBuffer = vertexBuffer->GetD3DBuffer();
             oldBuffer->Release();
+            vertexBuffer->SetD3DBuffer(nullptr);
 
             // Create new vertex buffer
+            vertexBuffer->mDataSize = newSize;
             D3D11_USAGE vbUsage = vertexBuffer->GetUsage() == EBufferUsage::StaticDraw ? D3D11_USAGE_DEFAULT : D3D11_USAGE_DYNAMIC;
             UINT vbAccess = vertexBuffer->GetUsage() == EBufferUsage::StaticDraw ? 0 : D3D11_CPU_ACCESS_WRITE;
             ID3D11Buffer* vBuffer;
@@ -661,7 +669,7 @@ namespace Ming3D::Rendering
         rastDesc.FillMode = D3D11_FILL_SOLID;
         rastDesc.FrontCounterClockwise = false;
         rastDesc.MultisampleEnable = false;
-        rastDesc.ScissorEnable = false;
+        rastDesc.ScissorEnable = true;
         rastDesc.SlopeScaledDepthBias = 0.0f;
 
         rastDesc.CullMode = cullModeMap[inCullMode];
@@ -850,45 +858,56 @@ namespace Ming3D::Rendering
         mRenderWindow = nullptr;
     }
 
-    void RenderDeviceD3D11::BeginRenderTarget(RenderTarget* inTarget)
+    void RenderDeviceD3D11::SetRenderTarget(RenderTarget* inTarget)
     {
-        mRenderTarget = (RenderTargetD3D11*)inTarget;
+        if (inTarget == nullptr)
+        {
+            ID3D11RenderTargetView* nullRTV = nullptr;
+            GRenderDeviceD3D11->GetDeviceContext()->OMSetRenderTargets(1, &nullRTV, nullptr);
+            mRenderTarget = nullptr;
+        }
+        else
+        {
+            mRenderTarget = static_cast<RenderTargetD3D11*>(inTarget);
+            GRenderDeviceD3D11->GetDeviceContext()->OMSetRenderTargets(1, &mRenderTarget->mBackBuffer, mRenderTarget->mDepthStencilView->mDepthStencilView);
+        }
+    }
 
-        mRenderTarget->BeginRendering();
+    void RenderDeviceD3D11::BlitRenderTargetToWindow(RenderTarget* target, RenderWindow* window)
+    {
 
-        GRenderDeviceD3D11->GetDeviceContext()->OMSetRenderTargets(1, &mRenderTarget->mBackBuffer, mRenderTarget->mDepthStencilView->mDepthStencilView);
+    }
 
-        // Set the viewport
+    void RenderDeviceD3D11::BeginViewport(unsigned int x, unsigned int y, unsigned int width, unsigned int height)
+    {
+        __Assert(mRenderTarget != nullptr);
+
+        const unsigned int rtHeight = mRenderTarget->mHeight;
+
+        // Convert coordinate space
+        y = rtHeight - (y + height);
+
         D3D11_VIEWPORT viewport;
         ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
-        viewport.TopLeftX = 0;
-        viewport.TopLeftY = 0;
+        viewport.TopLeftX = static_cast<float>(x);
+        viewport.TopLeftY = static_cast<float>(y);
         viewport.MinDepth = 0;
         viewport.MaxDepth = 1;
-        viewport.Width = (float)mRenderTarget->mWidth;
-        viewport.Height = (float)mRenderTarget->mHeight;
+        viewport.Width = static_cast<float>(width);
+        viewport.Height = static_cast<float>(height);
         GRenderDeviceD3D11->GetDeviceContext()->RSSetViewports(1, &viewport);
 
-        const float clearCol[4] = { 0.0f, 0.2f, 0.4f, 1.0f };
-        mDeviceContext->ClearRenderTargetView(mRenderTarget->GetBackBuffer(), clearCol);
+        D3D11_RECT rect{};
+        rect.left = x;
+        rect.top = y;
+        rect.right = x + width;
+        rect.bottom = y + height;
+        mDeviceContext->RSSetScissorRects(1, &rect);
+
+        const float clearCol[4] = { 0.0f, 0.2f, 0.4f, 1.0f }; // TODO: Allow adjusting the clear colour
+        mDeviceContext->ClearView(mRenderTarget->GetBackBuffer(), clearCol, &rect, 1); // TODO: Don't use scissor/viewport? (render to texture instead)
+        //mDeviceContext->ClearRenderTargetView(mRenderTarget->GetBackBuffer(), clearCol);
         mDeviceContext->ClearDepthStencilView(mRenderTarget->mDepthStencilView->mDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-    }
-
-    void RenderDeviceD3D11::EndRenderTarget(RenderTarget* inTarget)
-    {
-        __Assert(mRenderTarget == inTarget);
-
-        mRenderTarget->EndRendering();
-
-		ID3D11RenderTargetView* nullRTV = nullptr;
-		GRenderDeviceD3D11->GetDeviceContext()->OMSetRenderTargets(1, &nullRTV, nullptr);
-
-        mRenderTarget = nullptr;
-    }
-
-    void RenderDeviceD3D11::BeginViewport(Viewport viewport)
-    {
-        // TODO
     }
 
     void RenderDeviceD3D11::RenderPrimitive(VertexBuffer* inVertexBuffer, IndexBuffer* inIndexBuffer, unsigned int startIndex, unsigned int indexCount)

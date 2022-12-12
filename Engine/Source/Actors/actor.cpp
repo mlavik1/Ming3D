@@ -1,6 +1,7 @@
 #include "actor.h"
 #include "Source/Components/component.h"
 #include <algorithm>
+#include <iterator>
 #include "World/world.h"
 
 IMPLEMENT_CLASS(Ming3D::Actor)
