@@ -13,7 +13,7 @@ add_library(Rendering STATIC ${SRC_FILES})
 
 # Find packages
 find_package(SDL2 REQUIRED)
-find_package(sdl2_image REQUIRED)
+find_package(SDL2_image REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 
