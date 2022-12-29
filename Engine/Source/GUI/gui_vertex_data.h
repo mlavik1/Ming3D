@@ -12,14 +12,4 @@ namespace Ming3D
         glm::vec4 mColour;
         glm::vec2 mTexCoord;
     };
-
-    class VisualSubmeshNode
-    {
-    public:
-        unsigned int mVertexStartIndex;
-        unsigned int mTriangleStartIndex;
-        unsigned int mNumVertices;
-        unsigned int mNumIndices;
-        VisualSubmeshNode* mNextNode = nullptr;
-    };
 }
