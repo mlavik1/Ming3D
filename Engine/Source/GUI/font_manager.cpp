@@ -73,7 +73,7 @@ namespace Ming3D
         FontFace* fontFace = new FontFace();
 
         // Draw all characters to combined bitmap
-        for(int i = 0; i < chars.size(); ++i)
+        for(size_t i = 0; i < chars.size(); ++i)
         {
             FT_UInt glyphIndex = FT_Get_Char_Index(face, chars[i]);
 
@@ -87,9 +87,9 @@ namespace Ming3D
 
             // Copy character pixels to combined bitmap
             const FT_Bitmap& bitmap = face->glyph->bitmap;
-            for (int xx = 0; xx < bitmap.width; ++xx)
+            for (unsigned int xx = 0; xx < bitmap.width; ++xx)
             {
-                for (int yy = 0; yy < bitmap.rows; ++yy)
+                for (unsigned int yy = 0; yy < bitmap.rows; ++yy)
                 {
                     unsigned char r = bitmap.buffer[(yy * (bitmap.width) + xx)];
                     buffer[(y + yy) * fntBmpWidth * 4 + (x + xx) * 4 + 0] = r;

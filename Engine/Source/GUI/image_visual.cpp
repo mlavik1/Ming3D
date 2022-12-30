@@ -45,7 +45,6 @@ namespace Ming3D
 
     void ImageVisual::GetMeshData(GUIVertexData* outVertData, unsigned int* outIndexData)
     {
-        size_t size = sizeof(GUIVertexData);
         memcpy(outVertData, mVertexData.data(), mVertexData.size() * sizeof(GUIVertexData));
         memcpy(outIndexData, mIndexData.data(), mIndexData.size() * sizeof(unsigned int));
     }

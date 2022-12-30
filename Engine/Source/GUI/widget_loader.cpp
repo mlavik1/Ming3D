@@ -52,7 +52,7 @@ namespace Ming3D
         glm::vec4 vec;
         std::vector<std::string> split = SplitString(text, ' ');
 
-        for (int i = 0; i < 4 && i < split.size(); i++)
+        for (size_t i = 0; i < 4 && i < split.size(); i++)
         {
             vec[i] = std::stof(split[i]);
         }

@@ -25,6 +25,8 @@ include_directories ("../Networking/Source")
 include_directories ("../Include/glm")
 add_library(Engine STATIC ${SRC_FILES})
 
+target_compile_options(Engine PRIVATE -Werror -Wall)
+
 # Set preprocessor definition MING3D_ENGINE_SOURCE_DIR (relative to CMAKE_SOURCE_DIR)
 STRING(REGEX REPLACE "${CMAKE_SOURCE_DIR}/" "" ENGINE_SOURCE_DIR_REL ${CMAKE_CURRENT_SOURCE_DIR})
 target_compile_definitions(Engine PRIVATE "MING3D_ENGINE_SOURCE_DIR=\"${ENGINE_SOURCE_DIR_REL}\"")

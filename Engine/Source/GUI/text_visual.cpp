@@ -45,7 +45,7 @@ namespace Ming3D
         // Text origin
         glm::vec2 currOrigin = startOrigin;
 
-        for (int iChar = 0; iChar < mText.size(); iChar++)
+        for (size_t iChar = 0; iChar < mText.size(); ++iChar)
         {
             // Read glyph
             const wchar_t currChar = mText[iChar];
@@ -102,7 +102,7 @@ namespace Ming3D
             else if(mHorizontalAlignment == EHorizontalAlignment::Right)
                 vertOffset = (visibleRect.mSize.x - (currOrigin.x - startOrigin.x));
 
-            for (int iVert = 0; iVert < mText.size() * 4; iVert++)
+            for (size_t iVert = 0; iVert < mText.size() * 4; ++iVert)
                 mVertexData[iVert].mPosition.x += vertOffset;
         }
     }
@@ -115,7 +115,6 @@ namespace Ming3D
 
     void TextVisual::GetMeshData(GUIVertexData* outVertData, unsigned int* outIndexData)
     {
-        size_t size = sizeof(GUIVertexData);
         memcpy(outVertData, mVertexData.data(), mVertexData.size() * sizeof(GUIVertexData));
         memcpy(outIndexData, mIndexData.data(), mIndexData.size() * sizeof(unsigned int));
     }

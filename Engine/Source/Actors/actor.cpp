@@ -59,11 +59,11 @@ namespace Ming3D
         }
 
         // TODO: refactor actor/component update loop
-        for (Transform* childTrans : mTransform.mChildren)
+        // TODO: World currently ticks *all* actors - only tick root actors, and let them tick their children?
+        /*for (Transform* childTrans : mTransform.mChildren)
         {
-            // TODO: World currently ticks *all* actors - only tick root actors, and let them tick their children?
-            //childTrans->mActor->Tick(inDeltaTime);
-        }
+            childTrans->mActor->Tick(inDeltaTime);
+        }*/
     }
 
     void Actor::Serialise(DataWriter* outWriter, PropertyFlag inPropFlags, ObjectFlag inObjFlag)
@@ -94,11 +94,13 @@ namespace Ming3D
     {
         // Find all components to serialise
         std::vector<Component*> serialisedComponents;
-        for (Component* childComp : mComponents)
-        {
-            if (childComp->HasObjectFlags(inObjFlags))
-                serialisedComponents.push_back(childComp);
-        }
+        std::copy_if(
+            mComponents.begin(),
+            mComponents.end(),
+            std::back_inserter(serialisedComponents),
+            [inObjFlags] (Component* childComp) { return childComp->HasObjectFlags(inObjFlags); }
+        );
+    
         // Serialise components
         outWriter->Write(serialisedComponents.size());
         for (Component* childComp : serialisedComponents)

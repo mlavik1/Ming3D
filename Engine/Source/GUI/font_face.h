@@ -14,22 +14,22 @@ namespace Ming3D
         glm::vec2 mTexCoord;
         glm::vec2 mTexSize;
         glm::vec2 mRelSize; // RENAME
-        int mAdvance;
-        int mBearingX;
-        int mBearingY;
-        int mWidth;
-        int mHeight;
+        int mAdvance = 0;
+        int mBearingX = 0;
+        int mBearingY = 0;
+        int mWidth = 0;
+        int mHeight = 0;
     };
 
     class FontFace
     {
     public:
-        Material* mMaterial; // TODO: Maybe not store this here?
+        Material* mMaterial = nullptr; // TODO: Maybe not store this here?
         std::shared_ptr<Texture> mTexture;
         std::unordered_map<wchar_t, FontGlyph> mGlyphs;
-        int mFontSize;
-        int mMaxBearingOffset; // Max difference between glyph height and bearing.
-        int mMeanBearing; // Mean vertical bearing.
+        int mFontSize = 0;
+        int mMaxBearingOffset = 0; // Max difference between glyph height and bearing.
+        int mMeanBearing = 0; // Mean vertical bearing.
 
         /* Gets the glyph info of a UTF16 character code. */
         bool GetGlyph(wchar_t charCode, FontGlyph& outGlyph);

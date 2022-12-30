@@ -154,8 +154,6 @@ namespace Ming3D
 
     void SceneRenderer::Render(RenderScene* renderScene, Camera* camera)
     {
-        RenderDevice* renderDevice = GGameEngine->GetRenderDevice();
-
         LightSource* mainLight = nullptr;
         if(!renderScene->mLightSources.empty())
             mainLight = renderScene->mLightSources.back(); // TODO: support multiple light sources
