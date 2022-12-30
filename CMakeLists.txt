@@ -87,7 +87,6 @@ add_subdirectory(Engine)
 add_subdirectory(Viewer)
 
 if(MING3D_BUILD_EDITOR)
-	add_subdirectory(NativeUI)
 	add_subdirectory(Editor)
 endif()
 

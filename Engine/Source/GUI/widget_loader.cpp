@@ -2,14 +2,15 @@
 #include "image_widget.h"
 #include "text_widget.h"
 #include "button_widget.h"
-#include <vector>
 #include "3rdparty/tinyxml2/tinyxml2.h"
 #include "Debug/debug.h"
 #include "GameEngine/game_engine.h"
 #include "Texture/texture_loader.h"
+#include "gui_resource_manager.h"
 #include <filesystem>
 #include <memory>
-#include "gui_resource_manager.h"
+#include <utility>
+#include <vector>
 
 namespace Ming3D
 {
@@ -25,29 +26,28 @@ namespace Ming3D
         float mValue = 0.0f;
     };
 
-    std::vector<std::string> SplitString(const std::string text, const char delimiter)
+    std::vector<std::string> SplitString(const std::string& text, const char delimiter)
     {
         std::vector<std::string> vec;
         size_t iStart = 0;
-        size_t iCurr = 1;
-        for (int iCurr = 0; iCurr < text.size(); iCurr++)
+        for (size_t iCurr = 0; iCurr < text.size(); iCurr++)
         {
             if (text[iCurr] == ' ')
             {
                 std::string substr = text.substr(iStart, iCurr - iStart);
-                vec.push_back(substr);
+                vec.push_back(std::move(substr));
                 iStart = iCurr + 1;
             }
         }
         if (iStart < text.size())
         {
             std::string substr = text.substr(iStart, text.size() - iStart);
-            vec.push_back(substr);
+            vec.push_back(std::move(substr));
         }
         return vec;
     }
 
-    glm::vec4 ParseVec4(const std::string text)
+    glm::vec4 ParseVec4(const std::string& text)
     {
         glm::vec4 vec;
         std::vector<std::string> split = SplitString(text, ' ');
@@ -59,7 +59,7 @@ namespace Ming3D
         return vec;
     }
 
-    WidgetSizeValue ParseWidgetSizeValue(const std::string text)
+    WidgetSizeValue ParseWidgetSizeValue(const std::string& text)
     {
         WidgetSizeValue sizeVal;
         if (text.size() > 1 && text[text.size() - 1] == '%')
@@ -80,7 +80,7 @@ namespace Ming3D
         return sizeVal;
     }
 
-    bool ParseHorizontalAlignment(std::string text, EHorizontalAlignment& outAlign)
+    bool ParseHorizontalAlignment(const std::string& text, EHorizontalAlignment& outAlign)
     {
         if (std::strcmp(text.c_str(), "left") == 0)
             outAlign = EHorizontalAlignment::Left;
@@ -94,7 +94,7 @@ namespace Ming3D
         return true;
     }
 
-    bool ParseVerticalAlignment(std::string text, EVerticalAlignment& outAlign)
+    bool ParseVerticalAlignment(const std::string& text, EVerticalAlignment& outAlign)
     {
         if (std::strcmp(text.c_str(), "top") == 0)
             outAlign = EVerticalAlignment::Top;

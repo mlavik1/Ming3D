@@ -14,7 +14,7 @@ namespace Ming3D::Rendering
         GLuint mGLProgram = -1;
         GLuint mGLVertexShader = -1;
         GLuint mGLFragmentShader = -1;
-        std::unordered_map<std::string, GLuint> mCachedUniformLocations;
+        std::unordered_map<std::string, GLint> mCachedUniformLocations;
 
     public:
         virtual ~ShaderProgramGL();
@@ -27,7 +27,7 @@ namespace Ming3D::Rendering
         GLuint GetGLVertexShader() { return mGLVertexShader; }
         GLuint GetGLFragmentShader() { return mGLFragmentShader; }
 
-        GLuint GetUniformLocation(const std::string& inName);
+        GLint GetUniformLocation(const std::string& inName);
 
     };
 }

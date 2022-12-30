@@ -30,7 +30,7 @@ namespace Ming3D::Rendering
     class RenderDevice
     {
     public:
-        virtual ~RenderDevice() {}
+        virtual ~RenderDevice() = default;
 
         virtual RenderTarget* CreateRenderTarget(RenderWindow* inWindow) = 0;
         virtual RenderTarget* CreateRenderTarget(TextureInfo inTextureInfo, int numTextures) = 0;

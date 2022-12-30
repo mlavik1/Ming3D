@@ -130,8 +130,6 @@ namespace Ming3D
             }
         }
 
-        int matIndex = aiMesh->mMaterialIndex;
-
         Mesh* mesh = new Mesh();
         mesh->mVertexData = vertData;
         mesh->mIndexData = new Rendering::IndexData(indices.size());

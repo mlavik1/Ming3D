@@ -178,7 +178,7 @@ namespace Ming3D
         }
     }
 
-    void Actor::RegisterComponentCallback(const ComponentCallbackType &inType, Component* inComp)
+    void Actor::RegisterComponentCallback(ComponentCallbackType inType, Component* inComp)
     {
         auto &compArr = mCompCallbackSubscribers[inType];
         if(std::find(compArr.begin(), compArr.end(), inComp) == compArr.end())

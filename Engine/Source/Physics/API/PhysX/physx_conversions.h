@@ -7,6 +7,7 @@
 #include "glm/gtx/quaternion.hpp"
 #include "Physics/force_mode.h"
 #include "PxForceMode.h"
+#include <cassert>
 
 namespace Ming3D
 {
@@ -42,6 +43,8 @@ namespace Ming3D
                 return physx::PxForceMode::eIMPULSE;
             case ForceMode::Acceleration:
                 return physx::PxForceMode::eACCELERATION;
+            default:
+                assert(false);
             }
         }
     };

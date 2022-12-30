@@ -8,7 +8,6 @@ namespace Ming3D::Rendering
     {
     public:
         BlendStateGL(bool enableBlend, EBlendMode blendMode);
-        virtual ~BlendStateGL();
 
         bool mBlendEnabled = false;
         GLenum mSrcFactor = GL_SRC_ALPHA;

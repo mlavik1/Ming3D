@@ -162,7 +162,7 @@ namespace Ming3D
 
     void GameNetwork::SendMessage(NetMessage* inMessage, NetTarget inTarget)
     {
-        OutgoingMessage msg;
+        OutgoingMessage msg{};
         msg.mTarget = inTarget;
         msg.mMessage = inMessage;
         mOutgoingMessages.push_back(msg);
@@ -170,7 +170,7 @@ namespace Ming3D
 
     void GameNetwork::SendMessage(NetMessage* inMessage, int inTarget)
     {
-        OutgoingMessage msg;
+        OutgoingMessage msg{};
         msg.mClientID = inTarget;
         msg.mMessage = inMessage;
         mOutgoingMessages.push_back(msg);

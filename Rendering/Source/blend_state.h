@@ -11,6 +11,6 @@ namespace Ming3D::Rendering
     {
     public:
         BlendState(bool enableBlend, EBlendMode blendMode) {}
-        virtual ~BlendState() {}
+        virtual ~BlendState() = default;
     };
 }

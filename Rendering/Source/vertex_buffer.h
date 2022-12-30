@@ -20,7 +20,7 @@ namespace Ming3D::Rendering
 
     public:
         VertexBuffer(const VertexLayout& inLayout, EBufferUsage usage);
-        virtual ~VertexBuffer() {}
+        virtual ~VertexBuffer() = default;
 
         const VertexLayout& GetVertexLayout() { return mVertexLayout; }
         size_t GetVertexSize() { return mVertexSize; }

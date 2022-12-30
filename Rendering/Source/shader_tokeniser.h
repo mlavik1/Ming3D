@@ -50,7 +50,7 @@ namespace Ming3D::Rendering
         bool isOperator(const char* inToken);
 
     public:
-        Tokeniser(const char* inSourceText);
+        explicit Tokeniser(const char* inSourceText);
 
         Token ParseToken();
     };
