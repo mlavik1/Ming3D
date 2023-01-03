@@ -551,12 +551,11 @@ namespace Ming3D::Rendering
             if (inTokenParser.GetCurrentToken().mTokenString == "=")
             {
                 inTokenParser.Advance();
-                ShaderExpression* assignmentExpression = nullptr;
                 EParseResult exprParseResult = ParseExpression(inTokenParser, mDefaultOuterOperatorInfo, &varDefStatement->mAssignmentExpression);
                 if (exprParseResult != EParseResult::Parsed)
                 {
                     OnParseError(inTokenParser, "Invalid assignment expression in variable definition expression");
-                    delete varDefStatement;
+                    delete varDefStatement; // TODO: Use smart pointers?
                     return EParseResult::Error;
                 }
             }

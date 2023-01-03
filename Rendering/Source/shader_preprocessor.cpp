@@ -121,11 +121,12 @@ namespace Ming3D::Rendering
 
                 // Copy new tokens
                 std::vector<Token>& tokens = mTokenParser.GetTokens();
-                size_t numTokens = tokens.size();
                 size_t nextTokenIndex = mTokenParser.GetCurrentTokenIndex() + 1;
                 tokens.insert(tokens.begin() + nextTokenIndex, newTokens.begin(), newTokens.end());
                 break;
             }
+            case PreprocessorDirective::Invalid:
+                break;
             }
         }
         else if(!IsCurrentScopeIgnored())

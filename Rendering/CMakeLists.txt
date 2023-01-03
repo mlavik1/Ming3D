@@ -11,6 +11,8 @@ set(SourceDir Source)
 
 add_library(Rendering STATIC ${SRC_FILES})
 
+target_compile_options(Rendering PRIVATE -Werror -Wall)
+
 # Find packages
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)

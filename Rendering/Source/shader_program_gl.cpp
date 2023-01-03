@@ -5,15 +5,15 @@ namespace Ming3D::Rendering
 {
     ShaderProgramGL::~ShaderProgramGL()
     {
-        if (mGLProgram != -1)
+        if (mGLProgram != 0)
         {
             glDeleteProgram(mGLProgram);
         }
-        if (mGLVertexShader != -1)
+        if (mGLVertexShader != 0)
         {
             glDeleteShader(mGLVertexShader);
         }
-        if (mGLFragmentShader != -1)
+        if (mGLFragmentShader != 0)
         {
             glDeleteShader(mGLFragmentShader);
         }

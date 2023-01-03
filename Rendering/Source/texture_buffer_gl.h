@@ -9,7 +9,7 @@ namespace Ming3D::Rendering
     class TextureBufferGL : public TextureBuffer
     {
     private:
-        GLuint mGLTexture = -1;
+        GLuint mGLTexture = 0;
 
     public:
         virtual ~TextureBufferGL();

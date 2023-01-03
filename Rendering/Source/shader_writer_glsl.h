@@ -20,8 +20,8 @@ namespace Ming3D::Rendering
         const ParsedShaderProgram* mCurrentShaderProgram = nullptr;
         ParsedShader* mCurrentShader = nullptr;
 
-        std::string GetVariableIdentifierString(const std::string inName);
-        std::string GetConvertedType(const std::string inString);
+        std::string GetVariableIdentifierString(const std::string& inName);
+        std::string GetConvertedType(const std::string& inString);
 
         void WriteVariableDeclaration(ShaderStream& inStream, ShaderVariableInfo inVarInfo);
         void WriteFunctionDefinition(ShaderStream& inStream, const ShaderFunctionDefinition* inFunctionDef, bool isMainFunction);

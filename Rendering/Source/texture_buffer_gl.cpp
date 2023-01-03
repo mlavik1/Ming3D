@@ -7,7 +7,7 @@ namespace Ming3D::Rendering
 {
     TextureBufferGL::~TextureBufferGL()
     {
-        if (mGLTexture != -1)
+        if (mGLTexture != 0)
         {
             glDeleteTextures(1, &mGLTexture);
         }

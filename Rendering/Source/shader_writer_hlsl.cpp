@@ -57,7 +57,7 @@ namespace Ming3D::Rendering
         const size_t numParams = isMainFunction ? 1 : inFunctionDef->mFunctionInfo.mParameters.size();
 
         // Write parameter declarations
-        for (int iParam = 0; iParam < numParams; iParam++)
+        for (size_t iParam = 0; iParam < numParams; iParam++)
         {
             ShaderVariableInfo param = inFunctionDef->mFunctionInfo.mParameters[iParam];
             WriteVariableDeclaration(inStream, param);
@@ -104,7 +104,7 @@ namespace Ming3D::Rendering
 
     void ShaderWriterHLSL::WriteFunctionCallParameters(ShaderStream& inStream, const std::vector<ShaderExpression*>& inParams)
     {
-        for (int iParam = 0; iParam < inParams.size(); iParam++)
+        for (size_t iParam = 0; iParam < inParams.size(); iParam++)
         {
             WriteExpression(inStream, inParams[iParam]);
             if (iParam != inParams.size() - 1)
@@ -120,7 +120,7 @@ namespace Ming3D::Rendering
         {
         case EExpressionType::Literal:
         {
-            LiteralExpression* literalExpression = (LiteralExpression*)inExpression;
+            auto literalExpression = static_cast<const LiteralExpression*>(inExpression);
             if (literalExpression->mValueType == "float")
             {
                 inStream << literalExpression->mToken.mFloatValue;
@@ -133,7 +133,7 @@ namespace Ming3D::Rendering
         }
         case EExpressionType::VariableAccess:
         {
-            VariableAccessExpression* varAccessExpr = (VariableAccessExpression*)inExpression;
+            auto varAccessExpr = static_cast<const VariableAccessExpression*>(inExpression);
             if (varAccessExpr->mOuterExpression != nullptr)
             {
                 WriteExpression(inStream, varAccessExpr->mOuterExpression);
@@ -152,7 +152,7 @@ namespace Ming3D::Rendering
         }
         case EExpressionType::FunctionCall:
         {
-            FunctionCallExpression* funcCallExpr = (FunctionCallExpression*)inExpression;
+            auto funcCallExpr = static_cast<const FunctionCallExpression*>(inExpression);
 
             // TODO: Create a map for variable assignments to replace function calls
             if (funcCallExpr->mIdentifier.mTokenString == "SetFragmentColour")
@@ -184,7 +184,7 @@ namespace Ming3D::Rendering
         }
         case EExpressionType::BinaryOperation:
         {
-            BinaryOperationExpression* binaryExpr = (BinaryOperationExpression*)inExpression;
+            auto binaryExpr = static_cast<const BinaryOperationExpression*>(inExpression);
             const bool wrapInParenthesis = binaryExpr->mOperator != "=";
             if(wrapInParenthesis)
                 inStream << "(";
@@ -210,7 +210,7 @@ namespace Ming3D::Rendering
         }
         case EExpressionType::UnaryOperation:
         {
-            UnaryOperationExpression* unaryExpr = (UnaryOperationExpression*)inExpression;
+            //auto unaryExpr = static_cast<const UnaryOperationExpression*>(inExpression);
             
             // TODO
 
@@ -346,7 +346,7 @@ namespace Ming3D::Rendering
                 shaderHeaderStream << "struct " << structInfo.mName << "\n" << "{" << "\n";
 
                 shaderHeaderStream.AddIndent();
-                for (const ShaderStructMember member : structInfo.mMemberVariables)
+                for (const ShaderStructMember& member : structInfo.mMemberVariables)
                 {
                     shaderHeaderStream << GetConvertedType(member.mDatatype.mName) << " " << member.mName;
                     if (member.mSemantic != "")
@@ -408,7 +408,7 @@ namespace Ming3D::Rendering
 
             // Write textures
 			int iRegister = 0;
-            for (const ShaderTextureInfo textureInfo : inParsedShaderProgram->mShaderTextures)
+            for (const ShaderTextureInfo& textureInfo : inParsedShaderProgram->mShaderTextures)
             {
                 if (mReferencedUniforms.find(textureInfo.mTextureName) != mReferencedUniforms.end())
                 {

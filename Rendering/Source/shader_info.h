@@ -2,6 +2,7 @@
 #define MING3D_SHADERINFO_H
 
 #include <string>
+#include <string_view>
 #include <vector>
 #include "shader_tokeniser.h"
 #include "glm/glm.hpp"
@@ -25,8 +26,8 @@ namespace Ming3D::Rendering
         std::vector<ShaderStructMember> mMemberVariables;
 
         ShaderDatatypeInfo();
-        ShaderDatatypeInfo(EShaderDatatype inType, std::string inName);
-        ShaderDatatypeInfo(EShaderDatatype inType, std::string inName, std::vector<ShaderStructMember> inChildren);
+        ShaderDatatypeInfo(EShaderDatatype inType, std::string_view inName);
+        ShaderDatatypeInfo(EShaderDatatype inType, std::string_view inName, const std::vector<ShaderStructMember>& inChildren);
 
         size_t GetDataSize() const;
     };
@@ -129,6 +130,7 @@ namespace Ming3D::Rendering
     class ShaderStatement
     {
     public:
+        virtual ~ShaderStatement() = default;
         virtual EStatementType GetStatementType() const = 0;
     };
 

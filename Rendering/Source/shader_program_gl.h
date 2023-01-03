@@ -11,9 +11,9 @@ namespace Ming3D::Rendering
     class ShaderProgramGL : public ShaderProgram
     {
     private:
-        GLuint mGLProgram = -1;
-        GLuint mGLVertexShader = -1;
-        GLuint mGLFragmentShader = -1;
+        GLuint mGLProgram = 0;
+        GLuint mGLVertexShader = 0;
+        GLuint mGLFragmentShader = 0;
         std::unordered_map<std::string, GLint> mCachedUniformLocations;
 
     public:
