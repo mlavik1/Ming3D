@@ -12,7 +12,7 @@ namespace Ming3D
 	class DataWriter
 	{
 	public:
-		char* mData = nullptr;
+		char* mData = nullptr; // TODO: std::vector?
 		char* mDataReadPos = nullptr;
 		size_t mBytesWritten = 0;
 		size_t mBytesAllocated = 0;

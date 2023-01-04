@@ -23,6 +23,7 @@ include_directories ("../Core/Source")
 include_directories ("../Rendering/Source")
 include_directories ("../Networking/Source")
 include_directories ("../Include/glm")
+
 add_library(Engine STATIC ${SRC_FILES})
 
 target_compile_options(Engine PRIVATE -Werror -Wall)

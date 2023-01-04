@@ -9,7 +9,7 @@ namespace Ming3D
     class Mesh
     {
     public:
-        Rendering::VertexData* mVertexData = nullptr;
+        Rendering::VertexData* mVertexData = nullptr; // TODO: Smart pointer?
         Rendering::IndexData* mIndexData = nullptr;
 
         ~Mesh();

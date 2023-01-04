@@ -20,6 +20,8 @@ include_directories ("../Include/tinyxml")
 
 add_executable(Editor ${SRC_FILES})
 
+target_compile_options(Editor PRIVATE -Werror -Wall)
+
 target_link_libraries(Editor Core)
 target_link_libraries(Editor Engine)
 target_link_libraries(Editor Networking)

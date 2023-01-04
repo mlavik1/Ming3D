@@ -63,7 +63,7 @@ namespace Ming3D
         else
             mCurrHeight += mWidgetheight;
         
-        const EditorControlStyle oldStyle = mWidgetDataCache[controlKeyHash].style;
+        //const EditorControlStyle oldStyle = mWidgetDataCache[controlKeyHash].style;
         // TODO
         //if (oldStyle.fontSize != style.fontSize)
         //    textWidget->SetFontSize(style.fontSize);
@@ -108,7 +108,7 @@ namespace Ming3D
         else
             mCurrHeight += mWidgetheight;
         
-        const EditorControlStyle oldStyle = mWidgetDataCache[controlKeyHash].style;
+        //const EditorControlStyle oldStyle = mWidgetDataCache[controlKeyHash].style;
         // TODO
         //if (oldStyle.fontSize != style.fontSize)
         //    textWidget->SetFontSize(style.fontSize);

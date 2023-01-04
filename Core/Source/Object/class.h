@@ -33,20 +33,20 @@ namespace Ming3D
 		/** Pointer to base class. */
 		Class* mBaseClass;
 
-		/** Child classes of this class. */
-		std::vector<Class*> mChildClasses;
-
 		/** Static functions, used to create an instance of the class. */
 		staticconstructor_t mStaticConstructor;
+
+		/** Class initialiser function pointer. This will get called once for each class. */
+		staticclassinitialiser_t mClassInitialiser;
+
+		/** Child classes of this class. */
+		std::vector<Class*> mChildClasses;
 
 		/** Registered member functions. */
 		std::unordered_map<std::string, Function*> mMemberFunctions;
 
         /** Registered class properties. */
         std::unordered_map<std::string, Property*> mProperties;
-
-		/** Class initialiser function pointer. This will get called once for each class. */
-		staticclassinitialiser_t mClassInitialiser;
 
 	public:
 		Class(const char* arg_name, staticclassinitialiser_t arg_initialiser, staticconstructor_t constructor = 0, Class* superclass = 0);

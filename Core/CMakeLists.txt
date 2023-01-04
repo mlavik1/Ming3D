@@ -32,3 +32,5 @@ include_directories (${SourceDir})
 include_directories ("Include")
 
 add_library(Core STATIC ${SRC_FILES})
+
+target_compile_options(Core PRIVATE -Werror -Wall)
