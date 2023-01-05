@@ -24,7 +24,7 @@ namespace Ming3D
         RenderPipelineNodeCollection* mNodeCollection;
 
     public:
-        OpaqueNodeSorter(RenderPipelineNodeCollection* nodeCollection)
+        explicit OpaqueNodeSorter(RenderPipelineNodeCollection* nodeCollection)
         {
             this->mNodeCollection = nodeCollection;
         }
@@ -51,7 +51,7 @@ namespace Ming3D
         RenderPipelineNodeCollection* mNodeCollection;
 
     public:
-        TransparentNodeSorter(RenderPipelineNodeCollection* nodeCollection)
+        explicit TransparentNodeSorter(RenderPipelineNodeCollection* nodeCollection)
         {
             this->mNodeCollection = nodeCollection;
         }

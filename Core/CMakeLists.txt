@@ -33,4 +33,8 @@ include_directories ("Include")
 
 add_library(Core STATIC ${SRC_FILES})
 
-target_compile_options(Core PRIVATE -Werror -Wall)
+if(MSVC)
+    target_compile_options(Core PRIVATE /W4 /WX)
+else()
+    target_compile_options(Core PRIVATE -Werror -Wall)
+endif()

@@ -50,8 +50,12 @@ namespace Ming3D
         Actor() {}
 
     public:
-        Actor(World* world);
+        explicit Actor(World* world);
         virtual ~Actor();
+
+        // Delete copy constructor and assignment operator
+        Actor(const Actor& actor) = delete;
+        Actor& operator=(const Actor&) = delete;
 
         template <typename T>
         T* AddComponent()

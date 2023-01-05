@@ -5,8 +5,8 @@ find_package(assimp REQUIRED)
 
 # Gather c++ files
 file(GLOB_RECURSE SRC_FILES 
-	Source/*.cpp
-	Source/*.h
+    Source/*.cpp
+    Source/*.h
 )
 
 include_directories (${SDL2_INCLUDE_DIRS})
@@ -20,7 +20,11 @@ include_directories ("../Include/tinyxml")
 
 add_executable(Editor ${SRC_FILES})
 
-target_compile_options(Editor PRIVATE -Werror -Wall)
+if(MSVC)
+    target_compile_options(Editor PRIVATE /W4 /WX)
+else()
+    target_compile_options(Editor PRIVATE -Werror -Wall)
+endif()
 
 target_link_libraries(Editor Core)
 target_link_libraries(Editor Engine)
