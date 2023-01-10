@@ -22,11 +22,11 @@ namespace Ming3D
 
     float TimeManager::GetTimeSeconds()
     {
-        return mTime;
+        return static_cast<float>(mTime);
     }
 
     float TimeManager::GetDeltaTimeSeconds()
     {
-        return mDeltaTime;
+        return static_cast<float>(mDeltaTime);
     }
 }

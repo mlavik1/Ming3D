@@ -229,13 +229,13 @@ namespace Ming3D
                 {
                     const TextureBuffer* texture = currMaterial->mTextureBuffers[iTexture];
                     if (texture != nullptr)
-                        renderDevice->SetTexture(texture, iTexture); // temp
+                        renderDevice->SetTexture(texture, static_cast<int>(iTexture)); // temp
                 }
                 // set shadowmap depth texture
                 if (mainLightSource != nullptr && mainLightSource->mLightCamera != nullptr)
                 {
                     size_t depthTexSlotID = currMaterial->GetTextureID("depthTexture");
-                    renderDevice->SetTexture(mainLightSource->mLightCamera->mRenderTarget->GetDepthTextureBuffer(), depthTexSlotID);
+                    renderDevice->SetTexture(mainLightSource->mLightCamera->mRenderTarget->GetDepthTextureBuffer(), static_cast<int>(depthTexSlotID));
                 }
 
                 // update uniforms

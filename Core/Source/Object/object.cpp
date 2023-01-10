@@ -20,6 +20,14 @@ namespace Ming3D
 		inFunc->CallFunction(this, inArgs);
 	}
 
+    void Object::Serialise(DataWriter*, PropertyFlag, ObjectFlag)
+    {
+    }
+    
+    void Object::Deserialise(DataWriter*, PropertyFlag, ObjectFlag)
+    {
+    }
+
     void Object::SerialiseProperties(DataWriter* outWriter, PropertyFlag inFlags)
     {
         for (Property* prop : GetClass()->GetAllProperties(true))

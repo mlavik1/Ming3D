@@ -39,8 +39,8 @@ namespace Ming3D
 
     void ImageVisual::GetMeshDataSize(unsigned int& outVertexCount, unsigned int& outIndexCount)
     {
-        outVertexCount = mVertexData.size();
-        outIndexCount = mIndexData.size();
+        outVertexCount = static_cast<unsigned int>(mVertexData.size());
+        outIndexCount = static_cast<unsigned int>(mIndexData.size());
     }
 
     void ImageVisual::GetMeshData(GUIVertexData* outVertData, unsigned int* outIndexData)

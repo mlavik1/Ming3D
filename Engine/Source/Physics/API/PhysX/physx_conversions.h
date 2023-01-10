@@ -8,6 +8,7 @@
 #include "Physics/force_mode.h"
 #include "PxForceMode.h"
 #include <cassert>
+#include <cstdlib>
 
 namespace Ming3D
 {
@@ -45,6 +46,7 @@ namespace Ming3D
                 return physx::PxForceMode::eACCELERATION;
             default:
                 assert(false);
+                std::abort();
             }
         }
     };

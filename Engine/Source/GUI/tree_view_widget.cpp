@@ -51,9 +51,9 @@ namespace Ming3D
             WidgetTransform transform{};
             transform.anchorMin = glm::vec2(0.0f, 0.0f);
             transform.anchorMax = glm::vec2(1.0f, 0.0f);
-            transform.mSize.y = mItemHeight;
-            transform.mPosition.x = mIndentWidth * mItems[i]->mDepth;
-            transform.mPosition.y = mItemHeight * i;
+            transform.mSize.y = static_cast<float>(mItemHeight);
+            transform.mPosition.x = static_cast<float>(mIndentWidth * mItems[i]->mDepth);
+            transform.mPosition.y = static_cast<float>(mItemHeight) * i;
             mItems[i]->SetWidgetTransform(transform);
         }
     }

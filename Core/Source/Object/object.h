@@ -25,8 +25,8 @@ namespace Ming3D
 		/** Calls the specified Function with the given arguments. */
 		void CallFunction(Function* inFunc, const FunctionArgs& inArgs);
 
-        virtual void Serialise(DataWriter* outWriter, PropertyFlag inPropFlags = PropertyFlag::Serialise, ObjectFlag inObjFlag = ObjectFlag::Serialise) {}
-        virtual void Deserialise(DataWriter* inReader, PropertyFlag inPropFlags = PropertyFlag::Serialise, ObjectFlag inObjFlag = ObjectFlag::Serialise) {}
+        virtual void Serialise(DataWriter* outWriter, PropertyFlag inPropFlags = PropertyFlag::Serialise, ObjectFlag inObjFlag = ObjectFlag::Serialise);
+        virtual void Deserialise(DataWriter* inReader, PropertyFlag inPropFlags = PropertyFlag::Serialise, ObjectFlag inObjFlag = ObjectFlag::Serialise);
 
         virtual void SerialiseProperties(DataWriter* outWriter, PropertyFlag inFlags = (PropertyFlag)0);
         virtual void DeserialiseProperties(DataWriter* inReader, PropertyFlag inFlags = (PropertyFlag)0);

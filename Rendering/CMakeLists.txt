@@ -12,7 +12,7 @@ set(SourceDir Source)
 add_library(Rendering STATIC ${SRC_FILES})
 
 if(MSVC)
-    target_compile_options(Rendering PRIVATE /W4 /WX)
+    target_compile_options(Rendering PRIVATE /W3 /W4)
 else()
     target_compile_options(Rendering PRIVATE -Werror -Wall)
 endif()

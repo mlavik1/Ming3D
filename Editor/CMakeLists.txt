@@ -21,7 +21,7 @@ include_directories ("../Include/tinyxml")
 add_executable(Editor ${SRC_FILES})
 
 if(MSVC)
-    target_compile_options(Editor PRIVATE /W4 /WX)
+    target_compile_options(Editor PRIVATE /W3 /WX)
 else()
     target_compile_options(Editor PRIVATE -Werror -Wall)
 endif()

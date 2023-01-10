@@ -14,7 +14,7 @@ namespace Ming3D
     {
         mTextureInfo.mWidth = inWidth;
         mTextureInfo.mHeight = inHeight;
-        mTextureInfo.mBytesPerPixel = inBytesPerPixel;
+        mTextureInfo.mBytesPerPixel = static_cast<unsigned int>(inBytesPerPixel);
         mTextureInfo.mPixelFormat = inPixelFormat;
         const size_t size = inBytesPerPixel * inWidth * inHeight;
         mTextureData.resize(size);

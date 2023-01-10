@@ -69,10 +69,10 @@ namespace Ming3D
         // Add batches from RenderObjects
         for (RenderObject* obj : context.mScene->mSceneObjects)
         {
-            int numBatches = obj->GetNumBatches();
+            size_t numBatches = obj->GetNumBatches();
 
             // Get batches of RenderObject
-            for (int iBatch = 0; iBatch < numBatches; iBatch++)
+            for (size_t iBatch = 0; iBatch < numBatches; iBatch++)
             {
                 // TODO: view frustum culling
 
@@ -90,7 +90,7 @@ namespace Ming3D
 
                 // Get batch
                 obj->GetRenderBatch(iBatch, &node->mRenderBatch);
-                node->mRenderOrderOffset = iBatch; // will ensure that transparent batches are rendered in order
+                node->mRenderOrderOffset = static_cast<int>(iBatch); // will ensure that transparent batches are rendered in order - TODO: Do something smarter
 
                 node->mRenderType = obj->GetRenderType();
                 node->mSquareDistance = glm::length2(glm::vec3(obj->GetWorldPosition()) - camPos);
@@ -132,7 +132,10 @@ namespace Ming3D
             // TODO: Do this (set RT and VP) in render pipeline?
             renderDevice->SetRenderTarget(camera->mRenderTarget);
             auto viewport = camera->GetAbsoluteViewport();
-            renderDevice->BeginViewport(viewport.x, viewport.y, viewport.width, viewport.height);
+            renderDevice->BeginViewport(
+                static_cast<unsigned int>(viewport.x), static_cast<unsigned int>(viewport.y),
+                static_cast<unsigned int>(viewport.width), static_cast<unsigned int>(viewport.height)
+            );
 
             // TODO: Probably won't have camera in more than one scene?
             for (auto scene : scenes)

@@ -86,12 +86,12 @@ namespace Ming3D
             // Advance to next character
             currOrigin.x += glyph.mAdvance * mFontScale;
 
-            mIndexData.push_back(iVert + 0);
-            mIndexData.push_back(iVert + 3);
-            mIndexData.push_back(iVert + 1);
-            mIndexData.push_back(iVert + 1);
-            mIndexData.push_back(iVert + 3);
-            mIndexData.push_back(iVert + 2);
+            mIndexData.push_back(static_cast<unsigned int>(iVert + 0));
+            mIndexData.push_back(static_cast<unsigned int>(iVert + 3));
+            mIndexData.push_back(static_cast<unsigned int>(iVert + 1));
+            mIndexData.push_back(static_cast<unsigned int>(iVert + 1));
+            mIndexData.push_back(static_cast<unsigned int>(iVert + 3));
+            mIndexData.push_back(static_cast<unsigned int>(iVert + 2));
         }
 
         if (mHorizontalAlignment != EHorizontalAlignment::Left)
@@ -109,8 +109,8 @@ namespace Ming3D
 
     void TextVisual::GetMeshDataSize(unsigned int& outVertexCount, unsigned int& outIndexCount)
     {
-        outVertexCount = mVertexData.size();
-        outIndexCount = mIndexData.size();
+        outVertexCount = static_cast<unsigned int>(mVertexData.size());
+        outIndexCount = static_cast<unsigned int>(mIndexData.size());
     }
 
     void TextVisual::GetMeshData(GUIVertexData* outVertData, unsigned int* outIndexData)

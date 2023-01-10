@@ -53,14 +53,14 @@ int main()
         // Host
         if (network->IsHost())
         {
-            std::vector<ClientMessage> newMessages = network->GetIncomingMessages();
+            std::vector<IncomingMessage> newMessages = network->GetIncomingMessages();
             if (newMessages.size() > 0)
             {
                 if (currentTestStage > NetworkTestStage::PartialMessage)
                 {
                     LOG_ERROR() << "UNEXPECTED MESSAGE: " << newMessages[0].mMessage->GetMessageData();
                 }
-                for (ClientMessage& msg : newMessages)
+                for (IncomingMessage& msg : newMessages)
                 {
                     NetMessage* netMsg = msg.mMessage;
                     LOG_INFO() << "Expected message: " << (currentTestStage == NetworkTestStage::NormalMessage ? clientNormalMessage : clientPartialMessage);

@@ -14,10 +14,10 @@
 #define MODELLOADERFLAGS_FORCE_TRANSPARENT 4
 
 // Forward declarations
-class aiScene;
-class aiMesh;
-class aiMaterial;
-class aiNode;
+struct aiScene;
+struct aiMesh;
+struct aiMaterial;
+struct aiNode;
 
 namespace Ming3D
 {

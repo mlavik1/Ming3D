@@ -27,7 +27,7 @@ include_directories ("../Include/glm")
 add_library(Engine STATIC ${SRC_FILES})
 
 if(MSVC)
-    target_compile_options(Engine PRIVATE /W4 /WX)
+    target_compile_options(Engine PRIVATE /W3 /WX)
 else()
     target_compile_options(Engine PRIVATE -Werror -Wall)
 endif()

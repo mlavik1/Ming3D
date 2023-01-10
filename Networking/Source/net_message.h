@@ -28,7 +28,7 @@ namespace Ming3D
         NetMessage operator=(NetMessage &in_other);
 
 		inline NetMessageType GetMessageType() const { return mMessageType; }
-		inline msglen_t GetMessageLength() const { return mDataWriter->GetSize(); }
+		inline msglen_t GetMessageLength() const { return static_cast<msglen_t>(mDataWriter->GetSize()); }
 		inline size_t GetTotalLength() const { return GetMessageLength() + sizeof(msgtype_t) + sizeof(msglen_t); }
 
 		const char* GetMessageData() const;

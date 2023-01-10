@@ -11,7 +11,7 @@ namespace Ming3D
     class Widget;
     class Visual;
     class VisualSubmeshNode;
-    class GUIVertexData;
+    struct GUIVertexData;
     class Material;
 
     namespace Rendering

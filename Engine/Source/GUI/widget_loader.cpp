@@ -54,7 +54,7 @@ namespace Ming3D
 
         for (size_t i = 0; i < 4 && i < split.size(); i++)
         {
-            vec[i] = std::stof(split[i]);
+            vec[static_cast<glm::length_t>(i)] = std::stof(split[i]);
         }
         return vec;
     }

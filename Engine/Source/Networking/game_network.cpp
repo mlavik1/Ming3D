@@ -50,7 +50,7 @@ namespace Ming3D
         NetConnection* inConnection = new NetConnection(inConnSock);
         if (inConnSock != nullptr)
         {
-            const unsigned int clientID = mConnections.size();
+            const unsigned int clientID = static_cast<unsigned int>(mConnections.size());
             LOG_INFO() << "Incoming connection from client";
             SetConnection(clientID, inConnection);
             HandleClientConnected(clientID);
@@ -80,7 +80,7 @@ namespace Ming3D
                 for (NetMessage* netMsg : mConnections[i]->GetNewMessages())
                 {
                     IncomingMessage clientMessage;
-                    clientMessage.mClientID = i;
+                    clientMessage.mClientID = static_cast<int>(i);
 
                     clientMessage.mMessage = netMsg;
                     mIncomingMessages.push_back(clientMessage);
@@ -195,11 +195,11 @@ namespace Ming3D
                     SendMessageToSelf(currMessage.mMessage);
 
                     for (size_t i = mIsHost ? 1 : 0; i < mConnections.size(); i++)
-                        targets.push_back(i);
+                        targets.push_back(static_cast<int>(i));
                     break;
                 case NetTarget::Others:
                     for (size_t i = mIsHost ? 1 : 0; i < mConnections.size(); i++)
-                        targets.push_back(i);
+                        targets.push_back(static_cast<int>(i));
                     break;
                 case NetTarget::Clients:
                     if (!mIsHost)
@@ -207,7 +207,7 @@ namespace Ming3D
                         SendMessageToSelf(currMessage.mMessage);
                     }
                     for (size_t i = 1; i < mConnections.size(); i++)
-                        targets.push_back(i);
+                        targets.push_back(static_cast<int>(i));
                     break;
                 case NetTarget::Host:
                     if (mIsHost)
@@ -243,7 +243,7 @@ namespace Ming3D
 
     void GameNetwork::SendDataToConnecton(DataWriter* inWriter, NetConnection* inConnection)
     {
-        inConnection->GetSocket()->Send(inWriter->GetData(), inWriter->GetSize());
+        inConnection->GetSocket()->Send(inWriter->GetData(), static_cast<int>(inWriter->GetSize()));
     }
 
     void GameNetwork::SetConnection(unsigned int inSocketID, NetConnection* inConnection)

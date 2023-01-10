@@ -6,12 +6,12 @@
 
 namespace Ming3D
 {
-    int WidgetRenderObject::GetNumBatches()
+    size_t WidgetRenderObject::GetNumBatches()
     {
         return mWidgetTree->GetNumBatches();
     }
 
-    void WidgetRenderObject::GetRenderBatch(int batchIndex, RenderBatch* outBatch)
+    void WidgetRenderObject::GetRenderBatch(size_t batchIndex, RenderBatch* outBatch)
     {
         mWidgetTree->GetBatch(batchIndex, outBatch);
     }

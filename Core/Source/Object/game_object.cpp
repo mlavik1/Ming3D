@@ -8,4 +8,20 @@ namespace Ming3D
     {
 
     }
+
+    void GameObject::Serialise(DataWriter*, PropertyFlag, ObjectFlag)
+    {
+    }
+
+    void GameObject::Deserialise(DataWriter*, PropertyFlag, ObjectFlag)
+    {
+    }
+
+    void GameObject::ReplicateConstruct(DataWriter*)
+    {
+    }
+
+    void GameObject::ReceiveReplicateConstruct(DataWriter*)
+    {
+    }
 }

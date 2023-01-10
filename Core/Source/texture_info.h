@@ -3,7 +3,7 @@
 
 namespace Ming3D
 {
-    enum PixelFormat
+    enum class PixelFormat
     {
         RGBA, BGRA, RGB
     };

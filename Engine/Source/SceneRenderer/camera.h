@@ -6,7 +6,7 @@
 namespace Ming3D
 {
     class RenderPipeline;
-    class RenderPipelineParams;
+    struct RenderPipelineParams;
 
     struct CameraViewport
     {
