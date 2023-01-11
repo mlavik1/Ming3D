@@ -68,39 +68,47 @@ namespace Ming3D
         // Update visuals
         for (auto& visual : widget->mVisuals)
         {
+            // Re-create vertex data of visual if it is invalidated
             if (params.mVisualsInvalidated || visual->mVisualInvalidated)
             {
-                unsigned int vertCount = 0;
-                unsigned int indCount = 0;
-
                 visual->RecreateMeshData(params.mVisibleRect);
-
-                // Get required mesh data size
-                visual->GetMeshDataSize(vertCount, indCount);
-
-                // Reallocate submesh data
-                visual->mSubmeshData = ReallocSubmesh(visual->mSubmeshData, vertCount, indCount);
-
-                // Update submesh vertex/index data
-                GUIVertexData* vertData = mVertexData->GetDataAs<GUIVertexData>();
-                unsigned int* indData = mIndexData->GetData();
-                visual->GetMeshData(&vertData[visual->mSubmeshData->mVertexStartIndex], &indData[visual->mSubmeshData->mTriangleStartIndex]);
-
-                const unsigned int indexOffset = visual->mSubmeshData->mVertexStartIndex;
-                for (int iIndex = 0; iIndex < visual->mSubmeshData->mNumIndices; iIndex++)
-                    indData[visual->mSubmeshData->mTriangleStartIndex + iIndex] += indexOffset;
-
                 visual->mVisualInvalidated = false;
             }
+
+            unsigned int vertCount = 0;
+            unsigned int indCount = 0;
+
+            // Get required mesh data size
+            visual->GetMeshDataSize(vertCount, indCount);
+
+            unsigned int totalVertCount = mVertexIndex + vertCount;
+            unsigned int totalIndCount = mTriangleIndex + indCount;
+
+            // Reallocate mesh data if needed -> TODO: Shrink?
+            if (mVertexData->GetNumVertices() < totalVertCount)
+                mVertexData->Resize(totalVertCount);
+            if (mIndexData->GetNumIndices() < totalIndCount)
+                mIndexData->Resize(totalIndCount);
+            
+            // Update submesh vertex/index data
+            GUIVertexData* vertData = mVertexData->GetDataAs<GUIVertexData>();
+            unsigned int* indData = mIndexData->GetData();
+            visual->GetMeshData(&vertData[mVertexIndex], &indData[mTriangleIndex]);
+
+            for (size_t i = 0; i < indCount; ++i)
+                indData[mTriangleIndex + i] += mVertexIndex;
 
             // Add render batch
             RenderBatch batch;
             batch.mMaterial = visual->GetMaterial()->mMaterialBuffer;
             batch.mMeshBuffer = mMeshBuffer;
             batch.mModelMatrix = mTransformMatrix;
-            batch.mStartIndex = visual->mSubmeshData->mTriangleStartIndex;
-            batch.mNumIndices = visual->mSubmeshData->mNumIndices;
+            batch.mStartIndex = mTriangleIndex;
+            batch.mNumIndices = indCount;
             AddRenderBatch(batch);
+
+            mVertexIndex += vertCount;
+            mTriangleIndex += indCount;
         }
 
         // Update child widgets
@@ -155,6 +163,8 @@ namespace Ming3D
     void WidgetTree::UpdateWidgetTree()
     {
         mRenderBatches.clear();
+        mVertexIndex = 0;
+        mTriangleIndex = 0;
 
         WidgetUpdateParams params;
         params.mContentRect.mPosition = glm::vec2(0.0f, 0.0f);
@@ -180,89 +190,6 @@ namespace Ming3D
             GGameEngine->GetRenderDevice()->UpdateVertexBuffer(mMeshBuffer->mVertexBuffer, mVertexData.get());
             GGameEngine->GetRenderDevice()->UpdateIndexBuffer(mMeshBuffer->mIndexBuffer, mIndexData.get());
         }
-    }
-
-    void WidgetTree::OffsetSubmeshes(VisualSubmeshNode* node, int64_t vertexOffset, int64_t indexOffset)
-    {
-        VisualSubmeshNode* currNode = node;
-        while (currNode != nullptr)
-        {
-            int64_t newStartVertex = static_cast<int64_t>(currNode->mVertexStartIndex) + vertexOffset;
-            int64_t newStartIndex = static_cast<int64_t>(currNode->mVertexStartIndex) + vertexOffset;
-
-            // Move vertex/index datasam
-            std::memmove(mVertexData->GetDataPtrAt(newStartVertex), mVertexData->GetDataPtrAt(node->mVertexStartIndex), currNode->mNumVertices);
-            std::memmove(mIndexData->GetDataPtrAt(newStartIndex), mIndexData->GetDataPtrAt(node->mTriangleStartIndex), currNode->mNumIndices);
-
-            // Set new start indices
-            currNode->mVertexStartIndex = newStartVertex;
-            currNode->mTriangleStartIndex = newStartIndex;
-
-            currNode = currNode->mNextNode;
-        }
-    }
-
-    VisualSubmeshNode* WidgetTree::ReallocSubmesh(VisualSubmeshNode* oldNode, unsigned int vertexCount, unsigned int indexCount)
-    {
-        VisualSubmeshNode* node = oldNode;
-
-        if (mRootSubmeshNode == nullptr)
-        {
-            assert(oldNode == nullptr);
-
-            mRootSubmeshNode = mTailSubmeshNode = new VisualSubmeshNode();
-            mRootSubmeshNode->mNumVertices = vertexCount;
-            mRootSubmeshNode->mNumIndices = indexCount;
-            mRootSubmeshNode->mVertexStartIndex = 0;
-            mRootSubmeshNode->mTriangleStartIndex = 0;
-            node = mRootSubmeshNode;
-
-            mVertexData->Resize(mVertexData->GetNumVertices() + vertexCount);
-            mIndexData->Resize(mIndexData->GetNumIndices() + indexCount);
-        }
-        else if(oldNode != nullptr)
-        {
-            size_t oldVertCount = oldNode->mNumVertices;
-            size_t oldIndCount = oldNode->mNumIndices;
-
-            if (oldVertCount != vertexCount || oldIndCount != indexCount)
-            {
-                oldNode->mNumVertices = vertexCount;
-                oldNode->mNumIndices = indexCount;
-                node = oldNode;
-
-                // Grow vertex data (before we offset other nodes)
-                if(vertexCount > oldVertCount)
-                    mVertexData->Resize(mVertexData->GetNumVertices() + (vertexCount - oldVertCount));
-                if (indexCount > oldIndCount)
-                    mIndexData->Resize(mIndexData->GetNumIndices() + (indexCount - oldIndCount));
-
-                // Offset succeeding nodes
-                OffsetSubmeshes(node->mNextNode, static_cast<int>(vertexCount) - static_cast<int>(oldVertCount), static_cast<int>(indexCount) - static_cast<int>(oldIndCount));
-            
-                // Shink vertex data
-                if (vertexCount < oldVertCount)
-                    mVertexData->Resize(mVertexData->GetNumVertices() - (oldVertCount - indexCount));
-                if (indexCount < oldIndCount)
-                    mIndexData->Resize(mIndexData->GetNumIndices() - (oldVertCount - indexCount));
-            }
-        }
-        else
-        {
-            // TODO: Handle deletion of widgets?
-            node = new VisualSubmeshNode();
-            node->mNumVertices = vertexCount;
-            node->mNumIndices = indexCount;
-            node->mVertexStartIndex = mTailSubmeshNode->mVertexStartIndex + mTailSubmeshNode->mNumVertices;
-            node->mTriangleStartIndex = mTailSubmeshNode->mTriangleStartIndex + mTailSubmeshNode->mNumIndices;
-            mTailSubmeshNode->mNextNode = node;
-            mTailSubmeshNode = node;
-
-            mVertexData->Resize(mVertexData->GetNumVertices() + vertexCount);
-            mIndexData->Resize(mIndexData->GetNumIndices() + indexCount);
-        }
-
-        return node;
     }
 
     WidgetRect WidgetTree::ToScreenSpaceRect(const WidgetRect& rect)

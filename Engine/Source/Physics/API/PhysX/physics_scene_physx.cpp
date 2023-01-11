@@ -30,8 +30,7 @@ namespace Ming3D
 
     void PhysicsSimulationCallback::onContact(const physx::PxContactPairHeader & pairHeader, const physx::PxContactPair * pairs, physx::PxU32 nbPairs)
     {
-        RigidBodyComponent* rbComp1 = (RigidBodyComponent*)pairHeader.actors[0]->userData;
-        RigidBodyComponent* rbComp2 = (RigidBodyComponent*)pairHeader.actors[1]->userData;
+
     }
 
     void PhysicsSimulationCallback::onTrigger(physx::PxTriggerPair * pairs, physx::PxU32 count)

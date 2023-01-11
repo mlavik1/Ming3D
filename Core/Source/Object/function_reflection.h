@@ -1,10 +1,10 @@
 #ifndef MING3D_FUNCTIONREFLECTION_H
 #define MING3D_FUNCTIONREFLECTION_H
 
-#include <vector>
 #include "Serialisation/data_serialisation.h"
 #include "Serialisation/data_writer.h"
 #include <memory>
+#include <vector>
 
 namespace Ming3D
 {
@@ -121,12 +121,11 @@ namespace Ming3D
 		virtual void SerialiseFunctionArgs(const std::vector<FunctionParamBase>& inArgs, DataWriter& outData) override
 		{
 			size_t i = 0;
-			auto list = { (FunctionSerialisationHelper::SerialiseArgument<Param>(inArgs[i++], outData))... };
+			[[maybe_unused]] auto list = { (FunctionSerialisationHelper::SerialiseArgument<Param>(inArgs[i++], outData))... };
 		}
 
 		virtual void DeserialiseFunctionArgs(DataWriter& inData, std::vector<FunctionParamBase>& outArgs) override
 		{
-			size_t i = 0;
 			outArgs = { (FunctionSerialisationHelper::DeserialiseArgument<Param>(inData))... };
 		}
 

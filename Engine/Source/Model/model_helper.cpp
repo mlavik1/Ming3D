@@ -92,7 +92,6 @@ namespace Ming3D
             vertLayout.VertexComponents.push_back(Rendering::EVertexComponent::TexCoord);
         
         Rendering::VertexData* vertData = new Rendering::VertexData(vertLayout, aiMesh->mNumVertices);
-        size_t vertSize = vertData->GetVertexSize();
         char* currVert = (char*)vertData->GetDataPtr();
 
         // Get Vertices
@@ -130,8 +129,6 @@ namespace Ming3D
             }
         }
 
-        int matIndex = aiMesh->mMaterialIndex;
-
         Mesh* mesh = new Mesh();
         mesh->mVertexData = vertData;
         mesh->mIndexData = new Rendering::IndexData(indices.size());
@@ -166,7 +163,7 @@ namespace Ming3D
 
         for(unsigned int iChild = 0; iChild < aiNode->mNumChildren; iChild++)
         {
-            Actor* child = CreateNode(aiNode->mChildren[iChild], meshes, materials, scene, actor);
+            CreateNode(aiNode->mChildren[iChild], meshes, materials, scene, actor);
         }
 
         return actor;
@@ -203,7 +200,7 @@ namespace Ming3D
             meshes.push_back(mesh);
         }
 
-        Actor* childActor = CreateNode(scene->mRootNode, meshes, materials, scene, inActor);
+        CreateNode(scene->mRootNode, meshes, materials, scene, inActor);
 
         return true;
     }

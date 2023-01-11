@@ -78,7 +78,6 @@ namespace Ming3D
         const glm::vec3 size = mSize * mParent->GetTransform().GetWorldScale();
         physx::PxBoxGeometry pxGeom = physx::PxBoxGeometry(size.x, size.y, size.z);
 
-        physx::PxRigidActor* pxActor = dynamic_cast<IPhysXActor*>(rigidBodyComp->GetPhysicsActor())->GetRigidActor();
         mPxShape->setGeometry(pxGeom);
 #endif
     }

@@ -30,7 +30,7 @@ namespace Ming3D
 
         for (size_t iIndex = 0; iIndex < baseIndices.size(); iIndex++)
         {
-            outIndices.push_back(baseIndices[iIndex] + indexOffset);
+            outIndices.push_back(static_cast<unsigned int>(baseIndices[iIndex] + indexOffset));
         }
     }
 

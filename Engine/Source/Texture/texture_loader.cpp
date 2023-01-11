@@ -38,7 +38,7 @@ namespace Ming3D
             bytesPerPixel = 4;
 
             size_t sourceTextureIndex = 0;
-            for (size_t i = 0; i < texWidth * texHeight * 4; i++)
+            for (size_t i = 0; i < static_cast<size_t>(texWidth * texHeight * 4); i++)
             {
                 if (i % 4 == 3)
                 {

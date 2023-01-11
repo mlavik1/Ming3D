@@ -4,10 +4,8 @@ namespace Ming3D
 {
     Mesh::~Mesh()
     {
-        if (mVertexData != nullptr)
-            delete mVertexData;
+        delete mVertexData;
 
-        if (mIndexData != nullptr)
-            delete mIndexData;
+        delete mIndexData;
     }
 }

@@ -30,10 +30,5 @@ namespace Ming3D::Rendering
         }
         }
     }
-
-    BlendStateGL::~BlendStateGL()
-    {
-
-    }
 }
 #endif

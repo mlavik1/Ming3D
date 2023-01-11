@@ -11,7 +11,7 @@ namespace Ming3D
     class Widget;
     class Visual;
     class VisualSubmeshNode;
-    class GUIVertexData;
+    struct GUIVertexData;
     class Material;
 
     namespace Rendering
@@ -30,6 +30,8 @@ namespace Ming3D
 
         std::unique_ptr<Rendering::VertexData> mVertexData;
         std::unique_ptr<Rendering::IndexData> mIndexData;
+        unsigned int mVertexIndex = 0;
+        unsigned int mTriangleIndex = 0;
 
         std::vector<RenderBatch> mRenderBatches;
 
@@ -44,10 +46,6 @@ namespace Ming3D
         void UpdateWidgetRecursive(Widget* widget, WidgetUpdateParams params);
 
         void AddRenderBatch(RenderBatch batch);
-
-        void OffsetSubmeshes(VisualSubmeshNode* node, int64_t vertexOffset, int64_t indexOffset);
-
-        VisualSubmeshNode* ReallocSubmesh(VisualSubmeshNode* oldNode, unsigned int vertexCount, unsigned int indexCount);
 
         WidgetRect ToScreenSpaceRect(const WidgetRect& rect);
 

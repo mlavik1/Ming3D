@@ -12,7 +12,7 @@ namespace Ming3D
 {
     const int NearestPOT(const int x)
     {
-        return std::pow(2, std::ceil(std::log(x) / std::log(2)));
+        return static_cast<int>(std::pow(2, std::ceil(std::log(x) / std::log(2))));
     }
 
     FontFace* FontManager::GetFontFace(const std::string fontPath, int fontSize)
@@ -67,13 +67,14 @@ namespace Ming3D
         fntBmpWidth = NearestPOT(fntBmpWidth);
         fntBmpHeight = NearestPOT(fntBmpHeight);
 
-        unsigned char* buffer = new unsigned char[fntBmpWidth * fntBmpHeight * 4];
-        memset(buffer, 0, fntBmpWidth * fntBmpHeight * 4);
+        const size_t bufferSize = static_cast<size_t>(fntBmpWidth) * static_cast<size_t>(fntBmpHeight) * 4;
+        unsigned char* buffer = new unsigned char[bufferSize];
+        memset(buffer, 0, bufferSize);
 
         FontFace* fontFace = new FontFace();
 
         // Draw all characters to combined bitmap
-        for(int i = 0; i < chars.size(); ++i)
+        for(unsigned int i = 0; i < chars.size(); ++i)
         {
             FT_UInt glyphIndex = FT_Get_Char_Index(face, chars[i]);
 
@@ -82,14 +83,14 @@ namespace Ming3D
             FT_Render_Glyph(face->glyph, FT_RENDER_MODE_NORMAL);
 
             // find the tile position where we have to draw the character
-            int x = (i % charsPerDim) * (fontSize + 2) + 1; // +1 is padding
-            int y = (i / charsPerDim) * (fontSize + 2) + 1; // +1 is padding
+            int x = (static_cast<int>(i) % charsPerDim) * (fontSize + 2) + 1; // +1 is padding
+            int y = (static_cast<int>(i) / charsPerDim) * (fontSize + 2) + 1; // +1 is padding
 
             // Copy character pixels to combined bitmap
             const FT_Bitmap& bitmap = face->glyph->bitmap;
-            for (int xx = 0; xx < bitmap.width; ++xx)
+            for (unsigned int xx = 0; xx < bitmap.width; ++xx)
             {
-                for (int yy = 0; yy < bitmap.rows; ++yy)
+                for (unsigned int yy = 0; yy < bitmap.rows; ++yy)
                 {
                     unsigned char r = bitmap.buffer[(yy * (bitmap.width) + xx)];
                     buffer[(y + yy) * fntBmpWidth * 4 + (x + xx) * 4 + 0] = r;
@@ -119,7 +120,7 @@ namespace Ming3D
             fontFace->mGlyphs.emplace(static_cast<wchar_t>(chars[i]), glyphInfo);
         }
 
-        fontFace->mMeanBearing /= fontFace->mGlyphs.size();
+        fontFace->mMeanBearing /= static_cast<int>(fontFace->mGlyphs.size());
 
         fontFace->mTexture = std::make_shared<Texture>();
         fontFace->mTexture->SetTextureData(buffer, 4, PixelFormat::RGBA, fntBmpWidth, fntBmpHeight);

@@ -39,11 +39,6 @@ namespace Ming3D::Rendering
         SetDepthStencilState(mDefaultDepthStencilState);
     }
 
-    RenderDeviceGL::~RenderDeviceGL()
-    {
-
-    }
-
     RenderTarget* RenderDeviceGL::CreateRenderTarget(RenderWindow* inWindow)
     {
         TextureInfo textureInfo;
@@ -400,7 +395,7 @@ namespace Ming3D::Rendering
         if (mActiveShaderProgram == inProgram)
             return;
 
-        mActiveShaderProgram = (ShaderProgramGL*)inProgram;
+        mActiveShaderProgram = static_cast<ShaderProgramGL*>(inProgram);
         if (mActiveShaderProgram != nullptr)
         {
             glUseProgram(mActiveShaderProgram->GetGLProgram());
@@ -411,7 +406,7 @@ namespace Ming3D::Rendering
 
     void RenderDeviceGL::BeginRenderWindow(RenderWindow* inWindow)
     {
-        mRenderWindow = (RenderWindowGL*)inWindow;
+        mRenderWindow = static_cast<RenderWindowGL*>(inWindow);
 
         mRenderWindow->GetWindow()->BeginRender();
     }
@@ -486,8 +481,8 @@ namespace Ming3D::Rendering
     {
         ADD_FRAME_STAT_INT("RenderPrimitive", 1);
 
-        VertexBufferGL* vertexBufferGL = (VertexBufferGL*)inVertexBuffer;
-        IndexBufferGL* indexBufferGL = (IndexBufferGL*)inIndexBuffer;
+        VertexBufferGL* vertexBufferGL = static_cast<VertexBufferGL*>(inVertexBuffer);
+        IndexBufferGL* indexBufferGL = static_cast<IndexBufferGL*>(inIndexBuffer);
         
         size_t vertexComponentIndex = 0;
         size_t vertexComponentOffset = 0;
@@ -502,7 +497,7 @@ namespace Ming3D::Rendering
         }
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferGL->GetGLBuffer());
-        glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, (char*)nullptr + startIndex * sizeof(unsigned int) /* HANDLE 16 bit index buffer */);
+        glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indexCount), GL_UNSIGNED_INT, reinterpret_cast<void*>(startIndex * sizeof(unsigned int)) /* TODO: Handle 16 bit index buffer */);
 
         CheckGLErrors("RenderPrimitive");
     }
@@ -590,8 +585,11 @@ namespace Ming3D::Rendering
     {
         ADD_FRAME_STAT_INT("SetConstantBufferData", 1);
 
-        GLuint loc = mActiveShaderProgram->GetUniformLocation(inName);
-        glUniform1f(loc, inVal);
+        GLint loc = mActiveShaderProgram->GetUniformLocation(inName);
+        if (loc != -1)
+            glUniform1f(loc, inVal);
+        else
+            LOG_WARNING() << "Shader program has no uniform with name: " << inName;
 
         CheckGLErrors("SetShaderUniformFloat");
     }
@@ -600,8 +598,11 @@ namespace Ming3D::Rendering
     {
         ADD_FRAME_STAT_INT("SetConstantBufferData", 1);
 
-        GLuint loc = mActiveShaderProgram->GetUniformLocation(inName);
-        glUniform1i(loc, inVal);
+        GLint loc = mActiveShaderProgram->GetUniformLocation(inName);
+        if (loc != -1)
+            glUniform1i(loc, inVal);
+        else
+            LOG_WARNING() << "Shader program has no uniform with name: " << inName;
 
         CheckGLErrors("SetShaderUniformInt");
     }
@@ -610,8 +611,11 @@ namespace Ming3D::Rendering
     {
         ADD_FRAME_STAT_INT("SetConstantBufferData", 1);
 
-        GLuint loc = mActiveShaderProgram->GetUniformLocation(inName);
-        glUniformMatrix4fv(loc, 1, GL_FALSE, &inMat[0][0]);
+        GLint loc = mActiveShaderProgram->GetUniformLocation(inName);
+        if (loc != -1)
+            glUniformMatrix4fv(loc, 1, GL_FALSE, &inMat[0][0]);
+        else
+            LOG_WARNING() << "Shader program has no uniform with name: " << inName;
 
         CheckGLErrors("SetShaderUniformMat4x4");
     }
@@ -620,8 +624,11 @@ namespace Ming3D::Rendering
     {
         ADD_FRAME_STAT_INT("SetConstantBufferData", 1);
 
-        GLuint loc = mActiveShaderProgram->GetUniformLocation(inName);
-        glUniform2fv(loc, 1, (float*)&inVec[0]);
+        GLint loc = mActiveShaderProgram->GetUniformLocation(inName);
+        if (loc != -1)
+            glUniform2fv(loc, 1, (float*)&inVec[0]);
+        else
+            LOG_WARNING() << "Shader program has no uniform with name: " << inName;
 
         CheckGLErrors("SetShaderUniformVec2");
     }
@@ -630,9 +637,11 @@ namespace Ming3D::Rendering
     {
         ADD_FRAME_STAT_INT("SetConstantBufferData", 1);
 
-        GLuint loc = mActiveShaderProgram->GetUniformLocation(inName);
-        glUniform3fv(loc, 1, (float*)&inVec[0]);
-
+        GLint loc = mActiveShaderProgram->GetUniformLocation(inName);
+        if (loc != -1)
+            glUniform3fv(loc, 1, (float*)&inVec[0]);
+        else
+            LOG_WARNING() << "Shader program has no uniform with name: " << inName;
         CheckGLErrors("SetShaderUniformVec3");
     }
 
@@ -640,8 +649,11 @@ namespace Ming3D::Rendering
     {
         ADD_FRAME_STAT_INT("SetConstantBufferData", 1);
 
-        GLuint loc = mActiveShaderProgram->GetUniformLocation(inName);
-        glUniform4fv(loc, 1, (float*)&inVec[0]);
+        GLint loc = mActiveShaderProgram->GetUniformLocation(inName);
+        if (loc != -1)
+            glUniform4fv(loc, 1, (float*)&inVec[0]);
+        else
+            LOG_WARNING() << "Shader program has no uniform with name: " << inName;
 
         CheckGLErrors("SetShaderUniformVec4");
     }

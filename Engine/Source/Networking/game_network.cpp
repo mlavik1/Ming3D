@@ -4,6 +4,7 @@
 #include "GameEngine/game_engine.h"
 #include "Platform/platform.h"
 #include <cstring>
+#include <cassert>
 
 namespace Ming3D
 {
@@ -49,7 +50,7 @@ namespace Ming3D
         NetConnection* inConnection = new NetConnection(inConnSock);
         if (inConnSock != nullptr)
         {
-            const int clientID = mConnections.size();
+            const unsigned int clientID = static_cast<unsigned int>(mConnections.size());
             LOG_INFO() << "Incoming connection from client";
             SetConnection(clientID, inConnection);
             HandleClientConnected(clientID);
@@ -79,7 +80,7 @@ namespace Ming3D
                 for (NetMessage* netMsg : mConnections[i]->GetNewMessages())
                 {
                     IncomingMessage clientMessage;
-                    clientMessage.mClientID = i;
+                    clientMessage.mClientID = static_cast<int>(i);
 
                     clientMessage.mMessage = netMsg;
                     mIncomingMessages.push_back(clientMessage);
@@ -101,7 +102,6 @@ namespace Ming3D
                 {
                     DataWriter* reader = msg.mMessage->GetDataWriter();
                     reader->SetReadPos(0);
-                    msglen_t msgLength = reader->GetSize();
 
                     netguid_t netGUID = 0;
                     size_t funcNameLength = 0;
@@ -155,6 +155,10 @@ namespace Ming3D
                     obj->Deserialise(reader, PropertyFlag::InitReplicate, ObjectFlag::InitReplicate);
                     break;
                 }
+                case NetMessageType::Ignored:
+                case NetMessageType::ConnectionRequest:
+                case NetMessageType::ObjectReplication: // TODO: Implement this?
+                    break;
             }
         }
     }
@@ -162,7 +166,7 @@ namespace Ming3D
 
     void GameNetwork::SendMessage(NetMessage* inMessage, NetTarget inTarget)
     {
-        OutgoingMessage msg;
+        OutgoingMessage msg{};
         msg.mTarget = inTarget;
         msg.mMessage = inMessage;
         mOutgoingMessages.push_back(msg);
@@ -170,7 +174,7 @@ namespace Ming3D
 
     void GameNetwork::SendMessage(NetMessage* inMessage, int inTarget)
     {
-        OutgoingMessage msg;
+        OutgoingMessage msg{};
         msg.mClientID = inTarget;
         msg.mMessage = inMessage;
         mOutgoingMessages.push_back(msg);
@@ -191,11 +195,11 @@ namespace Ming3D
                     SendMessageToSelf(currMessage.mMessage);
 
                     for (size_t i = mIsHost ? 1 : 0; i < mConnections.size(); i++)
-                        targets.push_back(i);
+                        targets.push_back(static_cast<int>(i));
                     break;
                 case NetTarget::Others:
                     for (size_t i = mIsHost ? 1 : 0; i < mConnections.size(); i++)
-                        targets.push_back(i);
+                        targets.push_back(static_cast<int>(i));
                     break;
                 case NetTarget::Clients:
                     if (!mIsHost)
@@ -203,7 +207,7 @@ namespace Ming3D
                         SendMessageToSelf(currMessage.mMessage);
                     }
                     for (size_t i = 1; i < mConnections.size(); i++)
-                        targets.push_back(i);
+                        targets.push_back(static_cast<int>(i));
                     break;
                 case NetTarget::Host:
                     if (mIsHost)
@@ -239,10 +243,10 @@ namespace Ming3D
 
     void GameNetwork::SendDataToConnecton(DataWriter* inWriter, NetConnection* inConnection)
     {
-        inConnection->GetSocket()->Send(inWriter->GetData(), inWriter->GetSize());
+        inConnection->GetSocket()->Send(inWriter->GetData(), static_cast<int>(inWriter->GetSize()));
     }
 
-    void GameNetwork::SetConnection(int inSocketID, NetConnection* inConnection)
+    void GameNetwork::SetConnection(unsigned int inSocketID, NetConnection* inConnection)
     {
         if (mConnections.size() <= inSocketID)
             mConnections.resize(inSocketID + 1);
@@ -344,6 +348,9 @@ namespace Ming3D
             break;
         case NetTarget::Everyone:
             SendMessage(msg, NetTarget::Everyone);
+            break;
+        case NetTarget::Others:
+            assert(false); // TODO: Implement this
             break;
         }
 

@@ -44,12 +44,12 @@ namespace Ming3D
         renderDevice->UpdateVertexBuffer(mMeshBuffer->mVertexBuffer, mesh->mVertexData);
     }
 
-    int MeshRenderObject::GetNumBatches()
+    size_t MeshRenderObject::GetNumBatches()
     {
         return mMeshBuffer != nullptr ? 1 : 0;
     }
 
-    void MeshRenderObject::GetRenderBatch(int batchIndex, RenderBatch* outBatch)
+    void MeshRenderObject::GetRenderBatch(size_t batchIndex, RenderBatch* outBatch)
     {
         outBatch->mMeshBuffer = mMeshBuffer;
         outBatch->mMaterial = mMaterialBuffer;

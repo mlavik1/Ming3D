@@ -16,8 +16,8 @@ namespace Ming3D
     class SceneRenderer
     {
     private:
-        Rendering::ConstantBuffer* mGlobalCBuffer;
-        RenderPipeline* mFallbackPipeline;
+        Rendering::ConstantBuffer* mGlobalCBuffer = nullptr;
+        RenderPipeline* mFallbackPipeline = nullptr;
         RenderPipelineParams mPipelineParams;
 
         void Render(RenderScene* renderScene, Camera* camera);
@@ -25,6 +25,10 @@ namespace Ming3D
     public:
         SceneRenderer();
         ~SceneRenderer();
+
+        // Delete copy constructor and assignment operator
+        SceneRenderer(const SceneRenderer& actor) = delete;
+        SceneRenderer& operator=(const SceneRenderer&) = delete;
 
         void RegisterMaterial(MaterialBuffer* inMat);
         

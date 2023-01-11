@@ -96,8 +96,6 @@ namespace Ming3D
     void InputHandlerWin32::AddInputEvent(InputEvent event, HWND hWnd)
     {
         POINT cursorPos;
-        RECT wndRect;
-        RECT clientRect;
         if (GetCursorPos(&cursorPos) && ScreenToClient(hWnd, &cursorPos))
         {
             event.mMousePosition = glm::ivec2(static_cast<int>(cursorPos.x), static_cast<int>(cursorPos.y));

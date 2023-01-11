@@ -8,6 +8,7 @@ namespace Ming3D
     class PhysicsActor
     {
     public:
+        virtual ~PhysicsActor() = default;
         virtual void UpdateTransform(const Transform& inTrans) = 0;
     };
 }

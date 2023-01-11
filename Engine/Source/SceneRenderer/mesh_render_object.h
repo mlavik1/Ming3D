@@ -24,8 +24,8 @@ namespace Ming3D
 
         void ReuploadVertexData(Mesh* mesh);
 
-        virtual int GetNumBatches() override;
-        virtual void GetRenderBatch(int batchIndex, RenderBatch* outBatch) override;
+        virtual size_t GetNumBatches() override;
+        virtual void GetRenderBatch(size_t batchIndex, RenderBatch* outBatch) override;
 
         virtual ERenderType GetRenderType() override;
         virtual bool GetCastShadows() override;

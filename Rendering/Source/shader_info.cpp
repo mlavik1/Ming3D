@@ -7,13 +7,13 @@ namespace Ming3D::Rendering
         mDatatype = EShaderDatatype::None;
     }
 
-    ShaderDatatypeInfo::ShaderDatatypeInfo(EShaderDatatype inType, std::string inName)
+    ShaderDatatypeInfo::ShaderDatatypeInfo(EShaderDatatype inType, std::string_view inName)
     {
         mDatatype = inType;
         mName = inName;
     }
 
-    ShaderDatatypeInfo::ShaderDatatypeInfo(EShaderDatatype inType, std::string inName, std::vector<ShaderStructMember> inChildren)
+    ShaderDatatypeInfo::ShaderDatatypeInfo(EShaderDatatype inType, std::string_view inName, const std::vector<ShaderStructMember>& inChildren)
     {
         mDatatype = inType;
         mName = inName;

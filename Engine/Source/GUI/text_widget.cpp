@@ -43,7 +43,7 @@ namespace Ming3D
         const int actualFontSize = std::min(fontSize, MAX_FONT_SIZE);
         mFontFace = GGameEngine->GetFontManager()->GetFontFace(font, actualFontSize);
         mTextVisual->SetFontFace(mFontFace);
-        mTextVisual->SetFontScale(fontSize / actualFontSize);
+        mTextVisual->SetFontScale(static_cast<float>(fontSize) / actualFontSize);
     }
 
     void TextWidget::SetFontSize(const int fontSize)
@@ -53,7 +53,7 @@ namespace Ming3D
         const int actualFontSize = std::min(fontSize, MAX_FONT_SIZE);
         mFontFace = GGameEngine->GetFontManager()->GetFontFace(mFont, actualFontSize);
         mTextVisual->SetFontFace(mFontFace);
-        mTextVisual->SetFontScale(fontSize / actualFontSize);
+        mTextVisual->SetFontScale(static_cast<float>(fontSize) / actualFontSize);
     }
 
     void TextWidget::SetColour(glm::vec4 colour)

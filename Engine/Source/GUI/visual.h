@@ -19,7 +19,6 @@ namespace Ming3D
 
     protected:
         bool mVisualInvalidated = true;
-        VisualSubmeshNode* mSubmeshData = nullptr;
         WidgetTree* mWidgetTree = nullptr;
 
     public:

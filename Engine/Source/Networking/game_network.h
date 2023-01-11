@@ -54,7 +54,7 @@ namespace Ming3D
         void SendMessageToSelf(NetMessage* inMessage);
 
         void SendDataToConnecton(DataWriter* inWriter, NetConnection* inConnection);
-        void SetConnection(int inSocketID, NetConnection* inConnection);
+        void SetConnection(unsigned int inSocketID, NetConnection* inConnection);
         void HandleClientConnected(int clientID);
 
         /** Crates a NetMessage for calling the specified function (with the specified arguments) remotely. */

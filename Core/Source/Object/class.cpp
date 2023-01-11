@@ -6,9 +6,9 @@
 namespace Ming3D
 {
 	Class::Class(const char* arg_name, staticclassinitialiser_t arg_initialiser, staticconstructor_t constructor, Ming3D::Class* superclass)
-		: mClassName(arg_name), mClassInitialiser(arg_initialiser), mStaticConstructor(constructor), mBaseClass(superclass)
+		: mClassName(arg_name), mBaseClass(superclass), mStaticConstructor(constructor), mClassInitialiser(arg_initialiser)
 	{
-		__AssertComment(arg_name != "", "ClassName cannot be empty");
+		__AssertComment(strlen(arg_name) > 0, "ClassName cannot be empty");
 		if (mBaseClass != nullptr)
 		{
 			mBaseClass->mChildClasses.push_back(this);

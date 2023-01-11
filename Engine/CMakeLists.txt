@@ -9,8 +9,8 @@ find_package(Freetype REQUIRED)
 
 # Gather c++ files
 file(GLOB_RECURSE SRC_FILES 
-	Source/*.cpp
-	Source/*.h
+    Source/*.cpp
+    Source/*.h
 )
 
 include_directories ("Source")
@@ -23,7 +23,14 @@ include_directories ("../Core/Source")
 include_directories ("../Rendering/Source")
 include_directories ("../Networking/Source")
 include_directories ("../Include/glm")
+
 add_library(Engine STATIC ${SRC_FILES})
+
+if(MSVC)
+    target_compile_options(Engine PRIVATE /W3 /WX)
+else()
+    target_compile_options(Engine PRIVATE -Werror -Wall)
+endif()
 
 # Set preprocessor definition MING3D_ENGINE_SOURCE_DIR (relative to CMAKE_SOURCE_DIR)
 STRING(REGEX REPLACE "${CMAKE_SOURCE_DIR}/" "" ENGINE_SOURCE_DIR_REL ${CMAKE_CURRENT_SOURCE_DIR})

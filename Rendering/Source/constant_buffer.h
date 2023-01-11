@@ -6,6 +6,8 @@ namespace Ming3D::Rendering
 {
     class ConstantBuffer
     {
+    public:
+        virtual ~ConstantBuffer() = default;
     };
 }
 

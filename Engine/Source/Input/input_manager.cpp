@@ -65,6 +65,8 @@ namespace Ming3D
             mMousePosition = inEvent.mMousePosition;
             break;
         }
+        default:
+            break;
         }
     }
 

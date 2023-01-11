@@ -11,7 +11,7 @@ namespace Ming3D
     {
     public:
         DynamicPhysicsActor() {};
-        virtual ~DynamicPhysicsActor() {};
+        virtual ~DynamicPhysicsActor() override = default;
 
         virtual void UpdateTransform(const Transform& inTrans) override = 0;
 

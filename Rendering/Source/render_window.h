@@ -14,7 +14,7 @@ namespace Ming3D::Rendering
 
     public:
         RenderWindow(WindowBase* inWindow);
-        virtual ~RenderWindow();
+        virtual ~RenderWindow() = default;
 
         WindowBase* GetWindow() { return mWindow; }
     };

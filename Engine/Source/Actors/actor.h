@@ -50,8 +50,12 @@ namespace Ming3D
         Actor() {}
 
     public:
-        Actor(World* world);
+        explicit Actor(World* world);
         virtual ~Actor();
+
+        // Delete copy constructor and assignment operator
+        Actor(const Actor& actor) = delete;
+        Actor& operator=(const Actor&) = delete;
 
         template <typename T>
         T* AddComponent()
@@ -89,7 +93,7 @@ namespace Ming3D
         void SerialiseChildActors(DataWriter* outWriter, PropertyFlag inPropFlags, ObjectFlag inObjFlags);
         void DeserialiseChildActors(DataWriter* inReader, PropertyFlag inPropFlags, ObjectFlag inObjFlag);
 
-        void RegisterComponentCallback(const ComponentCallbackType &inType, Component* inComp);
+        void RegisterComponentCallback(ComponentCallbackType inType, Component* inComp);
 
         /** Caled from Transform after movement. */
         void OnTransformMoved();

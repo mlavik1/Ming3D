@@ -50,7 +50,12 @@ namespace Ming3D
     {
         LOG_INFO() << "Selected ID: " << id;
         auto actors = GGameEngine->GetWorld().lock()->GetActorsRecursive();
-        auto itActor = std::find_if(actors.begin(), actors.end(), [id](Actor* candidate){ return candidate->GetGuid() == id; });
+        auto itActor = std::find_if(
+            actors.begin(),
+            actors.end(),
+            [id](Actor* candidate){
+                return static_cast<int>(candidate->GetGuid()) == id; // TODO: Use uint for IDs?
+            });
         if (itActor != actors.end())
         {
             GEditor->mSelectedActor = *itActor;

@@ -27,7 +27,6 @@ namespace Ming3D::Rendering
 
     public:
         RenderDeviceGL();
-        ~RenderDeviceGL();
 
         virtual RenderTarget* CreateRenderTarget(RenderWindow* inWindow) override;
         virtual RenderTarget* CreateRenderTarget(TextureInfo inTextureInfo, int numTextures) override;

@@ -9,7 +9,7 @@ namespace Ming3D
     {
     public:
         StaticPhysicsActor() {};
-        virtual ~StaticPhysicsActor() {};
+        virtual ~StaticPhysicsActor() override = default;
 
         virtual void UpdateTransform(const Transform& inTrans) override = 0;
     };

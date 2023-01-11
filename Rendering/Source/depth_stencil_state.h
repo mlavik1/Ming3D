@@ -17,6 +17,8 @@ namespace Ming3D::Rendering
 
     class DepthStencilState
     {
+    public:
+        virtual ~DepthStencilState() = default;
     };
 }
 

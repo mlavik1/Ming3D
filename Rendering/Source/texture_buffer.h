@@ -10,7 +10,7 @@ namespace Ming3D::Rendering
     class TextureBuffer
     {
     public:
-        virtual ~TextureBuffer(){}
+        virtual ~TextureBuffer() = default;
     };
 }
 

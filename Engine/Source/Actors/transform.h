@@ -34,6 +34,10 @@ namespace Ming3D
     public:
         Transform();
 
+        // Delete copy constructor and assignment operator
+        Transform(const Transform& actor) = delete;
+        Transform& operator=(const Transform&) = delete;
+
         void SetLocalPosition(glm::vec3 inPosition);
         void SetLocalScale(glm::vec3 inScale);
         void SetLocalRotation(glm::quat inRot);

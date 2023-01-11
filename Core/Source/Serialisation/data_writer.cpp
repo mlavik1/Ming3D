@@ -24,10 +24,7 @@ namespace Ming3D
 
 	void DataWriter::Reset(const size_t& arg_preallocateBytes)
 	{
-		if (mData != nullptr)
-		{
-			delete[] mData;
-		}
+		delete[] mData;
 
 		mData = new char[arg_preallocateBytes];
 		mDataReadPos = mData;
