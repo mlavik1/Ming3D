@@ -8,7 +8,18 @@ namespace Ming3D::Rendering
 
     }
 
-    VertexData::VertexData(std::vector<EVertexComponent> inComponents, size_t inNumVertices)
+    VertexData::VertexData(const std::vector<EVertexComponent>& inComponents, size_t inNumVertices)
+    {
+        mVertexLayout.VertexComponents = inComponents;
+        mVertexSize = 0;
+        for (const EVertexComponent& comp : mVertexLayout.VertexComponents)
+        {
+            mVertexSize += GetVertexComponentSize(comp);
+        }
+        mData.resize(inNumVertices * mVertexSize);
+    }
+
+    VertexData::VertexData(std::initializer_list<EVertexComponent> inComponents, size_t inNumVertices)
     {
         mVertexLayout.VertexComponents = inComponents;
         mVertexSize = 0;

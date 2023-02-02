@@ -28,16 +28,14 @@ namespace Ming3D
         mMaterial = GGameEngine->GetGUIResourceManager()->GetDefaultGUIMaterial();
         mMeshBuffer = new MeshBuffer();
 
-        Rendering::VertexLayout vertexLayout;
-        vertexLayout.VertexComponents.push_back(Rendering::EVertexComponent::Position);
-        vertexLayout.VertexComponents.push_back(Rendering::EVertexComponent::Colour);
-        vertexLayout.VertexComponents.push_back(Rendering::EVertexComponent::TexCoord);
+        auto vertexLayout = { Rendering::EVertexComponent::Position, Rendering::EVertexComponent::Colour, Rendering::EVertexComponent::TexCoord };
         mVertexData = std::make_unique<Rendering::VertexData>(vertexLayout, 0);
         mIndexData = std::make_unique<Rendering::IndexData>(0);
     }
 
     WidgetTree::~WidgetTree()
     {
+        delete mMeshBuffer; // TODO: Use smart pointer
     }
 
     void WidgetTree::UpdateWidgetRecursive(Widget* widget, WidgetUpdateParams params)
@@ -182,13 +180,15 @@ namespace Ming3D
     {
         if (mMeshBuffer->mVertexBuffer == nullptr)
         {
-            mMeshBuffer->mVertexBuffer = GGameEngine->GetRenderDevice()->CreateVertexBuffer(mVertexData.get(), Rendering::EBufferUsage::DynamicDraw);
-            mMeshBuffer->mIndexBuffer = GGameEngine->GetRenderDevice()->CreateIndexBuffer(mIndexData.get(), Rendering::EBufferUsage::DynamicDraw);
+            mMeshBuffer->mVertexBuffer = std::unique_ptr<Rendering::VertexBuffer>(
+                GGameEngine->GetRenderDevice()->CreateVertexBuffer(mVertexData.get(), Rendering::EBufferUsage::DynamicDraw));
+            mMeshBuffer->mIndexBuffer = std::unique_ptr<Rendering::IndexBuffer>(
+                GGameEngine->GetRenderDevice()->CreateIndexBuffer(mIndexData.get(), Rendering::EBufferUsage::DynamicDraw));
         }
         else
         {
-            GGameEngine->GetRenderDevice()->UpdateVertexBuffer(mMeshBuffer->mVertexBuffer, mVertexData.get());
-            GGameEngine->GetRenderDevice()->UpdateIndexBuffer(mMeshBuffer->mIndexBuffer, mIndexData.get());
+            GGameEngine->GetRenderDevice()->UpdateVertexBuffer(mMeshBuffer->mVertexBuffer.get(), mVertexData.get());
+            GGameEngine->GetRenderDevice()->UpdateIndexBuffer(mMeshBuffer->mIndexBuffer.get(), mIndexData.get());
         }
     }
 

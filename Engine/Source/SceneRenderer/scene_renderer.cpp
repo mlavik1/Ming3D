@@ -98,17 +98,15 @@ namespace Ming3D
         }
     }
 
-    void SceneRenderer::Render(std::vector<RenderScene*> scenes)
+    void SceneRenderer::Render(const std::vector<RenderScene*>& scenes)
     {
         RenderDevice* renderDevice = GGameEngine->GetRenderDevice();
         // TODO: Clean up this mess
         std::vector<Camera*> cameras;
         for (auto scene : scenes)
         {
-            for (auto camera : scene->mCameras){
-                if (camera->mRenderTarget != nullptr)
-                    cameras.push_back(camera);
-            }
+            std::copy_if(scene->mCameras.begin(), scene->mCameras.end(), std::back_inserter(cameras),
+                [](const Camera* camera) { return camera->mRenderTarget != nullptr; });
         }
         std::sort(cameras.begin(), cameras.end(), CameraSortAsc);
 

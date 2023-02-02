@@ -1,5 +1,6 @@
-#ifndef MING3D_MESHBUFFER_H
-#define MING3D_MESHBUFFER_H
+#pragma once
+
+#include <memory>
 
 namespace Ming3D
 {
@@ -13,9 +14,11 @@ namespace Ming3D
     class MeshBuffer
     {
     public:
-        Rendering::VertexBuffer* mVertexBuffer = nullptr;
-        Rendering::IndexBuffer* mIndexBuffer = nullptr;
+        std::unique_ptr<Rendering::VertexBuffer> mVertexBuffer;
+        std::unique_ptr<Rendering::IndexBuffer> mIndexBuffer;
+
+        MeshBuffer() = default;
+        MeshBuffer(const MeshBuffer&) = delete;
+        MeshBuffer& operator=(const MeshBuffer&) = delete;
     };
 }
-
-#endif

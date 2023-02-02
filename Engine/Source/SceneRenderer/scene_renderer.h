@@ -36,7 +36,7 @@ namespace Ming3D
 
         void CollectVisibleObjects(const RenderPipelineContext& context, RenderPipeline* renderPipeline, RenderPipelineParams& params);
 
-        void Render(std::vector<RenderScene*> renderScene);
+        void Render(const std::vector<RenderScene*>& renderScene);
     };
 }
 

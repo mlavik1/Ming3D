@@ -21,7 +21,7 @@ namespace Ming3D::Rendering
 
     Token Tokeniser::ParseToken()
     {
-        Token outToken;
+        Token outToken{};
 
         // Remove whitespaces and tabs from beginning
         while (*mSourceStringPos == ' ' || *mSourceStringPos == '\t')

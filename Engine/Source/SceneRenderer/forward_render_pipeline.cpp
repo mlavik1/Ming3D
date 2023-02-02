@@ -275,7 +275,7 @@ namespace Ming3D
 
             // TODO: Don't bind vertex/index buffer if same mesh as last frame
 
-            renderDevice->RenderPrimitive(renderBatch.mMeshBuffer->mVertexBuffer, renderBatch.mMeshBuffer->mIndexBuffer, renderBatch.mStartIndex, renderBatch.mNumIndices);
+            renderDevice->RenderPrimitive(renderBatch.mMeshBuffer->mVertexBuffer.get(), renderBatch.mMeshBuffer->mIndexBuffer.get(), renderBatch.mStartIndex, renderBatch.mNumIndices);
         }
     }
 

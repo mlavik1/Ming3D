@@ -2,6 +2,7 @@
 #define MING3D_GRAPHICS_DATA_H
 
 #include <vector>
+#include <initializer_list>
 
 #include <glm/glm.hpp>
 
@@ -56,7 +57,8 @@ namespace Ming3D::Rendering
         
     public:
         VertexData();
-        VertexData(std::vector<EVertexComponent> inComponents, size_t inNumVertices);
+        VertexData(const std::vector<EVertexComponent>& inComponents, size_t inNumVertices);
+        VertexData(std::initializer_list<EVertexComponent> inComponents, size_t inNumVertices);
         VertexData(VertexLayout inLayout, size_t inNumVertices);
         VertexData(const VertexData& other);
         size_t GetComponentOffset(EVertexComponent inComponent);
