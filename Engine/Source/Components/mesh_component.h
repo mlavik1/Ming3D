@@ -5,6 +5,7 @@
 #include "Model/material.h"
 #include "Model/mesh.h"
 #include "SceneRenderer/mesh_render_object.h"
+#include <memory>
 
 namespace Ming3D
 {
@@ -15,22 +16,22 @@ namespace Ming3D
     private:
         static void InitialiseClass();
 
-        Mesh* mMesh = nullptr;
-        Material* mMaterial = nullptr;
+        std::shared_ptr<Mesh> mMesh = nullptr;
+        std::shared_ptr<Material> mMaterial = nullptr;
         MeshRenderObject* mRenderObject = nullptr;
 
     public:
         MeshComponent();
         ~MeshComponent();
         virtual void InitialiseComponent();
-        void SetMesh(Mesh* inMesh, bool dynamic = false);
-        void SetMaterial(Material* inMat);
+        void SetMesh(std::shared_ptr<Mesh> inMesh, bool dynamic = false);
+        void SetMaterial(std::shared_ptr<Material> inMat);
         void ReuploadVertexData();
 
         virtual void Tick(float inDeltaTime) override;
 
-        Mesh* GetMesh() { return mMesh; };
-        Material* GetMaterial() { return mMaterial; }
+        std::shared_ptr<Mesh> GetMesh() { return mMesh; };
+        std::shared_ptr<Material> GetMaterial() { return mMaterial; }
     };
 }
 

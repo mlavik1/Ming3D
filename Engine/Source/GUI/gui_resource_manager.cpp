@@ -6,9 +6,9 @@
 
 namespace Ming3D
 {
-    Material* GUIResourceManager::mDefaultGUIMaterial = nullptr;
+    std::shared_ptr<Material> GUIResourceManager::mDefaultGUIMaterial = nullptr;
 
-    Material* GUIResourceManager::GetDefaultGUIMaterial()
+    std::shared_ptr<Material> GUIResourceManager::GetDefaultGUIMaterial()
     {
         if (mDefaultGUIMaterial == nullptr)
         {
@@ -19,12 +19,12 @@ namespace Ming3D
         return mDefaultGUIMaterial;
     }
 
-    Material* GUIResourceManager::GetMaterialForTexture(std::shared_ptr<Texture> texture)
+    std::shared_ptr<Material> GUIResourceManager::GetMaterialForTexture(std::shared_ptr<Texture> texture)
     {
         auto it = mMaterialsByTexture.find(texture->mGUID);
         if (it == mMaterialsByTexture.end())
         {
-            Material* mat = MaterialFactory::CreateMaterial(GGameEngine->GetResourceDirectory() + std::string("/Shaders/gui.cgp"));
+            std::shared_ptr<Material> mat = MaterialFactory::CreateMaterial(GGameEngine->GetResourceDirectory() + std::string("/Shaders/gui.cgp"));
             mat->SetTexture(0, texture);
             mMaterialsByTexture[texture->mGUID] = mat;
             return mat;

@@ -24,7 +24,7 @@ namespace Ming3D
     class FontFace
     {
     public:
-        Material* mMaterial = nullptr; // TODO: Maybe not store this here?
+        std::shared_ptr<Material> mMaterial = nullptr; // TODO: Maybe not store this here?
         std::shared_ptr<Texture> mTexture;
         std::unordered_map<wchar_t, FontGlyph> mGlyphs;
         int mFontSize = 0;

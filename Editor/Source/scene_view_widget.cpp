@@ -72,6 +72,7 @@ namespace Ming3D
         }
 
         mCamera->mCameraMatrix = glm::inverse(glm::translate(glm::mat4(1.0f), mPosition) * mRotationMatrix);
+        mCamera->mPosition = mPosition;
     }
 
     void SceneViewWidget::OnInputEvent(InputEvent event)
