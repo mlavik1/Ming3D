@@ -42,6 +42,8 @@ namespace Ming3D
         {
             case ELightType::DirectionalLight:
             mLightSource->mLightMat = glm::mat4(mParent->GetTransform().GetWorldRotation());
+            mLightSource->mPosition = mParent->GetTransform().GetWorldPosition();
+            mLightSource->mDirection = mParent->GetTransform().GetForward();
             break;
         }
         //mLightSource->mLightMat = mParent->GetTransform().GetWorldTransformMatrix();

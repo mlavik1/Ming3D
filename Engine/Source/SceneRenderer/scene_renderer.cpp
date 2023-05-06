@@ -166,6 +166,9 @@ namespace Ming3D
         context.mMainCamera = camera;
         context.mMainLight = mainLight;
 
+        static const glm::vec3 defaultLightDir = glm::normalize(glm::vec3(0.2f, -1.0f, 0.2f));
+        const glm::vec3 lightDir = context.mMainLight != nullptr ? context.mMainLight->mDirection : defaultLightDir;
+
         // Setup parameters for render pipeline
         mPipelineParams.mVisibleNodes.clear();
         mPipelineParams.mOpaqueNodeIndices.clear();
@@ -176,7 +179,7 @@ namespace Ming3D
         CollectVisibleObjects(context, camera->mRenderPipeline, mPipelineParams);
 
         // Set per-camera constant buffer data
-        cbDataGlobal.SetData(glm::vec3(0.0f, -1.0f, 0.0f)/* TODO */, glm::vec4(0.8f, 0.8f, 0.8f, 1.0f), camera->mCameraMatrix * glm::vec4(0.0f, 0.0f, 0.0f, 0.0f), GGameEngine->GetTime());
+        cbDataGlobal.SetData(lightDir/* TODO: Point lights */, glm::vec4(0.8f, 0.8f, 0.8f, 1.0f), camera->mPosition, GGameEngine->GetTime());
         GGameEngine->GetRenderDevice()->SetConstantBufferData(mGlobalCBuffer, cbDataGlobal.mDataPtr, cbDataGlobal.mSize);
 
         // Render using specified render pipeline
