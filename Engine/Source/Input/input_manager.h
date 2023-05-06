@@ -19,6 +19,9 @@ namespace Ming3D
         std::unordered_set<KeyCode> mKeyUpSet;
         std::unordered_map<KeyCode, bool> mKeyPressStateMap;
         std::unordered_map<EAxis2D, glm::vec2> mAxisValues;
+        std::unordered_set<int> mMouseDownSet;
+        std::unordered_set<int> mMouseUpSet;
+        std::unordered_set<int> mMouseHoldSet;
         glm::ivec2 mMousePosition;
 
         void HandleEvent(const InputEvent& inEvent);
@@ -30,6 +33,9 @@ namespace Ming3D
         bool GetKey(KeyCode inKey) const;
         bool GetKeyDown(KeyCode inKey) const;
         bool GetKeyUp(KeyCode inKey) const;
+        bool GetMouseButtonDown(int inButton) const;
+        bool GetMouseButtonUp(int inButton) const;
+        bool GetMouseButton(int inButton) const;
         glm::ivec2 GetMousePosition() const;
         glm::vec2 GetAxis2D(EAxis2D axis) const;
 
