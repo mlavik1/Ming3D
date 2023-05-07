@@ -138,9 +138,9 @@ namespace Ming3D
         return mesh;
     }
 
-    Actor* ModelLoader::CreateNode(aiNode* aiNode, const std::vector<std::shared_ptr<Mesh>>& meshes, const std::vector<std::shared_ptr<Material>>& materials, const aiScene* scene, Actor* parent)
+    std::weak_ptr<Actor> ModelLoader::CreateNode(aiNode* aiNode, const std::vector<std::shared_ptr<Mesh>>& meshes, const std::vector<std::shared_ptr<Material>>& materials, const aiScene* scene, Actor* parent)
     {
-        Actor* actor = parent->SpawnChildActor();
+        std::shared_ptr<Actor> actor = parent->SpawnChildActor().lock();
         actor->SetActorName(aiNode->mName.C_Str());
 
         aiMatrix4x4 m = aiNode->mTransformation;
@@ -163,7 +163,7 @@ namespace Ming3D
 
         for(unsigned int iChild = 0; iChild < aiNode->mNumChildren; iChild++)
         {
-            CreateNode(aiNode->mChildren[iChild], meshes, materials, scene, actor);
+            CreateNode(aiNode->mChildren[iChild], meshes, materials, scene, actor.get());
         }
 
         return actor;

@@ -34,7 +34,7 @@ namespace Ming3D
     private:
         static std::unique_ptr<Material> CreateMaterial(aiMaterial* aiMat, const std::string modelPath, const int flags);
         static std::unique_ptr<Mesh> CreateMesh(aiMesh* aiMesh);
-        static Actor* CreateNode(aiNode* aiNode, const std::vector<std::shared_ptr<Mesh>>& meshes, const std::vector<std::shared_ptr<Material>>& materials, const aiScene* scene, Actor* parent);
+        static std::weak_ptr<Actor> CreateNode(aiNode* aiNode, const std::vector<std::shared_ptr<Mesh>>& meshes, const std::vector<std::shared_ptr<Material>>& materials, const aiScene* scene, Actor* parent);
     };
 }
 #endif

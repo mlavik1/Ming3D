@@ -2,17 +2,18 @@
 #define MING3D_ACTOR_H
 
 #include "Object/game_object.h"
-#include <vector>
 #include "transform.h"
 #include "Components/component_callback_types.h"
-#include <unordered_map>
 #include "Components/component.h"
+#include <unordered_map>
+#include <vector>
+#include <memory>
 
 namespace Ming3D
 {
     class World;
 
-    class Actor : public GameObject
+    class Actor : public GameObject, public std::enable_shared_from_this<Actor> // TODO
     {
         DEFINE_CLASS(Ming3D::Actor, Ming3D::GameObject)
 
@@ -24,6 +25,8 @@ namespace Ming3D
         std::vector<Component*> mComponents;
         std::string mActorName;
 
+        std::weak_ptr<Actor> mParent;
+        std::vector<std::weak_ptr<Actor>> mChildren;
         std::vector<Component*> newComponents;
         std::unordered_map<ComponentCallbackType, std::vector<Component*>> mCompCallbackSubscribers;
 
@@ -32,11 +35,8 @@ namespace Ming3D
         template<typename T>
         void GetComponentsInChildrenRecursive(std::vector<T*>& comps)
         {
-            for(Transform* childTrans : mTransform.mChildren)
-            {
-                childTrans->mActor->GetComponentsInChildrenRecursive<T>(comps);
-            }
             static_assert(std::is_base_of<Component, T>::value, "Must be a subclass of component");
+            std::for_each(mChildren.begin(), mChildren.end(), [&comps](auto& child){ child.lock()->GetComponentsInChildrenRecursive(comps); });
             for(Component* comp : mComponents)
             {
                 if (static_cast<Object*>(comp)->GetClass() == T::GetStaticClass())
@@ -66,7 +66,9 @@ namespace Ming3D
             return newComp;
         }
 
-        Actor* SpawnChildActor();
+        std::weak_ptr<Actor> SpawnChildActor();
+
+        void SetParent(std::weak_ptr<Actor> parent);
 
         World* GetWorld() { return mWorld; }
 
@@ -103,7 +105,7 @@ namespace Ming3D
         inline Transform& GetTransform() { return mTransform; }
         std::vector<Component*> GetComponents() { return mComponents; }
         std::string GetActorName() { return mActorName; }
-        std::vector<Actor*> GetChildren();
+        std::vector<std::weak_ptr<Actor>> GetChildren();
         
         template<typename T>
         T* GetComponent()

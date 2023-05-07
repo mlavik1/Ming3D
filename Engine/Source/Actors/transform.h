@@ -4,6 +4,8 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/quaternion.hpp"
 #include <list>
+#include <memory>
+#include <functional>
 
 namespace Ming3D
 {
@@ -22,12 +24,13 @@ namespace Ming3D
         glm::vec3 mWorldScale;
         glm::quat mWorldRotation;
 
-        Actor* mActor = nullptr;
         Transform* mParentTransform = nullptr;
         std::list<Transform*> mChildren;
 
         glm::mat4 mLocalTransformMatrix;
         glm::mat4 mWorldTransformMatrix;
+
+        std::function<void(void)> mOnTransformMoved; // TODO: Add function for subscribing (multiple subscribers?)
 
         void UpdateTransformMatrix();
 
@@ -35,7 +38,7 @@ namespace Ming3D
         Transform();
 
         // Delete copy constructor and assignment operator
-        Transform(const Transform& actor) = delete;
+        Transform(const Transform&) = delete;
         Transform& operator=(const Transform&) = delete;
 
         void SetLocalPosition(glm::vec3 inPosition);
@@ -48,8 +51,6 @@ namespace Ming3D
         void SetWorldScale(glm::vec3 inScale);
         void SetWorldRotation(glm::quat inRot);
         void SetWorldRotation(glm::mat4 inRot);
-
-        void SetParent(Transform* inParent);
 
         void Rotate(float inAngle, const glm::vec3& inAxis);
 

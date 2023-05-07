@@ -1,11 +1,11 @@
 #ifndef MING3D_WORLD_H
 #define MING3D_WORLD_H
 
-#include <vector>
-#include <type_traits>
-#include <string>
 #include "SceneRenderer/render_scene.h"
 #include <memory>
+#include <string>
+#include <vector>
+#include <type_traits>
 
 namespace Ming3D
 {
@@ -15,31 +15,30 @@ namespace Ming3D
     class World
     {
     private:
-        std::vector<Actor*> mActors;
+        std::vector<std::shared_ptr<Actor>> mActors;
         GameEngine* mGameEngine;
         std::unique_ptr<RenderScene> mRenderScene;
 
-        void AddActor(Actor* inActor);
+        void AddActor(std::shared_ptr<Actor> inActor);
 
     public:
-        World(GameEngine* gameEngine);
-        ~World();
+        explicit World(GameEngine* gameEngine);
 
         void Tick(float inDeltaTime);
         
         template <typename T>
-        T* SpawnActor()
+        std::weak_ptr<T> SpawnActor()
         {
             static_assert(std::is_base_of<Actor, T>::value || std::is_same<Actor, T>::value, "Must be a Actor or subclass of Actor");
-            T* actor = new T();
+            std::shared_ptr<T> actor = std::make_shared<T>(this);
             AddActor(actor);
             return actor;
         }
-        Actor* SpawnActor();
-        Actor* SpawnActor(const std::string& name);
+        std::weak_ptr<Actor> SpawnActor();
+        std::weak_ptr<Actor> SpawnActor(const std::string& name);
 
-        std::vector<Actor*> GetActors() { return mActors; }
-        std::vector<Actor*> GetActorsRecursive();
+        std::vector<std::weak_ptr<Actor>> GetActors();
+        std::vector<std::weak_ptr<Actor>> GetActorsRecursive();
 
         GameEngine* GetGameEngine() { return mGameEngine; }
         RenderScene* GetRenderScene() { return mRenderScene.get(); }

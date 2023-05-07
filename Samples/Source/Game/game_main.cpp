@@ -23,45 +23,45 @@ int main()
     gameEngine->Initialise();
     gameEngine->SetMainWindowSize(1366, 768);
 
-    Actor* camActor = gameEngine->GetWorld().lock()->SpawnActor();
-    camActor->AddComponent<CameraComponent>();
-    camActor->GetTransform().SetWorldPosition(glm::vec3(0.0f, 2.0f, 6.0f));
+    std::weak_ptr<Actor> camActor = gameEngine->GetWorld().lock()->SpawnActor();
+    camActor.lock()->AddComponent<CameraComponent>();
+    camActor.lock()->GetTransform().SetWorldPosition(glm::vec3(0.0f, 2.0f, 6.0f));
 
-    Actor* lightActor = gameEngine->GetWorld().lock()->SpawnActor();
-	LightComponent* lightComp = lightActor->AddComponent<LightComponent>();
+    std::weak_ptr<Actor> lightActor = gameEngine->GetWorld().lock()->SpawnActor();
+	LightComponent* lightComp = lightActor.lock()->AddComponent<LightComponent>();
 	lightComp->SetShadowType(EShadowType::HardShadows);
-    lightActor->GetTransform().SetWorldPosition(glm::vec3(0.0f, 10.0f, 6.0f));
-    lightActor->GetTransform().SetWorldRotation(glm::angleAxis(glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
+    lightActor.lock()->GetTransform().SetWorldPosition(glm::vec3(0.0f, 10.0f, 6.0f));
+    lightActor.lock()->GetTransform().SetWorldRotation(glm::angleAxis(glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 
-    Actor* skybox = gameEngine->GetWorld().lock()->SpawnActor();
-    skybox->GetTransform().SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
-    skybox->GetTransform().SetLocalScale(glm::vec3(-50.0f, 50.0f, 50.0f));
-    ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Skybox/Skybox.obj"), skybox, MODELLOADERFLAGS_UNLIT);
+    std::weak_ptr<Actor> skybox = gameEngine->GetWorld().lock()->SpawnActor();
+    skybox.lock()->GetTransform().SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
+    skybox.lock()->GetTransform().SetLocalScale(glm::vec3(-50.0f, 50.0f, 50.0f));
+    ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Skybox/Skybox.obj"), skybox.lock().get(), MODELLOADERFLAGS_UNLIT);
 
-    Actor* actor1 = gameEngine->GetWorld().lock()->SpawnActor();
-    actor1->GetTransform().SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
-    actor1->GetTransform().SetLocalScale(glm::vec3(50.0f, 50.0f, 50.0f));
-    actor1->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
-    ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Mvr_PetCow_walk.dae"), actor1);
-    for (MeshComponent* currMeshComp : actor1->GetComponentsInChildren<MeshComponent>())
+    std::weak_ptr<Actor> actor1 = gameEngine->GetWorld().lock()->SpawnActor();
+    actor1.lock()->GetTransform().SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
+    actor1.lock()->GetTransform().SetLocalScale(glm::vec3(50.0f, 50.0f, 50.0f));
+    actor1.lock()->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
+    ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Mvr_PetCow_walk.dae"), actor1.lock().get());
+    for (MeshComponent* currMeshComp : actor1.lock()->GetComponentsInChildren<MeshComponent>())
     {
         currMeshComp->GetMaterial()->SetCastShadows(true);
     }
 
-    Actor* actor2 = gameEngine->GetWorld().lock()->SpawnActor();
-    actor2->GetTransform().SetLocalPosition(glm::vec3(-1.5f, 0.0f, 0.0f));
-    actor2->GetTransform().SetLocalScale(glm::vec3(50.0f, 50.0f, 50.0f));
-    actor2->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
-    ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Mvr_PetCow_walk.dae"), actor2);
-    for (MeshComponent* currMeshComp : actor2->GetComponentsInChildren<MeshComponent>())
+    std::weak_ptr<Actor> actor2 = gameEngine->GetWorld().lock()->SpawnActor();
+    actor2.lock()->GetTransform().SetLocalPosition(glm::vec3(-1.5f, 0.0f, 0.0f));
+    actor2.lock()->GetTransform().SetLocalScale(glm::vec3(50.0f, 50.0f, 50.0f));
+    actor2.lock()->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
+    ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Mvr_PetCow_walk.dae"), actor2.lock().get());
+    for (MeshComponent* currMeshComp : actor2.lock()->GetComponentsInChildren<MeshComponent>())
     {
         currMeshComp->GetMaterial()->SetCastShadows(true);
     }
 
-    Actor* planeObj = gameEngine->GetWorld().lock()->SpawnActor();
-    planeObj->GetTransform().SetLocalPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+    std::weak_ptr<Actor> planeObj = gameEngine->GetWorld().lock()->SpawnActor();
+    planeObj.lock()->GetTransform().SetLocalPosition(glm::vec3(0.0f, 0.0f, 0.0f));
     std::shared_ptr<Mesh> planeMesh = PrimitiveFactory::CreatePlane(glm::vec2(100.0f, 100.0f), 2, 2);
-    MeshComponent* planeMeshComp = planeObj->AddComponent<MeshComponent>();
+    MeshComponent* planeMeshComp = planeObj.lock()->AddComponent<MeshComponent>();
     planeMeshComp->SetMesh(planeMesh);
     std::shared_ptr<Material> planeMat = MaterialFactory::CreateMaterial(GGameEngine->GetResourceDirectory() + std::string("/Shaders/defaultshader.cgp"));
     planeMat->SetTexture(0, std::shared_ptr<Texture>(TextureLoader::LoadTextureData(GGameEngine->GetResourceDirectory() + std::string("/grass.png")))); // TODO: create override with only one parameter
@@ -75,11 +75,11 @@ int main()
     while (true)
     {
         gameEngine->Update();
-        actor1->GetTransform().Rotate(0.001f, glm::vec3(0,1,0));
+        actor1.lock()->GetTransform().Rotate(0.001f, glm::vec3(0,1,0));
 
         float speed = camSpeed * GGameEngine->GetDeltaTime();
         float rotSpeed = camRotSpeed * GGameEngine->GetDeltaTime();
-        Transform& camTrans = camActor->GetTransform();
+        Transform& camTrans = camActor.lock()->GetTransform();
 
         glm::vec3 camPos = camTrans.GetWorldPosition();
         if (GGameEngine->GetInputManager()->GetKey(KeyCode::Key_W))
