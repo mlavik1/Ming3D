@@ -60,10 +60,10 @@ int main()
 
     Actor* planeObj = gameEngine->GetWorld().lock()->SpawnActor();
     planeObj->GetTransform().SetLocalPosition(glm::vec3(0.0f, 0.0f, 0.0f));
-    Mesh* planeMesh = PrimitiveFactory::CreatePlane(glm::vec2(100.0f, 100.0f), 2, 2);
+    std::shared_ptr<Mesh> planeMesh = PrimitiveFactory::CreatePlane(glm::vec2(100.0f, 100.0f), 2, 2);
     MeshComponent* planeMeshComp = planeObj->AddComponent<MeshComponent>();
     planeMeshComp->SetMesh(planeMesh);
-    Material* planeMat = MaterialFactory::CreateMaterial(GGameEngine->GetResourceDirectory() + std::string("/Shaders/defaultshader.cgp"));
+    std::shared_ptr<Material> planeMat = MaterialFactory::CreateMaterial(GGameEngine->GetResourceDirectory() + std::string("/Shaders/defaultshader.cgp"));
     planeMat->SetTexture(0, std::shared_ptr<Texture>(TextureLoader::LoadTextureData(GGameEngine->GetResourceDirectory() + std::string("/grass.png")))); // TODO: create override with only one parameter
     planeMat->SetShaderUniformVec2("_textureTiling", glm::vec2(10.0f, 10.0f));
 	planeMat->SetReceiveShadows(true);
