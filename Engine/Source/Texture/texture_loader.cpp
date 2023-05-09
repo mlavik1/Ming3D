@@ -37,18 +37,15 @@ namespace Ming3D
             pixelFormat = PixelFormat::RGBA;
             bytesPerPixel = 4;
 
+            size_t destTextureIndex = 0;
             size_t sourceTextureIndex = 0;
-            for (size_t i = 0; i < static_cast<size_t>(texWidth * texHeight * 4); i++)
+            size_t destTextureSize = static_cast<size_t>(texWidth * texHeight * 4);
+            while (destTextureIndex < destTextureSize)
             {
-                if (i % 4 == 3)
-                {
-                    textureData[i] = 255;
-                }
-                else
-                {
-                    textureData[i] = ((uint8_t*)surface->pixels)[sourceTextureIndex];
-                    sourceTextureIndex++;
-                }
+                textureData[destTextureIndex++] = ((uint8_t*)surface->pixels)[sourceTextureIndex++];
+                textureData[destTextureIndex++] = ((uint8_t*)surface->pixels)[sourceTextureIndex++];
+                textureData[destTextureIndex++] = ((uint8_t*)surface->pixels)[sourceTextureIndex++];
+                textureData[destTextureIndex++] = 255;
             }
         }
         else

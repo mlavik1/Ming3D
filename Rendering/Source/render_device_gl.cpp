@@ -41,7 +41,7 @@ namespace Ming3D::Rendering
 
     RenderTarget* RenderDeviceGL::CreateRenderTarget(RenderWindow* inWindow)
     {
-        TextureInfo textureInfo;
+        TextureInfo textureInfo{};
         textureInfo.mWidth = inWindow->GetWindow()->GetWidth();
         textureInfo.mHeight = inWindow->GetWindow()->GetHeight();
 

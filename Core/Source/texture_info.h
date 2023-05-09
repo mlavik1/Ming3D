@@ -18,9 +18,9 @@ namespace Ming3D
     {
         unsigned int mWidth = 0;
         unsigned int mHeight = 0;
-        unsigned int mBytesPerPixel;
-        PixelFormat mPixelFormat;
-        TextureWrapMode mTextureWrapMode;
+        unsigned int mBytesPerPixel = 0;
+        PixelFormat mPixelFormat = PixelFormat::RGBA;
+        TextureWrapMode mTextureWrapMode = TextureWrapMode::Repeat;
     };
 }
 
