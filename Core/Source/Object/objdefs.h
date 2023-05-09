@@ -25,9 +25,11 @@ typedef uint64_t netguid_t;
 
 enum class ObjectFlag
 {
+	None = 0,
 	Destroyed = 1,
 	InitReplicate = 2,
-    Serialise = 4
+    Serialise = 4,
+	PendingDestroy = 8
 };
 
 inline ObjectFlag operator|(ObjectFlag a, ObjectFlag b)

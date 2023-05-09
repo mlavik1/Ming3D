@@ -2,6 +2,7 @@
 #define MING3D_ACTOR_H
 
 #include "Object/game_object.h"
+#include "Object/object_ptr.h"
 #include "transform.h"
 #include "Components/component_callback_types.h"
 #include "Components/component.h"
@@ -25,8 +26,8 @@ namespace Ming3D
         std::vector<Component*> mComponents;
         std::string mActorName;
 
-        std::weak_ptr<Actor> mParent;
-        std::vector<std::weak_ptr<Actor>> mChildren;
+        ActorPtr mParent;
+        std::vector<ActorPtr> mChildren;
         std::vector<Component*> newComponents;
         std::unordered_map<ComponentCallbackType, std::vector<Component*>> mCompCallbackSubscribers;
 
@@ -66,9 +67,9 @@ namespace Ming3D
             return newComp;
         }
 
-        std::weak_ptr<Actor> SpawnChildActor();
+        ActorPtr SpawnChildActor();
 
-        void SetParent(std::weak_ptr<Actor> parent);
+        void SetParent(Actor* parent);
 
         World* GetWorld() { return mWorld; }
 
@@ -105,7 +106,7 @@ namespace Ming3D
         inline Transform& GetTransform() { return mTransform; }
         std::vector<Component*> GetComponents() { return mComponents; }
         std::string GetActorName() { return mActorName; }
-        std::vector<std::weak_ptr<Actor>> GetChildren();
+        std::vector<ActorPtr> GetChildren();
         
         template<typename T>
         T* GetComponent()

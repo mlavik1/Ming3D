@@ -13,49 +13,52 @@ namespace Ming3D
         mRenderScene = std::make_unique<RenderScene>();
     }
 
-    void World::AddActor(std::shared_ptr<Actor> inActor)
+    void World::InitialiseActor(Actor* actor)
     {
-        mActors.push_back(inActor);
-        for (Component* comp : inActor->GetComponents())
+        for (Component* comp : actor->GetComponents())
         {
             comp->InitialiseComponent();
         }
     }
 
-    std::weak_ptr<Actor> World::SpawnActor()
+    ActorPtr World::SpawnActor()
     {
         return SpawnActor("");
     }
 
-    std::weak_ptr<Actor> World::SpawnActor(const std::string& name)
+    ActorPtr World::SpawnActor(const std::string& name)
     {
-        std::shared_ptr<Actor> actor = std::make_shared<Actor>(this);
+        std::unique_ptr<Actor> actor = std::make_unique<Actor>(this);
+        ActorPtr ptr = actor.get();
         if (!name.empty())
-            actor->SetActorName(name);
-        AddActor(actor);
-        return actor;
+            ptr->SetActorName(name);
+        InitialiseActor(ptr.Get());
+        mActors.push_back(std::move(actor));
+        return ptr;
     }
 
-    std::vector<std::weak_ptr<Actor>> World::GetActors()
+    std::vector<ActorPtr> World::GetActors()
     {
-        std::vector<std::weak_ptr<Actor>> actors;
-        std::copy(mActors.begin(), mActors.end(), std::back_inserter(actors));
+        std::vector<ActorPtr> actors;
+        std::transform(mActors.begin(), mActors.end(), std::back_inserter(actors), [](std::unique_ptr<Actor>& actor) { return actor.get(); } );
         return actors;
     }
 
-    std::vector<std::weak_ptr<Actor>> World::GetActorsRecursive()
+    std::vector<ActorPtr> World::GetActorsRecursive()
     {
-        std::vector<std::weak_ptr<Actor>> actors;
-        std::function<void(std::weak_ptr<Actor>&)> addActorRecursive;
-        addActorRecursive = [&actors, &addActorRecursive](std::weak_ptr<Actor>& actor) {
+        std::vector<ActorPtr> actors;
+        std::function<void(Actor*)> addActorRecursive;
+        addActorRecursive = [&actors, &addActorRecursive](Actor* actor) {
             actors.push_back(actor);
-            auto children = actor.lock()->GetChildren();
-            std::for_each(children.begin(), children.end(), addActorRecursive);
+            auto children = actor->GetChildren();
+            std::for_each(children.begin(), children.end(), [&addActorRecursive](ActorPtr& actor)
+            {
+                addActorRecursive(actor.Get());
+            });
         };
-        std::for_each(mActors.begin(), mActors.end(), [&addActorRecursive](std::shared_ptr<Actor>& actor)
+        std::for_each(mActors.begin(), mActors.end(), [&addActorRecursive](std::unique_ptr<Actor>& actor)
         {
-            std::weak_ptr<Actor> ptr(actor);
-            addActorRecursive(ptr);
+            addActorRecursive(actor.get());
         });
         return actors;
     }

@@ -1,24 +1,27 @@
 #include "object.h"
+#include "object_ref_handle.h"
 
 IMPLEMENT_CLASS(Ming3D::Object)
 
 namespace Ming3D
 {
-	Object::Object()
-	{
+    Object::Object()
+    : mObjectFlags(ObjectFlag::None)
+    {
         static uint64_t GUID = 0;
         mGuid = GUID++;
-	}
+        mObjectRefHandle = new ObjectRefHandle(this);
+    }
 
-	Object::~Object()
-	{
+    Object::~Object()
+    {
+        mObjectRefHandle->ReleaseObject();
+    }
 
-	}
-
-	void Object::CallFunction(Function* inFunc, const FunctionArgs& inArgs)
-	{
-		inFunc->CallFunction(this, inArgs);
-	}
+    void Object::CallFunction(Function* inFunc, const FunctionArgs& inArgs)
+    {
+        inFunc->CallFunction(this, inArgs);
+    }
 
     void Object::Serialise(DataWriter*, PropertyFlag, ObjectFlag)
     {
@@ -46,10 +49,10 @@ namespace Ming3D
         }
     }
 
-	void Object::InitialiseClass()
-	{
-		
-	}
+    void Object::InitialiseClass()
+    {
+        
+    }
 
     void Object::SetObjectFlag(ObjectFlag inFlag)
     {

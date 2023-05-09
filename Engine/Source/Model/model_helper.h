@@ -9,6 +9,7 @@
 #include "glm/glm.hpp"
 #include "Actors/actor.h"
 #include "graphics_data.h"
+#include "Object/object_ptr.h"
 
 #define MODELLOADERFLAGS_UNLIT 1
 #define MODELLOADERFLAGS_FORCE_OPAQUE 2
@@ -34,7 +35,7 @@ namespace Ming3D
     private:
         static std::unique_ptr<Material> CreateMaterial(aiMaterial* aiMat, const std::string modelPath, const int flags);
         static std::unique_ptr<Mesh> CreateMesh(aiMesh* aiMesh);
-        static std::weak_ptr<Actor> CreateNode(aiNode* aiNode, const std::vector<std::shared_ptr<Mesh>>& meshes, const std::vector<std::shared_ptr<Material>>& materials, const aiScene* scene, Actor* parent);
+        static ActorPtr CreateNode(aiNode* aiNode, const std::vector<std::shared_ptr<Mesh>>& meshes, const std::vector<std::shared_ptr<Material>>& materials, const aiScene* scene, Actor* parent);
     };
 }
 #endif

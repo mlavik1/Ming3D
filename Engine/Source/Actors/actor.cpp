@@ -37,33 +37,31 @@ namespace Ming3D
         newComponents.push_back(inComp);
     }
 
-    std::weak_ptr<Actor> Actor::SpawnChildActor()
+    ActorPtr Actor::SpawnChildActor()
     {
-        std::weak_ptr<Actor> child = GetWorld()->SpawnActor();
-        child.lock()->SetParent(weak_from_this()/* TODO */);
+        ActorPtr child = GetWorld()->SpawnActor();
+        child->SetParent(this);
         return child;
     }
 
     // TODO: Handle null parent (need to notify World?)
-    void Actor::SetParent(std::weak_ptr<Actor> parent)
+    void Actor::SetParent(Actor* newParent)
     {
-        std::shared_ptr<Actor> oldParentPtr = mParent.lock();
-        std::shared_ptr<Actor> newParentPtr = parent.lock();
-        if (oldParentPtr == newParentPtr)
+        if (mParent == newParent)
             return;
 
-        if (oldParentPtr != nullptr)
+        if (mParent != nullptr)
         {
-            oldParentPtr->mChildren.erase(std::remove_if(
-                oldParentPtr->mChildren.begin(), oldParentPtr->mChildren.end(),
-                [this](const auto& child){ return child.lock().get() == this; }));
-            oldParentPtr->mTransform.mChildren.remove(&mTransform);
+            mParent->mChildren.erase(std::remove_if(
+                mParent->mChildren.begin(), mParent->mChildren.end(),
+                [this](const auto& child){ return child == this; }));
+            mParent->mTransform.mChildren.remove(&mTransform);
         }
 
-        mTransform.mParentTransform = &newParentPtr->mTransform;
-        newParentPtr->mChildren.push_back(weak_from_this()/* TODO */);
-        newParentPtr->mTransform.mChildren.push_back(&mTransform);
-        mParent = parent;
+        mTransform.mParentTransform = &newParent->mTransform;
+        newParent->mChildren.push_back(this);
+        newParent->mTransform.mChildren.push_back(&mTransform);
+        mParent = newParent;
         mTransform.UpdateTransformMatrix();
     }
 
@@ -162,11 +160,10 @@ namespace Ming3D
         // Find child actors to serialise
         std::vector<Actor*> serialisedChildren;
 
-        for (std::weak_ptr<Actor>& child : mChildren)
+        for (ActorPtr& child : mChildren)
         {
-            std::shared_ptr<Actor> childActor = child.lock();
-            if (childActor->HasObjectFlags(inObjFlags))
-                serialisedChildren.push_back(childActor.get());
+            if (child->HasObjectFlags(inObjFlags))
+                serialisedChildren.push_back(child.Get());
         }
         // Serialise actors
         outWriter->Write(serialisedChildren.size());
@@ -194,9 +191,8 @@ namespace Ming3D
                 delete[] actorClassName;
                 return;
             }
-            // TODO: What do do about this? (Instantiate actor through world somehow? Need to support subclasses of Actor though..)
-            Actor* child = (Actor*)actorClass->CreateInstance();
-            child->SetParent(weak_from_this() /* TODO */);
+            Actor* child = static_cast<Actor*>(actorClass->CreateInstance());
+            child->SetParent(this);
             child->Deserialise(inReader, inPropFlags, inObjFlags);
 
             delete[] actorClassName;
@@ -225,7 +221,7 @@ namespace Ming3D
         mActorName = name;
     }
 
-    std::vector<std::weak_ptr<Actor>> Actor::GetChildren()
+    std::vector<ActorPtr> Actor::GetChildren()
     {
         return mChildren;
     }
