@@ -8,6 +8,7 @@
 #include "Debug/debug.h"
 #include "editor.h"
 #include "GUI/image_widget.h"
+#include <iterator>
 
 IMPLEMENT_CLASS(Ming3D::SceneHierarchyWidget)
 

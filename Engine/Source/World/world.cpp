@@ -3,6 +3,7 @@
 #include "Source/Components/component.h"
 #include <algorithm>
 #include <functional>
+#include <iterator>
 
 namespace Ming3D
 {
