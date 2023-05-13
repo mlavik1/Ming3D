@@ -275,7 +275,7 @@ namespace Ming3D
 
             // TODO: Don't bind vertex/index buffer if same mesh as last frame
 
-            renderDevice->RenderPrimitive(renderBatch.mMeshBuffer->mVertexBuffer, renderBatch.mMeshBuffer->mIndexBuffer, renderBatch.mStartIndex, renderBatch.mNumIndices);
+            renderDevice->RenderPrimitive(renderBatch.mMeshBuffer->mVertexBuffer.get(), renderBatch.mMeshBuffer->mIndexBuffer.get(), renderBatch.mStartIndex, renderBatch.mNumIndices);
         }
     }
 
@@ -303,7 +303,7 @@ namespace Ming3D
             glm::vec3 lightpos = lookTarget - lightDir; // TODO
             context.mMainLight->mLightCamera->mCameraMatrix = glm::lookAt(lightpos, lookTarget, glm::vec3(0.0f, 0.0f, 1.0f));
 
-            GGameEngine->GetRenderDevice()->SetRenderTarget(context.mMainLight->mLightCamera->mRenderTarget);
+            GGameEngine->GetRenderDevice()->SetRenderTarget(context.mMainLight->mLightCamera->mRenderTarget.get());
             RenderObjects(params, ERenderType::Opaque, context.mMainLight->mLightCamera, nullptr, true);
         }
 
@@ -311,7 +311,7 @@ namespace Ming3D
         WindowBase* window = GGameEngine->GetMainWindow(); // TODO
         context.mMainCamera->mProjectionMatrix = glm::perspective<float>(glm::radians(45.0f), (float)window->GetWidth() / (float)window->GetHeight(), 0.1f, 2000.0f);
 
-        GGameEngine->GetRenderDevice()->SetRenderTarget(context.mMainCamera->mRenderTarget);
+        GGameEngine->GetRenderDevice()->SetRenderTarget(context.mMainCamera->mRenderTarget.get());
         // Render opaque objects
         GGameEngine->GetRenderDevice()->SetBlendState(mOpaqueBlendState);
         GGameEngine->GetRenderDevice()->SetDepthStencilState(mOpaqueDepthStencilState);

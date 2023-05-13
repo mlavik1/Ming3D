@@ -39,20 +39,21 @@ namespace Ming3D::Rendering
         SetDepthStencilState(mDefaultDepthStencilState);
     }
 
-    RenderTarget* RenderDeviceGL::CreateRenderTarget(RenderWindow* inWindow)
+    std::unique_ptr<RenderTarget> RenderDeviceGL::CreateRenderTarget(RenderWindow* inWindow)
     {
         TextureInfo textureInfo{};
         textureInfo.mWidth = inWindow->GetWindow()->GetWidth();
         textureInfo.mHeight = inWindow->GetWindow()->GetHeight();
 
-        RenderTargetGL* renderTarget = (RenderTargetGL*)CreateRenderTarget(textureInfo, 1);
-        renderTarget->mRenderWindow = inWindow;
+        std::unique_ptr<RenderTarget> renderTarget = CreateRenderTarget(textureInfo, 1);
+        RenderTargetGL* renderTargetGl = static_cast<RenderTargetGL*>(renderTarget.get());
+        renderTargetGl->mRenderWindow = inWindow;
         return renderTarget;
     }
 
-    RenderTarget* RenderDeviceGL::CreateRenderTarget(TextureInfo inTextureInfo, int numTextures)
+    std::unique_ptr<RenderTarget> RenderDeviceGL::CreateRenderTarget(TextureInfo inTextureInfo, int numTextures)
     {
-        RenderTargetGL* renderTarget = new RenderTargetGL();
+        std::unique_ptr<RenderTargetGL> renderTarget = std::make_unique<RenderTargetGL>();
         renderTarget->mTextureInfo = inTextureInfo;
 
         GLuint frameBuffer = 0;

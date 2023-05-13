@@ -19,6 +19,7 @@
 #include "blend_state.h"
 
 #include <string>
+#include <memory>
 
 namespace Ming3D::Rendering
 {
@@ -32,8 +33,8 @@ namespace Ming3D::Rendering
     public:
         virtual ~RenderDevice() = default;
 
-        virtual RenderTarget* CreateRenderTarget(RenderWindow* inWindow) = 0;
-        virtual RenderTarget* CreateRenderTarget(TextureInfo inTextureInfo, int numTextures) = 0;
+        virtual std::unique_ptr<RenderTarget> CreateRenderTarget(RenderWindow* inWindow) = 0;
+        virtual std::unique_ptr<RenderTarget> CreateRenderTarget(TextureInfo inTextureInfo, int numTextures) = 0;
         virtual VertexBuffer* CreateVertexBuffer(VertexData* inVertexData, EBufferUsage usage) = 0;
         virtual void UpdateVertexBuffer(VertexBuffer* inVertexBuffer, VertexData* inVertexData) = 0;
         virtual IndexBuffer* CreateIndexBuffer(IndexData* inIndexData, EBufferUsage usage) = 0;

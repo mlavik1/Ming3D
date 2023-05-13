@@ -124,7 +124,7 @@ namespace Ming3D
         return mMaterial;
     }
 
-    void TextVisual::SetText(const std::string text)
+    void TextVisual::SetText(const std::string& text)
     {
         mText = text;
         mVisualInvalidated = true;

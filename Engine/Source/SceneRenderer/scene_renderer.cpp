@@ -98,17 +98,15 @@ namespace Ming3D
         }
     }
 
-    void SceneRenderer::Render(std::vector<RenderScene*> scenes)
+    void SceneRenderer::Render(const std::vector<RenderScene*>& scenes)
     {
         RenderDevice* renderDevice = GGameEngine->GetRenderDevice();
         // TODO: Clean up this mess
         std::vector<Camera*> cameras;
         for (auto scene : scenes)
         {
-            for (auto camera : scene->mCameras){
-                if (camera->mRenderTarget != nullptr)
-                    cameras.push_back(camera);
-            }
+            std::copy_if(scene->mCameras.begin(), scene->mCameras.end(), std::back_inserter(cameras),
+                [](const Camera* camera) { return camera->mRenderTarget != nullptr; });
         }
         std::sort(cameras.begin(), cameras.end(), CameraSortAsc);
 
@@ -118,9 +116,9 @@ namespace Ming3D
         {
             // TODO: Only one RT per window?
             RenderWindow* rendWnd = camera->mRenderTarget->GetRenderWindow();
-            if (camera->mRenderTarget != currRenderTarget && currRendWnd != nullptr)
+            if (camera->mRenderTarget.get() != currRenderTarget && currRendWnd != nullptr)
                 renderDevice->BlitRenderTargetToWindow(currRenderTarget, currRendWnd);
-            currRenderTarget = camera->mRenderTarget;
+            currRenderTarget = camera->mRenderTarget.get();
             if (rendWnd != nullptr && rendWnd != currRendWnd)
             {
                 if (currRendWnd != nullptr)
@@ -130,7 +128,7 @@ namespace Ming3D
             }
 
             // TODO: Do this (set RT and VP) in render pipeline?
-            renderDevice->SetRenderTarget(camera->mRenderTarget);
+            renderDevice->SetRenderTarget(camera->mRenderTarget.get());
             auto viewport = camera->GetAbsoluteViewport();
             renderDevice->BeginViewport(
                 static_cast<unsigned int>(viewport.x), static_cast<unsigned int>(viewport.y),

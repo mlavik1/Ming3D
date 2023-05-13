@@ -131,14 +131,14 @@ namespace Ming3D::Rendering
         }
     }
 
-    RenderTarget* RenderDeviceD3D11::CreateRenderTarget(RenderWindow* inWindow)
+    std::unique_ptr<RenderTarget> RenderDeviceD3D11::CreateRenderTarget(RenderWindow* inWindow)
     {
         //__Assert(inWindow->GetOSWindowHandle());
         //__Assert(GRenderDeviceD3D11->GetDXGIFactory());
-        RenderTargetD3D11* renderTarget = new RenderTargetD3D11();
-        renderTarget->mRenderWindow = inWindow;
+        std::unique_ptr<RenderTargetD3D11> renderTarget = std::make_unique<RenderTargetD3D11>();
+        renderTarget->mRenderWindow = inWindow; // TODO: Ownership?
 
-        RenderWindowD3D11* renderWindow = (RenderWindowD3D11*)inWindow;
+        RenderWindowD3D11* renderWindow = static_cast<RenderWindowD3D11>(inWindow);
 
         ID3D11Texture2D* backBufferTex = renderWindow->GetBackBuffer();
 
@@ -176,9 +176,9 @@ namespace Ming3D::Rendering
         return renderTarget;
     }
 
-    RenderTarget* RenderDeviceD3D11::CreateRenderTarget(TextureInfo inTextureInfo, int numTextures)
+    std::unique_ptr<RenderTarget> RenderDeviceD3D11::CreateRenderTarget(TextureInfo inTextureInfo, int numTextures)
     {
-        RenderTargetD3D11* renderTarget = new RenderTargetD3D11();
+        std::unique_ptr<RenderTargetD3D11> renderTarget = std::make_unique<RenderTargetD3D11>();
 
         renderTarget->mWidth = inTextureInfo.mWidth;
         renderTarget->mHeight = inTextureInfo.mHeight;
