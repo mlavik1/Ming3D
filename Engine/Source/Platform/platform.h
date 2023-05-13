@@ -1,9 +1,9 @@
-#ifndef MING3D_PLATFORM_H
-#define MING3D_PLATFORM_H
+#pragma once
 
 #include "Input/input_handler.h"
-#include "platform_file.h"
+#include "platform_interface.h"
 #include <string>
+#include <memory>
 
 namespace Ming3D
 {
@@ -21,8 +21,6 @@ namespace Ming3D
     public:
         virtual ~Platform() = default;
 
-        PlatformFile * mPlatformFile = nullptr;
-
         virtual void Initialise() = 0;
         virtual void Update() = 0;
 
@@ -32,8 +30,10 @@ namespace Ming3D
         virtual NetSocket* CreateSocket() = 0;
         virtual InputHandler* CreateInputHandler(Rendering::WindowBase* window) = 0;
         virtual std::string ReadConsoleLine() = 0;
+
+        inline PlatformInterface* GetPlatformInterface() { return mPlatformInterface.get(); }
         
+    protected:
+        std::unique_ptr<PlatformInterface> mPlatformInterface = nullptr;
     };
 }
-
-#endif

@@ -22,7 +22,7 @@ using namespace Ming3D;
 void LoadModel(Actor* actor)
 {
     std::string filePath;
-    if (GGameEngine->GetPlatform()->mPlatformFile->OpenFileDialog("Select model to load", filePath))
+    if (GGameEngine->GetPlatform()->GetPlatformInterface()->OpenFileDialog("Select model to load", filePath))
     {
         ModelLoader::LoadModel(filePath.c_str(), actor);
     }

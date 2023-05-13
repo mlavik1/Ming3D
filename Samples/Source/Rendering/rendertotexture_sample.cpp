@@ -71,7 +71,7 @@ namespace Ming3D
         float height = 600.0f;
 
         mRenderDevice->BeginRenderWindow(mRenderWindow);
-        mRenderDevice->SetRenderTarget(mTextureRenderTarget);
+        mRenderDevice->SetRenderTarget(mTextureRenderTarget.get());
         //mRenderDevice->BeginRenderTarget(mRenderTarget);
 
         mRenderDevice->SetRasteriserState(nullptr); // TODO: default
@@ -80,7 +80,7 @@ namespace Ming3D
         {
             if (modelData == mModels[2]) // TODO
             {
-                mRenderDevice->SetRenderTarget(mRenderTarget);
+                mRenderDevice->SetRenderTarget(mRenderTarget.get());
                 mRenderDevice->SetRasteriserState(mOrthoRasterState);
             }
 
@@ -124,7 +124,7 @@ namespace Ming3D
             }
         }
 
-        mRenderDevice->BlitRenderTargetToWindow(mRenderTarget, mRenderWindow);
+        mRenderDevice->BlitRenderTargetToWindow(mRenderTarget.get(), mRenderWindow);
         mRenderDevice->EndRenderWindow(mRenderWindow);
 
     }

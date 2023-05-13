@@ -1,16 +1,16 @@
 #ifdef _WIN32
-#include "platform_file_win32.h"
+#include "platform_interface_win32.h"
 
 #include <Windows.h>
 
 namespace Ming3D
 {
-    bool PlatformFileWin32::MakeDirectory(const std::string inPath)
+    bool PlatformInterface::MakeDirectory(const std::string& inPath)
     {
         return (CreateDirectoryA(inPath.c_str(), NULL) || ERROR_ALREADY_EXISTS == GetLastError());
     }
 
-    bool PlatformFileWin32::DirectoryExists(const std::string inPath)
+    bool PlatformInterface::DirectoryExists(const std::string& inPath)
     {
         DWORD ftyp = GetFileAttributesA(inPath.c_str());
         if (ftyp == INVALID_FILE_ATTRIBUTES)
@@ -22,7 +22,7 @@ namespace Ming3D
         return false;
     }
 
-    bool PlatformFileWin32::OpenFileDialog(const std::string inTitile, std::string& outFilePath)
+    bool PlatformInterface::OpenFileDialog(const std::string& inTitile, std::string& outFilePath)
     {
         char filename[MAX_PATH];
         ZeroMemory(&filename, sizeof(filename));

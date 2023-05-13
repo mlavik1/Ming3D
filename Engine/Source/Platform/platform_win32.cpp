@@ -23,14 +23,14 @@
 #include "net_socket_winsock.h"
 #include "GameEngine/game_engine.h"
 
-#include "platform_file_win32.h"
+#include "platform_interface_win32.h"
 #include <string>
 
 namespace Ming3D
 {
     PlatformWin32::PlatformWin32()
     {
-        mPlatformFile = new PlatformFileWin32();
+        mPlatformInterface = std::make_unique<PlatformInterfaceWin32>();
     }
 
     PlatformWin32::~PlatformWin32()

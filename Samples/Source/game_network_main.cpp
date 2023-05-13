@@ -6,6 +6,9 @@
 #include "Debug/debug.h"
 
 #include <iostream>
+#include <thread>
+#include <chrono>
+#include <cstring>
 
 #define TEST_PORT_NUMBER 2024
 
@@ -43,7 +46,7 @@ int main()
     {
         LOG_INFO() << "I am a client";
         network->Connect("127.0.0.1", TEST_PORT_NUMBER);
-        _sleep(300);
+        std::this_thread::sleep_for(std::chrono::milliseconds(300));
     }
 
     bool hasSentMessage = false;
@@ -89,7 +92,7 @@ int main()
                     DataWriter* serialisedData = msg->Serialise();
                     int msgPart1 = serialisedData->GetSize() - 6;
                     network->GetConnection(0)->GetSocket()->Send(serialisedData->GetData(), msgPart1);
-                    _sleep(500);
+                    std::this_thread::sleep_for(std::chrono::milliseconds(500));
                     network->GetConnection(0)->GetSocket()->Send(serialisedData->GetData() + msgPart1, 6);
                     currentTestStage = (NetworkTestStage)((int)currentTestStage + 1);
                     delete msg;

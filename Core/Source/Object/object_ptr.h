@@ -49,13 +49,13 @@ namespace Ming3D
     ObjectPtr<T>::ObjectPtr()
     : mRefHandle(nullptr)
     {
-        static_assert((std::is_base_of<Object, T>::value), "Type of T must be Object or subclass of Object.");
+        //static_assert((std::is_base_of<Object, T>::value), "Type of T must be Object or subclass of Object.");
     }
 
     template <class T>
     ObjectPtr<T>::ObjectPtr(Object* object)
     {
-        static_assert((std::is_base_of<Object, T>::value), "Type of T must be Object or subclass of Object.");
+        //static_assert((std::is_base_of<Object, T>::value), "Type of T must be Object or subclass of Object.");
 
         if (object != nullptr)
         {

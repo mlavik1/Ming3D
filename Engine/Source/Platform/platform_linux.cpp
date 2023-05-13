@@ -1,17 +1,12 @@
 #ifdef __linux__
 #include "platform_linux.h"
-
-#ifdef _WIN32
-#include <SDL.h>
-#else
+#include "platform_interface_linux.h"
 #include <SDL2/SDL.h>
-#endif
 #include "sdl_window.h"
 #include "render_device_factory.h"
 #include "Input/input_handler_sdl.h"
 #include "Debug/debug.h"
 #include "GameEngine/game_engine.h"
-#include "platform_file_linux.h"
 #include <termios.h>
 #include <unistd.h>
 
@@ -19,7 +14,7 @@ namespace Ming3D
 {
     PlatformLinux::PlatformLinux()
     {
-        mPlatformFile = new PlatformFileLinux();
+        mPlatformInterface = std::make_unique<PlatformInterfaceLinux>();
     }
 
     PlatformLinux::~PlatformLinux()
