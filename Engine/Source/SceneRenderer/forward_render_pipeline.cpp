@@ -309,7 +309,7 @@ namespace Ming3D
 
         // set camera projection matrix
         WindowBase* window = GGameEngine->GetMainWindow(); // TODO
-        context.mMainCamera->mProjectionMatrix = glm::perspective<float>(glm::radians(45.0f), (float)window->GetWidth() / (float)window->GetHeight(), 0.1f, 1000.0f);
+        context.mMainCamera->mProjectionMatrix = glm::perspective<float>(glm::radians(45.0f), (float)window->GetWidth() / (float)window->GetHeight(), 0.1f, 2000.0f);
 
         GGameEngine->GetRenderDevice()->SetRenderTarget(context.mMainCamera->mRenderTarget);
         // Render opaque objects

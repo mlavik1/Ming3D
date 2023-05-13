@@ -5,6 +5,11 @@ IMPLEMENT_CLASS(Ming3D::TestActor)
 
 namespace Ming3D
 {
+    TestActor::TestActor(World* world)
+    : Actor(world)
+    {
+    }
+
     void TestActor::IntBoolTestFunction(int a, bool b)
     {
         LOG_INFO() << "IntBoolTestFunction";

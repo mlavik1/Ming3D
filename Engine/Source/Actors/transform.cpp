@@ -80,21 +80,6 @@ namespace Ming3D
         UpdateTransformMatrix();
     }
 
-    void Transform::SetParent(Transform* inParent)
-    {
-        if (mParentTransform == inParent)
-            return;
-
-        if (mParentTransform != nullptr)
-        {
-            mParentTransform->mChildren.remove(this);
-        }
-
-        mParentTransform = inParent;
-        mParentTransform->mChildren.push_back(this);
-        UpdateTransformMatrix();
-    }
-
     void Transform::Rotate(float inAngle, const glm::vec3& inAxis)
     {
         glm::quat newRot = glm::rotate(GetWorldRotation(), inAngle, inAxis);
@@ -125,8 +110,8 @@ namespace Ming3D
         mLocalTransformMatrix = glm::translate(glm::mat4(1.0f), mLocalPosition) * glm::toMat4(mLocalRotation) * glm::scale(glm::mat4(1.0f), mLocalScale);
         mWorldTransformMatrix = mParentTransform == nullptr ? mLocalTransformMatrix : mParentTransform->GetWorldTransformMatrix() * GetLocalTransformMatrix();
 
-        if(mActor != nullptr)
-            mActor->OnTransformMoved();
+        if (mOnTransformMoved)
+            mOnTransformMoved();
 
         for (Transform* child : mChildren) // TODO
             child->UpdateTransformMatrix();

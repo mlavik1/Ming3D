@@ -6,6 +6,8 @@ namespace Ming3D
     {
         mKeyDownSet.clear();
         mKeyUpSet.clear();
+        mMouseDownSet.clear();
+        mMouseUpSet.clear();
 
         for (const InputEvent& evt : mQueuedEvents)
         {
@@ -39,6 +41,24 @@ namespace Ming3D
         return iter != mKeyUpSet.end();
     }
 
+    bool InputManager::GetMouseButtonDown(int inButton) const
+    {
+        auto iter = mMouseDownSet.find(inButton);
+        return iter != mMouseDownSet.end();
+    }
+
+    bool InputManager::GetMouseButtonUp(int inButton) const
+    {
+        auto iter = mMouseUpSet.find(inButton);
+        return iter != mMouseUpSet.end();
+    }
+
+    bool InputManager::GetMouseButton(int inButton) const
+    {
+        auto iter = mMouseHoldSet.find(inButton);
+        return iter != mMouseHoldSet.end();
+    }
+
     void InputManager::HandleEvent(const InputEvent& inEvent)
     {
         switch (inEvent.mType)
@@ -63,6 +83,18 @@ namespace Ming3D
         case InputEventType::MouseMove:
         {
             mMousePosition = inEvent.mMousePosition;
+            break;
+        }
+        case InputEventType::MouseButtonDown:
+        {
+            mMouseDownSet.insert(inEvent.mMouseButton.mButton);
+            mMouseHoldSet.insert(inEvent.mMouseButton.mButton);
+            break;
+        }
+        case InputEventType::MouseButtonUp:
+        {
+            mMouseUpSet.insert(inEvent.mMouseButton.mButton);
+            mMouseHoldSet.erase(inEvent.mMouseButton.mButton);
             break;
         }
         default:

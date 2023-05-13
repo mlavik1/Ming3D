@@ -3,6 +3,7 @@
 #include "Source/Components/component.h"
 #include <algorithm>
 #include <functional>
+#include <iterator>
 
 namespace Ming3D
 {
@@ -12,51 +13,59 @@ namespace Ming3D
         mRenderScene = std::make_unique<RenderScene>();
     }
 
-    World::~World()
+    void World::InitialiseActor(Actor* actor)
     {
-        for (Actor* actor : mActors)
-            delete actor;
-    }
-
-    void World::AddActor(Actor* inActor)
-    {
-        mActors.push_back(inActor);
-        for (Component* comp : inActor->GetComponents())
+        for (Component* comp : actor->GetComponents())
         {
             comp->InitialiseComponent();
         }
     }
 
-    Actor* World::SpawnActor()
+    ActorPtr World::SpawnActor()
     {
-        Actor* actor = new Actor(this);
-        AddActor(actor);
-        return actor;
+        return SpawnActor("");
     }
 
-    Actor* World::SpawnActor(const std::string& name)
+    ActorPtr World::SpawnActor(const std::string& name)
     {
-        Actor* actor = SpawnActor();
-        actor->SetActorName(name);
-        return actor;
+        std::unique_ptr<Actor> actor = std::make_unique<Actor>(this);
+        ActorPtr ptr = actor.get();
+        if (!name.empty())
+            ptr->SetActorName(name);
+        InitialiseActor(ptr.Get());
+        mActors.push_back(std::move(actor));
+        return ptr;
     }
 
-    std::vector<Actor*> World::GetActorsRecursive()
+    std::vector<ActorPtr> World::GetActors()
     {
-        std::vector<Actor*> actors;
+        std::vector<ActorPtr> actors;
+        std::transform(mActors.begin(), mActors.end(), std::back_inserter(actors), [](std::unique_ptr<Actor>& actor) { return actor.get(); } );
+        return actors;
+    }
+
+    std::vector<ActorPtr> World::GetActorsRecursive()
+    {
+        std::vector<ActorPtr> actors;
         std::function<void(Actor*)> addActorRecursive;
         addActorRecursive = [&actors, &addActorRecursive](Actor* actor) {
             actors.push_back(actor);
             auto children = actor->GetChildren();
-            std::for_each(children.begin(), children.end(), addActorRecursive);
+            std::for_each(children.begin(), children.end(), [&addActorRecursive](ActorPtr& actor)
+            {
+                addActorRecursive(actor.Get());
+            });
         };
-        std::for_each(mActors.begin(), mActors.end(), addActorRecursive);
-        return mActors;
+        std::for_each(mActors.begin(), mActors.end(), [&addActorRecursive](std::unique_ptr<Actor>& actor)
+        {
+            addActorRecursive(actor.get());
+        });
+        return actors;
     }
 
     void World::Tick(float inDeltaTime)
     {
-        for (Actor* actor : mActors)
+        for (auto& actor : mActors)
         {
             actor->Tick(inDeltaTime);
         }

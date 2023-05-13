@@ -15,6 +15,8 @@ namespace Ming3D
         ELightType mType = ELightType::DirectionalLight;
 		EShadowType mShadowType = EShadowType::None;
         glm::mat4 mLightMat;
+        glm::vec3 mPosition;
+        glm::vec3 mDirection;
         Camera* mLightCamera = nullptr;
     };
 }

@@ -36,7 +36,7 @@ namespace Ming3D
         std::vector<RenderBatch> mRenderBatches;
 
         MeshBuffer* mMeshBuffer;
-        Material* mMaterial;
+        std::shared_ptr<Material> mMaterial;
         glm::mat4 mTransformMatrix;
         glm::ivec2 mCanvasSize;
         bool mVisualsInvalidated = true;

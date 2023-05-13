@@ -50,7 +50,7 @@ shader VertexShader
         output.Position = MVP * input.Position;
         output.Normal = modelMat * vec4(input.Normal.x, input.Normal.y, input.Normal.z, 0.0);
         output.TexCoord = vec2(input.TexCoord.x * _textureTiling.x, input.TexCoord.y * _textureTiling.y);
-        output.WorldPosition = modelMat * input.Position;
+        output.WorldPosition = modelMat * vec4(input.Position.xyz, 1.0);
         output.ShadowCoord = lightMat * vec4(input.Position.x, input.Position.y, input.Position.z, 1.0);
     }
 }

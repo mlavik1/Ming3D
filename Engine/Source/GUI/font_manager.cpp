@@ -126,7 +126,7 @@ namespace Ming3D
         fontFace->mTexture->SetTextureData(buffer, 4, PixelFormat::RGBA, fntBmpWidth, fntBmpHeight);
 
         // Create material (TODO: Maybe not here?)
-        fontFace->mMaterial = new Material(GGameEngine->GetGUIResourceManager()->GetDefaultGUIMaterial());
+        fontFace->mMaterial = std::make_shared<Material>(GGameEngine->GetGUIResourceManager()->GetDefaultGUIMaterial().get());
         fontFace->mMaterial->SetTexture(0, fontFace->mTexture);
 
         fontFace->mFontSize = fontSize;

@@ -5,9 +5,11 @@
 #define MING3D_MODELLOADER_H
 
 #include <vector>
+#include <memory>
 #include "glm/glm.hpp"
 #include "Actors/actor.h"
 #include "graphics_data.h"
+#include "Object/object_ptr.h"
 
 #define MODELLOADERFLAGS_UNLIT 1
 #define MODELLOADERFLAGS_FORCE_OPAQUE 2
@@ -31,9 +33,9 @@ namespace Ming3D
         static bool LoadModel(std::string modelPath, Actor* inActor, int inFlags = 0);
 
     private:
-        static Material* CreateMaterial(aiMaterial* aiMat, const std::string modelPath, const int flags);
-        static Mesh* CreateMesh(aiMesh* aiMesh);
-        static Actor* CreateNode(aiNode* aiNode, const std::vector<Mesh*>& meshes, const std::vector<Material*>& materials, const aiScene* scene, Actor* parent);
+        static std::unique_ptr<Material> CreateMaterial(aiMaterial* aiMat, const std::string modelPath, const int flags);
+        static std::unique_ptr<Mesh> CreateMesh(aiMesh* aiMesh);
+        static ActorPtr CreateNode(aiNode* aiNode, const std::vector<std::shared_ptr<Mesh>>& meshes, const std::vector<std::shared_ptr<Material>>& materials, const aiScene* scene, Actor* parent);
     };
 }
 #endif

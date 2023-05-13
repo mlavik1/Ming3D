@@ -19,10 +19,9 @@ namespace Ming3D
     Actor::Actor(World* world)
     {
         mWorld = world;
-        mTransform.mActor = this;
         SetObjectFlag(ObjectFlag::Serialise); // serialised by default
         mActorName = std::string("Actor_") + std::to_string(instanceCounter++);
-
+        mTransform.mOnTransformMoved = [this](){ OnTransformMoved(); }; // TODO: Add function for subscribing (multiple subscribers?)
         mCompCallbackSubscribers[ComponentCallbackType::PostMove] = std::vector<Component*>();
     }
 
@@ -38,11 +37,32 @@ namespace Ming3D
         newComponents.push_back(inComp);
     }
 
-    Actor* Actor::SpawnChildActor()
+    ActorPtr Actor::SpawnChildActor()
     {
-        Actor* child = GetWorld()->SpawnActor();
-        child->mTransform.SetParent(&this->mTransform);
+        ActorPtr child = GetWorld()->SpawnActor();
+        child->SetParent(this);
         return child;
+    }
+
+    // TODO: Handle null parent (need to notify World?)
+    void Actor::SetParent(Actor* newParent)
+    {
+        if (mParent == newParent)
+            return;
+
+        if (mParent != nullptr)
+        {
+            mParent->mChildren.erase(std::remove_if(
+                mParent->mChildren.begin(), mParent->mChildren.end(),
+                [this](const auto& child){ return child == this; }));
+            mParent->mTransform.mChildren.remove(&mTransform);
+        }
+
+        mTransform.mParentTransform = &newParent->mTransform;
+        newParent->mChildren.push_back(this);
+        newParent->mTransform.mChildren.push_back(&mTransform);
+        mParent = newParent;
+        mTransform.UpdateTransformMatrix();
     }
 
     void Actor::Tick(float inDeltaTime)
@@ -140,11 +160,10 @@ namespace Ming3D
         // Find child actors to serialise
         std::vector<Actor*> serialisedChildren;
 
-        for (Transform* child : mTransform.mChildren)
+        for (ActorPtr& child : mChildren)
         {
-            Actor* childActor = child->mActor;
-            if (childActor->HasObjectFlags(inObjFlags))
-                serialisedChildren.push_back(childActor);
+            if (child->HasObjectFlags(inObjFlags))
+                serialisedChildren.push_back(child.Get());
         }
         // Serialise actors
         outWriter->Write(serialisedChildren.size());
@@ -172,8 +191,8 @@ namespace Ming3D
                 delete[] actorClassName;
                 return;
             }
-            Actor* child = (Actor*)actorClass->CreateInstance();
-            child->GetTransform().SetParent(&mTransform);
+            Actor* child = static_cast<Actor*>(actorClass->CreateInstance());
+            child->SetParent(this);
             child->Deserialise(inReader, inPropFlags, inObjFlags);
 
             delete[] actorClassName;
@@ -202,10 +221,8 @@ namespace Ming3D
         mActorName = name;
     }
 
-    std::vector<Actor*> Actor::GetChildren()
+    std::vector<ActorPtr> Actor::GetChildren()
     {
-        std::vector<Actor*> children;
-        std::transform(mTransform.mChildren.begin(), mTransform.mChildren.end(), std::back_inserter(children), [](auto transform) -> Actor* { return transform->mActor; });
-        return children;
+        return mChildren;
     }
 }

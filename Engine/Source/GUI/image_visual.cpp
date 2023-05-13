@@ -49,7 +49,7 @@ namespace Ming3D
         memcpy(outIndexData, mIndexData.data(), mIndexData.size() * sizeof(unsigned int));
     }
 
-    Material* ImageVisual::GetMaterial()
+    std::shared_ptr<Material> ImageVisual::GetMaterial()
     {
         return mMaterial;
     }
@@ -66,7 +66,7 @@ namespace Ming3D
         mVisualInvalidated = true;
     }
 
-    void ImageVisual::SetCustomMaterial(Material* material)
+    void ImageVisual::SetCustomMaterial(std::shared_ptr<Material> material)
     {
         mMaterial = material;
         mVisualInvalidated = true;

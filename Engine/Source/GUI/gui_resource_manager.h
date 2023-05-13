@@ -12,13 +12,13 @@ namespace Ming3D
     class GUIResourceManager
     {
     private:
-        static Material* mDefaultGUIMaterial;
-        std::unordered_map<uint64_t, Material*> mMaterialsByTexture;
+        static std::shared_ptr<Material> mDefaultGUIMaterial;
+        std::unordered_map<uint64_t, std::shared_ptr<Material>> mMaterialsByTexture;
         std::unordered_map<std::string, std::shared_ptr<Texture>> mTextures;
 
     public:
-        Material* GetDefaultGUIMaterial();
-        Material* GetMaterialForTexture(std::shared_ptr<Texture> texture);
+        std::shared_ptr<Material> GetDefaultGUIMaterial();
+        std::shared_ptr<Material> GetMaterialForTexture(std::shared_ptr<Texture> texture);
         std::shared_ptr<Texture> GetTexture(std::string texturePath);
     };
 }
