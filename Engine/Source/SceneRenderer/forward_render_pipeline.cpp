@@ -303,7 +303,7 @@ namespace Ming3D
             glm::vec3 lightpos = lookTarget - lightDir; // TODO
             context.mMainLight->mLightCamera->mCameraMatrix = glm::lookAt(lightpos, lookTarget, glm::vec3(0.0f, 0.0f, 1.0f));
 
-            GGameEngine->GetRenderDevice()->SetRenderTarget(context.mMainLight->mLightCamera->mRenderTarget);
+            GGameEngine->GetRenderDevice()->SetRenderTarget(context.mMainLight->mLightCamera->mRenderTarget.get());
             RenderObjects(params, ERenderType::Opaque, context.mMainLight->mLightCamera, nullptr, true);
         }
 
@@ -311,7 +311,7 @@ namespace Ming3D
         WindowBase* window = GGameEngine->GetMainWindow(); // TODO
         context.mMainCamera->mProjectionMatrix = glm::perspective<float>(glm::radians(45.0f), (float)window->GetWidth() / (float)window->GetHeight(), 0.1f, 1000.0f);
 
-        GGameEngine->GetRenderDevice()->SetRenderTarget(context.mMainCamera->mRenderTarget);
+        GGameEngine->GetRenderDevice()->SetRenderTarget(context.mMainCamera->mRenderTarget.get());
         // Render opaque objects
         GGameEngine->GetRenderDevice()->SetBlendState(mOpaqueBlendState);
         GGameEngine->GetRenderDevice()->SetDepthStencilState(mOpaqueDepthStencilState);

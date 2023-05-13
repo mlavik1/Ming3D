@@ -38,8 +38,8 @@ namespace Ming3D::Rendering
         RenderDeviceD3D11();
         virtual ~RenderDeviceD3D11();
 
-        virtual RenderTarget* CreateRenderTarget(RenderWindow* inWindow) override;
-        virtual RenderTarget* CreateRenderTarget(TextureInfo inTextureInfo, int numTextures) override;
+        virtual std::unique_ptr<RenderTarget> CreateRenderTarget(RenderWindow* inWindow) override;
+        virtual std::unique_ptr<RenderTarget> CreateRenderTarget(TextureInfo inTextureInfo, int numTextures) override;
         virtual VertexBuffer* CreateVertexBuffer(VertexData* inVertexData, EBufferUsage usage) override;
         virtual void UpdateVertexBuffer(VertexBuffer* inVertexBuffer, VertexData* inVertexData) override;
         virtual IndexBuffer* CreateIndexBuffer(IndexData* inIndexData, EBufferUsage usage) override;

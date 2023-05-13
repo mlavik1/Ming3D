@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 namespace Ming3D
 {
     namespace Rendering
@@ -11,7 +13,7 @@ namespace Ming3D
     class RenderWindowHandle
     {
     public:
-        Rendering::RenderWindow* mRenderWindow;
-        Rendering::RenderTarget* mRenderTarget;
+        Rendering::RenderWindow* mRenderWindow; // TODO:
+        std::shared_ptr<Rendering::RenderTarget> mRenderTarget;
     };
 }
