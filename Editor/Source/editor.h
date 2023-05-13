@@ -1,16 +1,15 @@
 #pragma once
+#include "Object/object_ptr.h"
 
 namespace Ming3D
 {
-    class Actor;
-
     class Editor
     {
     public:
         Editor();
         ~Editor();
 
-        Actor* mSelectedActor = nullptr; // TODO: Smart pointer
+        ActorPtr mSelectedActor = nullptr; // TODO: Smart pointer
 
     public:
         void Run();

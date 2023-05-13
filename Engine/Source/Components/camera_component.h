@@ -34,7 +34,7 @@ namespace Ming3D
         Camera* GetCamera() { return mCamera; }
 
         /* Set a RenderTarget that the Camera will render to. */
-        void SetRenderTarget(Rendering::RenderTarget* target);
+        void SetRenderTarget(std::shared_ptr<Rendering::RenderTarget> target);
 
         /* Set a RenderWindow that the Camera will render to. */
         void SetRenderTarget(RenderWindowHandle* wndHandle);

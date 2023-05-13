@@ -35,7 +35,7 @@ namespace Ming3D
 
     void PropertyInspectorWidget::Tick(float deltaTime)
     {
-        Actor* actor = GEditor->mSelectedActor;
+        ActorPtr actor = GEditor->mSelectedActor;
         mWidgetLayoutBuilder->BeginBuilding();
         if (actor != nullptr)
         {
@@ -50,7 +50,7 @@ namespace Ming3D
 
             for (Property* prop : actor->GetClass()->GetAllProperties(true))
             {
-                mWidgetLayoutBuilder->PropertyField(prop, actor, prop->GetPropertyName().c_str());
+                mWidgetLayoutBuilder->PropertyField(prop, actor.Get(), prop->GetPropertyName().c_str());
             }
             mWidgetLayoutBuilder->Space();
 

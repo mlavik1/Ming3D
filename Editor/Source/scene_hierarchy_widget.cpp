@@ -4,11 +4,11 @@
 #include "World/world.h"
 #include "GUI/tree_view_widget.h"
 #include "Actors/actor.h"
-#include <algorithm>
 #include "Debug/debug.h"
 #include "editor.h"
 #include "GUI/image_widget.h"
 #include <iterator>
+#include <algorithm>
 
 IMPLEMENT_CLASS(Ming3D::SceneHierarchyWidget)
 
@@ -37,11 +37,11 @@ namespace Ming3D
         
     }
 
-    void SceneHierarchyWidget::AddActorRecursive(Actor* actor, int depth)
+    void SceneHierarchyWidget::AddActorRecursive(const ActorPtr& actor, int depth)
     {
         mTreeView->AddItem(static_cast<int>(actor->GetGuid()), actor->GetActorName(), depth);
         
-        for (Actor* child : actor->GetChildren())
+        for (const ActorPtr& child : actor->GetChildren())
         {
             AddActorRecursive(child, depth++);
         }
@@ -54,7 +54,7 @@ namespace Ming3D
         auto itActor = std::find_if(
             actors.begin(),
             actors.end(),
-            [id](Actor* candidate){
+            [id](const ActorPtr& candidate){
                 return static_cast<int>(candidate->GetGuid()) == id; // TODO: Use uint for IDs?
             });
         if (itActor != actors.end())
@@ -65,9 +65,9 @@ namespace Ming3D
 
     void SceneHierarchyWidget::Start()
     {
-        std::vector<Actor*> actors = GGameEngine->GetWorld().lock()->GetActors();
-        std::vector<Actor*> rootActors;
-        std::copy_if(actors.begin(),  actors.end(), std::back_inserter(rootActors), [](Actor* actor){ return actor->GetTransform().GetParent() == nullptr; });
+        std::vector<ActorPtr> actors = GGameEngine->GetWorld().lock()->GetActors();
+        std::vector<ActorPtr> rootActors;
+        std::copy_if(actors.begin(),  actors.end(), std::back_inserter(rootActors), [](const ActorPtr& actor){ return actor->GetTransform().GetParent() == nullptr; });
         for (auto actor : rootActors)
         {
             AddActorRecursive(actor, 0);

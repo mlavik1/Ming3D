@@ -28,7 +28,7 @@ namespace Ming3D
         delete mCamera;
     }
 
-    void CameraComponent::SetRenderTarget(Rendering::RenderTarget* target)
+    void CameraComponent::SetRenderTarget(std::shared_ptr<Rendering::RenderTarget> target)
     {
         mRenderWindow = nullptr;
         mCamera->mRenderTarget = target;

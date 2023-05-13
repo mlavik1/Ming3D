@@ -2,6 +2,7 @@
 #include <vector>
 #include <memory>
 #include "GUI/widget.h"
+#include "Object/object_ptr.h"
 
 namespace Ming3D
 {
@@ -20,7 +21,7 @@ namespace Ming3D
         std::shared_ptr<TreeViewWidget> mTreeView;
         std::shared_ptr<ImageWidget> mBackgroundWidget;
 
-        void AddActorRecursive(Actor* actor, int depth);
+        void AddActorRecursive(const ActorPtr& actor, int depth);
         void OnItemSelected(int id);
 
     public:

@@ -37,16 +37,16 @@ namespace Ming3D
         gameEngine->Initialise();
         gameEngine->SetMainWindowSize(1600, 900);
 
-        Actor* skybox = gameEngine->GetWorld().lock()->SpawnActor("Skybox");
+        ActorPtr skybox = gameEngine->GetWorld().lock()->SpawnActor("Skybox");
         skybox->GetTransform().SetLocalPosition(glm::vec3(1.5f, -2.0f, -6.0f));
         skybox->GetTransform().SetLocalScale(glm::vec3(-50.0f, 50.0f, 50.0f));
-        ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Skybox/Skybox.obj"), skybox, MODELLOADERFLAGS_UNLIT | MODELLOADERFLAGS_FORCE_OPAQUE);
+        ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Skybox/Skybox.obj"), skybox.Get(), MODELLOADERFLAGS_UNLIT | MODELLOADERFLAGS_FORCE_OPAQUE);
 
-        Actor* actor1 = gameEngine->GetWorld().lock()->SpawnActor("Cow");
+        ActorPtr actor1 = gameEngine->GetWorld().lock()->SpawnActor("Cow");
         actor1->GetTransform().SetLocalPosition(glm::vec3(1.5f, -2.0f, -6.0f));
         actor1->GetTransform().SetLocalScale(glm::vec3(50.0f, 50.0f, 50.0f));
         actor1->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
-        ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Mvr_PetCow_walk.dae"), actor1);
+        ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Mvr_PetCow_walk.dae"), actor1.Get());
 
         const std::string resourceDir = std::string(MING3D_EDITOR_SOURCE_DIR) + std::string("/Resources");
         const std::string testGuiPath = resourceDir + std::string("/editor.widget");
@@ -59,7 +59,7 @@ namespace Ming3D
         guiCamera->mRenderTarget = GGameEngine->GetMainRenderWindow()->mRenderTarget; // TODO
         guiWorld.lock()->GetRenderScene()->AddCamera(guiCamera);
 
-        Actor* guiActor = guiWorld.lock()->SpawnActor("GUI");
+        ActorPtr guiActor = guiWorld.lock()->SpawnActor("GUI");
         guiActor->GetTransform().SetLocalPosition(glm::vec3(0.0f, 0.0f, 0.0f));
         guiActor->GetTransform().SetLocalScale(glm::vec3(0.005f, 0.005f, 0.005f));
         WidgetComponent* widgetComp = guiActor->AddComponent<WidgetComponent>();
