@@ -19,6 +19,7 @@
 #include "GUI/font_manager.h"
 #include "GUI/gui_resource_manager.h"
 #include <algorithm>
+#include <iterator>
 
 #ifdef MING3D_PHYSX
 #include "Physics/API/PhysX/physics_manager_physx.h"

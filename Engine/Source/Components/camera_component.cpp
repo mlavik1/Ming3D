@@ -58,6 +58,7 @@ namespace Ming3D
     void CameraComponent::Tick(float inDeltaTime)
     {
         mCamera->mCameraMatrix = glm::inverse(mParent->GetTransform().GetWorldTransformMatrix());
+        mCamera->mPosition = mParent->GetTransform().GetWorldPosition();
 
         // Update Camera's render target if we're rendering to a window, in case the render target was re-created
         // TODO: Maybe we should instead use a RenderTargetHandle, instead of storing the RenderTarget directly in the Camera?

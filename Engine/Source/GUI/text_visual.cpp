@@ -119,7 +119,7 @@ namespace Ming3D
         memcpy(outIndexData, mIndexData.data(), mIndexData.size() * sizeof(unsigned int));
     }
 
-    Material* TextVisual::GetMaterial()
+    std::shared_ptr<Material> TextVisual::GetMaterial()
     {
         return mMaterial;
     }

@@ -2,7 +2,9 @@
 #include "test_actor.h"
 
 #include "GameEngine/game_engine.h"
+#include "World/world.h"
 #include "Debug/debug.h"
+#include "Components/camera_component.h"
 
 using namespace Ming3D;
 
@@ -11,20 +13,20 @@ int main()
     GameEngine engine;
     engine.Initialise(); // in order to register classes
 
-    Actor* camActor = engine->GetWorld()->SpawnActor();
+    std::shared_ptr<Actor> camActor = engine.GetWorld().lock()->SpawnActor().lock();
     camActor->AddComponent<CameraComponent>();
     camActor->GetTransform().SetWorldPosition(glm::vec3(0.0f, 2.0f, 6.0f));
 
     PropertyHandleBase* propHandle = TestActor::GetStaticClass()->GetPropertyByName("TestPropertyInt")->GetPropertyHandle();
 
-    TestActor* actor1 = new TestActor();
+    std::shared_ptr<TestActor> actor1 = engine.GetWorld().lock()->SpawnActor<TestActor>().lock();
     actor1->TestPropertyInt = 99;
 
     DataWriter dw1(10);
-    propHandle->Serialise(actor1, dw1);
+    propHandle->Serialise(actor1.get(), dw1);
 
-    TestActor* actor2 = new TestActor();
-    propHandle->Deserialise(actor2, dw1);
+    std::shared_ptr<TestActor> actor2 = engine.GetWorld().lock()->SpawnActor<TestActor>().lock();
+    propHandle->Deserialise(actor2.get(), dw1);
 
     LOG_INFO() << actor2->TestPropertyInt;
 

@@ -17,7 +17,7 @@
 
 namespace Ming3D
 {
-    Material* ModelLoader::CreateMaterial(aiMaterial* aiMat, const std::string modelPath, const int flags)
+    std::unique_ptr<Material> ModelLoader::CreateMaterial(aiMaterial* aiMat, const std::string modelPath, const int flags)
     {
         std::shared_ptr<Texture> diffuseTexture = nullptr;
         glm::vec4 diffuseColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -62,7 +62,7 @@ namespace Ming3D
             matParams.mPreprocessorDefinitions.emplace("unlit_mode", "");
 
         // Create material
-        Material* material = MaterialFactory::CreateMaterial(matParams); // TODO: Generate shader based on vertex layout
+        std::unique_ptr<Material> material = MaterialFactory::CreateMaterial(matParams); // TODO: Generate shader based on vertex layout
         
         if (diffuseTexture != nullptr)
             material->SetTexture("mainTexture", diffuseTexture);
@@ -82,7 +82,7 @@ namespace Ming3D
         return material;
     }
 
-    Mesh* ModelLoader::CreateMesh(aiMesh* aiMesh)
+    std::unique_ptr<Mesh> ModelLoader::CreateMesh(aiMesh* aiMesh)
     {
         Rendering::VertexLayout vertLayout;
         vertLayout.VertexComponents.push_back(Rendering::EVertexComponent::Position);
@@ -129,7 +129,7 @@ namespace Ming3D
             }
         }
 
-        Mesh* mesh = new Mesh();
+        std::unique_ptr<Mesh> mesh = std::make_unique<Mesh>();
         mesh->mVertexData = vertData;
         mesh->mIndexData = new Rendering::IndexData(indices.size());
         if (indices.size() > 0)
@@ -138,9 +138,9 @@ namespace Ming3D
         return mesh;
     }
 
-    Actor* ModelLoader::CreateNode(aiNode* aiNode, const std::vector<Mesh*>& meshes, const std::vector<Material*>& materials, const aiScene* scene, Actor* parent)
+    ActorPtr ModelLoader::CreateNode(aiNode* aiNode, const std::vector<std::shared_ptr<Mesh>>& meshes, const std::vector<std::shared_ptr<Material>>& materials, const aiScene* scene, Actor* parent)
     {
-        Actor* actor = parent->SpawnChildActor();
+        ActorPtr actor = parent->SpawnChildActor();
         actor->SetActorName(aiNode->mName.C_Str());
 
         aiMatrix4x4 m = aiNode->mTransformation;
@@ -153,8 +153,8 @@ namespace Ming3D
 
         for(unsigned int iMesh = 0; iMesh < aiNode->mNumMeshes; iMesh++)
         {
-            Mesh* mesh = meshes[aiNode->mMeshes[iMesh]];
-            Material* material = materials[scene->mMeshes[iMesh]->mMaterialIndex];
+            std::shared_ptr<Mesh> mesh = meshes[aiNode->mMeshes[iMesh]];
+            std::shared_ptr<Material> material = materials[scene->mMeshes[iMesh]->mMaterialIndex];
 
             MeshComponent* meshComp = actor->AddComponent<MeshComponent>();
             meshComp->SetMesh(mesh);
@@ -163,7 +163,7 @@ namespace Ming3D
 
         for(unsigned int iChild = 0; iChild < aiNode->mNumChildren; iChild++)
         {
-            CreateNode(aiNode->mChildren[iChild], meshes, materials, scene, actor);
+            CreateNode(aiNode->mChildren[iChild], meshes, materials, scene, actor.Get());
         }
 
         return actor;
@@ -184,19 +184,19 @@ namespace Ming3D
         __Assert(scene != nullptr);
 
         // Process materials
-        std::vector<Material*> materials;
+        std::vector<std::shared_ptr<Material>> materials;
         materials.reserve(scene->mNumMaterials);
         for (unsigned int m = 0; m < scene->mNumMaterials; m++)
         {
-            Material* mat = CreateMaterial(scene->mMaterials[m], modelPath, inFlags);
+            std::shared_ptr<Material> mat = CreateMaterial(scene->mMaterials[m], modelPath, inFlags);
             materials.push_back(mat);
         }
 
-        std::vector<Mesh*> meshes;
+        std::vector<std::shared_ptr<Mesh>> meshes;
         meshes.reserve(scene->mNumMeshes);
         for (unsigned int m = 0; m < scene->mNumMeshes; m++)
         {
-            Mesh* mesh = CreateMesh(scene->mMeshes[m]);
+            std::shared_ptr<Mesh> mesh = CreateMesh(scene->mMeshes[m]);
             meshes.push_back(mesh);
         }
 

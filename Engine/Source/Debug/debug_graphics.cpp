@@ -17,12 +17,12 @@ namespace Ming3D
     // TODO: add rotation parameter
     void DebugGraphics::DrawBox(const glm::vec3& boxPos, const glm::vec3& boxSize, const glm::vec4& boxColour)
     {
-        Mesh* mesh = PrimitiveFactory::CreateBox(boxSize);
-        Material* mat = MaterialFactory::CreateMaterial(GGameEngine->GetResourceDirectory() + std::string("/Shaders/debuggraphics.cgp"));
+        std::shared_ptr<Mesh> mesh = PrimitiveFactory::CreateBox(boxSize);
+        std::shared_ptr<Material> mat = MaterialFactory::CreateMaterial(GGameEngine->GetResourceDirectory() + std::string("/Shaders/debuggraphics.cgp"));
 
         MeshRenderObject* renderObject = new MeshRenderObject();
-        renderObject->SetMesh(mesh);
-        renderObject->SetMaterial(mat);
+        renderObject->SetMesh(mesh.get());
+        renderObject->SetMaterial(mat.get());
         renderObject->SetTransform(glm::translate(glm::mat4(1.0f), boxPos) * glm::mat4(1.0f) * glm::scale(glm::mat4(1.0f), boxSize));
 
         GGameEngine->GetWorld().lock()->GetRenderScene()->AddSceneObject(renderObject);

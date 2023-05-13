@@ -21,6 +21,9 @@ namespace Ming3D
 	{
 		DEFINE_CLASS(Ming3D::TestActor, Ming3D::Actor)
 	public:
+		TestActor() {};
+		explicit TestActor(World* world);
+
         int TestPropertyInt = 3;
         float TestPropertyFloat = 3.42f;
 

@@ -1,10 +1,10 @@
 #pragma once
 #include "visual.h"
 #include "gui_vertex_data.h"
-#include <vector>
-#include <string>
 #include "font_face.h"
 #include "text_properties.h"
+#include <vector>
+#include <string>
 
 namespace Ming3D
 {
@@ -18,7 +18,7 @@ namespace Ming3D
 
         std::string mText;
         glm::vec4 mColour;
-        Material* mMaterial;
+        std::shared_ptr<Material> mMaterial;
         FontFace* mFontFace;
         float mFontScale;
         EHorizontalAlignment mHorizontalAlignment;
@@ -32,7 +32,7 @@ namespace Ming3D
         virtual void RecreateMeshData(const WidgetRect visibleRect) override;
         virtual void GetMeshDataSize(unsigned int& outVertexCount, unsigned int& outIndexCount) override;
         virtual void GetMeshData(GUIVertexData* outVertData, unsigned int* outIndexData) override;
-        virtual Material* GetMaterial() override;
+        virtual std::shared_ptr<Material> GetMaterial() override;
 
         void SetText(const std::string& text);
         void SetFontFace(FontFace* fontFace);

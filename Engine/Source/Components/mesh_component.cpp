@@ -34,21 +34,21 @@ namespace Ming3D
         GetWorld()->GetRenderScene()->AddSceneObject(mRenderObject);
     }
 
-    void MeshComponent::SetMesh(Mesh* inMesh, bool dynamic)
+    void MeshComponent::SetMesh(std::shared_ptr<Mesh> inMesh, bool dynamic)
     {
         mMesh = inMesh;
-        mRenderObject->SetMesh(inMesh, dynamic);
+        mRenderObject->SetMesh(inMesh.get(), dynamic);
     }
 
-    void MeshComponent::SetMaterial(Material* inMat)
+    void MeshComponent::SetMaterial(std::shared_ptr<Material> inMat)
     {
         mMaterial = inMat;
-        mRenderObject->SetMaterial(inMat);
+        mRenderObject->SetMaterial(inMat.get());
     }
 
     void MeshComponent::ReuploadVertexData()
     {
-        mRenderObject->ReuploadVertexData(mMesh);
+        mRenderObject->ReuploadVertexData(mMesh.get());
     }
 
     void MeshComponent::Tick(float inDeltaTime)

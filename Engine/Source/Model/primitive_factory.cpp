@@ -34,7 +34,7 @@ namespace Ming3D
         }
     }
 
-    Mesh* PrimitiveFactory::CreateBox(const glm::vec3& boxSize)
+    std::unique_ptr<Mesh> PrimitiveFactory::CreateBox(const glm::vec3& boxSize)
     {
         const float dx = boxSize.x / 2.0f;
         const float dy = boxSize.y / 2.0f;
@@ -61,7 +61,7 @@ namespace Ming3D
         CreateRotatedPlane(baseVerts, baseIndices, glm::vec3(1, 0, 0), deg90 * 3.0f, glm::vec3(0, dy, 0), vertices, indices); // top
         CreateRotatedPlane(baseVerts, baseIndices, glm::vec3(1, 0, 0), deg90 * 1.0f, glm::vec3(0, -dy, 0), vertices, indices); // bottom
 
-        Mesh* mesh = new Mesh();
+        std::unique_ptr<Mesh> mesh = std::make_unique<Mesh>();
         // TODO: Add support for different vertex layouts (with/without normals and texcoords)
         mesh->mVertexData = new Rendering::VertexData({ Rendering::EVertexComponent::Position, Rendering::EVertexComponent::Normal, Rendering::EVertexComponent::TexCoord }, indices.size());
         mesh->mIndexData = new Rendering::IndexData(indices.size());
@@ -72,7 +72,7 @@ namespace Ming3D
         return mesh;
     }
 
-    Mesh* PrimitiveFactory::CreatePlane(const glm::vec2& planeSize, unsigned int dimX, unsigned int dimY)
+    std::unique_ptr<Mesh> PrimitiveFactory::CreatePlane(const glm::vec2& planeSize, unsigned int dimX, unsigned int dimY)
     {
         if(dimX < 1 || dimY < 1)
         {
@@ -114,7 +114,7 @@ namespace Ming3D
             }
         }
 
-        Mesh* mesh = new Mesh();
+        std::unique_ptr<Mesh> mesh = std::make_unique<Mesh>();
         // TODO: Add support for different vertex layouts (with/without normals and texcoords)
         mesh->mVertexData = new Rendering::VertexData({ Rendering::EVertexComponent::Position, Rendering::EVertexComponent::Normal, Rendering::EVertexComponent::TexCoord }, vertices.size());
         mesh->mIndexData = new Rendering::IndexData(indices.size());

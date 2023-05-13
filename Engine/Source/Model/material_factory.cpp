@@ -7,19 +7,19 @@
 
 namespace Ming3D
 {
-    Material* MaterialFactory::CreateMaterial(const std::string& inShaderProgram)
+    std::unique_ptr<Material> MaterialFactory::CreateMaterial(const std::string& inShaderProgram)
     {
         MaterialParams params;
         params.mShaderProgramPath = inShaderProgram;
         return CreateMaterial(params);
     }
 
-    Material* MaterialFactory::CreateMaterial(const MaterialParams& inParams)
+    std::unique_ptr<Material> MaterialFactory::CreateMaterial(const MaterialParams& inParams)
     {
 		Rendering::ParsedShaderProgram* parsedProgram = GetParsedShaderProgram(inParams);
         if (parsedProgram != nullptr)
         {
-            Material* mat = new Material(parsedProgram);
+            std::unique_ptr<Material> mat = std::make_unique<Material>(parsedProgram);
 			mat->mMaterialParams = inParams;
             // Set default uniform values
             if(mat->HasShaderUniform("_textureTiling"))

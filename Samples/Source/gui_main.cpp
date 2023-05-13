@@ -5,6 +5,7 @@
 #include "Object/object.h"
 
 #include "Object/function.h"
+#include "Object/object_ptr.h"
 #include "GameEngine/game_engine.h"
 #include "World/world.h"
 #include "Actors/actor.h"
@@ -34,29 +35,29 @@ int main()
     gameEngine->Initialise();
     gameEngine->SetMainWindowSize(1280, 720);
 
-    auto world = gameEngine->GetWorld().lock();
+    auto world = gameEngine->GetWorld();
 
-    Actor* camActor = world->SpawnActor();
+    ActorPtr camActor = world.lock()->SpawnActor();
     camActor->AddComponent<CameraComponent>();
     camActor->GetTransform().SetWorldPosition(glm::vec3(0.0f, 2.0f, 6.0f));
 
-    Actor* skybox = world->SpawnActor();
+    ActorPtr skybox = world.lock()->SpawnActor();
     skybox->GetTransform().SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
     skybox->GetTransform().SetLocalScale(glm::vec3(-50.0f, 50.0f, 50.0f));
-    ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Skybox/Skybox.obj"), skybox, MODELLOADERFLAGS_UNLIT | MODELLOADERFLAGS_FORCE_OPAQUE);
+    ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Skybox/Skybox.obj"), skybox.get(), MODELLOADERFLAGS_UNLIT | MODELLOADERFLAGS_FORCE_OPAQUE);
 
-    Actor* actor1 = world->SpawnActor();
+    ActorPtr actor1 = world.lock()->SpawnActor();
     actor1->GetTransform().SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
     actor1->GetTransform().SetLocalScale(glm::vec3(50.0f, 50.0f, 50.0f));
     actor1->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
-    ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Mvr_PetCow_walk.dae"), actor1);
+    ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Mvr_PetCow_walk.dae"), actor1.get());
 
 
     const std::string resourceDir = std::string(MING3D_SAMPLES_SOURCE_DIR) + std::string("/Resources");
     const std::string testGuiPath = resourceDir + std::string("/menu_test.widget");
     //const std::string testGuiPath = resourceDir + std::string("/gui_test.widget");
 
-    Actor* guiActor = world->SpawnActor();
+    ActorPtr guiActor = world.lock()->SpawnActor();
     guiActor->GetTransform().SetLocalPosition(glm::vec3(0.0f, 0.0f, 0.0f));
     guiActor->GetTransform().SetLocalScale(glm::vec3(0.005f, 0.005f, 0.005f));
     WidgetComponent* widgetComp = guiActor->AddComponent<WidgetComponent>();

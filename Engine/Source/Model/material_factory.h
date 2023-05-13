@@ -4,6 +4,7 @@
 #include "material.h"
 #include <string>
 #include <unordered_map>
+#include <memory>
 
 namespace Ming3D
 {
@@ -15,8 +16,8 @@ namespace Ming3D
     class MaterialFactory
     {
     public:
-        static Material* CreateMaterial(const std::string& inShaderProgram);
-        static Material* CreateMaterial(const MaterialParams& inParams);
+        static std::unique_ptr<Material> CreateMaterial(const std::string& inShaderProgram);
+        static std::unique_ptr<Material> CreateMaterial(const MaterialParams& inParams);
 		static Rendering::ParsedShaderProgram* GetParsedShaderProgram(const MaterialParams& inParams);
     };
 }

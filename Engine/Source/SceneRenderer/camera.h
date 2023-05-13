@@ -29,6 +29,7 @@ namespace Ming3D
         glm::mat4 mCameraMatrix;
         glm::mat4 mProjectionMatrix;
         std::shared_ptr<Rendering::RenderTarget> mRenderTarget;
+        glm::vec3 mPosition;
         RenderPipeline* mRenderPipeline; // TODO: unique_ptr
         CameraViewport mViewport;
         int mRenderOrder = 0;
