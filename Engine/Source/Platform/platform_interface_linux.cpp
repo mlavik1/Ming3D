@@ -2,6 +2,7 @@
 #include "platform_interface_linux.h"
 #include <cstdlib>
 #include <cstdio>
+#include <cstring>
 #include <iostream>
 
 namespace Ming3D
@@ -24,16 +25,15 @@ namespace Ming3D
         return false;
     }
 
-    bool PlatformInterfaceLinux::OpenFileDialog(const std::string& inTitile, std::string& outFilePath)
+    bool PlatformInterfaceLinux::OpenFileDialog(const std::string& inTitle, std::string& outFilePath)
     {
         if (hasKDialog)
         {
-            return RunCommand("kdialog --getopenfilename", outFilePath);
+            return RunCommand("kdialog --getopenfilename --title=\"" + inTitle + "\"", outFilePath);
         }
         else if(hasZenity)
         {
-            // TODO
-            return false;
+            return RunCommand("zenity --file-selection --title=\"" + inTitle + "\"", outFilePath);
         }
         else
             return false;
@@ -56,6 +56,8 @@ namespace Ming3D
         }
 
         pclose(pipe);
+        // Remove new line
+        result[strcspn(buffer, "\r\n")] = 0;
         outResult = result;
         return true;
     }

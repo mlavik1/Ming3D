@@ -9,6 +9,6 @@ namespace Ming3D
     public:
         virtual bool MakeDirectory(const std::string& inPath) override;
         virtual bool DirectoryExists(const std::string& inPath) override;
-        virtual bool OpenFileDialog(const std::string& inTitile, std::string& outFilePath) override;
+        virtual bool OpenFileDialog(const std::string& inTitle, std::string& outFilePath) override;
     };
 }

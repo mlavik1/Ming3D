@@ -22,7 +22,7 @@ namespace Ming3D
         return false;
     }
 
-    bool PlatformInterface::OpenFileDialog(const std::string& inTitile, std::string& outFilePath)
+    bool PlatformInterface::OpenFileDialog(const std::string& inTitle, std::string& outFilePath)
     {
         char filename[MAX_PATH];
         ZeroMemory(&filename, sizeof(filename));
@@ -34,7 +34,7 @@ namespace Ming3D
         ofn.lpstrFilter = "Any File\0*.*\0";
         ofn.lpstrFile = filename;
         ofn.nMaxFile = MAX_PATH;
-        ofn.lpstrTitle = inTitile.c_str();
+        ofn.lpstrTitle = inTitle.c_str();
         ofn.Flags = OFN_DONTADDTORECENT | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
 
         if (GetOpenFileNameA(&ofn))
