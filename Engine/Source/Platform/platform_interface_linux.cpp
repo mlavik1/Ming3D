@@ -44,16 +44,14 @@ namespace Ming3D
         char buffer[128];
         std::string result = "";
 
-        // Open pipe to file
         FILE* pipe = popen(command.c_str(), "r");
         if (!pipe)
             return false;
 
-        // read till end of process:
-        while (!feof(pipe)) {
+        while (!feof(pipe))
+        {
 
-            // use buffer to read and add to result
-            if (fgets(buffer, 128, pipe) != NULL)
+            if (fgets(buffer, 128, pipe) != nullptr)
                 result += buffer;
         }
 

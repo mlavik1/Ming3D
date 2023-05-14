@@ -7,6 +7,7 @@
 namespace Ming3D
 {
     class ImageWidget;
+    class TextWidget;
     class Texture;
 
     class ButtonWidget : public Widget
@@ -18,6 +19,10 @@ namespace Ming3D
 
     private:
         std::shared_ptr<ImageWidget> mImageWidget;
+        std::shared_ptr<TextWidget> mTextWidget;
+
+        void EnsureImageWidgetExists();
+        void EnsureTextWidgetExists();
 
     public:
         ButtonWidget();
@@ -26,9 +31,11 @@ namespace Ming3D
         std::function<void()> mOnClick; // TODO: Multiple?
 
         std::shared_ptr<ImageWidget> GetImageWidget() { return mImageWidget; }
+        std::shared_ptr<TextWidget> GetTextWidget() { return mTextWidget; }
 
         void SetColour(glm::vec4 colour);
         void SetTexture(std::shared_ptr<Texture> texture);
+        void SetText(const std::string& text);
 
         virtual void OnInputEvent(InputEvent event) override;
     };
