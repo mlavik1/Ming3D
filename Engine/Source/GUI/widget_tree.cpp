@@ -20,10 +20,14 @@ namespace Ming3D
         mCanvasSize = glm::vec2(1280.0f, 720.0f);
         mRootSubmeshNode = nullptr;
         mRootWidget = std::make_shared<Widget>();
+        mPopupRootWidget = std::make_shared<Widget>();
+        mRootWidget->mWidgetTree = this;
+        mPopupRootWidget->mWidgetTree = this;
         WidgetTransform rootTransform{};
         rootTransform.anchorMin = rootTransform.anchorMax = glm::vec2(0.0f, 0.0f);
         rootTransform.mSize = mCanvasSize;
         mRootWidget->SetWidgetTransform(rootTransform);
+        mPopupRootWidget->SetWidgetTransform(rootTransform);
 
         mMaterial = GGameEngine->GetGUIResourceManager()->GetDefaultGUIMaterial();
         mMeshBuffer = new MeshBuffer();
@@ -155,6 +159,7 @@ namespace Ming3D
     void WidgetTree::TickWidgets(float deltaTime)
     {
         TickWidgetsRecursive(mRootWidget.get(), deltaTime);
+        TickWidgetsRecursive(mPopupRootWidget.get(), deltaTime);
     }
 
 
@@ -171,6 +176,7 @@ namespace Ming3D
         params.mVisualsInvalidated = mVisualsInvalidated;
 
         UpdateWidgetRecursive(mRootWidget.get(), params);
+        UpdateWidgetRecursive(mPopupRootWidget.get(), params);
 
         mRootWidget->mWidgetInvalidated = false;
         mVisualsInvalidated = false;
@@ -233,7 +239,9 @@ namespace Ming3D
         for (std::vector<InputEvent>::const_iterator iter = events.begin(); iter != events.end(); ++iter)
         {
             InputEvent event = (*iter);
-            Widget* widget = mRootWidget.get();
+            Widget* widget = mPopupRootWidget.get();
+            HandleEventRecursive(widget, event, mousePosition);
+            widget = mRootWidget.get();
             HandleEventRecursive(widget, event, mousePosition);
         }
     }
@@ -260,7 +268,18 @@ namespace Ming3D
         WidgetTransform rootTransform = mRootWidget->GetWidgetTransform();
         rootTransform.mSize = mCanvasSize;
         mRootWidget->SetWidgetTransform(rootTransform);
+        mPopupRootWidget->SetWidgetTransform(rootTransform);
         mVisualsInvalidated = true;
+    }
+
+    void WidgetTree::AddPopupWidget(std::shared_ptr<Widget> widget)
+    {
+        mPopupRootWidget->addWidget(widget);
+    }
+
+    void WidgetTree::RemovePopupWidget(Widget* widget)
+    {
+        mPopupRootWidget->removeWidget(widget);
     }
 
     size_t WidgetTree::GetNumBatches() const

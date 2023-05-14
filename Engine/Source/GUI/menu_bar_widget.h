@@ -14,8 +14,8 @@ namespace Ming3D
         class MenuBarItem
         {
         public:
-            std::string mText;
-            std::function<void()> mOnClick;
+            std::string mText = "";
+            std::function<void()> mOnClick = nullptr;
             std::vector<MenuBarItem> mChildren;
         };
 
@@ -25,6 +25,10 @@ namespace Ming3D
 
     private:
         std::vector<MenuBarItem> mItems;
+        std::shared_ptr<Widget> mPopupWidget = nullptr;
+
         static void InitialiseClass() {}
+
+        void OnMenuItemClick(const MenuBarItem& menuItem, int x, int y);
     };
 }

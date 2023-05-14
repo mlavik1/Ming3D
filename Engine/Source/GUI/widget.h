@@ -36,6 +36,7 @@ namespace Ming3D
         WidgetRect mAbsoluteRect;
 
         Widget* mParentWidget = nullptr;
+        WidgetTree* mWidgetTree = nullptr; // TODO
 
         std::vector<std::shared_ptr<Widget>> mChildWidgets;
         std::vector<std::shared_ptr<Visual>> mVisuals;
@@ -54,6 +55,8 @@ namespace Ming3D
 
         void addVisual(std::shared_ptr<Visual> visual);
 
+        WidgetTree* GetWidgetTree();
+
         inline World* GetWorld() { return mWorld; }
 
     public:
@@ -66,6 +69,8 @@ namespace Ming3D
 
         void addWidget(std::shared_ptr<Widget> widget);
         void removeWidget(Widget* widget);
+        void AddPopupWidget(std::shared_ptr<Widget> widget);
+        void RemovePopupWidget(Widget* widget);
 
         /*
         * Gets the absolute (screen space) rect of this Widget's transform.

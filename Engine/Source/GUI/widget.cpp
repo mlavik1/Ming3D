@@ -1,4 +1,5 @@
 #include "widget.h"
+#include "widget_tree.h"
 #include <algorithm>
 
 IMPLEMENT_CLASS(Ming3D::Widget)
@@ -46,6 +47,28 @@ namespace Ming3D
         auto itEnd = std::remove_if(mChildWidgets.begin(), mChildWidgets.end(), [widget](auto candidate){ return candidate.get() == widget; });
         mChildWidgets.erase(itEnd, mChildWidgets.end());
         mWidgetInvalidated = true;
+    }
+
+    void Widget::AddPopupWidget(std::shared_ptr<Widget> widget)
+    {
+        WidgetTree* widgetTree = GetWidgetTree();
+        if (widgetTree)
+            widgetTree->AddPopupWidget(widget);
+    }
+
+    void Widget::RemovePopupWidget(Widget* widget)
+    {
+        WidgetTree* widgetTree = GetWidgetTree();
+        if (widgetTree)
+            widgetTree->RemovePopupWidget(widget);
+    }
+
+    WidgetTree* Widget::GetWidgetTree()
+    {
+        Widget* current = this;
+        while (current->mWidgetTree == nullptr && current->mParentWidget != nullptr)
+            current = current->mParentWidget;
+        return current->mWidgetTree;
     }
 
     WidgetRect Widget::getAbsoluteRect()

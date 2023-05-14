@@ -13,7 +13,15 @@ namespace Ming3D
     {
         MenuBarItem fileItem;
         fileItem.mText = "File";
-        fileItem.mOnClick = [&]() { CallbackImportModel(); };
+        MenuBarItem newSceneItem;
+        newSceneItem.mText = "New scene";
+        MenuBarItem improtModelItem;
+        improtModelItem.mText = "Import model";
+        improtModelItem.mOnClick = [&]() { CallbackImportModel(); };
+        MenuBarItem quitItem;
+        quitItem.mText = "Quit";
+        fileItem.mChildren = { newSceneItem, improtModelItem, quitItem };
+
         MenuBarItem assetsItem;
         assetsItem.mText = "Assets";
         SetItems({fileItem, assetsItem});

@@ -24,6 +24,7 @@ namespace Ming3D
     {
     private:
         std::shared_ptr<Widget> mRootWidget;
+        std::shared_ptr<Widget> mPopupRootWidget;
 
         VisualSubmeshNode* mRootSubmeshNode;
         VisualSubmeshNode* mTailSubmeshNode;
@@ -58,6 +59,8 @@ namespace Ming3D
         void SetWidget(std::shared_ptr<Widget> widget);
         void SetTransform(glm::mat4 transMat);
         void SetCanvasSize(glm::ivec2 canvasSize);
+        void AddPopupWidget(std::shared_ptr<Widget> widget);
+        void RemovePopupWidget(Widget* widget);
 
         void HandleEvents(const std::vector<InputEvent>& events, glm::ivec2 mousePosition);
         

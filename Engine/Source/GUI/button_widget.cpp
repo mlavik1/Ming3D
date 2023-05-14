@@ -69,7 +69,7 @@ namespace Ming3D
     {
         Widget::OnInputEvent(event);
         
-        if (event.mType == InputEventType::MouseButtonUp)
+        if (mOnClick != nullptr && event.mType == InputEventType::MouseButtonUp)
         {
             mOnClick();
             std::cout << "Mouse button down: " << event.mMouseButton.mButton << std::endl;
