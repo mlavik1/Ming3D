@@ -12,6 +12,8 @@
 #include "material_factory.h"
 #include "shader_program.h"
 #include <memory>
+#include <fstream>
+#include <cassert>
 
 #define MODELLOADERFLAGS_UNLIT 1
 
@@ -26,15 +28,20 @@ namespace Ming3D
         float shininess = 32.0f;
 
         // Import diffuse texture
-        aiString path;  // filename
-        if (aiMat->GetTexture(aiTextureType::aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
+        aiString aipath;  // filename
+        if (aiMat->GetTexture(aiTextureType::aiTextureType_DIFFUSE, 0, &aipath) == AI_SUCCESS)
         {
+            // TODO: Read directly:
+            std::string path = aipath.C_Str();
+            if (path[0] == '*')
+                path = std::string("temp_texture_") + path.substr(1, path.size() - 1) + std::string(".jpg");
+
             std::string texturePath = modelPath;
             size_t iLastSlash = texturePath.find_last_of('/');
             if (iLastSlash != std::string::npos)
-                texturePath = texturePath.substr(0, iLastSlash + 1) + std::string(path.C_Str());
+                texturePath = texturePath.substr(0, iLastSlash + 1) + std::string(path);
             else
-                texturePath = std::string(path.C_Str());
+                texturePath = path;
             diffuseTexture = std::shared_ptr<Texture>(TextureLoader::LoadTextureData(texturePath.c_str()));
         }
 
@@ -182,6 +189,21 @@ namespace Ming3D
         Assimp::Importer importer;
         const aiScene * scene = importer.ReadFile(modelPath, aiProcess_Triangulate | aiProcess_OptimizeMeshes | aiProcess_OptimizeGraph | aiProcess_JoinIdenticalVertices | aiProcess_RemoveRedundantMaterials | aiProcess_GenSmoothNormals);
         __Assert(scene != nullptr);
+
+        // TEMP: Unpack textures - TODO: Allow reading directly!
+        for (unsigned int i = 0; i < scene->mNumTextures; i++)
+        {
+            aiTexture* texture = scene->mTextures[i];
+            const std::string format = texture->achFormatHint;
+            if (format.compare("jpg") == 0)
+            {
+                assert(texture->mHeight == 0);
+                const std::string texPath = std::string("temp_texture_") + std::to_string(i) + std::string(".jpg");
+                std::ofstream texStream(texPath, std::ios::out | std::ios::binary);
+                texStream.write(reinterpret_cast<char*>(texture->pcData), static_cast<std::streamsize>(texture->mWidth));
+                texStream.close();
+            }
+        }
 
         // Process materials
         std::vector<std::shared_ptr<Material>> materials;
