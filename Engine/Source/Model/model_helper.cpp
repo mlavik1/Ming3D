@@ -34,15 +34,21 @@ namespace Ming3D
             // TODO: Read directly:
             std::string path = aipath.C_Str();
             if (path[0] == '*')
+            {
                 path = std::string("temp_texture_") + path.substr(1, path.size() - 1) + std::string(".jpg");
-
-            std::string texturePath = modelPath;
-            size_t iLastSlash = texturePath.find_last_of('/');
-            if (iLastSlash != std::string::npos)
-                texturePath = texturePath.substr(0, iLastSlash + 1) + std::string(path);
+                diffuseTexture = std::shared_ptr<Texture>(TextureLoader::LoadTextureData(path.c_str()));
+            }
             else
-                texturePath = path;
-            diffuseTexture = std::shared_ptr<Texture>(TextureLoader::LoadTextureData(texturePath.c_str()));
+            {
+
+                std::string texturePath = modelPath;
+                size_t iLastSlash = texturePath.find_last_of('/');
+                if (iLastSlash != std::string::npos)
+                    texturePath = texturePath.substr(0, iLastSlash + 1) + std::string(path);
+                else
+                    texturePath = path;
+                diffuseTexture = std::shared_ptr<Texture>(TextureLoader::LoadTextureData(texturePath.c_str()));
+            }
         }
 
         // Read material properties
