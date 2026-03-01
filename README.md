@@ -8,6 +8,14 @@ Supports rendering with OpenGL and DirectX11.
 
 ![alt text](GitHubMedia/Ming3D.jpg)
 
+# Features
+
+- Rendering with OpenGL or DirectX11
+- Cross platform shaders, that are parsed and automatically converted to GLSL or HLSL.
+- WIP: Physics using PhysX
+- WIP: GUI system
+- WIP: Editor (rendered using Ming3D's GUI system)
+
 # How to clone and build
 
 __Requirements__
@@ -29,10 +37,3 @@ __LINUX__
 - Run the executables (in the "build" folder). Make sure "Engine/Resources" is placed under the same folder as the executable (just create an empty "Engine" folder and copy "Resources" over to it).
 
 (NOTE: You need at least OpenGL 4.0)
-
-# Renderer
-
-Has support for:
-- Rendering with OpenGL or DirectX11
-- Cross platform shaders, that are automatically converted to GLSL or HLSL (still missing some features)
-- Abstractions for: Textures, Vertex Buffers, Shaders, Uniforms / Constant Buffers
