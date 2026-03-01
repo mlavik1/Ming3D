@@ -1,3 +1,6 @@
+> [!WARNING]
+> Old project. Quite messy and lacks proper mamemory managent. May'be I'll revisit it someday!
+
 # Ming3D
 Game engine, for Windows and Linux.
 
