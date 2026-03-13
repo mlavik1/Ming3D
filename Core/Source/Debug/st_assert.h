@@ -12,28 +12,28 @@
 
 #ifdef _WIN32
 #define __Assert(expr) \
-	if(!(expr)) { \
-		LOG_ERROR() << "Assertion error on " << #expr; \
-		__debugbreak(); \
-	}
+    if(!(expr)) { \
+        LOG_ERROR() << "Assertion error on " << #expr; \
+        __debugbreak(); \
+    }
 
 #define __AssertComment(expr, comment) \
-	if(!(expr)) { \
-		LOG_ERROR() << "Assertion error on " << #expr << ", \"" << comment << "\""; \
-		__debugbreak(); \
-	}
+    if(!(expr)) { \
+        LOG_ERROR() << "Assertion error on " << #expr << ", \"" << comment << "\""; \
+        __debugbreak(); \
+    }
 #else
 #define __Assert(expr) \
-	if(!(expr)) { \
-		LOG_ERROR() << "Assertion error on " << #expr; \
-		raise(SIGTRAP); \
-	}
+    if(!(expr)) { \
+        LOG_ERROR() << "Assertion error on " << #expr; \
+        raise(SIGTRAP); \
+    }
 
 #define __AssertComment(expr, comment) \
-	if(!(expr)) { \
-		LOG_ERROR() << "Assertion error on " << #expr << ", \"" << comment << "\""; \
-		raise(SIGTRAP); \
-	}
+    if(!(expr)) { \
+        LOG_ERROR() << "Assertion error on " << #expr << ", \"" << comment << "\""; \
+        raise(SIGTRAP); \
+    }
 #endif
 #endif
 

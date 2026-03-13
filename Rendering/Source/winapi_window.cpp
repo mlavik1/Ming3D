@@ -96,7 +96,7 @@ namespace Ming3D::Rendering
         wndRect.bottom += (oldRect.top - wndRect.top);
         wndRect.top = oldRect.top;
 
-		SetWindowPos(mHWND, NULL, wndRect.left, wndRect.top, wndRect.right - wndRect.left, wndRect.bottom - wndRect.top, 0);
+        SetWindowPos(mHWND, NULL, wndRect.left, wndRect.top, wndRect.right - wndRect.left, wndRect.bottom - wndRect.top, 0);
     }
 
     void WinAPIWindow::BeginRender()

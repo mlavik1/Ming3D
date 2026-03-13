@@ -9,32 +9,32 @@ namespace Ming3D
     * Datawriter.
     * Used for reading/writing raw data.
     */
-	class DataWriter
-	{
-	public:
-		char* mData = nullptr; // TODO: std::vector?
-		char* mDataReadPos = nullptr;
-		size_t mBytesWritten = 0;
-		size_t mBytesAllocated = 0;
+    class DataWriter
+    {
+    public:
+        char* mData = nullptr; // TODO: std::vector?
+        char* mDataReadPos = nullptr;
+        size_t mBytesWritten = 0;
+        size_t mBytesAllocated = 0;
 
-	public:
-		DataWriter(const size_t& arg_preallocateBytes);
-		DataWriter(const DataWriter& arg_other);
-		~DataWriter();
+    public:
+        DataWriter(const size_t& arg_preallocateBytes);
+        DataWriter(const DataWriter& arg_other);
+        ~DataWriter();
 
-		void Reset(const size_t& arg_preallocateBytes);
+        void Reset(const size_t& arg_preallocateBytes);
 
-		void Write(const void* arg_data, const size_t& arg_bytes);
+        void Write(const void* arg_data, const size_t& arg_bytes);
         void SetData(void* arg_data, const size_t& arg_bytes);
 
-		void Read(void* arg_location, const size_t& arg_bytes);
+        void Read(void* arg_location, const size_t& arg_bytes);
 
-		void SkipBytes(const size_t& arg_bytes);
+        void SkipBytes(const size_t& arg_bytes);
         void SetReadPos(size_t arg_pos);
 
-		inline const char* PeekData() const { return mDataReadPos; }
-		inline const char* GetData() const { return mData; }
-		inline size_t GetSize() { return mBytesWritten; }
+        inline const char* PeekData() const { return mDataReadPos; }
+        inline const char* GetData() const { return mData; }
+        inline size_t GetSize() { return mBytesWritten; }
 
         template <typename T>
         void Write(T inVal)
@@ -42,7 +42,7 @@ namespace Ming3D
             Write(&inVal, sizeof(T));
         }
 
-	};
+    };
 } // namespace Ming3D
 
 #endif

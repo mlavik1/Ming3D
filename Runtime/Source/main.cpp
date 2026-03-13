@@ -24,7 +24,7 @@ using namespace Ming3D;
 int main()
 {
     GameEngine* gameEngine = new GameEngine();
-	gameEngine->Initialise();
+    gameEngine->Initialise();
 
     auto world = gameEngine->GetWorld().lock();
     
@@ -75,5 +75,5 @@ int main()
         else if (GGameEngine->GetInputManager()->GetKey(KeyCode::Key_Left))
             camTrans.Rotate(rotSpeed, glm::vec3(0.0f, 1.0f, 0.0f));
     }
-	return 0;
+    return 0;
 }

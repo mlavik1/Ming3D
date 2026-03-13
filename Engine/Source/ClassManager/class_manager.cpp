@@ -4,17 +4,17 @@
 
 namespace Ming3D
 {
-	void ClassManager::InitialiseClassRecursive(Class* inClass)
-	{
-		inClass->InitialiseClass();
-		for (auto subClass : inClass->GetChildClasses())
-		{
-			InitialiseClassRecursive(subClass);
-		}
-	}
+    void ClassManager::InitialiseClassRecursive(Class* inClass)
+    {
+        inClass->InitialiseClass();
+        for (auto subClass : inClass->GetChildClasses())
+        {
+            InitialiseClassRecursive(subClass);
+        }
+    }
 
-	void ClassManager::InitialiseClasses()
-	{
-		InitialiseClassRecursive(Object::GetStaticClass());
-	}
+    void ClassManager::InitialiseClasses()
+    {
+        InitialiseClassRecursive(Object::GetStaticClass());
+    }
 }

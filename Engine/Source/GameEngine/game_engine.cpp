@@ -37,11 +37,11 @@ namespace Ming3D
 {
     GameEngine* GGameEngine = nullptr;
 
-	GameEngine::GameEngine()
-	{
+    GameEngine::GameEngine()
+    {
         GGameEngine = this;
 
-		mClassManager = new ClassManager();
+        mClassManager = new ClassManager();
 #ifdef _WIN32
         mPlatform = new PlatformWin32();
 #else
@@ -63,9 +63,9 @@ namespace Ming3D
         mGUIResourceManager = new GUIResourceManager();
     }
 
-	GameEngine::~GameEngine()
-	{
-		delete mClassManager;
+    GameEngine::~GameEngine()
+    {
+        delete mClassManager;
         delete mTimeManager;
         delete mMainRenderWindow;
         delete mMainWindow;
@@ -76,8 +76,8 @@ namespace Ming3D
         delete mFontManager;
     }
 
-	void GameEngine::Initialise()
-	{
+    void GameEngine::Initialise()
+    {
         mClassManager->InitialiseClasses();
         mPlatform->Initialise();
         mMainWindow = mPlatform->CreateOSWindow();
@@ -92,7 +92,7 @@ namespace Ming3D
         mPhysicsManager->CreatePhysicsScene();
 
         LOG_INFO() << "Engine resource directory: " << GetResourceDirectory();
-	}
+    }
 
     bool GameEngine::Update()
     {

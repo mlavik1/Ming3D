@@ -38,11 +38,11 @@ namespace Ming3D
             memcpy(outValue, mData, mSize);
         }
 
-		void CopyData(ShaderUniformData* other)
-		{
-			__Assert(mSize == other->mSize);
-			memcpy(mData, other->mData, mSize);
-		}
+        void CopyData(ShaderUniformData* other)
+        {
+            __Assert(mSize == other->mSize);
+            memcpy(mData, other->mData, mSize);
+        }
     };
 }
 

@@ -8,7 +8,7 @@
 
 namespace Ming3D
 {
-	class ClassManager;
+    class ClassManager;
     class World;
     class TimeManager;
     class Platform;
@@ -30,10 +30,10 @@ namespace Ming3D
         class RenderTarget;
     }
 
-	class GameEngine
+    class GameEngine
     {
-	private:
-		ClassManager* mClassManager = nullptr;
+    private:
+        ClassManager* mClassManager = nullptr;
         Platform* mPlatform = nullptr;
         std::shared_ptr<World> mWorld = nullptr;
         std::list<std::shared_ptr<World>> mWorlds;
@@ -56,11 +56,11 @@ namespace Ming3D
 
         void HandleDebugStats();
 
-	public:
-		GameEngine();
-		~GameEngine();
+    public:
+        GameEngine();
+        ~GameEngine();
 
-		void Initialise();
+        void Initialise();
         bool Update();
 
         /* Create a new RenderWindow. */

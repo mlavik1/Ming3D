@@ -28,7 +28,7 @@ namespace Ming3D
     {
         // TODO: Do this on init
         //if (SDL_WasInit(SDL_INIT_GAMECONTROLLER) != 1)
-	    //    SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER);
+        //    SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER);
 
         int mouseX = 0;
         int mouseY = 0;

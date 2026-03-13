@@ -6,7 +6,7 @@ namespace Ming3D
     enum class EShadowType
     {
         None,
-		HardShadows
+        HardShadows
     };
 }
 

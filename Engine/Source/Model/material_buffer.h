@@ -40,12 +40,12 @@ namespace Ming3D
         std::unordered_map<std::string, size_t> mTextureIDs;
         /* Defines whether the object will cast shadows. */
         bool mCastShadows = true;
-		/* Defines whether the object will receive shadows. */
-		bool mReceiveShadows = true;
-		/* Defines the visible type of object this is (transparent or opaque). This is used for sorting nodes in the render pipeline. */
-		ERenderType mRenderType = ERenderType::Opaque;
+        /* Defines whether the object will receive shadows. */
+        bool mReceiveShadows = true;
+        /* Defines the visible type of object this is (transparent or opaque). This is used for sorting nodes in the render pipeline. */
+        ERenderType mRenderType = ERenderType::Opaque;
 
-		void CopyFrom(MaterialBuffer* otherMat);
+        void CopyFrom(MaterialBuffer* otherMat);
 
         void SetShaderUniformFloat(const std::string& inName, float inVal);
         void SetShaderUniformInt(const std::string& inName, int inVal);

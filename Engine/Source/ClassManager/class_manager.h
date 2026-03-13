@@ -5,13 +5,13 @@
 
 namespace Ming3D
 {
-	class ClassManager
-	{
-	private:
-		void InitialiseClassRecursive(Class* inClass);
-	public:
-		void InitialiseClasses();
-	};
+    class ClassManager
+    {
+    private:
+        void InitialiseClassRecursive(Class* inClass);
+    public:
+        void InitialiseClasses();
+    };
 }
 
 #endif

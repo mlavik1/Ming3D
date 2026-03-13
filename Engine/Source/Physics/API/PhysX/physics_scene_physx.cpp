@@ -68,9 +68,9 @@ namespace Ming3D
 
         mPxScene = pxPhysics->createScene(sceneDesc);
 
-        mPxScene->setVisualizationParameter(physx::PxVisualizationParameter::eSCALE, 1.0);	//Global visualization scale which gets multiplied with the individual scales
-        mPxScene->setVisualizationParameter(physx::PxVisualizationParameter::eCOLLISION_SHAPES, 1.0f);	//Enable visualization of actor's shape
-        mPxScene->setVisualizationParameter(physx::PxVisualizationParameter::eACTOR_AXES, 1.0f);	//Enable visualization of actor's axis
+        mPxScene->setVisualizationParameter(physx::PxVisualizationParameter::eSCALE, 1.0);  //Global visualization scale which gets multiplied with the individual scales
+        mPxScene->setVisualizationParameter(physx::PxVisualizationParameter::eCOLLISION_SHAPES, 1.0f);  //Enable visualization of actor's shape
+        mPxScene->setVisualizationParameter(physx::PxVisualizationParameter::eACTOR_AXES, 1.0f);    //Enable visualization of actor's axis
     }
 
     PhysicsScenePhysX::~PhysicsScenePhysX()

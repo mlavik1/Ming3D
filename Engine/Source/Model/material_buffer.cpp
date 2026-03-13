@@ -17,23 +17,23 @@ namespace Ming3D
             LOG_ERROR() << "Failed to find uniform with name: " << inName;
     }
 
-	void MaterialBuffer::CopyFrom(MaterialBuffer* otherMat)
-	{
-		this->mCastShadows = otherMat->mCastShadows;
-		this->mReceiveShadows = otherMat->mReceiveShadows;
-		this->mRenderType = otherMat->mRenderType;
+    void MaterialBuffer::CopyFrom(MaterialBuffer* otherMat)
+    {
+        this->mCastShadows = otherMat->mCastShadows;
+        this->mReceiveShadows = otherMat->mReceiveShadows;
+        this->mRenderType = otherMat->mRenderType;
 
-		// copy uniform data
-		for (auto otherUniformIt : otherMat->mShaderUniformMap)
-		{
-			auto thisUniformIt = mShaderUniformMap.find(otherUniformIt.first);
-			if (thisUniformIt != mShaderUniformMap.end())
-			{
-				thisUniformIt->second->CopyData(otherUniformIt.second);
-				mModifiedUniforms.emplace(thisUniformIt->first);
-			}
-		}
-	}
+        // copy uniform data
+        for (auto otherUniformIt : otherMat->mShaderUniformMap)
+        {
+            auto thisUniformIt = mShaderUniformMap.find(otherUniformIt.first);
+            if (thisUniformIt != mShaderUniformMap.end())
+            {
+                thisUniformIt->second->CopyData(otherUniformIt.second);
+                mModifiedUniforms.emplace(thisUniformIt->first);
+            }
+        }
+    }
 
     void MaterialBuffer::SetShaderUniformFloat(const std::string& inName, float inVal)
     {

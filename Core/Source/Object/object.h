@@ -5,7 +5,7 @@
 
 namespace Ming3D
 {
-	class ObjectRefHandle;
+    class ObjectRefHandle;
 
     /**
     * Base class for objects.
@@ -19,7 +19,7 @@ namespace Ming3D
     private:
         ObjectFlag mObjectFlags;
         uint64_t mGuid;
-		ObjectRefHandle* mObjectRefHandle;
+        ObjectRefHandle* mObjectRefHandle;
 
     public:
         Object();

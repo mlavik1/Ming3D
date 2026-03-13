@@ -8,17 +8,17 @@
 
 namespace Ming3D
 {
-	namespace Rendering
-	{
-		class ParsedShaderProgram;
-	}
+    namespace Rendering
+    {
+        class ParsedShaderProgram;
+    }
 
     class MaterialFactory
     {
     public:
         static std::unique_ptr<Material> CreateMaterial(const std::string& inShaderProgram);
         static std::unique_ptr<Material> CreateMaterial(const MaterialParams& inParams);
-		static Rendering::ParsedShaderProgram* GetParsedShaderProgram(const MaterialParams& inParams);
+        static Rendering::ParsedShaderProgram* GetParsedShaderProgram(const MaterialParams& inParams);
     };
 }
 
