@@ -37,7 +37,7 @@ namespace Ming3D
         void GetComponentsInChildrenRecursive(std::vector<T*>& comps)
         {
             static_assert(std::is_base_of<Component, T>::value, "Must be a subclass of component");
-            std::for_each(mChildren.begin(), mChildren.end(), [&comps](auto& child){ child.lock()->GetComponentsInChildrenRecursive(comps); });
+            std::for_each(mChildren.begin(), mChildren.end(), [&comps](auto& child){ child->GetComponentsInChildrenRecursive(comps); });
             for(Component* comp : mComponents)
             {
                 if (static_cast<Object*>(comp)->GetClass() == T::GetStaticClass())

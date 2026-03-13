@@ -37,13 +37,13 @@ int main()
     ActorPtr skybox = gameEngine->GetWorld().lock()->SpawnActor();
     skybox->GetTransform().SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
     skybox->GetTransform().SetLocalScale(glm::vec3(-50.0f, 50.0f, 50.0f));
-    ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Skybox/Skybox.obj"), skybox.get(), MODELLOADERFLAGS_UNLIT);
+    ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Skybox/Skybox.obj"), skybox.Get(), MODELLOADERFLAGS_UNLIT);
 
     ActorPtr actor1 = gameEngine->GetWorld().lock()->SpawnActor();
     actor1->GetTransform().SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
     actor1->GetTransform().SetLocalScale(glm::vec3(50.0f, 50.0f, 50.0f));
     actor1->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
-    ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Mvr_PetCow_walk.dae"), actor1.get());
+    ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Mvr_PetCow_walk.dae"), actor1.Get());
     for (MeshComponent* currMeshComp : actor1->GetComponentsInChildren<MeshComponent>())
     {
         currMeshComp->GetMaterial()->SetCastShadows(true);
@@ -53,7 +53,7 @@ int main()
     actor2->GetTransform().SetLocalPosition(glm::vec3(-1.5f, 0.0f, 0.0f));
     actor2->GetTransform().SetLocalScale(glm::vec3(50.0f, 50.0f, 50.0f));
     actor2->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
-    ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Mvr_PetCow_walk.dae"), actor2.get());
+    ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Mvr_PetCow_walk.dae"), actor2.Get());
     for (MeshComponent* currMeshComp : actor2->GetComponentsInChildren<MeshComponent>())
     {
         currMeshComp->GetMaterial()->SetCastShadows(true);

@@ -47,26 +47,20 @@ int main()
 
     auto world = gameEngine->GetWorld().lock();
     
-    std::weak_ptr<Actor> camActor = world->SpawnActor();
-    if (auto camActorShared = camActor.lock())
-    {
-        camActorShared->AddComponent<CameraComponent>();
-        camActorShared->GetTransform().SetWorldPosition(glm::vec3(0.0f, 0.0f, 3.0f));
-    }
+    auto camActor = world->SpawnActor();
+    camActor->AddComponent<CameraComponent>();
+    camActor->GetTransform().SetWorldPosition(glm::vec3(0.0f, 0.0f, 3.0f));
 
-    std::weak_ptr<Actor> modelActor = world->SpawnActor();
-    if (auto modelActorShared = modelActor.lock())
-    {
-        modelActorShared->GetTransform().SetLocalPosition(glm::vec3(0.0f, 0.0f, 0.0f));
-        modelActorShared->GetTransform().SetLocalScale(glm::vec3(1.0f, 1.0f, 1.0f));
-        modelActorShared->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
-        LoadModel(modelActorShared.get());
-    }
+    auto modelActor = world->SpawnActor();
+    modelActor->GetTransform().SetLocalPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+    modelActor->GetTransform().SetLocalScale(glm::vec3(1.0f, 1.0f, 1.0f));
+    modelActor->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
+    LoadModel(modelActor.Get());
 
     // Normalise mesh scale
     glm::vec3 minPos(std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
     glm::vec3 maxPos(std::numeric_limits<float>::lowest(), std::numeric_limits<float>::lowest(), std::numeric_limits<float>::lowest());
-    std::vector<MeshComponent*> meshComps = modelActor.lock()->GetComponentsInChildren<MeshComponent>();
+    std::vector<MeshComponent*> meshComps = modelActor->GetComponentsInChildren<MeshComponent>();
     for(MeshComponent* meshComp : meshComps)
     {
         // TODO: Create vertex iterator class
@@ -87,7 +81,7 @@ int main()
     }
     glm::vec3 bounds = maxPos - minPos;
     float greatestAxis = std::max(std::max(bounds.x, bounds.y), bounds.z);
-    modelActor.lock()->GetTransform().SetLocalScale(glm::vec3(1.0f, 1.0f, 1.0f) / greatestAxis);
+    modelActor->GetTransform().SetLocalScale(glm::vec3(1.0f, 1.0f, 1.0f) / greatestAxis);
     //glm::vec3 meshCentre = ((maxPos + minPos) * 0.5f) / greatestAxis;
     //modelActor->GetTransform().SetLocalPosition(-meshCentre);
     
@@ -97,11 +91,11 @@ int main()
     while (true)
     {
         gameEngine->Update();
-        modelActor.lock()->GetTransform().Rotate(0.001f, glm::vec3(0,1,0));
+        modelActor->GetTransform().Rotate(0.001f, glm::vec3(0,1,0));
 
         float speed = camSpeed * GGameEngine->GetDeltaTime();
         float rotSpeed = camRotSpeed * GGameEngine->GetDeltaTime();
-        Transform& camTrans = camActor.lock()->GetTransform();
+        Transform& camTrans = camActor->GetTransform();
 
         glm::vec3 camPos = camTrans.GetWorldPosition();
         if (GGameEngine->GetInputManager()->GetKey(KeyCode::Key_W))

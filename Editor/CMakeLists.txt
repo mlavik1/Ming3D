@@ -2,15 +2,14 @@ cmake_minimum_required(VERSION 3.3)
 project(Editor)
 
 find_package(assimp REQUIRED)
+find_package(SDL2 REQUIRED)
 
 # Gather c++ files
-file(GLOB_RECURSE SRC_FILES 
+file(GLOB_RECURSE SRC_FILES
     Source/*.cpp
     Source/*.h
 )
 
-include_directories (${SDL2_INCLUDE_DIRS})
-include_directories (${assimp_INCLUDE_DIRS})
 include_directories ("../Core/Source")
 include_directories ("../Engine/Source")
 include_directories ("../Networking/Source")
@@ -30,6 +29,8 @@ target_link_libraries(Editor Core)
 target_link_libraries(Editor Engine)
 target_link_libraries(Editor Networking)
 target_link_libraries(Editor Rendering)
+target_link_libraries(Editor SDL2::SDL2)
+target_link_libraries(Editor assimp::assimp)
 
 #Set working directory to the directory where "Resources" folder is located
 set_target_properties(Editor PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")

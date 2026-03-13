@@ -8,20 +8,18 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-set(CMAKE_BUILD_TYPE Debug)
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Debug)
+endif()
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_BINARY_DIR}" "${CMAKE_CURRENT_BINARY_DIR}")
-
-set(BUILD_ROOT "${CMAKE_CURRENT_BINARY_DIR}")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
 
 set(EXTERNAL_LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/ExternalLibraries" CACHE PATH "External library directory")
 
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-set(BUILD_ROOT "${CMAKE_SOURCE_DIR}/build")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build")
+set(BUILD_ROOT "${CMAKE_BINARY_DIR}")
 set(ROOT_DIR "${CMAKE_SOURCE_DIR}")
 
 # Cache variables
@@ -63,20 +61,10 @@ IF(WIN32)
     add_definitions(-DUNICODE)
 endif()
 
-# Copy conan.cmake
-if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
-   file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/CMake/conan.cmake" DESTINATION "${CMAKE_BINARY_DIR}")
+# Conan 2: run "conan install . --output-folder=build --build=missing" before configuring
+if(EXISTS "${CMAKE_BINARY_DIR}/conan_toolchain.cmake")
+    include("${CMAKE_BINARY_DIR}/conan_toolchain.cmake")
 endif()
-
-include(${CMAKE_BINARY_DIR}/conan.cmake)
-
-if(WIN32)
-    set(CONANFILE_PATH conanfile-win.txt)
-else()
-    set(CONANFILE_PATH conanfile.txt)
-endif()
-
-conan_cmake_run(CONANFILE ${CONANFILE_PATH} BASIC_SETUP CMAKE_TARGETS BUILD missing)
 
 # project
 add_subdirectory(Core)

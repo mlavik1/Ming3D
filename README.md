@@ -19,21 +19,32 @@ Supports rendering with OpenGL and DirectX11.
 # How to clone and build
 
 __Requirements__
-- CMake: https://cmake.org/download/
-- Conan package manager: https://conan.io/downloads.html
-- A C++ compiler (tested with g++ and Visual Studio 2017 and 2019)
-
-__WINDOWS__
-- Clone (recursively, since it contains modules): git clone --recursive https://github.com/mlavik1/Ming3D
-- Open CMake, and set source code directory ("Where is the source code: " in CMake GUI) to the repository root directory.
-- Configure and Generate.
-- Optionally: For the sample projects, modify the "SampleProject" variable to select the type of sample you want to use.
+- CMake (>= 3.3): https://cmake.org/download/
+- Conan 2 package manager: https://conan.io/downloads.html
+- A C++ 17 compiler (tested with g++ and Visual Studio 2017 and 2019)
 
 __LINUX__
-- Clone the repository (recursively!): git clone --recursive https://github.com/mlavik1/Ming3D
-- Terminal: sudo -v  (Only first time. This is needed because of the SDL2 conan package)
-- Terminal: cmake -G "Unix Makefiles" (alternatively, you can configure from VSCode, QtCreator or another IDE)
-- Build a project (such as Runtime): make Runtime
-- Run the executables (in the "build" folder). Make sure "Engine/Resources" is placed under the same folder as the executable (just create an empty "Engine" folder and copy "Resources" over to it).
+1. Clone the repository (recursively!): `git clone --recursive https://github.com/mlavik1/Ming3D`
+2. Install system dependencies (X11, OpenGL):
+   ```bash
+   sudo apt-get install -y libgl-dev libx11-dev libxext-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev
+   ```
+3. Install Conan dependencies and configure:
+   ```bash
+   conan install . --output-folder=build --build=missing -s compiler.cppstd=17 -s build_type=Debug
+   cmake -B build
+   ```
+4. Build: `cmake --build build`
+5. Run the executables (in the `build` folder). Make sure `Engine/Resources` is placed under the same folder as the executable.
+
+__WINDOWS__
+1. Clone (recursively): `git clone --recursive https://github.com/mlavik1/Ming3D`
+2. Install Conan dependencies and configure:
+   ```bash
+   conan install . --output-folder=build --build=missing -s compiler.cppstd=17 -s build_type=Debug
+   cmake -B build
+   ```
+3. Open the generated solution in Visual Studio, or build from command line: `cmake --build build`
+4. Optionally: modify the `SampleProject` variable to select the type of sample you want to use.
 
 (NOTE: You need at least OpenGL 4.0)

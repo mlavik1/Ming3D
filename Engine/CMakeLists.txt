@@ -8,17 +8,12 @@ find_package(PhysX REQUIRED)
 find_package(Freetype REQUIRED)
 
 # Gather c++ files
-file(GLOB_RECURSE SRC_FILES 
+file(GLOB_RECURSE SRC_FILES
     Source/*.cpp
     Source/*.h
 )
 
 include_directories ("Source")
-include_directories (${SDL2_INCLUDE_DIRS})
-include_directories (${SDL2_image_INCLUDE_DIRS})
-include_directories (${assimp_INCLUDE_DIRS})
-include_directories (${PhysX_INCLUDE_DIRS})
-include_directories (${Freetype_INCLUDE_DIRS})
 include_directories ("../Core/Source")
 include_directories ("../Rendering/Source")
 include_directories ("../Networking/Source")
@@ -36,11 +31,11 @@ endif()
 STRING(REGEX REPLACE "${CMAKE_SOURCE_DIR}/" "" ENGINE_SOURCE_DIR_REL ${CMAKE_CURRENT_SOURCE_DIR})
 target_compile_definitions(Engine PRIVATE "MING3D_ENGINE_SOURCE_DIR=\"${ENGINE_SOURCE_DIR_REL}\"")
 
-target_link_libraries(Engine Rendering)
-target_link_libraries(Engine Core)
-target_link_libraries(Engine Networking)
-target_link_libraries(Engine ${SDL2_LIBRARIES})
-target_link_libraries(Engine ${SDL2_image_LIBRARIES})
-target_link_libraries(Engine ${assimp_LIBRARIES})
-target_link_libraries(Engine ${PhysX_LIBRARIES})
-target_link_libraries(Engine ${Freetype_LIBRARIES})
+target_link_libraries(Engine PUBLIC Rendering)
+target_link_libraries(Engine PUBLIC Core)
+target_link_libraries(Engine PUBLIC Networking)
+target_link_libraries(Engine PUBLIC SDL2::SDL2)
+target_link_libraries(Engine PUBLIC SDL2_image::SDL2_image)
+target_link_libraries(Engine PUBLIC assimp::assimp)
+target_link_libraries(Engine PUBLIC PhysX::PhysX PhysX::PhysXExtensions)
+target_link_libraries(Engine PUBLIC Freetype::Freetype)

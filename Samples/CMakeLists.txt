@@ -2,9 +2,10 @@ cmake_minimum_required(VERSION 3.3)
 project(Samples)
 
 find_package(assimp REQUIRED)
+find_package(SDL2 REQUIRED)
 
 # Gather c++ files
-file(GLOB_RECURSE SRC_FILES 
+file(GLOB_RECURSE SRC_FILES
 	Source/*.cpp
 	Source/*.h
 )
@@ -34,8 +35,6 @@ elseif(SampleProject STREQUAL "multiwindow")
 	add_definitions(-DMING3D_TESTTYPE=10)
 endif()
 
-include_directories (${SDL2_INCLUDE_DIRS})
-include_directories (${assimp_INCLUDE_DIRS})
 include_directories ("../Core/Source")
 include_directories ("../Engine/Source")
 include_directories ("../Networking/Source")
@@ -49,6 +48,8 @@ target_link_libraries(Samples Core)
 target_link_libraries(Samples Engine)
 target_link_libraries(Samples Networking)
 target_link_libraries(Samples Rendering)
+target_link_libraries(Samples SDL2::SDL2)
+target_link_libraries(Samples assimp::assimp)
 
 #Set working directory to the directory where "Resources" folder is located
 set_target_properties(Samples PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")

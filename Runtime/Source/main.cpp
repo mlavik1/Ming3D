@@ -28,20 +28,20 @@ int main()
 
     auto world = gameEngine->GetWorld().lock();
     
-    Actor* camActor = world->SpawnActor();
+    auto camActor = world->SpawnActor();
     camActor->AddComponent<CameraComponent>();
     camActor->GetTransform().SetWorldPosition(glm::vec3(0.0f, 2.0f, 6.0f));
 
-    Actor* skybox = world->SpawnActor();
+    auto skybox = world->SpawnActor();
     skybox->GetTransform().SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
     skybox->GetTransform().SetLocalScale(glm::vec3(-50.0f, 50.0f, 50.0f));
-    ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Skybox/Skybox.obj"), skybox, MODELLOADERFLAGS_UNLIT | MODELLOADERFLAGS_FORCE_OPAQUE);
+    ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Skybox/Skybox.obj"), skybox.Get(), MODELLOADERFLAGS_UNLIT | MODELLOADERFLAGS_FORCE_OPAQUE);
 
-    Actor* actor1 = world->SpawnActor();
+    auto actor1 = world->SpawnActor();
     actor1->GetTransform().SetLocalPosition(glm::vec3(1.5f, 0.0f, 0.0f));
     actor1->GetTransform().SetLocalScale(glm::vec3(50.0f, 50.0f, 50.0f));
     actor1->GetTransform().SetLocalRotation(glm::angleAxis(10.0f * 3.141592654f / 180.0f, glm::vec3(0.0f, 1.0f, 0.0f)));
-    ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Mvr_PetCow_walk.dae"), actor1);
+    ModelLoader::LoadModel(GGameEngine->GetResourceDirectory() + std::string("/Mvr_PetCow_walk.dae"), actor1.Get());
 
     const float camSpeed = 3.0f;
     const float camRotSpeed = 1.0f;
