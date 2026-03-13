@@ -26,7 +26,7 @@ namespace Ming3D
 
     void MeshRenderObject::SetMaterial(Material* material)
     {
-        mMaterialBuffer = material->GetMaterialBuffer();
+        mMaterial = material;
     }
 
     void MeshRenderObject::SetTransform(glm::mat4 trans)
@@ -48,7 +48,7 @@ namespace Ming3D
     void MeshRenderObject::GetRenderBatch(size_t batchIndex, RenderBatch* outBatch)
     {
         outBatch->mMeshBuffer = mMeshBuffer;
-        outBatch->mMaterial = mMaterialBuffer;
+        outBatch->mMaterial = mMaterial->GetMaterialBuffer();
         outBatch->mModelMatrix = mModelMatrix;
         outBatch->mStartIndex = 0;
         outBatch->mNumIndices = mMeshBuffer->mIndexBuffer->GetNumIndices();
@@ -56,11 +56,11 @@ namespace Ming3D
 
     ERenderType MeshRenderObject::GetRenderType()
     {
-        return mMaterialBuffer->mRenderType;
+        return mMaterial->GetMaterialBuffer()->mRenderType;
     }
     bool MeshRenderObject::GetCastShadows()
     {
-        return mMaterialBuffer->mCastShadows;
+        return mMaterial->GetMaterialBuffer()->mCastShadows;
     }
     glm::vec3 MeshRenderObject::GetWorldPosition()
     {

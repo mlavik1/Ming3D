@@ -8,13 +8,12 @@ namespace Ming3D
     class Material;
     class Transform;
     class MeshBuffer;
-    class MaterialBuffer;
 
     class MeshRenderObject : public RenderObject
     {
     private:
         MeshBuffer* mMeshBuffer = nullptr;
-        MaterialBuffer* mMaterialBuffer = nullptr;
+        Material* mMaterial = nullptr;
         glm::mat4 mModelMatrix;
 
     public:
