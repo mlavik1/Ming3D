@@ -143,10 +143,11 @@ namespace Ming3D
         }
 
         std::unique_ptr<Mesh> mesh = std::make_unique<Mesh>();
-        mesh->mVertexData = vertData;
-        mesh->mIndexData = new Rendering::IndexData(indices.size());
+        mesh->SetVertexData(std::unique_ptr<Rendering::VertexData>(vertData));
+        auto indexData = std::make_unique<Rendering::IndexData>(indices.size());
         if (indices.size() > 0)
-            memcpy(mesh->mIndexData->GetData(), &indices[0], indices.size() * sizeof(indices[0]));
+            memcpy(indexData->GetData(), &indices[0], indices.size() * sizeof(indices[0]));
+        mesh->SetIndexData(std::move(indexData));
 
         return mesh;
     }

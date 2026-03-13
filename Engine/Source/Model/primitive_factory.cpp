@@ -63,11 +63,14 @@ namespace Ming3D
 
         std::unique_ptr<Mesh> mesh = std::make_unique<Mesh>();
         // TODO: Add support for different vertex layouts (with/without normals and texcoords)
-        mesh->mVertexData = new Rendering::VertexData({ Rendering::EVertexComponent::Position, Rendering::EVertexComponent::Normal, Rendering::EVertexComponent::TexCoord }, indices.size());
-        mesh->mIndexData = new Rendering::IndexData(indices.size());
+        auto vertexData = std::make_unique<Rendering::VertexData>(std::initializer_list<Rendering::EVertexComponent>{ Rendering::EVertexComponent::Position, Rendering::EVertexComponent::Normal, Rendering::EVertexComponent::TexCoord }, indices.size());
+        auto indexData = std::make_unique<Rendering::IndexData>(indices.size());
 
-        memcpy(mesh->mVertexData->GetDataPtr(), vertices.data(), vertices.size() * sizeof(Vertex));
-        memcpy(mesh->mIndexData->GetData(), indices.data(), indices.size() * sizeof(unsigned int));
+        memcpy(vertexData->GetDataPtr(), vertices.data(), vertices.size() * sizeof(Vertex));
+        memcpy(indexData->GetData(), indices.data(), indices.size() * sizeof(unsigned int));
+
+        mesh->SetVertexData(std::move(vertexData));
+        mesh->SetIndexData(std::move(indexData));
 
         return mesh;
     }
@@ -116,11 +119,14 @@ namespace Ming3D
 
         std::unique_ptr<Mesh> mesh = std::make_unique<Mesh>();
         // TODO: Add support for different vertex layouts (with/without normals and texcoords)
-        mesh->mVertexData = new Rendering::VertexData({ Rendering::EVertexComponent::Position, Rendering::EVertexComponent::Normal, Rendering::EVertexComponent::TexCoord }, vertices.size());
-        mesh->mIndexData = new Rendering::IndexData(indices.size());
+        auto vertexData = std::make_unique<Rendering::VertexData>(std::initializer_list<Rendering::EVertexComponent>{ Rendering::EVertexComponent::Position, Rendering::EVertexComponent::Normal, Rendering::EVertexComponent::TexCoord }, vertices.size());
+        auto indexData = std::make_unique<Rendering::IndexData>(indices.size());
 
-        memcpy(mesh->mVertexData->GetDataPtr(), vertices.data(), vertices.size() * sizeof(Vertex));
-        memcpy(mesh->mIndexData->GetData(), indices.data(), indices.size() * sizeof(unsigned int));
+        memcpy(vertexData->GetDataPtr(), vertices.data(), vertices.size() * sizeof(Vertex));
+        memcpy(indexData->GetData(), indices.data(), indices.size() * sizeof(unsigned int));
+
+        mesh->SetVertexData(std::move(vertexData));
+        mesh->SetIndexData(std::move(indexData));
 
         return mesh;
     }

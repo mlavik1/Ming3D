@@ -2,10 +2,5 @@
 
 namespace Ming3D
 {
-    Mesh::~Mesh()
-    {
-        delete mVertexData;
-
-        delete mIndexData;
-    }
+    Mesh::~Mesh() = default;
 }

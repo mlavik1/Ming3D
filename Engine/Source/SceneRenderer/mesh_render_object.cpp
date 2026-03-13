@@ -20,8 +20,8 @@ namespace Ming3D
 
         Rendering::EBufferUsage bufferUsage = dynamic ? Rendering::EBufferUsage::DynamicDraw : Rendering::EBufferUsage::StaticDraw;
 
-        mMeshBuffer->mVertexBuffer = std::unique_ptr<Rendering::VertexBuffer>(renderDevice->CreateVertexBuffer(mesh->mVertexData, bufferUsage));
-        mMeshBuffer->mIndexBuffer = std::unique_ptr<Rendering::IndexBuffer>(renderDevice->CreateIndexBuffer(mesh->mIndexData, bufferUsage));
+        mMeshBuffer->mVertexBuffer = std::unique_ptr<Rendering::VertexBuffer>(renderDevice->CreateVertexBuffer(mesh->GetVertexData(), bufferUsage));
+        mMeshBuffer->mIndexBuffer = std::unique_ptr<Rendering::IndexBuffer>(renderDevice->CreateIndexBuffer(mesh->GetIndexData(), bufferUsage));
     }
 
     void MeshRenderObject::SetMaterial(Material* material)
@@ -37,7 +37,7 @@ namespace Ming3D
     void MeshRenderObject::ReuploadVertexData(Mesh* mesh)
     {
         Rendering::RenderDevice* renderDevice = GGameEngine->GetRenderDevice();
-        renderDevice->UpdateVertexBuffer(mMeshBuffer->mVertexBuffer.get(), mesh->mVertexData);
+        renderDevice->UpdateVertexBuffer(mMeshBuffer->mVertexBuffer.get(), mesh->GetVertexData());
     }
 
     size_t MeshRenderObject::GetNumBatches()
