@@ -30,6 +30,8 @@ namespace Ming3D
     {
     private:
         std::vector<std::shared_ptr<Texture>> mTextures;
+        std::unique_ptr<MaterialBuffer> mMaterialBuffer;
+        MaterialParams mMaterialParams;
 
 		/**
 		 * @brief Initialises the material. This can be done on a new material or an old material.
@@ -45,12 +47,12 @@ namespace Ming3D
 		void RecreateMaterial();
 
     public:
-        MaterialBuffer* mMaterialBuffer = nullptr;
-		MaterialParams mMaterialParams;
-
-        Material(Rendering::ParsedShaderProgram* shaderProgram);
+        Material(Rendering::ParsedShaderProgram* shaderProgram, const MaterialParams& params);
         Material(Material* otherMat);
         ~Material();
+
+        MaterialBuffer* GetMaterialBuffer() const { return mMaterialBuffer.get(); }
+        const MaterialParams& GetMaterialParams() const { return mMaterialParams; }
 
         void SetTexture(size_t textureIndex, std::shared_ptr<Texture> texture);
         void SetTexture(const std::string& textureName, std::shared_ptr<Texture> texture);

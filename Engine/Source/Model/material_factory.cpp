@@ -19,8 +19,7 @@ namespace Ming3D
 		Rendering::ParsedShaderProgram* parsedProgram = GetParsedShaderProgram(inParams);
         if (parsedProgram != nullptr)
         {
-            std::unique_ptr<Material> mat = std::make_unique<Material>(parsedProgram);
-			mat->mMaterialParams = inParams;
+            std::unique_ptr<Material> mat = std::make_unique<Material>(parsedProgram, inParams);
             // Set default uniform values
             if(mat->HasShaderUniform("_textureTiling"))
                 mat->SetShaderUniformVec2("_textureTiling", glm::vec2(1.0f, 1.0f));

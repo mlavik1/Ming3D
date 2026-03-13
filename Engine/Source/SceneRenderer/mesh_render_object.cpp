@@ -26,7 +26,7 @@ namespace Ming3D
 
     void MeshRenderObject::SetMaterial(Material* material)
     {
-        mMaterialBuffer = material->mMaterialBuffer;
+        mMaterialBuffer = material->GetMaterialBuffer();
     }
 
     void MeshRenderObject::SetTransform(glm::mat4 trans)

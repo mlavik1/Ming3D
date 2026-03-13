@@ -102,7 +102,7 @@ namespace Ming3D
 
             // Add render batch
             RenderBatch batch;
-            batch.mMaterial = visual->GetMaterial()->mMaterialBuffer;
+            batch.mMaterial = visual->GetMaterial()->GetMaterialBuffer();
             batch.mMeshBuffer = mMeshBuffer;
             batch.mModelMatrix = mTransformMatrix;
             batch.mStartIndex = mTriangleIndex;

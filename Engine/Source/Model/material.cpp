@@ -11,8 +11,9 @@
 
 namespace Ming3D
 {
-    Material::Material(Rendering::ParsedShaderProgram* shaderProgram)
+    Material::Material(Rendering::ParsedShaderProgram* shaderProgram, const MaterialParams& params)
     {
+		mMaterialParams = params;
 		InitMaterial(shaderProgram);
     }
 
@@ -21,22 +22,20 @@ namespace Ming3D
         mMaterialParams = otherMat->mMaterialParams;
         Rendering::ParsedShaderProgram* newShaderProg = MaterialFactory::GetParsedShaderProgram(mMaterialParams);
         InitMaterial(newShaderProg);
-        mMaterialBuffer->CopyFrom(otherMat->mMaterialBuffer);
+        mMaterialBuffer->CopyFrom(otherMat->mMaterialBuffer.get());
     }
 
-    Material::~Material()
-    {
-    }
+    Material::~Material() = default;
 
 	void Material::InitMaterial(Rendering::ParsedShaderProgram* shaderProgram)
 	{
 		size_t numTextures = shaderProgram->mShaderTextures.size();
 
-		MaterialBuffer* oldMatBuffer = mMaterialBuffer;
+		std::unique_ptr<MaterialBuffer> oldMatBuffer = std::move(mMaterialBuffer);
 		std::vector<std::shared_ptr<Texture>> oldTextures = mTextures;
 
 		// create new material buffer
-		mMaterialBuffer = new MaterialBuffer();
+		mMaterialBuffer = std::make_unique<MaterialBuffer>();
 		mMaterialBuffer->mTextureBuffers.resize(numTextures);
 
 		mTextures.resize(numTextures);
@@ -97,13 +96,12 @@ namespace Ming3D
 		// Copy cached data from old material buffer, and delete it.
 		if (oldMatBuffer != nullptr)
 		{
-			mMaterialBuffer->CopyFrom(oldMatBuffer);
-			delete oldMatBuffer;
+			mMaterialBuffer->CopyFrom(oldMatBuffer.get());
 		}
 
 		// TODO: Queue render thread command
 		mMaterialBuffer->mShaderProgram = GGameEngine->GetRenderDevice()->CreateShaderProgram(shaderProgram);
-		GGameEngine->GetSceneRenderer()->RegisterMaterial(mMaterialBuffer); // TODO
+		GGameEngine->GetSceneRenderer()->RegisterMaterial(mMaterialBuffer.get()); // TODO
 	}
 
 	void Material::RecreateMaterial()
