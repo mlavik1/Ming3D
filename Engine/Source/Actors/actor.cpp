@@ -25,10 +25,6 @@ namespace Ming3D
         mCompCallbackSubscribers[ComponentCallbackType::PostMove] = std::vector<Component*>();
     }
 
-    Actor::~Actor()
-    {
-    }
-
     void Actor::AddComponent(std::unique_ptr<Component> inComp)
     {
         Component* rawPtr = inComp.get();

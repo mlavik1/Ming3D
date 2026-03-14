@@ -53,7 +53,7 @@ namespace Ming3D
 
     public:
         explicit Actor(World* world);
-        virtual ~Actor();
+        virtual ~Actor() = default;
 
         // Delete copy constructor and assignment operator
         Actor(const Actor& actor) = delete;
