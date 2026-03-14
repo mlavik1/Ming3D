@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include <vector>
 #include <algorithm>
+#include <memory>
 
 namespace Ming3D
 {
@@ -23,7 +24,7 @@ namespace Ming3D
         
         World* mWorld;
         Transform mTransform;
-        std::vector<Component*> mComponents;
+        std::vector<std::unique_ptr<Component>> mComponents;
         std::string mActorName;
 
         ActorPtr mParent;
@@ -38,14 +39,14 @@ namespace Ming3D
         {
             static_assert(std::is_base_of<Component, T>::value, "Must be a subclass of component");
             std::for_each(mChildren.begin(), mChildren.end(), [&comps](auto& child){ child->GetComponentsInChildrenRecursive(comps); });
-            for(Component* comp : mComponents)
+            for(auto& comp : mComponents)
             {
-                if (static_cast<Object*>(comp)->GetClass() == T::GetStaticClass())
-                    comps.push_back(static_cast<T*>(comp));
+                if (static_cast<Object*>(comp.get())->GetClass() == T::GetStaticClass())
+                    comps.push_back(static_cast<T*>(comp.get()));
             }
         }
 
-        void AddComponent(Component* inComp);
+        void AddComponent(std::unique_ptr<Component> inComp);
 
     public:
         Actor() {}
@@ -62,9 +63,10 @@ namespace Ming3D
         T* AddComponent()
         {
             static_assert(std::is_base_of<Component, T>::value, "Must be a subclass of component");
-            T* newComp = new T();
-            AddComponent(newComp);
-            return newComp;
+            auto newComp = std::make_unique<T>();
+            T* rawPtr = newComp.get();
+            AddComponent(std::move(newComp));
+            return rawPtr;
         }
 
         ActorPtr SpawnChildActor();
@@ -104,7 +106,14 @@ namespace Ming3D
         void SetActorName(const std::string& name);
 
         inline Transform& GetTransform() { return mTransform; }
-        std::vector<Component*> GetComponents() { return mComponents; }
+        std::vector<Component*> GetComponents()
+        {
+            std::vector<Component*> result;
+            result.reserve(mComponents.size());
+            for (auto& comp : mComponents)
+                result.push_back(comp.get());
+            return result;
+        }
         std::string GetActorName() { return mActorName; }
         std::vector<ActorPtr> GetChildren();
         
@@ -112,10 +121,10 @@ namespace Ming3D
         T* GetComponent()
         {
             static_assert(std::is_base_of<Component, T>::value, "Must be a subclass of component");
-            for(Component* comp : mComponents)
+            for(auto& comp : mComponents)
             {
-                if (static_cast<Object*>(comp)->GetClass() == T::GetStaticClass())
-                    return static_cast<T*>(comp);
+                if (static_cast<Object*>(comp.get())->GetClass() == T::GetStaticClass())
+                    return static_cast<T*>(comp.get());
             }
             return nullptr;
         }

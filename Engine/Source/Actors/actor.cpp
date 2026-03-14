@@ -27,16 +27,15 @@ namespace Ming3D
 
     Actor::~Actor()
     {
-        for (Component* comp : mComponents)
-            delete comp;
     }
 
-    void Actor::AddComponent(Component* inComp)
+    void Actor::AddComponent(std::unique_ptr<Component> inComp)
     {
-        inComp->mParent = this;
-        mComponents.push_back(inComp);
-        inComp->InitialiseComponent();
-        newComponents.push_back(inComp);
+        Component* rawPtr = inComp.get();
+        rawPtr->mParent = this;
+        mComponents.push_back(std::move(inComp));
+        rawPtr->InitialiseComponent();
+        newComponents.push_back(rawPtr);
     }
 
     ActorPtr Actor::SpawnChildActor()
@@ -117,12 +116,11 @@ namespace Ming3D
     {
         // Find all components to serialise
         std::vector<Component*> serialisedComponents;
-        std::copy_if(
-            mComponents.begin(),
-            mComponents.end(),
-            std::back_inserter(serialisedComponents),
-            [inObjFlags] (Component* childComp) { return childComp->HasObjectFlags(inObjFlags); }
-        );
+        for (auto& comp : mComponents)
+        {
+            if (comp->HasObjectFlags(inObjFlags))
+                serialisedComponents.push_back(comp.get());
+        }
     
         // Serialise components
         outWriter->Write(serialisedComponents.size());
@@ -150,9 +148,10 @@ namespace Ming3D
                 delete[] compClassName;
                 return;
             }
-            Component* comp = (Component*)compClass->CreateInstance();
-            AddComponent(comp);
-            comp->Deserialise(inReader, inPropFlags, inObjFlags);
+            std::unique_ptr<Component> comp(static_cast<Component*>(compClass->CreateInstance()));
+            Component* compPtr = comp.get();
+            AddComponent(std::move(comp));
+            compPtr->Deserialise(inReader, inPropFlags, inObjFlags);
 
             delete[] compClassName;
         }
