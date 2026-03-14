@@ -8,14 +8,13 @@
 #include "Components/component.h"
 #include <unordered_map>
 #include <vector>
-#include <memory>
 #include <algorithm>
 
 namespace Ming3D
 {
     class World;
 
-    class Actor : public GameObject, public std::enable_shared_from_this<Actor> // TODO
+    class Actor : public GameObject
     {
         DEFINE_CLASS(Ming3D::Actor, Ming3D::GameObject)
 

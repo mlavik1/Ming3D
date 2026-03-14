@@ -27,6 +27,8 @@ namespace Ming3D
 
     Actor::~Actor()
     {
+        for (Component* comp : mComponents)
+            delete comp;
     }
 
     void Actor::AddComponent(Component* inComp)
@@ -52,9 +54,10 @@ namespace Ming3D
 
         if (mParent != nullptr)
         {
-            mParent->mChildren.erase(std::remove_if(
+            auto it = std::remove_if(
                 mParent->mChildren.begin(), mParent->mChildren.end(),
-                [this](const auto& child){ return child == this; }));
+                [this](const auto& child){ return child == this; });
+            mParent->mChildren.erase(it, mParent->mChildren.end());
             mParent->mTransform.mChildren.remove(&mTransform);
         }
 
@@ -191,7 +194,10 @@ namespace Ming3D
                 delete[] actorClassName;
                 return;
             }
-            Actor* child = static_cast<Actor*>(actorClass->CreateInstance());
+            std::unique_ptr<Actor> childOwned(static_cast<Actor*>(actorClass->CreateInstance()));
+            childOwned->mWorld = mWorld;
+            Actor* child = childOwned.get();
+            mWorld->AddActor(std::move(childOwned));
             child->SetParent(this);
             child->Deserialise(inReader, inPropFlags, inObjFlags);
 

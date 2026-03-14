@@ -37,6 +37,14 @@ namespace Ming3D
         return ptr;
     }
 
+    ActorPtr World::AddActor(std::unique_ptr<Actor> actor)
+    {
+        ActorPtr ptr = actor.get();
+        InitialiseActor(ptr.Get());
+        mActors.push_back(std::move(actor));
+        return ptr;
+    }
+
     std::vector<ActorPtr> World::GetActors()
     {
         std::vector<ActorPtr> actors;

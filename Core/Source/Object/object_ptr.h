@@ -23,10 +23,12 @@ namespace Ming3D
         ObjectPtr();
         ObjectPtr(Object* object);
         ObjectPtr(const ObjectPtr<T>& other);
+        ObjectPtr(ObjectPtr<T>&& other) noexcept;
 
         ~ObjectPtr();
 
         ObjectPtr<T>& operator=(const ObjectPtr<T>& other);
+        ObjectPtr<T>& operator=(ObjectPtr<T>&& other) noexcept;
         ObjectPtr<T>& operator=(Object* other);
 
         T* operator->() const;
@@ -85,6 +87,13 @@ namespace Ming3D
     }
 
     template <class T>
+    ObjectPtr<T>::ObjectPtr(ObjectPtr<T>&& other) noexcept
+    : mRefHandle(other.mRefHandle)
+    {
+        other.mRefHandle = nullptr;
+    }
+
+    template <class T>
     ObjectPtr<T>::~ObjectPtr()
     {
         if (mRefHandle != nullptr)
@@ -104,12 +113,32 @@ namespace Ming3D
     }
 
     template <class T>
+    ObjectPtr<T>& ObjectPtr<T>::operator=(ObjectPtr<T>&& other) noexcept
+    {
+        if (this != &other)
+        {
+            if (mRefHandle != nullptr)
+                mRefHandle->RemoveRef();
+            mRefHandle = other.mRefHandle;
+            other.mRefHandle = nullptr;
+        }
+        return (*this);
+    }
+
+    template <class T>
     ObjectPtr<T>& ObjectPtr<T>::operator=(Object* other)
     {
         ObjectRefHandle* oldHandle = this->mRefHandle;
-        this->mRefHandle = other->GetRefHandle();
-        if (this->mRefHandle != nullptr)
-            this->mRefHandle->AddRef();
+        if (other != nullptr)
+        {
+            this->mRefHandle = other->GetRefHandle();
+            if (this->mRefHandle != nullptr)
+                this->mRefHandle->AddRef();
+        }
+        else
+        {
+            this->mRefHandle = nullptr;
+        }
         if (oldHandle != nullptr)
             oldHandle->RemoveRef();
         return (*this);
@@ -118,6 +147,7 @@ namespace Ming3D
     template <class T>
     T* ObjectPtr<T>::operator->() const
     {
+        assert(mRefHandle != nullptr && mRefHandle->GetObject() != nullptr);
         return static_cast<T*>(this->mRefHandle->GetObject());
     }
 

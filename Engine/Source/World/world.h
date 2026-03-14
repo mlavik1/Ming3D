@@ -39,6 +39,7 @@ namespace Ming3D
         }
         ActorPtr SpawnActor();
         ActorPtr SpawnActor(const std::string& name);
+        ActorPtr AddActor(std::unique_ptr<Actor> actor);
 
         std::vector<ActorPtr> GetActors();
         std::vector<ActorPtr> GetActorsRecursive();
