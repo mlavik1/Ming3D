@@ -138,7 +138,7 @@ namespace Ming3D::Rendering
         std::unique_ptr<RenderTargetD3D11> renderTarget = std::make_unique<RenderTargetD3D11>();
         renderTarget->mRenderWindow = inWindow; // TODO: Ownership?
 
-        RenderWindowD3D11* renderWindow = static_cast<RenderWindowD3D11>(inWindow);
+        RenderWindowD3D11* renderWindow = static_cast<RenderWindowD3D11*>(inWindow);
 
         ID3D11Texture2D* backBufferTex = renderWindow->GetBackBuffer();
 

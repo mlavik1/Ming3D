@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include <vector>
 #include <memory>
+#include <algorithm>
 
 namespace Ming3D
 {

@@ -5,12 +5,12 @@
 
 namespace Ming3D
 {
-    bool PlatformInterface::MakeDirectory(const std::string& inPath)
+    bool PlatformInterfaceWin32::MakeDirectory(const std::string& inPath)
     {
         return (CreateDirectoryA(inPath.c_str(), NULL) || ERROR_ALREADY_EXISTS == GetLastError());
     }
 
-    bool PlatformInterface::DirectoryExists(const std::string& inPath)
+    bool PlatformInterfaceWin32::DirectoryExists(const std::string& inPath)
     {
         DWORD ftyp = GetFileAttributesA(inPath.c_str());
         if (ftyp == INVALID_FILE_ATTRIBUTES)
@@ -22,7 +22,7 @@ namespace Ming3D
         return false;
     }
 
-    bool PlatformInterface::OpenFileDialog(const std::string& inTitle, std::string& outFilePath)
+    bool PlatformInterfaceWin32::OpenFileDialog(const std::string& inTitle, std::string& outFilePath)
     {
         char filename[MAX_PATH];
         ZeroMemory(&filename, sizeof(filename));
